@@ -1,5 +1,8 @@
 
 *.cache
+
 *.dll
+
 *.pdb
-BaseSysInfo/obj/Debug/5BaseSys.csproj.FileListAbsolute.txt
+bin/
+obj/
