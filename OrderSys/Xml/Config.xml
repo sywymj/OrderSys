@@ -1,0 +1,54 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+	<appSettings>
+		
+		<!-- ================== 1：这里主要是客户端配置项内容部分 ================== -->
+
+    <add key="Version" value="1.0" />
+
+    <add key="CustomerCompanyName" value="JsonL" />
+
+		<add key="SoftName" value="JsonL" />
+
+		<add key="SoftFullName" value="JsonL_Framework" />
+
+		<add key="SystemCode" value="" />
+
+		<add key="RootMenuCode" value="" />
+
+    <add key="UploadDirectory" value="UpFiles/" />
+
+    <add key="CurrentLanguage" value="zh-CN" Options="zh-CN,zh-TW,en-US" />
+
+    <!--<add key="TimeFormat" value="HH:mm:ss" />
+
+    <add key="DateFormat" value="yyyy-MM-dd" />
+
+    <add key="DateTimeFormat" value="yyyy-MM-dd HH:mm:ss" />
+
+    <add key="LogException" value="true" />
+
+    <add key="LogSQL" value="false" />
+
+    <add key="EventLog" value="false" />
+
+    <add key="RecordLog" value="true" />-->
+
+    <!-- ================== 2：安全相关配置 ================== -->
+
+    <add key="DefaultPassword" value="123456" />
+
+    <add key="ServiceUserName" value="JsonL" />
+
+		<add key="ServicePassword" value="123456" />
+
+		<add key="ServerEncryptPassword" value="True" />
+
+    <add key="ClientEncryptPassword" value="True" />
+
+    
+    <!-- ================== 3：数据库连接相关配置 ================== -->
+    <!-- 测试数据库连接字符串-->
+    <add key="TestDbHelperConnection" value="Data Source=localhost;Initial Catalog=Demo_Framework;Integrated Security=SSPI;Max Pool Size=5;Connect Timeout=1;"/>
+	</appSettings>
+</configuration>

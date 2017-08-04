@@ -1,0 +1,171 @@
+E:\My Program\My Demo\Demo_DB_V1.3\Demo_Framework\DbUtilities\obj\Debug\DbUtilities.csprojResolveAssemblyReference.cache
+E:\My Program\My Demo\Demo_DB_V1.3\Demo_Framework\DbUtilities\bin\Debug\DbUtilities.dll
+E:\My Program\My Demo\Demo_DB_V1.3\Demo_Framework\DbUtilities\bin\Debug\DbUtilities.pdb
+E:\My Program\My Demo\Demo_DB_V1.3\Demo_Framework\DbUtilities\bin\Debug\BaseSysInfo.dll
+E:\My Program\My Demo\Demo_DB_V1.3\Demo_Framework\DbUtilities\bin\Debug\Utilities.dll
+E:\My Program\My Demo\Demo_DB_V1.3\Demo_Framework\DbUtilities\bin\Debug\NPOI.dll
+E:\My Program\My Demo\Demo_DB_V1.3\Demo_Framework\DbUtilities\bin\Debug\ChnCharInfo.dll
+E:\My Program\My Demo\Demo_DB_V1.3\Demo_Framework\DbUtilities\bin\Debug\BaseSysInfo.pdb
+E:\My Program\My Demo\Demo_DB_V1.3\Demo_Framework\DbUtilities\bin\Debug\Utilities.pdb
+E:\My Program\My Demo\Demo_DB_V1.3\Demo_Framework\DbUtilities\obj\Debug\DbUtilities.dll
+E:\My Program\My Demo\Demo_DB_V1.3\Demo_Framework\DbUtilities\obj\Debug\DbUtilities.pdb
+E:\My Demo\Demo_DB_V1.4\Demo_Framework\DbUtilities\bin\Debug\DbUtilities.dll
+E:\My Demo\Demo_DB_V1.4\Demo_Framework\DbUtilities\bin\Debug\DbUtilities.pdb
+E:\My Demo\Demo_DB_V1.4\Demo_Framework\DbUtilities\bin\Debug\BaseSysInfo.dll
+E:\My Demo\Demo_DB_V1.4\Demo_Framework\DbUtilities\bin\Debug\Utilities.dll
+E:\My Demo\Demo_DB_V1.4\Demo_Framework\DbUtilities\bin\Debug\NPOI.dll
+E:\My Demo\Demo_DB_V1.4\Demo_Framework\DbUtilities\bin\Debug\ChnCharInfo.dll
+E:\My Demo\Demo_DB_V1.4\Demo_Framework\DbUtilities\bin\Debug\BaseSysInfo.pdb
+E:\My Demo\Demo_DB_V1.4\Demo_Framework\DbUtilities\bin\Debug\Utilities.pdb
+E:\My Demo\Demo_DB_V1.4\Demo_Framework\DbUtilities\obj\Debug\DbUtilities.csprojResolveAssemblyReference.cache
+E:\My Demo\Demo_DB_V1.4\Demo_Framework\DbUtilities\obj\Debug\DbUtilities.dll
+E:\My Demo\Demo_DB_V1.4\Demo_Framework\DbUtilities\obj\Debug\DbUtilities.pdb
+E:\My Demo\Demo_DB_V1.4\Demo_Framework\DbUtilities\bin\Debug\BusinessLogicUtilities.dll
+E:\My Demo\Demo_DB_V1.4\Demo_Framework\DbUtilities\bin\Debug\BusinessLogicUtilities.pdb
+E:\My Program\My Demo\Demo_DB_V1.5\Demo_Framework\DbUtilities\bin\Debug\DbUtilities.dll
+E:\My Program\My Demo\Demo_DB_V1.5\Demo_Framework\DbUtilities\bin\Debug\DbUtilities.pdb
+E:\My Program\My Demo\Demo_DB_V1.5\Demo_Framework\DbUtilities\bin\Debug\BaseSysInfo.dll
+E:\My Program\My Demo\Demo_DB_V1.5\Demo_Framework\DbUtilities\bin\Debug\BusinessLogicUtilities.dll
+E:\My Program\My Demo\Demo_DB_V1.5\Demo_Framework\DbUtilities\bin\Debug\Utilities.dll
+E:\My Program\My Demo\Demo_DB_V1.5\Demo_Framework\DbUtilities\bin\Debug\NPOI.dll
+E:\My Program\My Demo\Demo_DB_V1.5\Demo_Framework\DbUtilities\bin\Debug\ChnCharInfo.dll
+E:\My Program\My Demo\Demo_DB_V1.5\Demo_Framework\DbUtilities\bin\Debug\BaseSysInfo.pdb
+E:\My Program\My Demo\Demo_DB_V1.5\Demo_Framework\DbUtilities\bin\Debug\BusinessLogicUtilities.pdb
+E:\My Program\My Demo\Demo_DB_V1.5\Demo_Framework\DbUtilities\bin\Debug\Utilities.pdb
+E:\My Program\My Demo\Demo_DB_V1.5\Demo_Framework\DbUtilities\obj\Debug\DbUtilities.csprojResolveAssemblyReference.cache
+E:\My Program\My Demo\Demo_DB_V1.5\Demo_Framework\DbUtilities\obj\Debug\DbUtilities.dll
+E:\My Program\My Demo\Demo_DB_V1.5\Demo_Framework\DbUtilities\obj\Debug\DbUtilities.pdb
+E:\My Demo\Demo_DB_V1.7\Demo_Framework\DbUtilities\bin\Debug\DbUtilities.dll
+E:\My Demo\Demo_DB_V1.7\Demo_Framework\DbUtilities\bin\Debug\DbUtilities.pdb
+E:\My Demo\Demo_DB_V1.7\Demo_Framework\DbUtilities\bin\Debug\BaseSysInfo.dll
+E:\My Demo\Demo_DB_V1.7\Demo_Framework\DbUtilities\bin\Debug\BusinessLogicUtilities.dll
+E:\My Demo\Demo_DB_V1.7\Demo_Framework\DbUtilities\bin\Debug\Utilities.dll
+E:\My Demo\Demo_DB_V1.7\Demo_Framework\DbUtilities\bin\Debug\NPOI.dll
+E:\My Demo\Demo_DB_V1.7\Demo_Framework\DbUtilities\bin\Debug\ChnCharInfo.dll
+E:\My Demo\Demo_DB_V1.7\Demo_Framework\DbUtilities\bin\Debug\BaseSysInfo.pdb
+E:\My Demo\Demo_DB_V1.7\Demo_Framework\DbUtilities\bin\Debug\BusinessLogicUtilities.pdb
+E:\My Demo\Demo_DB_V1.7\Demo_Framework\DbUtilities\bin\Debug\Utilities.pdb
+E:\My Demo\Demo_DB_V1.7\Demo_Framework\DbUtilities\obj\Debug\DbUtilities.csprojResolveAssemblyReference.cache
+E:\My Demo\Demo_DB_V1.7\Demo_Framework\DbUtilities\obj\Debug\DbUtilities.dll
+E:\My Demo\Demo_DB_V1.7\Demo_Framework\DbUtilities\obj\Debug\DbUtilities.pdb
+D:\my file\My Demo\Demo_DB_V1.13\Demo_Framework\DbUtilities\obj\Debug\DbUtilities.csprojResolveAssemblyReference.cache
+D:\my file\My Demo\Demo_DB_V1.13\Demo_Framework\DbUtilities\obj\Debug\DbUtilities.dll
+D:\my file\My Demo\Demo_DB_V1.13\Demo_Framework\DbUtilities\obj\Debug\DbUtilities.pdb
+D:\my file\My Demo\Demo_DB_V1.13\Demo_Framework\DbUtilities\bin\Debug\DbUtilities.dll
+D:\my file\My Demo\Demo_DB_V1.13\Demo_Framework\DbUtilities\bin\Debug\DbUtilities.pdb
+D:\my file\My Demo\Demo_DB_V1.13\Demo_Framework\DbUtilities\bin\Debug\BaseSysInfo.dll
+D:\my file\My Demo\Demo_DB_V1.13\Demo_Framework\DbUtilities\bin\Debug\BusinessLogicUtilities.dll
+D:\my file\My Demo\Demo_DB_V1.13\Demo_Framework\DbUtilities\bin\Debug\Utilities.dll
+D:\my file\My Demo\Demo_DB_V1.13\Demo_Framework\DbUtilities\bin\Debug\NPOI.dll
+D:\my file\My Demo\Demo_DB_V1.13\Demo_Framework\DbUtilities\bin\Debug\ChnCharInfo.dll
+D:\my file\My Demo\Demo_DB_V1.13\Demo_Framework\DbUtilities\bin\Debug\BaseSysInfo.pdb
+D:\my file\My Demo\Demo_DB_V1.13\Demo_Framework\DbUtilities\bin\Debug\BusinessLogicUtilities.pdb
+D:\my file\My Demo\Demo_DB_V1.13\Demo_Framework\DbUtilities\bin\Debug\Utilities.pdb
+E:\My Program\My Demo\Demo_DB_V1.14\Demo_Framework\DbUtilities\obj\Debug\DbUtilities.csprojResolveAssemblyReference.cache
+E:\My Program\My Demo\Demo_DB_V1.14\Demo_Framework\DbUtilities\obj\Debug\DbUtilities.dll
+E:\My Program\My Demo\Demo_DB_V1.14\Demo_Framework\DbUtilities\bin\Debug\DbUtilities.dll
+E:\My Program\My Demo\Demo_DB_V1.14\Demo_Framework\DbUtilities\bin\Debug\DbUtilities.pdb
+E:\My Program\My Demo\Demo_DB_V1.14\Demo_Framework\DbUtilities\bin\Debug\BaseSysInfo.dll
+E:\My Program\My Demo\Demo_DB_V1.14\Demo_Framework\DbUtilities\bin\Debug\BusinessLogicUtilities.dll
+E:\My Program\My Demo\Demo_DB_V1.14\Demo_Framework\DbUtilities\bin\Debug\Utilities.dll
+E:\My Program\My Demo\Demo_DB_V1.14\Demo_Framework\DbUtilities\bin\Debug\NPOI.dll
+E:\My Program\My Demo\Demo_DB_V1.14\Demo_Framework\DbUtilities\bin\Debug\ChnCharInfo.dll
+E:\My Program\My Demo\Demo_DB_V1.14\Demo_Framework\DbUtilities\bin\Debug\BaseSysInfo.pdb
+E:\My Program\My Demo\Demo_DB_V1.14\Demo_Framework\DbUtilities\bin\Debug\BusinessLogicUtilities.pdb
+E:\My Program\My Demo\Demo_DB_V1.14\Demo_Framework\DbUtilities\bin\Debug\Utilities.pdb
+E:\My Program\My Demo\Demo_DB_V1.14\Demo_Framework\DbUtilities\obj\Debug\DbUtilities.pdb
+D:\my file\My Demo\Demo_DB_V1.14\Demo_Framework\DbUtilities\bin\Debug\DbUtilities.dll
+D:\my file\My Demo\Demo_DB_V1.14\Demo_Framework\DbUtilities\bin\Debug\DbUtilities.pdb
+D:\my file\My Demo\Demo_DB_V1.14\Demo_Framework\DbUtilities\bin\Debug\BaseSysInfo.dll
+D:\my file\My Demo\Demo_DB_V1.14\Demo_Framework\DbUtilities\bin\Debug\BusinessLogicUtilities.dll
+D:\my file\My Demo\Demo_DB_V1.14\Demo_Framework\DbUtilities\bin\Debug\Utilities.dll
+D:\my file\My Demo\Demo_DB_V1.14\Demo_Framework\DbUtilities\bin\Debug\NPOI.dll
+D:\my file\My Demo\Demo_DB_V1.14\Demo_Framework\DbUtilities\bin\Debug\ChnCharInfo.dll
+D:\my file\My Demo\Demo_DB_V1.14\Demo_Framework\DbUtilities\bin\Debug\BaseSysInfo.pdb
+D:\my file\My Demo\Demo_DB_V1.14\Demo_Framework\DbUtilities\bin\Debug\BusinessLogicUtilities.pdb
+D:\my file\My Demo\Demo_DB_V1.14\Demo_Framework\DbUtilities\bin\Debug\Utilities.pdb
+D:\my file\My Demo\Demo_DB_V1.14\Demo_Framework\DbUtilities\obj\Debug\DbUtilities.csprojResolveAssemblyReference.cache
+D:\my file\My Demo\Demo_DB_V1.14\Demo_Framework\DbUtilities\obj\Debug\DbUtilities.dll
+D:\my file\My Demo\Demo_DB_V1.14\Demo_Framework\DbUtilities\obj\Debug\DbUtilities.pdb
+E:\My Program\My Demo\Demo_DB_V1.15\Demo_Framework\DbUtilities\bin\Debug\DbUtilities.dll
+E:\My Program\My Demo\Demo_DB_V1.15\Demo_Framework\DbUtilities\bin\Debug\DbUtilities.pdb
+E:\My Program\My Demo\Demo_DB_V1.15\Demo_Framework\DbUtilities\bin\Debug\BaseSysInfo.dll
+E:\My Program\My Demo\Demo_DB_V1.15\Demo_Framework\DbUtilities\bin\Debug\BusinessLogicUtilities.dll
+E:\My Program\My Demo\Demo_DB_V1.15\Demo_Framework\DbUtilities\bin\Debug\Utilities.dll
+E:\My Program\My Demo\Demo_DB_V1.15\Demo_Framework\DbUtilities\bin\Debug\NPOI.dll
+E:\My Program\My Demo\Demo_DB_V1.15\Demo_Framework\DbUtilities\bin\Debug\ChnCharInfo.dll
+E:\My Program\My Demo\Demo_DB_V1.15\Demo_Framework\DbUtilities\bin\Debug\BaseSysInfo.pdb
+E:\My Program\My Demo\Demo_DB_V1.15\Demo_Framework\DbUtilities\bin\Debug\BusinessLogicUtilities.pdb
+E:\My Program\My Demo\Demo_DB_V1.15\Demo_Framework\DbUtilities\bin\Debug\Utilities.pdb
+E:\My Program\My Demo\Demo_DB_V1.15\Demo_Framework\DbUtilities\obj\Debug\DbUtilities.csprojResolveAssemblyReference.cache
+E:\My Program\My Demo\Demo_DB_V1.15\Demo_Framework\DbUtilities\obj\Debug\DbUtilities.dll
+E:\My Program\My Demo\Demo_DB_V1.15\Demo_Framework\DbUtilities\obj\Debug\DbUtilities.pdb
+E:\My Program\My Demo\Demo_DB_V1.16\Demo_Framework\DbUtilities\bin\Debug\DbUtilities.dll
+E:\My Program\My Demo\Demo_DB_V1.16\Demo_Framework\DbUtilities\bin\Debug\DbUtilities.pdb
+E:\My Program\My Demo\Demo_DB_V1.16\Demo_Framework\DbUtilities\bin\Debug\BaseSysInfo.dll
+E:\My Program\My Demo\Demo_DB_V1.16\Demo_Framework\DbUtilities\bin\Debug\BusinessLogicUtilities.dll
+E:\My Program\My Demo\Demo_DB_V1.16\Demo_Framework\DbUtilities\bin\Debug\Utilities.dll
+E:\My Program\My Demo\Demo_DB_V1.16\Demo_Framework\DbUtilities\bin\Debug\NPOI.dll
+E:\My Program\My Demo\Demo_DB_V1.16\Demo_Framework\DbUtilities\bin\Debug\ChnCharInfo.dll
+E:\My Program\My Demo\Demo_DB_V1.16\Demo_Framework\DbUtilities\bin\Debug\BaseSysInfo.pdb
+E:\My Program\My Demo\Demo_DB_V1.16\Demo_Framework\DbUtilities\bin\Debug\BusinessLogicUtilities.pdb
+E:\My Program\My Demo\Demo_DB_V1.16\Demo_Framework\DbUtilities\bin\Debug\Utilities.pdb
+E:\My Program\My Demo\Demo_DB_V1.16\Demo_Framework\DbUtilities\obj\Debug\DbUtilities.csprojResolveAssemblyReference.cache
+E:\My Program\My Demo\Demo_DB_V1.16\Demo_Framework\DbUtilities\obj\Debug\DbUtilities.dll
+E:\My Program\My Demo\Demo_DB_V1.16\Demo_Framework\DbUtilities\obj\Debug\DbUtilities.pdb
+E:\My Program\My Demo\Demo_DB_V1.17\Demo_Framework\DbUtilities\bin\Debug\DbUtilities.dll
+E:\My Program\My Demo\Demo_DB_V1.17\Demo_Framework\DbUtilities\bin\Debug\DbUtilities.pdb
+E:\My Program\My Demo\Demo_DB_V1.17\Demo_Framework\DbUtilities\bin\Debug\BaseSysInfo.dll
+E:\My Program\My Demo\Demo_DB_V1.17\Demo_Framework\DbUtilities\bin\Debug\BusinessLogicUtilities.dll
+E:\My Program\My Demo\Demo_DB_V1.17\Demo_Framework\DbUtilities\bin\Debug\Utilities.dll
+E:\My Program\My Demo\Demo_DB_V1.17\Demo_Framework\DbUtilities\bin\Debug\NPOI.dll
+E:\My Program\My Demo\Demo_DB_V1.17\Demo_Framework\DbUtilities\bin\Debug\ChnCharInfo.dll
+E:\My Program\My Demo\Demo_DB_V1.17\Demo_Framework\DbUtilities\bin\Debug\BaseSysInfo.pdb
+E:\My Program\My Demo\Demo_DB_V1.17\Demo_Framework\DbUtilities\bin\Debug\BusinessLogicUtilities.pdb
+E:\My Program\My Demo\Demo_DB_V1.17\Demo_Framework\DbUtilities\bin\Debug\Utilities.pdb
+E:\My Program\My Demo\Demo_DB_V1.17\Demo_Framework\DbUtilities\obj\Debug\DbUtilities.csprojResolveAssemblyReference.cache
+E:\My Program\My Demo\Demo_DB_V1.17\Demo_Framework\DbUtilities\obj\Debug\DbUtilities.dll
+E:\My Program\My Demo\Demo_DB_V1.17\Demo_Framework\DbUtilities\obj\Debug\DbUtilities.pdb
+E:\My Program\My Demo\Demo_DB_V1.18\Demo_Framework\DbUtilities\bin\Debug\DbUtilities.dll
+E:\My Program\My Demo\Demo_DB_V1.18\Demo_Framework\DbUtilities\bin\Debug\DbUtilities.pdb
+E:\My Program\My Demo\Demo_DB_V1.18\Demo_Framework\DbUtilities\bin\Debug\BaseSysInfo.dll
+E:\My Program\My Demo\Demo_DB_V1.18\Demo_Framework\DbUtilities\bin\Debug\BusinessLogicUtilities.dll
+E:\My Program\My Demo\Demo_DB_V1.18\Demo_Framework\DbUtilities\bin\Debug\Utilities.dll
+E:\My Program\My Demo\Demo_DB_V1.18\Demo_Framework\DbUtilities\bin\Debug\NPOI.dll
+E:\My Program\My Demo\Demo_DB_V1.18\Demo_Framework\DbUtilities\bin\Debug\ChnCharInfo.dll
+E:\My Program\My Demo\Demo_DB_V1.18\Demo_Framework\DbUtilities\bin\Debug\BaseSysInfo.pdb
+E:\My Program\My Demo\Demo_DB_V1.18\Demo_Framework\DbUtilities\bin\Debug\BusinessLogicUtilities.pdb
+E:\My Program\My Demo\Demo_DB_V1.18\Demo_Framework\DbUtilities\bin\Debug\Utilities.pdb
+E:\My Program\My Demo\Demo_DB_V1.18\Demo_Framework\DbUtilities\obj\Debug\DbUtilities.csprojResolveAssemblyReference.cache
+E:\My Program\My Demo\Demo_DB_V1.18\Demo_Framework\DbUtilities\obj\Debug\DbUtilities.dll
+E:\My Program\My Demo\Demo_DB_V1.18\Demo_Framework\DbUtilities\obj\Debug\DbUtilities.pdb
+E:\My Program\My Demo\Demo_DB_V1.19\Demo_Framework\DbUtilities\obj\Debug\DbUtilities.csprojResolveAssemblyReference.cache
+E:\My Program\My Demo\Demo_DB_V1.19\Demo_Framework\DbUtilities\obj\Debug\DbUtilities.dll
+E:\My Program\My Demo\Demo_DB_V1.19\Demo_Framework\DbUtilities\bin\Debug\DbUtilities.dll
+E:\My Program\My Demo\Demo_DB_V1.19\Demo_Framework\DbUtilities\bin\Debug\DbUtilities.pdb
+E:\My Program\My Demo\Demo_DB_V1.19\Demo_Framework\DbUtilities\bin\Debug\BaseSysInfo.dll
+E:\My Program\My Demo\Demo_DB_V1.19\Demo_Framework\DbUtilities\bin\Debug\BusinessLogicUtilities.dll
+E:\My Program\My Demo\Demo_DB_V1.19\Demo_Framework\DbUtilities\bin\Debug\Utilities.dll
+E:\My Program\My Demo\Demo_DB_V1.19\Demo_Framework\DbUtilities\bin\Debug\NPOI.dll
+E:\My Program\My Demo\Demo_DB_V1.19\Demo_Framework\DbUtilities\bin\Debug\ChnCharInfo.dll
+E:\My Program\My Demo\Demo_DB_V1.19\Demo_Framework\DbUtilities\bin\Debug\BaseSysInfo.pdb
+E:\My Program\My Demo\Demo_DB_V1.19\Demo_Framework\DbUtilities\bin\Debug\BusinessLogicUtilities.pdb
+E:\My Program\My Demo\Demo_DB_V1.19\Demo_Framework\DbUtilities\bin\Debug\Utilities.pdb
+E:\My Program\My Demo\Demo_DB_V1.19\Demo_Framework\DbUtilities\obj\Debug\DbUtilities.pdb
+E:\My Program\My Demo\Demo_DB_V1.20\Demo_Framework\DbUtilities\bin\Debug\DbUtilities.dll
+E:\My Program\My Demo\Demo_DB_V1.20\Demo_Framework\DbUtilities\bin\Debug\DbUtilities.pdb
+E:\My Program\My Demo\Demo_DB_V1.20\Demo_Framework\DbUtilities\obj\Debug\DbUtilities.dll
+E:\My Program\My Demo\Demo_DB_V1.20\Demo_Framework\DbUtilities\obj\Debug\DbUtilities.pdb
+D:\my file\My Demo\Demo_DB_V1.23\Demo_Framework\DbUtilities\bin\Debug\DbUtilities.dll
+D:\my file\My Demo\Demo_DB_V1.23\Demo_Framework\DbUtilities\bin\Debug\DbUtilities.pdb
+D:\my file\My Demo\Demo_DB_V1.23\Demo_Framework\DbUtilities\obj\Debug\DbUtilities.csprojResolveAssemblyReference.cache
+D:\my file\My Demo\Demo_DB_V1.23\Demo_Framework\DbUtilities\obj\Debug\DbUtilities.dll
+D:\my file\My Demo\Demo_DB_V1.23\Demo_Framework\DbUtilities\obj\Debug\DbUtilities.pdb
+D:\my file\My Demo\Demo_DB_V1.29\Demo_Framework\DbUtilities\bin\Debug\DbUtilities.dll
+D:\my file\My Demo\Demo_DB_V1.29\Demo_Framework\DbUtilities\bin\Debug\DbUtilities.pdb
+D:\my file\My Demo\Demo_DB_V1.29\Demo_Framework\DbUtilities\obj\Debug\DbUtilities.dll
+D:\my file\My Demo\Demo_DB_V1.29\Demo_Framework\DbUtilities\obj\Debug\DbUtilities.pdb
+D:\my file\My Demo\Demo_DB_V1.31\Demo_Framework\DbUtilities\bin\Debug\DbUtilities.dll
+D:\my file\My Demo\Demo_DB_V1.31\Demo_Framework\DbUtilities\bin\Debug\DbUtilities.pdb
+D:\my file\My Demo\Demo_DB_V1.31\Demo_Framework\DbUtilities\obj\Debug\DbUtilities.dll
+D:\my file\My Demo\Demo_DB_V1.31\Demo_Framework\DbUtilities\obj\Debug\DbUtilities.pdb

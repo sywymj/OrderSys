@@ -1,0 +1,141 @@
+﻿<#@ template language="c#" HostSpecific="True" #>
+<#@ output extension= ".cs" #>
+<#
+	TableHost host = (TableHost)(Host);
+	host.Fieldlist.Sort(CodeCommon.CompareByintOrder);
+	string clsName = host.GetModelClass(host.TableName)+"Entity";
+	if(host.TableName.IndexOf('_') > -1)
+	{
+		clsName = host.GetModelClass(host.TableName).Split('_')[1]+"Entity";
+	}
+#>
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Data;
+using JSNet.Utilities;
+using JSNet.Model;
+using JSNet.DbUtilities;
+namespace JSNet.Model
+{
+	<# if( host.TableDescription.Length > 0) {
+	#>//<#= host.TableDescription #>
+	<# } 
+	#>public class <#= clsName #>:BaseEntity,IEntity<<#= clsName #>>
+	{
+		/// <summary>
+		/// TableName
+		/// </summary>
+		public string TableName
+        {
+            get { return "[<#=host.TableName #>]"; }
+        }
+	
+		<# foreach (ColumnInfo c in host.Fieldlist)
+		{ 
+		if(c.IsPrimaryKey)
+		{ #>/// <summary>
+        /// 主键
+        /// </summary>
+		public override string PrimaryKey
+        {
+            get {  return "<#= c.ColumnName.ToString() #>"; }
+        }
+		<# break;
+		}
+		}#>
+		
+	
+		<# foreach (ColumnInfo c in host.Fieldlist)
+		{
+		if(c.IsIdentity)
+		{ #>/// <summary>
+        /// 主键自动递增
+        /// </summary>
+        public override bool IsIdenty
+        {
+        	get { return true; }
+        }
+		<# break;
+		}
+		}#>
+
+	
+   		#region 字段、属性
+      	<# foreach (ColumnInfo c in host.Fieldlist)
+		{ #>/// <summary>
+		/// <#= string.IsNullOrEmpty(c.Description) ? c.ColumnName : c.Description #>
+        /// </summary>		
+		private <#= CodeCommon.DbTypeToCS(c.TypeName) #><# if(CodeCommon.DbTypeToCS(c.TypeName)!="string"){#>?<#}#> _<#= c.ColumnName.ToString().ToLower() #>;
+        public <#= CodeCommon.DbTypeToCS(c.TypeName) #><# if(CodeCommon.DbTypeToCS(c.TypeName)!="string"){#>?<#}#> <#= c.ColumnName #>
+        {
+            get{ return _<#= c.ColumnName.ToString().ToLower()#>; }
+            set{ _<#= c.ColumnName.ToString().ToLower() #> = value; }
+        }        
+		<# } #>
+		#endregion
+
+		#region  数据库字段名称
+      	<# foreach (ColumnInfo c in host.Fieldlist)
+		{ #>/// <summary>
+		/// FiledName:<#= string.IsNullOrEmpty(c.Description) ? c.ColumnName : c.Description #>
+        /// </summary>		
+        public string Field<#= c.ColumnName #>
+        {
+            get{ return "<#= c.ColumnName.ToString()#>"; }
+        }        
+		<# } #>
+   		#endregion
+   		
+   		public <#= clsName #> GetFrom(System.Data.DataRow dataRow)
+        {
+	   		<# foreach (ColumnInfo c in host.Fieldlist)
+			{ 
+				string s =  CodeCommon.DbTypeToCS(c.TypeName).ToString();
+				string typeName = s.Substring(0,1).ToUpper()+s.Substring(1);
+				if(c.IsIdentity)
+				{ #>this.<#= c.ColumnName.ToString()#> = CommonUtil.ConvertTo<#=typeName #>(dataRow[this.PrimaryKey]);
+				<# continue;
+				}#>this.<#= c.ColumnName.ToString()#> = CommonUtil.ConvertTo<#= typeName #>(dataRow[this.Field<#= c.ColumnName.ToString()#>]);
+			<# } #>
+			return this;
+		}
+		
+		
+   		public <#= clsName #> GetFrom(System.Data.IDataReader dataReader)
+        {
+	   		<# foreach (ColumnInfo c in host.Fieldlist)
+			{ 
+				string s =  CodeCommon.DbTypeToCS(c.TypeName).ToString();
+				string typeName = s.Substring(0,1).ToUpper()+s.Substring(1);
+				if(c.IsIdentity)
+				{#>this.<#= c.ColumnName.ToString()#> = CommonUtil.ConvertTo<#=typeName #>(dataReader[this.PrimaryKey]);
+				<# continue;
+				}#>this.<#= c.ColumnName.ToString()#> = CommonUtil.ConvertTo<#=typeName #>(dataReader[this.Field<#= c.ColumnName.ToString()#>]);
+			<# } #>
+			return this;
+		}
+		
+		public void SetEntity(NonQueryBuilder sqlBuilder, <#= clsName #> entity)
+        {
+	   		<# foreach (ColumnInfo c in host.Fieldlist)
+			{ 
+				if(c.IsIdentity)
+				{
+					continue;
+				}#>sqlBuilder.SetValue(this.Field<#= c.ColumnName.ToString()#>, entity.<#= c.ColumnName.ToString()#>);
+			<# } #>
+		}
+		
+        public void GetFromExpand(System.Data.DataRow dataRow)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void GetFromExpand(System.Data.IDataReader dataReader)
+        {
+            throw new NotImplementedException();
+        }
+	}
+}

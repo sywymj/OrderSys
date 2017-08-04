@@ -1,0 +1,11 @@
+D:\develop\保障系统\Utilities\bin\Debug\Utilities.dll
+D:\develop\保障系统\Utilities\bin\Debug\Utilities.pdb
+D:\develop\保障系统\Utilities\bin\Debug\log4net.dll
+D:\develop\保障系统\Utilities\obj\Debug\Utilities.dll
+D:\develop\保障系统\Utilities\obj\Debug\Utilities.pdb
+E:\My Program\My Demo\V1.0.0\Utilities\bin\Debug\Utilities.dll
+E:\My Program\My Demo\V1.0.0\Utilities\bin\Debug\Utilities.pdb
+E:\My Program\My Demo\V1.0.0\Utilities\bin\Debug\log4net.dll
+E:\My Program\My Demo\V1.0.0\Utilities\obj\Debug\Utilities.dll
+E:\My Program\My Demo\V1.0.0\Utilities\obj\Debug\Utilities.pdb
+E:\My Program\My Demo\V1.0.0\Utilities\obj\Debug\7Utilities.csprojResolveAssemblyReference.cache

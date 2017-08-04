@@ -1,0 +1,30 @@
+﻿namespace JSNet.DbUtilities
+{
+    public enum DbTypeName
+    {
+        /// <summary>
+        /// 数据库类型：Oracle
+        /// </summary>
+        Oracle,
+        /// <summary>
+        /// 数据库类型：SqlServer
+        /// </summary>
+        SqlServer,
+        /// <summary>
+        /// 数据库类型：Access
+        /// </summary>
+        Access,
+        /// <summary>
+        /// 数据库类型：DB2
+        /// </summary>
+        DB2,
+        /// <summary>
+        /// 数据库类型：MySql
+        /// </summary>
+        MySql,
+        /// <summary>
+        /// 数据库类型：SQLite
+        /// </summary>
+        SQLite
+    }
+}
