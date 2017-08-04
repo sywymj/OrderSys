@@ -264,7 +264,7 @@ namespace JSNet.BaseSys
             #endregion
 
             #region 数据库相关的配置
-            BaseSystemInfo.CenterDbConnectionString = GetValue(xmlDocument, "TestDbHelperConnection");
+            BaseSystemInfo.TestDbHelperConnectionString = GetValue(xmlDocument, "TestDbHelperConnection");
             #endregion
             
         }

@@ -4,7 +4,7 @@ using System.Xml.Serialization;
 namespace JSNet.BaseSys
 {
     [Serializable]
-    public abstract class JSResponse
+    public class JSResponse
     {
         /// <summary>
         /// 错误码

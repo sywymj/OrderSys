@@ -19,6 +19,9 @@ namespace JSNet.Model
             get { return "[O_OrderFlow]"; }
         }
 
+        /// <summary>
+        /// 主键
+        /// </summary>
         public override string PrimaryKey
         {
             get { return "ID"; }
@@ -104,49 +107,49 @@ namespace JSNet.Model
         /// <summary>
         /// FiledName:ID
         /// </summary>		
-        public string FieldID
+        public static string FieldID
         {
             get { return "ID"; }
         }
         /// <summary>
         /// FiledName:OrderID
         /// </summary>		
-        public string FieldOrderID
+        public static string FieldOrderID
         {
             get { return "OrderID"; }
         }
         /// <summary>
         /// FiledName:OperatorID
         /// </summary>		
-        public string FieldOperatorID
+        public static string FieldOperatorID
         {
             get { return "OperatorID"; }
         }
         /// <summary>
         /// FiledName:NextOperatorID
         /// </summary>		
-        public string FieldNextOperatorID
+        public static string FieldNextOperatorID
         {
             get { return "NextOperatorID"; }
         }
         /// <summary>
         /// FiledName:Operation
         /// </summary>		
-        public string FieldOperation
+        public static string FieldOperation
         {
             get { return "Operation"; }
         }
         /// <summary>
         /// FiledName:OperateTime
         /// </summary>		
-        public string FieldOperateTime
+        public static string FieldOperateTime
         {
             get { return "OperateTime"; }
         }
         /// <summary>
         /// FiledName:Remark
         /// </summary>		
-        public string FieldRemark
+        public static string FieldRemark
         {
             get { return "Remark"; }
         }
@@ -155,12 +158,12 @@ namespace JSNet.Model
         public OrderFlowEntity GetFrom(System.Data.DataRow dataRow)
         {
             this.ID = CommonUtil.ConvertToInt(dataRow[this.PrimaryKey]);
-            this.OrderID = CommonUtil.ConvertToGuid(dataRow[this.FieldOrderID]);
-            this.OperatorID = CommonUtil.ConvertToInt(dataRow[this.FieldOperatorID]);
-            this.NextOperatorID = CommonUtil.ConvertToInt(dataRow[this.FieldNextOperatorID]);
-            this.Operation = CommonUtil.ConvertToInt(dataRow[this.FieldOperation]);
-            this.OperateTime = CommonUtil.ConvertToDateTime(dataRow[this.FieldOperateTime]);
-            this.Remark = CommonUtil.ConvertToString(dataRow[this.FieldRemark]);
+            this.OrderID = CommonUtil.ConvertToGuid(dataRow[FieldOrderID]);
+            this.OperatorID = CommonUtil.ConvertToInt(dataRow[FieldOperatorID]);
+            this.NextOperatorID = CommonUtil.ConvertToInt(dataRow[FieldNextOperatorID]);
+            this.Operation = CommonUtil.ConvertToInt(dataRow[FieldOperation]);
+            this.OperateTime = CommonUtil.ConvertToDateTime(dataRow[FieldOperateTime]);
+            this.Remark = CommonUtil.ConvertToString(dataRow[FieldRemark]);
             return this;
         }
 
@@ -168,23 +171,23 @@ namespace JSNet.Model
         public OrderFlowEntity GetFrom(System.Data.IDataReader dataReader)
         {
             this.ID = CommonUtil.ConvertToInt(dataReader[this.PrimaryKey]);
-            this.OrderID = CommonUtil.ConvertToGuid(dataReader[this.FieldOrderID]);
-            this.OperatorID = CommonUtil.ConvertToInt(dataReader[this.FieldOperatorID]);
-            this.NextOperatorID = CommonUtil.ConvertToInt(dataReader[this.FieldNextOperatorID]);
-            this.Operation = CommonUtil.ConvertToInt(dataReader[this.FieldOperation]);
-            this.OperateTime = CommonUtil.ConvertToDateTime(dataReader[this.FieldOperateTime]);
-            this.Remark = CommonUtil.ConvertToString(dataReader[this.FieldRemark]);
+            this.OrderID = CommonUtil.ConvertToGuid(dataReader[FieldOrderID]);
+            this.OperatorID = CommonUtil.ConvertToInt(dataReader[FieldOperatorID]);
+            this.NextOperatorID = CommonUtil.ConvertToInt(dataReader[FieldNextOperatorID]);
+            this.Operation = CommonUtil.ConvertToInt(dataReader[FieldOperation]);
+            this.OperateTime = CommonUtil.ConvertToDateTime(dataReader[FieldOperateTime]);
+            this.Remark = CommonUtil.ConvertToString(dataReader[FieldRemark]);
             return this;
         }
 
         public void SetEntity(NonQueryBuilder sqlBuilder, OrderFlowEntity entity)
         {
-            sqlBuilder.SetValue(this.FieldOrderID, entity.OrderID);
-            sqlBuilder.SetValue(this.FieldOperatorID, entity.OperatorID);
-            sqlBuilder.SetValue(this.FieldNextOperatorID, entity.NextOperatorID);
-            sqlBuilder.SetValue(this.FieldOperation, entity.Operation);
-            sqlBuilder.SetValue(this.FieldOperateTime, entity.OperateTime);
-            sqlBuilder.SetValue(this.FieldRemark, entity.Remark);
+            sqlBuilder.SetValue(FieldOrderID, entity.OrderID);
+            sqlBuilder.SetValue(FieldOperatorID, entity.OperatorID);
+            sqlBuilder.SetValue(FieldNextOperatorID, entity.NextOperatorID);
+            sqlBuilder.SetValue(FieldOperation, entity.Operation);
+            sqlBuilder.SetValue(FieldOperateTime, entity.OperateTime);
+            sqlBuilder.SetValue(FieldRemark, entity.Remark);
         }
 
         public void GetFromExpand(System.Data.DataRow dataRow)

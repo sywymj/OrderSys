@@ -19,6 +19,9 @@ namespace JSNet.Model
             get { return "[P_Role]"; }
         }
 
+        /// <summary>
+        /// 主键
+        /// </summary>
         public override string PrimaryKey
         {
             get { return "ID"; }
@@ -86,35 +89,35 @@ namespace JSNet.Model
         /// <summary>
         /// FiledName:ID
         /// </summary>		
-        public string FieldID
+        public static string FieldID
         {
             get { return "ID"; }
         }
         /// <summary>
         /// FiledName:ParentID
         /// </summary>		
-        public string FieldParentID
+        public static string FieldParentID
         {
             get { return "ParentID"; }
         }
         /// <summary>
         /// FiledName:OrganizeID
         /// </summary>		
-        public string FieldOrganizeID
+        public static string FieldOrganizeID
         {
             get { return "OrganizeID"; }
         }
         /// <summary>
         /// FiledName:Title
         /// </summary>		
-        public string FieldTitle
+        public static string FieldTitle
         {
             get { return "Title"; }
         }
         /// <summary>
         /// FiledName:Remark
         /// </summary>		
-        public string FieldRemark
+        public static string FieldRemark
         {
             get { return "Remark"; }
         }
@@ -123,10 +126,10 @@ namespace JSNet.Model
         public RoleEntity GetFrom(System.Data.DataRow dataRow)
         {
             this.ID = CommonUtil.ConvertToInt(dataRow[this.PrimaryKey]);
-            this.ParentID = CommonUtil.ConvertToInt(dataRow[this.FieldParentID]);
-            this.OrganizeID = CommonUtil.ConvertToInt(dataRow[this.FieldOrganizeID]);
-            this.Title = CommonUtil.ConvertToString(dataRow[this.FieldTitle]);
-            this.Remark = CommonUtil.ConvertToString(dataRow[this.FieldRemark]);
+            this.ParentID = CommonUtil.ConvertToInt(dataRow[FieldParentID]);
+            this.OrganizeID = CommonUtil.ConvertToInt(dataRow[FieldOrganizeID]);
+            this.Title = CommonUtil.ConvertToString(dataRow[FieldTitle]);
+            this.Remark = CommonUtil.ConvertToString(dataRow[FieldRemark]);
             return this;
         }
 
@@ -134,19 +137,19 @@ namespace JSNet.Model
         public RoleEntity GetFrom(System.Data.IDataReader dataReader)
         {
             this.ID = CommonUtil.ConvertToInt(dataReader[this.PrimaryKey]);
-            this.ParentID = CommonUtil.ConvertToInt(dataReader[this.FieldParentID]);
-            this.OrganizeID = CommonUtil.ConvertToInt(dataReader[this.FieldOrganizeID]);
-            this.Title = CommonUtil.ConvertToString(dataReader[this.FieldTitle]);
-            this.Remark = CommonUtil.ConvertToString(dataReader[this.FieldRemark]);
+            this.ParentID = CommonUtil.ConvertToInt(dataReader[FieldParentID]);
+            this.OrganizeID = CommonUtil.ConvertToInt(dataReader[FieldOrganizeID]);
+            this.Title = CommonUtil.ConvertToString(dataReader[FieldTitle]);
+            this.Remark = CommonUtil.ConvertToString(dataReader[FieldRemark]);
             return this;
         }
 
         public void SetEntity(NonQueryBuilder sqlBuilder, RoleEntity entity)
         {
-            sqlBuilder.SetValue(this.FieldParentID, entity.ParentID);
-            sqlBuilder.SetValue(this.FieldOrganizeID, entity.OrganizeID);
-            sqlBuilder.SetValue(this.FieldTitle, entity.Title);
-            sqlBuilder.SetValue(this.FieldRemark, entity.Remark);
+            sqlBuilder.SetValue(FieldParentID, entity.ParentID);
+            sqlBuilder.SetValue(FieldOrganizeID, entity.OrganizeID);
+            sqlBuilder.SetValue(FieldTitle, entity.Title);
+            sqlBuilder.SetValue(FieldRemark, entity.Remark);
         }
 
         public void GetFromExpand(System.Data.DataRow dataRow)

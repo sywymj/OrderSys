@@ -7,7 +7,7 @@ using System.Text;
 
 namespace JSNet.BaseSys
 {
-    public sealed partial class Validate
+    public sealed partial class JSValidator
     {
         /// <summary>
         /// 验证参数字符串是否合法

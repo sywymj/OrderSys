@@ -12,9 +12,15 @@ namespace JSNet.BaseSys
     {
         public JSDictionary() { }
 
-        public JSDictionary(IDictionary<string, string> dictionary)
-            : base(dictionary)
-        { }
+        public JSDictionary(IDictionary<string, object> dictionary)
+        {
+            this.AddAll(dictionary);
+        }
+
+        public JSDictionary(string key,object value)
+        {
+            this.Add(key, value);
+        }
 
         /// <summary>
         /// 添加一个新的键值对。空键或者空值的键值对将会被忽略。
@@ -70,14 +76,14 @@ namespace JSNet.BaseSys
             }
         }
 
-        public void AddAll(IDictionary<string, string> dict)
+        public void AddAll(IDictionary<string, object> dict)
         {
             if (dict != null && dict.Count > 0)
             {
-                IEnumerator<KeyValuePair<string, string>> kvps = dict.GetEnumerator();
+                IEnumerator<KeyValuePair<string, object>> kvps = dict.GetEnumerator();
                 while (kvps.MoveNext())
                 {
-                    KeyValuePair<string, string> kvp = kvps.Current;
+                    KeyValuePair<string, object> kvp = kvps.Current;
                     Add(kvp.Key, kvp.Value);
                 }
             }

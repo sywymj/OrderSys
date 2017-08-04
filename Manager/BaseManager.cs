@@ -20,7 +20,7 @@ namespace JSNet.Manager
         /// <summary>
         /// 当前操作的数据库连接字符串，默认使用 CenterDbConnection
         /// </summary>
-        protected string DbConnection = BaseSystemInfo.CenterDbConnection;
+        protected string DbConnection = BaseSystemInfo.CenterDbConnectionString;
 
         /// <summary>
         /// 当前操作的数据库类型，默认使用 CenterDbType
@@ -192,7 +192,7 @@ namespace JSNet.Manager
             return dataTable;
         }
 
-        public virtual DataTable GetSingle(object idValue, string idField , WhereStatement whereStatement = null)
+        public virtual DataRow GetSingle(object idValue, string idField , WhereStatement whereStatement = null)
         {
             if(idValue==null)
             {
@@ -223,7 +223,15 @@ namespace JSNet.Manager
             DataTable dataTable = new DataTable(this.CurrentTableName);
             dataTable = this.DbHelper.Fill(sql, parameters);
 
-            return dataTable;
+            if (dataTable.Rows.Count > 1)
+            {
+                throw new Exception("there are more than 1 items");
+            }
+            else if (dataTable.Rows.Count < 1)
+            {
+                return null;
+            }
+            return dataTable.Rows[0];
         }
 
     }

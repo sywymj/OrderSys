@@ -8,147 +8,150 @@ using JSNet.Model;
 using JSNet.DbUtilities;
 namespace JSNet.Model
 {
-	//O_OrderHandler
-	public class OrderHandlerEntity:BaseEntity,IEntity<OrderHandlerEntity>
-	{
-		/// <summary>
-		/// TableName
-		/// </summary>
-		public string TableName
+    //O_OrderHandler
+    public class OrderHandlerEntity : BaseEntity, IEntity<OrderHandlerEntity>
+    {
+        /// <summary>
+        /// TableName
+        /// </summary>
+        public string TableName
         {
             get { return "[O_OrderHandler]"; }
         }
-	
-		public override string PrimaryKey
+
+        /// <summary>
+        /// 主键
+        /// </summary>
+        public override string PrimaryKey
         {
-            get {  return "ID"; }
+            get { return "ID"; }
         }
-	
-	
-					/// <summary>
-	        /// 主键自动递增
-	        /// </summary>
-	        public override bool IsIdenty
-	        {
-	        	get { return true; }
-	        }
-			
-	
-   		#region 字段、属性
-      	/// <summary>
-		/// ID
+
+
+        /// <summary>
+        /// 主键自动递增
+        /// </summary>
+        public override bool IsIdenty
+        {
+            get { return true; }
+        }
+
+
+        #region 字段、属性
+        /// <summary>
+        /// ID
         /// </summary>		
-		private int? _id;
+        private int? _id;
         public int? ID
         {
-            get{ return _id; }
-            set{ _id = value; }
-        }        
-		/// <summary>
-		/// OrderID
+            get { return _id; }
+            set { _id = value; }
+        }
+        /// <summary>
+        /// OrderID
         /// </summary>		
-		private Guid? _orderid;
+        private Guid? _orderid;
         public Guid? OrderID
         {
-            get{ return _orderid; }
-            set{ _orderid = value; }
-        }        
-		/// <summary>
-		/// HandlerID
+            get { return _orderid; }
+            set { _orderid = value; }
+        }
+        /// <summary>
+        /// HandlerID
         /// </summary>		
-		private int? _handlerid;
+        private int? _handlerid;
         public int? HandlerID
         {
-            get{ return _handlerid; }
-            set{ _handlerid = value; }
-        }        
-		/// <summary>
-		/// Workload
+            get { return _handlerid; }
+            set { _handlerid = value; }
+        }
+        /// <summary>
+        /// Workload
         /// </summary>		
-		private int? _workload;
+        private int? _workload;
         public int? Workload
         {
-            get{ return _workload; }
-            set{ _workload = value; }
-        }        
-		/// <summary>
-		/// IsLeader
+            get { return _workload; }
+            set { _workload = value; }
+        }
+        /// <summary>
+        /// IsLeader
         /// </summary>		
-		private int? _isleader;
+        private int? _isleader;
         public int? IsLeader
         {
-            get{ return _isleader; }
-            set{ _isleader = value; }
-        }        
-				#endregion
+            get { return _isleader; }
+            set { _isleader = value; }
+        }
+        #endregion
 
-		#region  数据库字段名称
-      	/// <summary>
-		/// FiledName:ID
+        #region  数据库字段名称
+        /// <summary>
+        /// FiledName:ID
         /// </summary>		
-        public string FieldID
+        public static string FieldID
         {
-            get{ return "ID"; }
-        }        
-		/// <summary>
-		/// FiledName:OrderID
+            get { return "ID"; }
+        }
+        /// <summary>
+        /// FiledName:OrderID
         /// </summary>		
-        public string FieldOrderID
+        public static string FieldOrderID
         {
-            get{ return "OrderID"; }
-        }        
-		/// <summary>
-		/// FiledName:HandlerID
+            get { return "OrderID"; }
+        }
+        /// <summary>
+        /// FiledName:HandlerID
         /// </summary>		
-        public string FieldHandlerID
+        public static string FieldHandlerID
         {
-            get{ return "HandlerID"; }
-        }        
-		/// <summary>
-		/// FiledName:Workload
+            get { return "HandlerID"; }
+        }
+        /// <summary>
+        /// FiledName:Workload
         /// </summary>		
-        public string FieldWorkload
+        public static string FieldWorkload
         {
-            get{ return "Workload"; }
-        }        
-		/// <summary>
-		/// FiledName:IsLeader
+            get { return "Workload"; }
+        }
+        /// <summary>
+        /// FiledName:IsLeader
         /// </summary>		
-        public string FieldIsLeader
+        public static string FieldIsLeader
         {
-            get{ return "IsLeader"; }
-        }        
-		   		#endregion
-   		
-   		public OrderHandlerEntity GetFrom(System.Data.DataRow dataRow)
+            get { return "IsLeader"; }
+        }
+        #endregion
+
+        public OrderHandlerEntity GetFrom(System.Data.DataRow dataRow)
         {
-	   		this.ID = CommonUtil.ConvertToInt(dataRow[this.PrimaryKey]);
-				this.OrderID = CommonUtil.ConvertToGuid(dataRow[this.FieldOrderID]);
-			this.HandlerID = CommonUtil.ConvertToInt(dataRow[this.FieldHandlerID]);
-			this.Workload = CommonUtil.ConvertToInt(dataRow[this.FieldWorkload]);
-			this.IsLeader = CommonUtil.ConvertToInt(dataRow[this.FieldIsLeader]);
-						return this;
-		}
-		
-		
-   		public OrderHandlerEntity GetFrom(System.Data.IDataReader dataReader)
+            this.ID = CommonUtil.ConvertToInt(dataRow[this.PrimaryKey]);
+            this.OrderID = CommonUtil.ConvertToGuid(dataRow[FieldOrderID]);
+            this.HandlerID = CommonUtil.ConvertToInt(dataRow[FieldHandlerID]);
+            this.Workload = CommonUtil.ConvertToInt(dataRow[FieldWorkload]);
+            this.IsLeader = CommonUtil.ConvertToInt(dataRow[FieldIsLeader]);
+            return this;
+        }
+
+
+        public OrderHandlerEntity GetFrom(System.Data.IDataReader dataReader)
         {
-	   		this.ID = CommonUtil.ConvertToInt(dataReader[this.PrimaryKey]);
-				this.OrderID = CommonUtil.ConvertToGuid(dataReader[this.FieldOrderID]);
-			this.HandlerID = CommonUtil.ConvertToInt(dataReader[this.FieldHandlerID]);
-			this.Workload = CommonUtil.ConvertToInt(dataReader[this.FieldWorkload]);
-			this.IsLeader = CommonUtil.ConvertToInt(dataReader[this.FieldIsLeader]);
-						return this;
-		}
-		
-		public void SetEntity(NonQueryBuilder sqlBuilder, OrderHandlerEntity entity)
+            this.ID = CommonUtil.ConvertToInt(dataReader[this.PrimaryKey]);
+            this.OrderID = CommonUtil.ConvertToGuid(dataReader[FieldOrderID]);
+            this.HandlerID = CommonUtil.ConvertToInt(dataReader[FieldHandlerID]);
+            this.Workload = CommonUtil.ConvertToInt(dataReader[FieldWorkload]);
+            this.IsLeader = CommonUtil.ConvertToInt(dataReader[FieldIsLeader]);
+            return this;
+        }
+
+        public void SetEntity(NonQueryBuilder sqlBuilder, OrderHandlerEntity entity)
         {
-	   		sqlBuilder.SetValue(this.FieldOrderID, entity.OrderID);
-			sqlBuilder.SetValue(this.FieldHandlerID, entity.HandlerID);
-			sqlBuilder.SetValue(this.FieldWorkload, entity.Workload);
-			sqlBuilder.SetValue(this.FieldIsLeader, entity.IsLeader);
-					}
-		
+            sqlBuilder.SetValue(FieldOrderID, entity.OrderID);
+            sqlBuilder.SetValue(FieldHandlerID, entity.HandlerID);
+            sqlBuilder.SetValue(FieldWorkload, entity.Workload);
+            sqlBuilder.SetValue(FieldIsLeader, entity.IsLeader);
+        }
+
         public void GetFromExpand(System.Data.DataRow dataRow)
         {
             throw new NotImplementedException();
@@ -158,5 +161,5 @@ namespace JSNet.Model
         {
             throw new NotImplementedException();
         }
-	}
+    }
 }

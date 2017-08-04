@@ -81,7 +81,7 @@ namespace JSNet.Model
 		{ #>/// <summary>
 		/// FiledName:<#= string.IsNullOrEmpty(c.Description) ? c.ColumnName : c.Description #>
         /// </summary>		
-        public string Field<#= c.ColumnName #>
+        public static string Field<#= c.ColumnName #>
         {
             get{ return "<#= c.ColumnName.ToString()#>"; }
         }        
@@ -97,7 +97,7 @@ namespace JSNet.Model
 				if(c.IsIdentity)
 				{ #>this.<#= c.ColumnName.ToString()#> = CommonUtil.ConvertTo<#=typeName #>(dataRow[this.PrimaryKey]);
 				<# continue;
-				}#>this.<#= c.ColumnName.ToString()#> = CommonUtil.ConvertTo<#= typeName #>(dataRow[this.Field<#= c.ColumnName.ToString()#>]);
+				}#>this.<#= c.ColumnName.ToString()#> = CommonUtil.ConvertTo<#= typeName #>(dataRow[Field<#= c.ColumnName.ToString()#>]);
 			<# } #>
 			return this;
 		}
@@ -112,7 +112,7 @@ namespace JSNet.Model
 				if(c.IsIdentity)
 				{#>this.<#= c.ColumnName.ToString()#> = CommonUtil.ConvertTo<#=typeName #>(dataReader[this.PrimaryKey]);
 				<# continue;
-				}#>this.<#= c.ColumnName.ToString()#> = CommonUtil.ConvertTo<#=typeName #>(dataReader[this.Field<#= c.ColumnName.ToString()#>]);
+				}#>this.<#= c.ColumnName.ToString()#> = CommonUtil.ConvertTo<#=typeName #>(dataReader[Field<#= c.ColumnName.ToString()#>]);
 			<# } #>
 			return this;
 		}
@@ -124,7 +124,7 @@ namespace JSNet.Model
 				if(c.IsIdentity)
 				{
 					continue;
-				}#>sqlBuilder.SetValue(this.Field<#= c.ColumnName.ToString()#>, entity.<#= c.ColumnName.ToString()#>);
+				}#>sqlBuilder.SetValue(Field<#= c.ColumnName.ToString()#>, entity.<#= c.ColumnName.ToString()#>);
 			<# } #>
 		}
 		

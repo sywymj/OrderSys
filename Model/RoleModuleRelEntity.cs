@@ -8,109 +8,112 @@ using JSNet.Model;
 using JSNet.DbUtilities;
 namespace JSNet.Model
 {
-	//P_RoleModule_Rel
-	public class RoleModuleEntity:BaseEntity,IEntity<RoleModuleEntity>
-	{
-		/// <summary>
-		/// TableName
-		/// </summary>
-		public string TableName
+    //P_RoleModule_Rel
+    public class RoleModuleEntity : BaseEntity, IEntity<RoleModuleEntity>
+    {
+        /// <summary>
+        /// TableName
+        /// </summary>
+        public string TableName
         {
             get { return "[P_RoleModule_Rel]"; }
         }
-	
-		public override string PrimaryKey
+
+        /// <summary>
+        /// 主键
+        /// </summary>
+        public override string PrimaryKey
         {
-            get {  return "ID"; }
+            get { return "ID"; }
         }
-	
-	
-					/// <summary>
-	        /// 主键自动递增
-	        /// </summary>
-	        public override bool IsIdenty
-	        {
-	        	get { return true; }
-	        }
-			
-	
-   		#region 字段、属性
-      	/// <summary>
-		/// ID
+
+
+        /// <summary>
+        /// 主键自动递增
+        /// </summary>
+        public override bool IsIdenty
+        {
+            get { return true; }
+        }
+
+
+        #region 字段、属性
+        /// <summary>
+        /// ID
         /// </summary>		
-		private int? _id;
+        private int? _id;
         public int? ID
         {
-            get{ return _id; }
-            set{ _id = value; }
-        }        
-		/// <summary>
-		/// RoleID
+            get { return _id; }
+            set { _id = value; }
+        }
+        /// <summary>
+        /// RoleID
         /// </summary>		
-		private int? _roleid;
+        private int? _roleid;
         public int? RoleID
         {
-            get{ return _roleid; }
-            set{ _roleid = value; }
-        }        
-		/// <summary>
-		/// ModuleID
+            get { return _roleid; }
+            set { _roleid = value; }
+        }
+        /// <summary>
+        /// ModuleID
         /// </summary>		
-		private int? _moduleid;
+        private int? _moduleid;
         public int? ModuleID
         {
-            get{ return _moduleid; }
-            set{ _moduleid = value; }
-        }        
-				#endregion
+            get { return _moduleid; }
+            set { _moduleid = value; }
+        }
+        #endregion
 
-		#region  数据库字段名称
-      	/// <summary>
-		/// FiledName:ID
+        #region  数据库字段名称
+        /// <summary>
+        /// FiledName:ID
         /// </summary>		
-        public string FieldID
+        public static string FieldID
         {
-            get{ return "ID"; }
-        }        
-		/// <summary>
-		/// FiledName:RoleID
+            get { return "ID"; }
+        }
+        /// <summary>
+        /// FiledName:RoleID
         /// </summary>		
-        public string FieldRoleID
+        public static string FieldRoleID
         {
-            get{ return "RoleID"; }
-        }        
-		/// <summary>
-		/// FiledName:ModuleID
+            get { return "RoleID"; }
+        }
+        /// <summary>
+        /// FiledName:ModuleID
         /// </summary>		
-        public string FieldModuleID
+        public static string FieldModuleID
         {
-            get{ return "ModuleID"; }
-        }        
-		   		#endregion
-   		
-   		public RoleModuleEntity GetFrom(System.Data.DataRow dataRow)
+            get { return "ModuleID"; }
+        }
+        #endregion
+
+        public RoleModuleEntity GetFrom(System.Data.DataRow dataRow)
         {
-	   		this.ID = CommonUtil.ConvertToInt(dataRow[this.PrimaryKey]);
-				this.RoleID = CommonUtil.ConvertToInt(dataRow[this.FieldRoleID]);
-			this.ModuleID = CommonUtil.ConvertToInt(dataRow[this.FieldModuleID]);
-						return this;
-		}
-		
-		
-   		public RoleModuleEntity GetFrom(System.Data.IDataReader dataReader)
+            this.ID = CommonUtil.ConvertToInt(dataRow[this.PrimaryKey]);
+            this.RoleID = CommonUtil.ConvertToInt(dataRow[FieldRoleID]);
+            this.ModuleID = CommonUtil.ConvertToInt(dataRow[FieldModuleID]);
+            return this;
+        }
+
+
+        public RoleModuleEntity GetFrom(System.Data.IDataReader dataReader)
         {
-	   		this.ID = CommonUtil.ConvertToInt(dataReader[this.PrimaryKey]);
-				this.RoleID = CommonUtil.ConvertToInt(dataReader[this.FieldRoleID]);
-			this.ModuleID = CommonUtil.ConvertToInt(dataReader[this.FieldModuleID]);
-						return this;
-		}
-		
-		public void SetEntity(NonQueryBuilder sqlBuilder, RoleModuleEntity entity)
+            this.ID = CommonUtil.ConvertToInt(dataReader[this.PrimaryKey]);
+            this.RoleID = CommonUtil.ConvertToInt(dataReader[FieldRoleID]);
+            this.ModuleID = CommonUtil.ConvertToInt(dataReader[FieldModuleID]);
+            return this;
+        }
+
+        public void SetEntity(NonQueryBuilder sqlBuilder, RoleModuleEntity entity)
         {
-	   		sqlBuilder.SetValue(this.FieldRoleID, entity.RoleID);
-			sqlBuilder.SetValue(this.FieldModuleID, entity.ModuleID);
-					}
-		
+            sqlBuilder.SetValue(FieldRoleID, entity.RoleID);
+            sqlBuilder.SetValue(FieldModuleID, entity.ModuleID);
+        }
+
         public void GetFromExpand(System.Data.DataRow dataRow)
         {
             throw new NotImplementedException();
@@ -120,5 +123,5 @@ namespace JSNet.Model
         {
             throw new NotImplementedException();
         }
-	}
+    }
 }

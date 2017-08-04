@@ -8,7 +8,7 @@ using JSNet.Model;
 using JSNet.DbUtilities;
 namespace JSNet.Model
 {
-	//O_OrderHandleDetail
+    //O_OrderHandleDetail
     public class OrderHandleDetailEntity : BaseEntity, IEntity<OrderHandleDetailEntity>
     {
         /// <summary>
@@ -19,6 +19,9 @@ namespace JSNet.Model
             get { return "[O_OrderHandleDetail]"; }
         }
 
+        /// <summary>
+        /// 主键
+        /// </summary>
         public override string PrimaryKey
         {
             get { return "ID"; }
@@ -113,56 +116,56 @@ namespace JSNet.Model
         /// <summary>
         /// FiledName:ID
         /// </summary>		
-        public string FieldID
+        public static string FieldID
         {
             get { return "ID"; }
         }
         /// <summary>
         /// FiledName:OrderID
         /// </summary>		
-        public string FieldOrderID
+        public static string FieldOrderID
         {
             get { return "OrderID"; }
         }
         /// <summary>
         /// FiledName:HandlerID
         /// </summary>		
-        public string FieldHandlerID
+        public static string FieldHandlerID
         {
             get { return "HandlerID"; }
         }
         /// <summary>
         /// FiledName:HandleType
         /// </summary>		
-        public string FieldHandleType
+        public static string FieldHandleType
         {
             get { return "HandleType"; }
         }
         /// <summary>
         /// FiledName:HandleDetail
         /// </summary>		
-        public string FieldHandleDetail
+        public static string FieldHandleDetail
         {
             get { return "HandleDetail"; }
         }
         /// <summary>
         /// FiledName:Progress
         /// </summary>		
-        public string FieldProgress
+        public static string FieldProgress
         {
             get { return "Progress"; }
         }
         /// <summary>
         /// FiledName:HandleTime
         /// </summary>		
-        public string FieldHandleTime
+        public static string FieldHandleTime
         {
             get { return "HandleTime"; }
         }
         /// <summary>
         /// FiledName:Remark
         /// </summary>		
-        public string FieldRemark
+        public static string FieldRemark
         {
             get { return "Remark"; }
         }
@@ -171,13 +174,13 @@ namespace JSNet.Model
         public OrderHandleDetailEntity GetFrom(System.Data.DataRow dataRow)
         {
             this.ID = CommonUtil.ConvertToInt(dataRow[this.PrimaryKey]);
-            this.OrderID = CommonUtil.ConvertToGuid(dataRow[this.FieldOrderID]);
-            this.HandlerID = CommonUtil.ConvertToInt(dataRow[this.FieldHandlerID]);
-            this.HandleType = CommonUtil.ConvertToInt(dataRow[this.FieldHandleType]);
-            this.HandleDetail = CommonUtil.ConvertToString(dataRow[this.FieldHandleDetail]);
-            this.Progress = CommonUtil.ConvertToInt(dataRow[this.FieldProgress]);
-            this.HandleTime = CommonUtil.ConvertToDateTime(dataRow[this.FieldHandleTime]);
-            this.Remark = CommonUtil.ConvertToString(dataRow[this.FieldRemark]);
+            this.OrderID = CommonUtil.ConvertToGuid(dataRow[FieldOrderID]);
+            this.HandlerID = CommonUtil.ConvertToInt(dataRow[FieldHandlerID]);
+            this.HandleType = CommonUtil.ConvertToInt(dataRow[FieldHandleType]);
+            this.HandleDetail = CommonUtil.ConvertToString(dataRow[FieldHandleDetail]);
+            this.Progress = CommonUtil.ConvertToInt(dataRow[FieldProgress]);
+            this.HandleTime = CommonUtil.ConvertToDateTime(dataRow[FieldHandleTime]);
+            this.Remark = CommonUtil.ConvertToString(dataRow[FieldRemark]);
             return this;
         }
 
@@ -185,25 +188,25 @@ namespace JSNet.Model
         public OrderHandleDetailEntity GetFrom(System.Data.IDataReader dataReader)
         {
             this.ID = CommonUtil.ConvertToInt(dataReader[this.PrimaryKey]);
-            this.OrderID = CommonUtil.ConvertToGuid(dataReader[this.FieldOrderID]);
-            this.HandlerID = CommonUtil.ConvertToInt(dataReader[this.FieldHandlerID]);
-            this.HandleType = CommonUtil.ConvertToInt(dataReader[this.FieldHandleType]);
-            this.HandleDetail = CommonUtil.ConvertToString(dataReader[this.FieldHandleDetail]);
-            this.Progress = CommonUtil.ConvertToInt(dataReader[this.FieldProgress]);
-            this.HandleTime = CommonUtil.ConvertToDateTime(dataReader[this.FieldHandleTime]);
-            this.Remark = CommonUtil.ConvertToString(dataReader[this.FieldRemark]);
+            this.OrderID = CommonUtil.ConvertToGuid(dataReader[FieldOrderID]);
+            this.HandlerID = CommonUtil.ConvertToInt(dataReader[FieldHandlerID]);
+            this.HandleType = CommonUtil.ConvertToInt(dataReader[FieldHandleType]);
+            this.HandleDetail = CommonUtil.ConvertToString(dataReader[FieldHandleDetail]);
+            this.Progress = CommonUtil.ConvertToInt(dataReader[FieldProgress]);
+            this.HandleTime = CommonUtil.ConvertToDateTime(dataReader[FieldHandleTime]);
+            this.Remark = CommonUtil.ConvertToString(dataReader[FieldRemark]);
             return this;
         }
 
         public void SetEntity(NonQueryBuilder sqlBuilder, OrderHandleDetailEntity entity)
         {
-            sqlBuilder.SetValue(this.FieldOrderID, entity.OrderID);
-            sqlBuilder.SetValue(this.FieldHandlerID, entity.HandlerID);
-            sqlBuilder.SetValue(this.FieldHandleType, entity.HandleType);
-            sqlBuilder.SetValue(this.FieldHandleDetail, entity.HandleDetail);
-            sqlBuilder.SetValue(this.FieldProgress, entity.Progress);
-            sqlBuilder.SetValue(this.FieldHandleTime, entity.HandleTime);
-            sqlBuilder.SetValue(this.FieldRemark, entity.Remark);
+            sqlBuilder.SetValue(FieldOrderID, entity.OrderID);
+            sqlBuilder.SetValue(FieldHandlerID, entity.HandlerID);
+            sqlBuilder.SetValue(FieldHandleType, entity.HandleType);
+            sqlBuilder.SetValue(FieldHandleDetail, entity.HandleDetail);
+            sqlBuilder.SetValue(FieldProgress, entity.Progress);
+            sqlBuilder.SetValue(FieldHandleTime, entity.HandleTime);
+            sqlBuilder.SetValue(FieldRemark, entity.Remark);
         }
 
         public void GetFromExpand(System.Data.DataRow dataRow)

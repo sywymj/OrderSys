@@ -48,14 +48,14 @@ namespace JSNet.Model
         /// <summary>
         /// FiledName:Sn
         /// </summary>		
-        public string FieldSn
+        public static string FieldSn
         {
             get { return "Sn"; }
         }
         /// <summary>
         /// FiledName:SnDt
         /// </summary>		
-        public string FieldSnDt
+        public static string FieldSnDt
         {
             get { return "SnDt"; }
         }
@@ -63,23 +63,23 @@ namespace JSNet.Model
 
         public TabSNEntity GetFrom(System.Data.DataRow dataRow)
         {
-            this.Sn = CommonUtil.ConvertToInt(dataRow[this.FieldSn]);
-            this.SnDt = CommonUtil.ConvertToDateTime(dataRow[this.FieldSnDt]);
+            this.Sn = CommonUtil.ConvertToInt(dataRow[FieldSn]);
+            this.SnDt = CommonUtil.ConvertToDateTime(dataRow[FieldSnDt]);
             return this;
         }
 
 
         public TabSNEntity GetFrom(System.Data.IDataReader dataReader)
         {
-            this.Sn = CommonUtil.ConvertToInt(dataReader[this.FieldSn]);
-            this.SnDt = CommonUtil.ConvertToDateTime(dataReader[this.FieldSnDt]);
+            this.Sn = CommonUtil.ConvertToInt(dataReader[FieldSn]);
+            this.SnDt = CommonUtil.ConvertToDateTime(dataReader[FieldSnDt]);
             return this;
         }
 
         public void SetEntity(NonQueryBuilder sqlBuilder, TabSNEntity entity)
         {
-            sqlBuilder.SetValue(this.FieldSn, entity.Sn);
-            sqlBuilder.SetValue(this.FieldSnDt, entity.SnDt);
+            sqlBuilder.SetValue(FieldSn, entity.Sn);
+            sqlBuilder.SetValue(FieldSnDt, entity.SnDt);
         }
 
         public void GetFromExpand(System.Data.DataRow dataRow)

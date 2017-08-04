@@ -7,8 +7,8 @@
     <ProjectGuid>{0232092C-910D-4149-A784-0DF3FBE2A7E8}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>BaseSysInfo</RootNamespace>
-    <AssemblyName>BaseSysInfo</AssemblyName>
+    <RootNamespace>JSNet.BaseSys</RootNamespace>
+    <AssemblyName>BaseSys</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -52,6 +52,7 @@
     <Compile Include="Configuration\XmlConfigHelper.cs" />
     <Compile Include="JSException.cs" />
     <Compile Include="JSErrMsg.cs" />
+    <Compile Include="JSRequest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="JSResponse.cs" />
     <Compile Include="Validator\RequestValidator.cs" />
