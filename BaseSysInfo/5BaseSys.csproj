@@ -55,7 +55,7 @@
     <Compile Include="JSRequest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="JSResponse.cs" />
-    <Compile Include="Validator\RequestValidator.cs" />
+    <Compile Include="Validator\JSValidator.Invalid.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DbUtilities\6DbUtilities.csproj">

@@ -45,6 +45,7 @@ namespace JSNet.Service
 
         public void DeleteStaff(int id)
         {
+
             EntityManager<StaffEntity> manamger = new EntityManager<StaffEntity>();
             List<KeyValuePair<string, object>> kvps = new List<KeyValuePair<string, object>>();
             kvps.Add(new KeyValuePair<string, object>(StaffEntity.FieldIsOnJob, 0));
