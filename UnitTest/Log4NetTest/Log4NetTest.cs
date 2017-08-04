@@ -44,8 +44,8 @@ namespace UnitTest.Log4NetTest
             //这个Demo，使用Log4NetUtil，结合Log4Net.xml的配置完成。
 
             Log4NetUtil.Init("SmsSendLog", "SystemLog", "ErrorLog");
-            Log4NetUtil.SetConnString("AdoNetAppender_SQLServer", BaseSystemInfo.TestDbHelperConnection, "SmsSendLog");
-            Log4NetUtil.SetConnString("AdoNetAppender_SQLServer2", BaseSystemInfo.TestDbHelperConnection, "SystemLog");
+            Log4NetUtil.SetConnString("AdoNetAppender_SQLServer", BaseSystemInfo.TestDbHelperConnectionString, "SmsSendLog");
+            Log4NetUtil.SetConnString("AdoNetAppender_SQLServer2", BaseSystemInfo.TestDbHelperConnectionString, "SystemLog");
             Log4NetUtil.SetDefatultLog("SystemLog");
 
         }
@@ -66,8 +66,8 @@ namespace UnitTest.Log4NetTest
 
             string configPath = System.AppDomain.CurrentDomain.BaseDirectory + @"..\..\..\Utilities\Xml\Log4Net.xml";
             Log4NetUtil.Init(configPath, "SmsSendLog", "SystemLog", "ErrorLog");
-            Log4NetUtil.SetConnString("AdoNetAppender_SQLServer", BaseSystemInfo.TestDbHelperConnection, "SmsSendLog");
-            Log4NetUtil.SetConnString("AdoNetAppender_SQLServer2", BaseSystemInfo.TestDbHelperConnection, "SystemLog");
+            Log4NetUtil.SetConnString("AdoNetAppender_SQLServer", BaseSystemInfo.TestDbHelperConnectionString, "SmsSendLog");
+            Log4NetUtil.SetConnString("AdoNetAppender_SQLServer2", BaseSystemInfo.TestDbHelperConnectionString, "SystemLog");
             Log4NetUtil.SetDefatultLog("SystemLog");
 
         }

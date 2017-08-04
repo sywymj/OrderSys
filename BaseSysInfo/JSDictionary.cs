@@ -89,4 +89,17 @@ namespace JSNet.BaseSys
             }
         }
     }
+
+    public static class ListTools
+    {
+        public static JSDictionary ToJSDictionary<TSource, TKey, TElement>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector, Func<TSource, TElement> elementSelector)
+        {
+            JSDictionary dic = new JSDictionary();
+            foreach (TSource element in source)
+            {
+                dic.Add(keySelector(element).ToString(), elementSelector(element));
+            }
+            return dic;
+        }
+    } 
 }

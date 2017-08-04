@@ -25,7 +25,7 @@ namespace UnitTest
             object[] objs = new object[2];
             for (int i = 0; i < objs.Length; i++)
             {
-                IDbHelper dbHelper = DbHelperFactory.GetHelper(BaseSystemInfo.CenterDbConnection, BaseSystemInfo.CenterDbType);
+                IDbHelper dbHelper = DbHelperFactory.GetHelper(BaseSystemInfo.CenterDbConnectionString, BaseSystemInfo.CenterDbType);
                 dbHelper.Open();
                 objs[i] = dbHelper;
                 dbHelper.Dispose();
@@ -55,7 +55,7 @@ namespace UnitTest
                 object[] objs = new object[10000];
                 for (int i = 0; i < objs.Length; i++)
                 {
-                    IDbHelper dbHelper = DbHelperFactory.GetHelper(BaseSystemInfo.TestDbHelperConnection, BaseSystemInfo.CenterDbType);
+                    IDbHelper dbHelper = DbHelperFactory.GetHelper(BaseSystemInfo.TestDbHelperConnectionString, BaseSystemInfo.CenterDbType);
                     dbHelper.Open();
                     objs[i] = dbHelper;
                     dbHelper.Dispose();
@@ -75,7 +75,7 @@ namespace UnitTest
                 for (int i = 0; i < 10; i++)
                 {
                     //连接字符串的连接池只有5个，若不及时关闭数据库，会报错，此处测试数据库关闭函数
-                    IDbHelper dbHelper = DbHelperFactory.GetHelper(BaseSystemInfo.TestDbHelperConnection, BaseSystemInfo.CenterDbType);
+                    IDbHelper dbHelper = DbHelperFactory.GetHelper(BaseSystemInfo.TestDbHelperConnectionString, BaseSystemInfo.CenterDbType);
                     dbHelper.Open();
                     dbHelper.Close();//若不关闭，必需要报错！！
                     Console.WriteLine(i.ToString());
@@ -91,7 +91,7 @@ namespace UnitTest
         [Test]
         public void Test_InsertManager()
         {
-            IDbHelper dbHelper = DbHelperFactory.GetHelper(BaseSystemInfo.CenterDbConnection, BaseSystemInfo.CenterDbType);
+            IDbHelper dbHelper = DbHelperFactory.GetHelper(BaseSystemInfo.CenterDbConnectionString, BaseSystemInfo.CenterDbType);
             UserManager userManager = new UserManager(dbHelper);
             UserEntity userEntity = new UserEntity()
             {
@@ -108,7 +108,7 @@ namespace UnitTest
             string id = userManager.Insert(userEntity);
             Console.WriteLine("Insert的id:" + id);
 
-            IDbHelper dbHelper1 = DbHelperFactory.GetHelper(BaseSystemInfo.BusinessDbConnection, BaseSystemInfo.CenterDbType);
+            IDbHelper dbHelper1 = DbHelperFactory.GetHelper(BaseSystemInfo.BusinessDbConnectionString, BaseSystemInfo.CenterDbType);
             UserManager userManager1 = new UserManager(dbHelper1);
             UserEntity userEntity1 = new UserEntity()
             {
@@ -125,7 +125,7 @@ namespace UnitTest
             string id1 = userManager1.Insert(userEntity1);
             Console.WriteLine("Insert1的id1:" + id1);
 
-            IDbHelper dbHelper2 = DbHelperFactory.GetHelper(BaseSystemInfo.CenterDbConnection, BaseSystemInfo.CenterDbType);
+            IDbHelper dbHelper2 = DbHelperFactory.GetHelper(BaseSystemInfo.CenterDbConnectionString, BaseSystemInfo.CenterDbType);
             UserManager userManager2 = new UserManager(dbHelper2);
             UserEntity userEntity2 = new UserEntity()
             {
@@ -152,12 +152,12 @@ namespace UnitTest
             kvps.Add(new KeyValuePair<string, object>(userEntity3.FieldNumberType, null));
             kvps.Add(new KeyValuePair<string, object>(userEntity3.FieldNullType, null));
 
-            IDbHelper dbHelper3 = DbHelperFactory.GetHelper(BaseSystemInfo.CenterDbConnection, BaseSystemInfo.CenterDbType);
+            IDbHelper dbHelper3 = DbHelperFactory.GetHelper(BaseSystemInfo.CenterDbConnectionString, BaseSystemInfo.CenterDbType);
             UserManager userManager3 = new UserManager(dbHelper3);
             string id3 = userManager3.Insert(kvps);
             Console.WriteLine("Insert3的id3:" + id3);
 
-            IDbHelper dbHelper4 = DbHelperFactory.GetHelper(BaseSystemInfo.CenterDbConnection, BaseSystemInfo.CenterDbType);
+            IDbHelper dbHelper4 = DbHelperFactory.GetHelper(BaseSystemInfo.CenterDbConnectionString, BaseSystemInfo.CenterDbType);
             UserManager userManager4 = new UserManager(dbHelper4);
             string id4 = userManager3.Insert(kvps,false);
             Console.WriteLine("Insert4的id4:" + id4);
@@ -166,7 +166,7 @@ namespace UnitTest
         [Test]
         public void Test_UpdateManager()
         {
-            IDbHelper dbHelper = DbHelperFactory.GetHelper(BaseSystemInfo.CenterDbConnection, BaseSystemInfo.CenterDbType);
+            IDbHelper dbHelper = DbHelperFactory.GetHelper(BaseSystemInfo.CenterDbConnectionString, BaseSystemInfo.CenterDbType);
             UserManager userManager = new UserManager(dbHelper);
             UserEntity userEntity = new UserEntity()
             {
@@ -226,7 +226,7 @@ namespace UnitTest
         [Test]
         public void Test_DeleteManager()
         {
-            IDbHelper dbHelper = DbHelperFactory.GetHelper(BaseSystemInfo.CenterDbConnection, BaseSystemInfo.CenterDbType);
+            IDbHelper dbHelper = DbHelperFactory.GetHelper(BaseSystemInfo.CenterDbConnectionString, BaseSystemInfo.CenterDbType);
             UserManager userManager = new UserManager(dbHelper);
             UserEntity userEntity = new UserEntity();
             userManager.Delete(23081);
@@ -256,7 +256,7 @@ namespace UnitTest
         public void Test_WhereClause()
         {
             //WhereClause 是where从句的子句，
-            IDbHelper dbHelper = DbHelperFactory.GetHelper(BaseSystemInfo.CenterDbConnection, BaseSystemInfo.CenterDbType);
+            IDbHelper dbHelper = DbHelperFactory.GetHelper(BaseSystemInfo.CenterDbConnectionString, BaseSystemInfo.CenterDbType);
             UserEntity entity = new UserEntity();
 
             WhereClause clause = new WhereClause(entity.FieldF1, Comparison.Equals, 1);
@@ -297,7 +297,7 @@ namespace UnitTest
         {
             //WhereStatement 是Where从句
             //{Level1}((Age<15 OR Age>=20) AND (strEmail LIKE 'e%')) OR {Level2}(Age BETWEEN 15 AND 20)，同一个LEVEL用AND连接，不同LEVEL用OR连接
-            IDbHelper dbHelper = DbHelperFactory.GetHelper(BaseSystemInfo.CenterDbConnection, BaseSystemInfo.CenterDbType);
+            IDbHelper dbHelper = DbHelperFactory.GetHelper(BaseSystemInfo.CenterDbConnectionString, BaseSystemInfo.CenterDbType);
             UserEntity entity = new UserEntity();
             List<DbParameter> parameters = new List<DbParameter>();
 
@@ -330,7 +330,7 @@ namespace UnitTest
         [Test]
         public void Test_GetIdsManager()
         {
-            IDbHelper dbHelper = DbHelperFactory.GetHelper(BaseSystemInfo.CenterDbConnection, BaseSystemInfo.CenterDbType);
+            IDbHelper dbHelper = DbHelperFactory.GetHelper(BaseSystemInfo.CenterDbConnectionString, BaseSystemInfo.CenterDbType);
             UserManager manager = new UserManager(dbHelper);
             UserEntity entity = new UserEntity();
 
@@ -349,7 +349,7 @@ namespace UnitTest
         [Test]
         public void Test_GetIdsByPageManager()
         {
-            IDbHelper dbHelper = DbHelperFactory.GetHelper(BaseSystemInfo.CenterDbConnection, BaseSystemInfo.CenterDbType);
+            IDbHelper dbHelper = DbHelperFactory.GetHelper(BaseSystemInfo.CenterDbConnectionString, BaseSystemInfo.CenterDbType);
             UserManager manager = new UserManager(dbHelper);
             UserEntity entity = new UserEntity();
 
@@ -367,7 +367,7 @@ namespace UnitTest
         [Test]
         public void Test_GetSingleManager()
         {
-            IDbHelper dbHelper = DbHelperFactory.GetHelper(BaseSystemInfo.CenterDbConnection, BaseSystemInfo.CenterDbType);
+            IDbHelper dbHelper = DbHelperFactory.GetHelper(BaseSystemInfo.CenterDbConnectionString, BaseSystemInfo.CenterDbType);
             UserManager manager = new UserManager(dbHelper);
             UserEntity entity = new UserEntity();
 
@@ -380,7 +380,7 @@ namespace UnitTest
         [Test]
         public void Test_GetCountManager()
         {
-            IDbHelper dbHelper = DbHelperFactory.GetHelper(BaseSystemInfo.CenterDbConnection, BaseSystemInfo.CenterDbType);
+            IDbHelper dbHelper = DbHelperFactory.GetHelper(BaseSystemInfo.CenterDbConnectionString, BaseSystemInfo.CenterDbType);
             UserManager manager = new UserManager(dbHelper);
             UserEntity entity = new UserEntity();
 
@@ -393,7 +393,7 @@ namespace UnitTest
         [Test]
         public void Test_GetListManager()
         {
-            IDbHelper dbHelper = DbHelperFactory.GetHelper(BaseSystemInfo.CenterDbConnection, BaseSystemInfo.CenterDbType);
+            IDbHelper dbHelper = DbHelperFactory.GetHelper(BaseSystemInfo.CenterDbConnectionString, BaseSystemInfo.CenterDbType);
             UserManager manager = new UserManager(dbHelper);
             UserEntity entity = new UserEntity();
 
@@ -412,7 +412,7 @@ namespace UnitTest
         [Test]
         public void Test_GetDataTableManager()
         {
-            IDbHelper dbHelper = DbHelperFactory.GetHelper(BaseSystemInfo.CenterDbConnection, BaseSystemInfo.CenterDbType);
+            IDbHelper dbHelper = DbHelperFactory.GetHelper(BaseSystemInfo.CenterDbConnectionString, BaseSystemInfo.CenterDbType);
             UserManager manager = new UserManager(dbHelper);
             UserEntity entity = new UserEntity();
 
@@ -430,7 +430,7 @@ namespace UnitTest
         [Test]
         public void Test_ExistsManager()
         {
-            IDbHelper dbHelper = DbHelperFactory.GetHelper(BaseSystemInfo.CenterDbConnection, BaseSystemInfo.CenterDbType);
+            IDbHelper dbHelper = DbHelperFactory.GetHelper(BaseSystemInfo.CenterDbConnectionString, BaseSystemInfo.CenterDbType);
             UserManager manager = new UserManager(dbHelper);
             UserEntity entity = new UserEntity();
 
@@ -452,7 +452,7 @@ namespace UnitTest
         public void Test_BatchAddManager()
         {
             //可以测试 数据库连接 一直打开直至插入完成才close 跟 每次插入都close 的性能
-            IDbHelper dbHelper = DbHelperFactory.GetHelper(BaseSystemInfo.CenterDbConnection, BaseSystemInfo.CenterDbType);
+            IDbHelper dbHelper = DbHelperFactory.GetHelper(BaseSystemInfo.CenterDbConnectionString, BaseSystemInfo.CenterDbType);
             dbHelper.Open();
             UserManager userManager = new UserManager(dbHelper);
             for(int i = 0;i<1000;i++)
@@ -479,7 +479,7 @@ namespace UnitTest
         [Test]
         public void Test_TransManager()
         {
-            IDbHelper dbHelper = DbHelperFactory.GetHelper(BaseSystemInfo.CenterDbConnection, BaseSystemInfo.CenterDbType);
+            IDbHelper dbHelper = DbHelperFactory.GetHelper(BaseSystemInfo.CenterDbConnectionString, BaseSystemInfo.CenterDbType);
             dbHelper.Open();
             try
             {
@@ -541,7 +541,7 @@ namespace UnitTest
         private void _Bingfa_Add_Manage_Fun(object obj)
         {
             int n = (int)obj;
-            IDbHelper dbHelper = DbHelperFactory.GetHelper(BaseSystemInfo.CenterDbConnection, BaseSystemInfo.CenterDbType);
+            IDbHelper dbHelper = DbHelperFactory.GetHelper(BaseSystemInfo.CenterDbConnectionString, BaseSystemInfo.CenterDbType);
             UserManager userManager = new UserManager(dbHelper);
             UserEntity userEntity = new UserEntity()
             {
@@ -561,7 +561,7 @@ namespace UnitTest
 
         private void _Bingfa_Delete_Manager_Fun(object obj)
         {
-            IDbHelper dbHelper = DbHelperFactory.GetHelper(BaseSystemInfo.CenterDbConnection, BaseSystemInfo.CenterDbType);
+            IDbHelper dbHelper = DbHelperFactory.GetHelper(BaseSystemInfo.CenterDbConnectionString, BaseSystemInfo.CenterDbType);
             UserManager userManager = new UserManager(dbHelper);
             UserEntity userEntity = new UserEntity();
 

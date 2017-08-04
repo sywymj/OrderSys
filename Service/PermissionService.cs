@@ -59,10 +59,8 @@ namespace JSNet.Service
             WhereStatement where = new WhereStatement();
             List<RoleEntity> list = roleManager.GetList(where, out count);
 
-            //list.Select(l=>new JSDictionary(l.ID,l.Title));
-
-            //JSDictionary dic = new JSDictionary();
-            //dic.
+            JSDictionary re = list.ToJSDictionary(Key => Key.ID, Value => Value.ParentID);
+            return re;
         }
 
 
