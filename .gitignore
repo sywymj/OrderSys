@@ -1,8 +1,6 @@
-
 *.cache
-
 *.dll
-
 *.pdb
 bin/
 obj/
+!packages/*.dll
