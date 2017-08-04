@@ -327,3 +327,22 @@ E:\My Program\My Demo\V1.0.0\UnitTest\bin\Debug\Utilities.pdb
 E:\My Program\My Demo\V1.0.0\UnitTest\obj\Debug\UnitTest.csprojResolveAssemblyReference.cache
 E:\My Program\My Demo\V1.0.0\UnitTest\obj\Debug\UnitTest.dll
 E:\My Program\My Demo\V1.0.0\UnitTest\obj\Debug\UnitTest.pdb
+D:\develop\报障系统\Git\OrderSys\UnitTest\bin\Debug\UnitTest.dll
+D:\develop\报障系统\Git\OrderSys\UnitTest\bin\Debug\UnitTest.pdb
+D:\develop\报障系统\Git\OrderSys\UnitTest\bin\Debug\BaseSysInfo.dll
+D:\develop\报障系统\Git\OrderSys\UnitTest\bin\Debug\DbUtilities.dll
+D:\develop\报障系统\Git\OrderSys\UnitTest\bin\Debug\log4net.dll
+D:\develop\报障系统\Git\OrderSys\UnitTest\bin\Debug\Manager.dll
+D:\develop\报障系统\Git\OrderSys\UnitTest\bin\Debug\Model.dll
+D:\develop\报障系统\Git\OrderSys\UnitTest\bin\Debug\nunit.framework.dll
+D:\develop\报障系统\Git\OrderSys\UnitTest\bin\Debug\Utilities.dll
+D:\develop\报障系统\Git\OrderSys\UnitTest\bin\Debug\NPOI.dll
+D:\develop\报障系统\Git\OrderSys\UnitTest\bin\Debug\ChnCharInfo.dll
+D:\develop\报障系统\Git\OrderSys\UnitTest\bin\Debug\BaseSysInfo.pdb
+D:\develop\报障系统\Git\OrderSys\UnitTest\bin\Debug\Manager.pdb
+D:\develop\报障系统\Git\OrderSys\UnitTest\bin\Debug\DbUtilities.pdb
+D:\develop\报障系统\Git\OrderSys\UnitTest\bin\Debug\Model.pdb
+D:\develop\报障系统\Git\OrderSys\UnitTest\bin\Debug\Utilities.pdb
+D:\develop\报障系统\Git\OrderSys\UnitTest\obj\Debug\UnitTest.csprojResolveAssemblyReference.cache
+D:\develop\报障系统\Git\OrderSys\UnitTest\obj\Debug\UnitTest.dll
+D:\develop\报障系统\Git\OrderSys\UnitTest\obj\Debug\UnitTest.pdb

@@ -34,3 +34,21 @@ E:\My Program\My Demo\V1.0.0\Service\bin\Debug\Utilities.pdb
 E:\My Program\My Demo\V1.0.0\Service\obj\Debug\2Service.csprojResolveAssemblyReference.cache
 E:\My Program\My Demo\V1.0.0\Service\obj\Debug\Service.dll
 E:\My Program\My Demo\V1.0.0\Service\obj\Debug\Service.pdb
+D:\develop\报障系统\Git\OrderSys\Service\bin\Debug\Service.dll
+D:\develop\报障系统\Git\OrderSys\Service\bin\Debug\Service.pdb
+D:\develop\报障系统\Git\OrderSys\Service\bin\Debug\BaseSysInfo.dll
+D:\develop\报障系统\Git\OrderSys\Service\bin\Debug\DbUtilities.dll
+D:\develop\报障系统\Git\OrderSys\Service\bin\Debug\Manager.dll
+D:\develop\报障系统\Git\OrderSys\Service\bin\Debug\Model.dll
+D:\develop\报障系统\Git\OrderSys\Service\bin\Debug\Utilities.dll
+D:\develop\报障系统\Git\OrderSys\Service\bin\Debug\log4net.dll
+D:\develop\报障系统\Git\OrderSys\Service\bin\Debug\NPOI.dll
+D:\develop\报障系统\Git\OrderSys\Service\bin\Debug\ChnCharInfo.dll
+D:\develop\报障系统\Git\OrderSys\Service\bin\Debug\BaseSysInfo.pdb
+D:\develop\报障系统\Git\OrderSys\Service\bin\Debug\DbUtilities.pdb
+D:\develop\报障系统\Git\OrderSys\Service\bin\Debug\Manager.pdb
+D:\develop\报障系统\Git\OrderSys\Service\bin\Debug\Model.pdb
+D:\develop\报障系统\Git\OrderSys\Service\bin\Debug\Utilities.pdb
+D:\develop\报障系统\Git\OrderSys\Service\obj\Debug\2Service.csprojResolveAssemblyReference.cache
+D:\develop\报障系统\Git\OrderSys\Service\obj\Debug\Service.dll
+D:\develop\报障系统\Git\OrderSys\Service\obj\Debug\Service.pdb

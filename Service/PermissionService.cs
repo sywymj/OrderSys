@@ -13,9 +13,9 @@ namespace JSNet.Service
         public void add()
         {
             // TODO 为什么这里会报错？？
-            ViewManager viewManagere = new ViewManager("");
-            EntityManager<ModuleEntity> mode = new EntityManager<ModuleEntity>();
-            WhereStatement where = new WhereStatement();
+            //ViewManager viewManagere = new ViewManager("");
+            //EntityManager<ModuleEntity> mode = new EntityManager<ModuleEntity>();
+            //WhereStatement where = new WhereStatement();
             //mode.GetListByPage()
             //viewManagere.GetDataTableByPage()
             //viewManagere.GetDataTable()
