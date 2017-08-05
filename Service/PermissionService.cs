@@ -59,21 +59,76 @@ namespace JSNet.Service
             WhereStatement where = new WhereStatement();
             List<RoleEntity> list = roleManager.GetList(where, out count);
 
-            JSDictionary re = list.ToJSDictionary(Key => Key.ID, Value => Value.ParentID);
+            JSDictionary re = list.ToJSDictionary(Key => Key.ID, Value => Value.Title);
             return re;
         }
 
+        //发起报障单
+        public void StartOrder()
+        {
 
+        }
 
-        //private int GetUserID(string openID)
-        //{
+        //委派工作
+        public void AppointOrder()
+        {
+
+        }
+
+        //接收报障单
+        public void ReceiveOrder()
+        {
+
+        }
+
+        //增加处理明细
+        public void AddHandleDetail()
+        {
+
+        }
+
+        //报障处理完毕
+        public void CompleteOrder()
+        {
+
+        }
+
+        //驳回报障，需继续处理
+        public void RejectOrder()
+        {
+        
+        }
+
+        //报障验收完成
+        public void FinishOrder()
+        {
             
-        //    IDbHelper dbHelper = DbHelperFactory.GetHelper(BaseSystemInfo.KawuDbConnectionString, BaseSystemInfo.KawuDbType);
-        //    ViewManager manager = new ViewManager(dbHelper, "[T_WXUser]");
+        }
 
-        //    DataRow dr = manager.GetSingle(openID, "OpenId");
-        //    string s = dr["11"].ToString();
+        //取消报障单
+        public void CancelOrder()
+        {
 
-        //}
+        }
+
+        public List<OrderEntity> GetMyStartedOrders()
+        {
+            List<OrderEntity> list = new List<OrderEntity>();
+            return list;
+        }
+
+        public List<OrderEntity> GetMyRecevingOrders()
+        {
+            List<OrderEntity> list = new List<OrderEntity>();
+            return list;
+        }
+
+        public List<OrderEntity> GetMyHandlingOrders()
+        {
+            List<OrderEntity> list = new List<OrderEntity>();
+            return list;
+        }
+
+
     }
 }
