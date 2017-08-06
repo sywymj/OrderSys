@@ -18,7 +18,7 @@ namespace OrderSys.Controllers
 
             JsonResult js = new JsonResult();
             js.Data = new JSResponse("成功删除");
-            
+            string s = "";
             return js;
         }
 
