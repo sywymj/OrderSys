@@ -43,6 +43,7 @@
   <ItemGroup>
     <Compile Include="BaseSystemInfo.cs" />
     <Compile Include="BaseSystemInfo.Database.cs" />
+    <Compile Include="Enums\JSEnums.Order.cs" />
     <Compile Include="JSDictionary.cs" />
     <Compile Include="Configuration\BaseConfiguration.cs" />
     <Compile Include="Configuration\ConfigurationCategory.cs" />
@@ -65,9 +66,7 @@
       <Name>7Utilities</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Enums\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

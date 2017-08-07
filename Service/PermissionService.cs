@@ -4,6 +4,7 @@ using JSNet.BaseSys;
 using JSNet.DbUtilities;
 using JSNet.Manager;
 using JSNet.Model;
+using JSNet.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -52,6 +53,27 @@ namespace JSNet.Service
             manamger.Update(kvps, id);
         }
 
+        public StaffEntity GetCurrentStaff()
+        {
+            string openID = JSRequest.GetSessionParm("OpenID").ToString();
+            
+            if(string.IsNullOrEmpty(openID))
+            {
+                throw new JSException(JSErrMsg.ERR_CODE_SESSIONKEY_MISSING,string.Format(JSErrMsg.ERR_MSG_SESSIONKEY_MISSING,"OpenID"));
+            }
+
+            StaffEntity staff = new StaffEntity();
+            EntityManager<StaffEntity> manager = new EntityManager<StaffEntity>();
+
+            staff =manager.GetSingle(openID,StaffEntity.FieldOpenID);
+            if (staff == null)
+            {
+                throw new JSException(JSErrMsg.ERR_CODE_OBJECT_MISSING, string.Format(JSErrMsg.ERR_MSG_OBJECT_MISSING, "员工"));
+            }
+
+            return staff;
+        }
+
         public JSDictionary GetRoleDDL ()
         {
             int count = 0;
@@ -63,72 +85,6 @@ namespace JSNet.Service
             return re;
         }
 
-        //发起报障单
-        public void StartOrder()
-        {
-
-        }
-
-        //委派工作
-        public void AppointOrder()
-        {
-
-        }
-
-        //接收报障单
-        public void ReceiveOrder()
-        {
-
-        }
-
-        //增加处理明细
-        public void AddHandleDetail()
-        {
-
-        }
-
-        //报障处理完毕
-        public void CompleteOrder()
-        {
-
-        }
-
-        //驳回报障，需继续处理
-        public void RejectOrder()
-        {
         
-        }
-
-        //报障验收完成
-        public void FinishOrder()
-        {
-            
-        }
-
-        //取消报障单
-        public void CancelOrder()
-        {
-
-        }
-
-        public List<OrderEntity> GetMyStartedOrders()
-        {
-            List<OrderEntity> list = new List<OrderEntity>();
-            return list;
-        }
-
-        public List<OrderEntity> GetMyRecevingOrders()
-        {
-            List<OrderEntity> list = new List<OrderEntity>();
-            return list;
-        }
-
-        public List<OrderEntity> GetMyHandlingOrders()
-        {
-            List<OrderEntity> list = new List<OrderEntity>();
-            return list;
-        }
-
-
     }
 }

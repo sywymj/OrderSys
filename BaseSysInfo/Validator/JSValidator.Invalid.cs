@@ -113,6 +113,64 @@ namespace JSNet.BaseSys
             return re;
         }
 
+        public static Guid ValidateGuid(string name, string value, bool isRequired = false )
+        {
+            Guid re;
+            if (isRequired && string.IsNullOrEmpty(value))
+            {
+                throw new JSException(JSErrMsg.ERR_CODE_PARAM_MISSING, string.Format(JSErrMsg.ERR_MSG_PARAM_MISSING, name));
+            }
+
+            if (!Guid.TryParse(value, out re))
+            {
+                throw new JSException(JSErrMsg.ERR_CODE_PARAM_INVALID, string.Format(JSErrMsg.ERR_MSG_PARAM_INVALID, name));
+            }
+            return re;
+        }
+
+        public static int[] ValidateStrings(string name, string value, bool isRequired = false)
+        {
+            if (isRequired && string.IsNullOrEmpty(value))
+            {
+                throw new JSException(JSErrMsg.ERR_CODE_PARAM_MISSING, string.Format(JSErrMsg.ERR_MSG_PARAM_MISSING, name));
+            }
+
+            string[] values = value.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+            return ValidateStrings(name, values, isRequired);
+        }
+
+        public static int[] ValidateStrings(string name, string[] value, bool isRequired = false)
+        {
+            if (isRequired && value.Length <= 0)
+            {
+                throw new JSException(JSErrMsg.ERR_CODE_PARAM_MISSING, string.Format(JSErrMsg.ERR_MSG_PARAM_MISSING, name));
+            }
+
+            int[] re = new int[value.Length];
+            for (int i = 0; i < value.Length; i++)
+            {
+                int n = ValidateInt(name, value[i], isRequired);
+                re[i] = n;
+            }
+            return re;
+        }
+
+        public static string[] ValidateInts(string name, int[] value, bool isRequired = false)
+        {
+            if (isRequired && value.Length <= 0)
+            {
+                throw new JSException(JSErrMsg.ERR_CODE_PARAM_MISSING, string.Format(JSErrMsg.ERR_MSG_PARAM_MISSING, name));
+            }
+
+            string[] re = new string[value.Length];
+            for (int i = 0; i < value.Length; i++)
+            {
+                string s = ValidateString(name, value[i].ToString(), isRequired);
+                re[i] = s;
+            }
+            return re;
+        }
+
 
         /// <summary>
         /// 验证参数是否为空。

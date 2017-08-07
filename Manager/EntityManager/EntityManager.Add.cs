@@ -33,6 +33,12 @@ namespace JSNet.Manager
             return DoInsert(parameters, sql, returnId); 
         }
 
+
+        public void Insert(List<T> entities)
+        {
+            // TODO 加个Insert List
+        }
+
         /// <summary>
         /// 插入指定键值对的数据
         /// </summary>

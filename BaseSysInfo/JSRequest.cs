@@ -13,7 +13,7 @@ namespace JSNet.BaseSys
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
-        public string GetRequestUrlParm(string key)
+        public static string GetRequestUrlParm(string key)
         {
             if (!CheckRequestUrlParms(key))
             {
@@ -27,7 +27,7 @@ namespace JSNet.BaseSys
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
-        public string GetRequestFormParm(string key)
+        public static string GetRequestFormParm(string key)
         {
             if (!CheckRequestFormParms(key))
             {
@@ -41,7 +41,7 @@ namespace JSNet.BaseSys
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
-        public string GetSessionParm(string key)
+        public static string GetSessionParm(string key)
         {
             if(!CheckSessionParms(key))
             {
@@ -51,7 +51,7 @@ namespace JSNet.BaseSys
         }
 
         //检查Request参数是否为null或为空
-        private bool CheckRequestUrlParms(string key)
+        private static bool CheckRequestUrlParms(string key)
         {
             if (HttpContext.Current.Request[key] != null && !string.IsNullOrWhiteSpace(HttpContext.Current.Request[key].ToString()))
             {
@@ -61,7 +61,7 @@ namespace JSNet.BaseSys
         }
 
         //检查Request参数是否为null或为空
-        private bool CheckRequestFormParms(string key)
+        private static bool CheckRequestFormParms(string key)
         {
             if (HttpContext.Current.Request.Form[key] != null && !string.IsNullOrWhiteSpace(HttpContext.Current.Request.Form[key].ToString()))
             {
@@ -71,7 +71,7 @@ namespace JSNet.BaseSys
         }
 
         //检查Session参数是否为null或为空
-        private bool CheckSessionParms(string key)
+        private static bool CheckSessionParms(string key)
         {
             if (HttpContext.Current.Session[key] != null && !string.IsNullOrWhiteSpace(HttpContext.Current.Session[key].ToString()))
             {
