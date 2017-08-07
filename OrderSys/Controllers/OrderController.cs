@@ -11,9 +11,8 @@ namespace OrderSys.Controllers
 {
     public class OrderController : Controller
     {
-        //
-        // GET: /Order/
         private OrderService orderService = new OrderService();
+
         public ActionResult Index()
         {
             return View();
@@ -46,5 +45,96 @@ namespace OrderSys.Controllers
 
             return res;
         }
+
+        [HttpGet]
+        public ActionResult ReceiveOrder()
+        {
+            string sOrderID = JSRequest.GetRequestUrlParm(OrderEntity.FieldID);
+
+            Guid orderID = JSValidator.ValidateGuid(OrderEntity.FieldID, sOrderID, true);
+
+            orderService.ReceiveOrder(orderID);
+
+            JsonResult res = new JsonResult();
+            res.Data = new JSResponse("操作成功");
+
+            return res;
+
+        }
+
+        [HttpGet]
+        public ActionResult AddHandleDetail(OrderHandleDetailEntity orderHandleDetail)
+        {
+            orderService.AddHandleDetail(orderHandleDetail);
+
+            JsonResult res = new JsonResult();
+            res.Data = new JSResponse("操作成功");
+
+            return res;
+        }
+
+        [HttpGet]
+        public ActionResult CompleteOrder()
+        {
+            string sOrderID = JSRequest.GetRequestUrlParm(OrderEntity.FieldID);
+
+            Guid orderID = JSValidator.ValidateGuid(OrderEntity.FieldID, sOrderID, true);
+
+            orderService.CompleteOrder(orderID);
+
+            JsonResult res = new JsonResult();
+            res.Data = new JSResponse("操作成功");
+
+            return res;
+        }
+
+        [HttpGet]
+        public ActionResult RejectOrder()
+        {
+            string sOrderID = JSRequest.GetRequestUrlParm(OrderEntity.FieldID);
+
+            Guid orderID = JSValidator.ValidateGuid(OrderEntity.FieldID, sOrderID, true);
+
+            orderService.RejectOrder(orderID);
+
+            JsonResult res = new JsonResult();
+            res.Data = new JSResponse("操作成功");
+
+            return res;
+        }
+
+        [HttpGet]
+        public ActionResult FinishOrder()
+        {
+            string sOrderID = JSRequest.GetRequestUrlParm(OrderEntity.FieldID);
+
+            Guid orderID = JSValidator.ValidateGuid(OrderEntity.FieldID, sOrderID, true);
+
+            orderService.FinishOrder(orderID);
+
+            JsonResult res = new JsonResult();
+            res.Data = new JSResponse("操作成功");
+
+            return res;
+        }
+
+        [HttpGet]
+        public ActionResult CancelOrder()
+        {
+            string sOrderID = JSRequest.GetRequestUrlParm(OrderEntity.FieldID);
+
+            Guid orderID = JSValidator.ValidateGuid(OrderEntity.FieldID, sOrderID, true);
+
+            orderService.CancelOrder(orderID);
+
+            JsonResult res = new JsonResult();
+            res.Data = new JSResponse("操作成功");
+
+            return res;
+        }
+
+
+
+
     }
 }
