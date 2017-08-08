@@ -22,7 +22,7 @@ namespace JSNet.BaseSys
         /// 成功返回数据（列表），返回码默认200，消息提示类型默认None
         /// </summary>
         /// <param name="data">数据</param>
-        public new JSResponse(object data)
+        public JSResponse(object data)
             : this(ResponseType.None, "200", "数据加载成功", "", "", data)
         {
 

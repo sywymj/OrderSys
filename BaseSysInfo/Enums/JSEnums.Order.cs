@@ -10,16 +10,22 @@ namespace JSNet.BaseSys
     {
         [EnumDescription("驳回")]
         reject = -3,
+
         [EnumDescription("发起")]
         Start = 1,
+
         [EnumDescription("委派")]
         Appoint = 2,
+
         [EnumDescription("接单")]
         Receive = 3,
+
         [EnumDescription("处理")]
         Handle = 4,
+
         [EnumDescription("验收")]
         Check = 99,
+
         [EnumDescription("撤销")]
         Cancel = 0,
     }
@@ -30,17 +36,23 @@ namespace JSNet.BaseSys
         /// 驳回为负数，该值的绝对值为被驳回到的状态
         /// </summary>
         [EnumDescription("被驳回")]
-        Rejected = -2,
+        Rejected = -3,
+
         [EnumDescription("待委派")]
-        Started = 1,
+        Appointing = 1,
+
         [EnumDescription("待接单")]
-        Appointed = 1,
+        Receving = 2,
+
         [EnumDescription("处理中")]
-        Received = 2,
+        Handling = 3,
+
         [EnumDescription("待验收")]
-        Handled = 3,
+        Checking = 4,
+
         [EnumDescription("已完成")]
         Finish = 99,
+
         [EnumDescription("已撤销")]
         Canceled = 0,
     }

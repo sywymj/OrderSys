@@ -5,6 +5,7 @@ using JSNet.Manager;
 using JSNet.Model;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 
@@ -23,7 +24,7 @@ namespace JSNet.Service
             StaffEntity staff = permissionService.GetCurrentStaff();
 
             //2.0 添加工单实体
-            order.Status = (int)OrderStatus.Started;
+            order.Status = (int)OrderStatus.Appointing;
             string orderID = orderManager.Insert(order);
 
             //3.0 添加工作流实体
@@ -47,7 +48,7 @@ namespace JSNet.Service
             //2.0 修改工单实体
             EntityManager<OrderEntity> orderManager = new EntityManager<OrderEntity>();
             List<KeyValuePair<string,object>> kvps = new List<KeyValuePair<string,object>>();
-            kvps.Add(new KeyValuePair<string,object>(OrderEntity.FieldStatus,(int)OrderStatus.Appointed));
+            kvps.Add(new KeyValuePair<string,object>(OrderEntity.FieldStatus,(int)OrderStatus.Receving));
             int rows = orderManager.Update(kvps, orderID);
             if (rows == 0)
             {
@@ -76,7 +77,7 @@ namespace JSNet.Service
             //2.0 修改工单实体
             EntityManager<OrderEntity> orderManager = new EntityManager<OrderEntity>();
             List<KeyValuePair<string, object>> kvps = new List<KeyValuePair<string, object>>();
-            kvps.Add(new KeyValuePair<string, object>(OrderEntity.FieldStatus, (int)OrderStatus.Received));
+            kvps.Add(new KeyValuePair<string, object>(OrderEntity.FieldStatus, (int)OrderStatus.Handling));
             int rows = orderManager.Update(kvps, orderID);
             if (rows == 0)
             {
@@ -123,7 +124,7 @@ namespace JSNet.Service
 
             //2.0 修改工单实体
             List<KeyValuePair<string, object>> kvps = new List<KeyValuePair<string, object>>();
-            kvps.Add(new KeyValuePair<string, object>(OrderEntity.FieldStatus, (int)OrderStatus.Handled));
+            kvps.Add(new KeyValuePair<string, object>(OrderEntity.FieldStatus, (int)OrderStatus.Checking));
             int rows = orderManager.Update(kvps, orderID);
             if (rows == 0)
             {
@@ -141,7 +142,7 @@ namespace JSNet.Service
             OrderFlowEntity orderflow = new OrderFlowEntity();
             orderflow.OrderID = orderID;
             orderflow.OperatorID = staff.ID;
-            orderflow.NextOperatorID = order.StaffID;//传回发起人验收。
+            orderflow.NextOperatorID = order.StarterID;//传回发起人验收。
             orderflow.Operation = (int)OperationEnum.Handle;
             orderflow.OperateTime = DateTime.Now;
             orderflow.Remark = "";
@@ -219,6 +220,7 @@ namespace JSNet.Service
         //取消报障单
         public void CancelOrder(Guid orderID)
         {
+            // TODO 增加判断，只能取消未处理完的工单
             PermissionService permissionService = new PermissionService();
             EntityManager<OrderEntity> orderManager = new EntityManager<OrderEntity>();
             EntityManager<OrderFlowEntity> orderflowManager = new EntityManager<OrderFlowEntity>();
@@ -246,24 +248,185 @@ namespace JSNet.Service
             orderflowManager.Insert(orderflow);
         }
 
-        public List<OrderEntity> GetMyStartedOrders()
+        /// <summary>
+        /// 获取我的已发起工单
+        /// </summary>
+        /// <returns></returns>
+        public DataTable GetMyStartedOrders()
         {
-            List<OrderEntity> list = new List<OrderEntity>();
-            return list;
+            PermissionService permissionService = new PermissionService();
+            ViewManager manager = new ViewManager("VO_Order");
+                        
+            //1.0 获取当前员工数据
+            StaffEntity staff = permissionService.GetCurrentStaff();
+
+            //2.0 构建where从句
+            WhereStatement where = new WhereStatement();
+            where.Add(OrderEntity.FieldStatus, Comparison.GreaterOrEquals, (int)OrderStatus.Appointing);
+            where.Add(OrderEntity.FieldStarterID, Comparison.Equals, staff.ID);
+
+            //3.0 获取已发起的数据
+            int count =0;
+            DataTable dt = manager.GetDataTable(where, out count);
+            return dt;
+
         }
 
-        public List<OrderEntity> GetMyRecevingOrders()
+        /// <summary>
+        /// 获取我的待委派工单
+        /// </summary>
+        /// <returns></returns>
+        public DataTable GetMyAppointingOrders()
         {
-            List<OrderEntity> list = new List<OrderEntity>();
-            return list;
+            PermissionService permissionService = new PermissionService();
+            ViewManager manager = new ViewManager("VO_Order");
+
+            //1.0 获取当前员工数据
+            StaffEntity staff = permissionService.GetCurrentStaff();
+
+            //2.0 构建where从句
+            WhereStatement where = new WhereStatement();
+            where.Add(OrderEntity.FieldStatus, Comparison.Equals, (int)OrderStatus.Appointing);
+
+            //3.0 获取已发起的数据
+            int count = 0;
+            DataTable dt = manager.GetDataTable(where, out count);
+            return dt;
         }
 
-        public List<OrderEntity> GetMyHandlingOrders()
+        /// <summary>
+        /// 获取我的已委派工单
+        /// </summary>
+        /// <returns></returns>
+        public DataTable GetMyAppointedOrders()
         {
-            List<OrderEntity> list = new List<OrderEntity>();
-            return list;
+            PermissionService permissionService = new PermissionService();
+            ViewManager manager = new ViewManager("VO_Order");
+
+            //1.0 获取当前员工数据
+            StaffEntity staff = permissionService.GetCurrentStaff();
+
+            //2.0 构建where从句
+            WhereStatement where = new WhereStatement();
+            where.Add(OrderEntity.FieldStatus, Comparison.GreaterOrEquals, (int)OrderStatus.Receving);
+            where.Add(OrderEntity.FieldAppointerID, Comparison.Equals, staff.ID);
+
+            //3.0 获取已发起的数据
+            int count = 0;
+            DataTable dt = manager.GetDataTable(where, out count);
+            return dt;
         }
 
+        /// <summary>
+        /// 获取我的未接收工单
+        /// </summary>
+        /// <returns></returns>
+        public DataTable GetMyRecevingOrders()
+        {
+            PermissionService permissionService = new PermissionService();
+            ViewManager manager = new ViewManager("VO_Order");
+
+            //1.0 获取当前员工数据
+            StaffEntity staff = permissionService.GetCurrentStaff();
+
+            //2.0 构建where从句
+            WhereStatement where = new WhereStatement();
+            where.Add(OrderEntity.FieldStatus, Comparison.Equals, (int)OrderStatus.Receving);
+            where.Add(OrderEntity.FieldNextOperatorID, Comparison.Equals, staff.ID);
+
+            //3.0 获取已发起的数据
+            int count = 0;
+            DataTable dt = manager.GetDataTable(where, out count);
+            return dt;
+        }
+
+        /// <summary>
+        /// 获取我处理中的工单
+        /// </summary>
+        /// <returns></returns>
+        public DataTable GetMyHandlingOrders()
+        {
+            PermissionService permissionService = new PermissionService();
+            ViewManager manager = new ViewManager("VO_Order");
+
+            //1.0 获取当前员工数据
+            StaffEntity staff = permissionService.GetCurrentStaff();
+
+            //2.0 构建where从句
+            WhereStatement where = new WhereStatement();
+            where.Add(OrderEntity.FieldStatus, Comparison.Equals, (int)OrderStatus.Handling);
+            where.Add(OrderEntity.FieldHandlerID, Comparison.Equals, staff.ID);
+
+            //3.0 获取已发起的数据
+            int count = 0;
+            DataTable dt = manager.GetDataTable(where, out count);
+            return dt;
+        }
+
+        /// <summary>
+        /// 获取我已处理的工单
+        /// </summary>
+        /// <returns></returns>
+        public DataTable GetMyHandledOrders()
+        {
+            PermissionService permissionService = new PermissionService();
+            ViewManager manager = new ViewManager("VO_Order");
+
+            //1.0 获取当前员工数据
+            StaffEntity staff = permissionService.GetCurrentStaff();
+
+            //2.0 构建where从句
+            WhereStatement where = new WhereStatement();
+            where.Add(OrderEntity.FieldStatus, Comparison.GreaterOrEquals, (int)OrderStatus.Checking);
+            where.Add(OrderEntity.FieldHandlerID, Comparison.Equals, staff.ID);
+
+            //3.0 获取已发起的数据
+            int count = 0;
+            DataTable dt = manager.GetDataTable(where, out count);
+            return dt;
+        }
+
+        /// <summary>
+        /// 获取工单处理过程明细
+        /// </summary>
+        /// <param name="orderID"></param>
+        /// <returns></returns>
+        public DataTable GetOrderHandleDetails(Guid orderID)
+        {
+            //只能查视图
+            ViewManager manager = new ViewManager("VO_OrderHandleDetails");
+
+            WhereStatement where = new WhereStatement();
+            where.Add(OrderHandleDetailEntity.FieldOrderID, Comparison.Equals, orderID.ToString());
+
+            OrderByStatement orderby = new OrderByStatement();
+            orderby.Add(OrderHandleDetailEntity.FieldHandleTime, Sorting.Descending);
+
+            int count = 0;
+            DataTable dt = manager.GetDataTable(where, out count, orderby);
+            return dt;
+        }
+
+        /// <summary>
+        /// 获取工单处理流程
+        /// </summary>
+        /// <param name="orderID"></param>
+        /// <returns></returns>
+        public DataTable GetOrderFlows(Guid orderID)
+        {
+            //只能查视图
+            ViewManager manager = new ViewManager("VO_OrderFlow");
+
+            WhereStatement where = new WhereStatement();
+            where.Add(OrderFlowEntity.FieldOrderID,Comparison.Equals,orderID.ToString());
+
+            OrderByStatement orderby = new OrderByStatement();
+            orderby.Add(OrderFlowEntity.FieldOperateTime,Sorting.Descending);
+
+            int count = 0;
+            DataTable dt = manager.GetDataTable(where,out count, orderby);
+            return dt;
+        }
 
         private int GetLeaderHandlerID(int[] orderHandlerIDs)
         {

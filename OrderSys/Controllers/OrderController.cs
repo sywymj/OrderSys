@@ -133,8 +133,70 @@ namespace OrderSys.Controllers
             return res;
         }
 
+        [HttpGet]
+        public ActionResult GetMyStartedOrders()
+        {
+            var list = orderService.GetMyStartedOrders();
 
+            JsonResult res = new JsonResult();
+            res.Data = new JSResponse(list);
 
+            return res;
+        }
 
+        [HttpGet]
+        public ActionResult GetMyRecevingOrders()
+        {
+            var list = orderService.GetMyRecevingOrders();
+
+            JsonResult res = new JsonResult();
+            res.Data = new JSResponse(list);
+
+            return res;
+        }
+
+        [HttpGet]
+        public ActionResult GetMyHandlingOrders()
+        {
+            var list = orderService.GetMyHandlingOrders();
+
+            JsonResult res = new JsonResult();
+            res.Data = new JSResponse(list);
+
+            return res;
+        }
+
+        [HttpGet]
+        public ActionResult GetMyHandledOrders()
+        {
+            var list = orderService.GetMyHandledOrders();
+
+            JsonResult res = new JsonResult();
+            res.Data = new JSResponse(list);
+
+            return res;
+        }
+
+        [HttpGet]
+        public ActionResult GetMyAppointingOrders()
+        {
+            var list = orderService.GetMyAppointingOrders();
+
+            JsonResult res = new JsonResult();
+            res.Data = new JSResponse(list);
+
+            return res;
+        }
+
+        [HttpGet]
+        public ActionResult GetMyAppointedOrders()
+        {
+            var list = orderService.GetMyAppointedOrders();
+
+            JsonResult res = new JsonResult();
+            res.Data = new JSResponse(list);
+
+            return res;
+        }
     }
 }

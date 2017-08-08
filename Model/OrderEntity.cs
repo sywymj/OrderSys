@@ -50,13 +50,31 @@ namespace JSNet.Model
             set { _orderno = value; }
         }
         /// <summary>
-        /// StaffID
+        /// StarterID
         /// </summary>		
-        private int? _staffid;
-        public int? StaffID
+        private int? _starterid;
+        public int? StarterID
         {
-            get { return _staffid; }
-            set { _staffid = value; }
+            get { return _starterid; }
+            set { _starterid = value; }
+        }
+        /// <summary>
+        /// HandlerID
+        /// </summary>		
+        private int? _handlerid;
+        public int? HandlerID
+        {
+            get { return _handlerid; }
+            set { _handlerid = value; }
+        }
+        /// <summary>
+        /// AppointerID
+        /// </summary>		
+        private int? _appointerid;
+        public int? AppointerID
+        {
+            get { return _appointerid; }
+            set { _appointerid = value; }
         }
         /// <summary>
         /// OperatorID
@@ -77,13 +95,13 @@ namespace JSNet.Model
             set { _nextoperatorid = value; }
         }
         /// <summary>
-        /// Content
+        /// AssignDpt
         /// </summary>		
-        private string _content;
-        public string Content
+        private int? _assigndpt;
+        public int? AssignDpt
         {
-            get { return _content; }
-            set { _content = value; }
+            get { return _assigndpt; }
+            set { _assigndpt = value; }
         }
         /// <summary>
         /// Remark
@@ -95,13 +113,13 @@ namespace JSNet.Model
             set { _remark = value; }
         }
         /// <summary>
-        /// AssignDpt
+        /// Priority
         /// </summary>		
-        private int? _assigndpt;
-        public int? AssignDpt
+        private int? _priority;
+        public int? Priority
         {
-            get { return _assigndpt; }
-            set { _assigndpt = value; }
+            get { return _priority; }
+            set { _priority = value; }
         }
         /// <summary>
         /// Status
@@ -149,13 +167,13 @@ namespace JSNet.Model
             set { _attntel = value; }
         }
         /// <summary>
-        /// Priority
+        /// Content
         /// </summary>		
-        private int? _priority;
-        public int? Priority
+        private string _content;
+        public string Content
         {
-            get { return _priority; }
-            set { _priority = value; }
+            get { return _content; }
+            set { _content = value; }
         }
         #endregion
 
@@ -175,11 +193,25 @@ namespace JSNet.Model
             get { return "OrderNo"; }
         }
         /// <summary>
-        /// FiledName:StaffID
+        /// FiledName:StarterID
         /// </summary>		
-        public static string FieldStaffID
+        public static string FieldStarterID
         {
-            get { return "StaffID"; }
+            get { return "StarterID"; }
+        }
+        /// <summary>
+        /// FiledName:HandlerID
+        /// </summary>		
+        public static string FieldHandlerID
+        {
+            get { return "HandlerID"; }
+        }
+        /// <summary>
+        /// FiledName:AppointerID
+        /// </summary>		
+        public static string FieldAppointerID
+        {
+            get { return "AppointerID"; }
         }
         /// <summary>
         /// FiledName:OperatorID
@@ -196,11 +228,11 @@ namespace JSNet.Model
             get { return "NextOperatorID"; }
         }
         /// <summary>
-        /// FiledName:Content
+        /// FiledName:AssignDpt
         /// </summary>		
-        public static string FieldContent
+        public static string FieldAssignDpt
         {
-            get { return "Content"; }
+            get { return "AssignDpt"; }
         }
         /// <summary>
         /// FiledName:Remark
@@ -210,11 +242,11 @@ namespace JSNet.Model
             get { return "Remark"; }
         }
         /// <summary>
-        /// FiledName:AssignDpt
+        /// FiledName:Priority
         /// </summary>		
-        public static string FieldAssignDpt
+        public static string FieldPriority
         {
-            get { return "AssignDpt"; }
+            get { return "Priority"; }
         }
         /// <summary>
         /// FiledName:Status
@@ -252,11 +284,11 @@ namespace JSNet.Model
             get { return "AttnTel"; }
         }
         /// <summary>
-        /// FiledName:Priority
+        /// FiledName:Content
         /// </summary>		
-        public static string FieldPriority
+        public static string FieldContent
         {
-            get { return "Priority"; }
+            get { return "Content"; }
         }
         #endregion
 
@@ -264,18 +296,20 @@ namespace JSNet.Model
         {
             this.ID = CommonUtil.ConvertToGuid(dataRow[FieldID]);
             this.OrderNo = CommonUtil.ConvertToString(dataRow[FieldOrderNo]);
-            this.StaffID = CommonUtil.ConvertToInt(dataRow[FieldStaffID]);
+            this.StarterID = CommonUtil.ConvertToInt(dataRow[FieldStarterID]);
+            this.HandlerID = CommonUtil.ConvertToInt(dataRow[FieldHandlerID]);
+            this.AppointerID = CommonUtil.ConvertToInt(dataRow[FieldAppointerID]);
             this.OperatorID = CommonUtil.ConvertToInt(dataRow[FieldOperatorID]);
             this.NextOperatorID = CommonUtil.ConvertToInt(dataRow[FieldNextOperatorID]);
-            this.Content = CommonUtil.ConvertToString(dataRow[FieldContent]);
-            this.Remark = CommonUtil.ConvertToString(dataRow[FieldRemark]);
             this.AssignDpt = CommonUtil.ConvertToInt(dataRow[FieldAssignDpt]);
+            this.Remark = CommonUtil.ConvertToString(dataRow[FieldRemark]);
+            this.Priority = CommonUtil.ConvertToInt(dataRow[FieldPriority]);
             this.Status = CommonUtil.ConvertToInt(dataRow[FieldStatus]);
             this.FinishTime = CommonUtil.ConvertToDateTime(dataRow[FieldFinishTime]);
             this.BookingTime = CommonUtil.ConvertToDateTime(dataRow[FieldBookingTime]);
             this.Attn = CommonUtil.ConvertToString(dataRow[FieldAttn]);
             this.AttnTel = CommonUtil.ConvertToString(dataRow[FieldAttnTel]);
-            this.Priority = CommonUtil.ConvertToInt(dataRow[FieldPriority]);
+            this.Content = CommonUtil.ConvertToString(dataRow[FieldContent]);
             return this;
         }
 
@@ -284,18 +318,20 @@ namespace JSNet.Model
         {
             this.ID = CommonUtil.ConvertToGuid(dataReader[FieldID]);
             this.OrderNo = CommonUtil.ConvertToString(dataReader[FieldOrderNo]);
-            this.StaffID = CommonUtil.ConvertToInt(dataReader[FieldStaffID]);
+            this.StarterID = CommonUtil.ConvertToInt(dataReader[FieldStarterID]);
+            this.HandlerID = CommonUtil.ConvertToInt(dataReader[FieldHandlerID]);
+            this.AppointerID = CommonUtil.ConvertToInt(dataReader[FieldAppointerID]);
             this.OperatorID = CommonUtil.ConvertToInt(dataReader[FieldOperatorID]);
             this.NextOperatorID = CommonUtil.ConvertToInt(dataReader[FieldNextOperatorID]);
-            this.Content = CommonUtil.ConvertToString(dataReader[FieldContent]);
-            this.Remark = CommonUtil.ConvertToString(dataReader[FieldRemark]);
             this.AssignDpt = CommonUtil.ConvertToInt(dataReader[FieldAssignDpt]);
+            this.Remark = CommonUtil.ConvertToString(dataReader[FieldRemark]);
+            this.Priority = CommonUtil.ConvertToInt(dataReader[FieldPriority]);
             this.Status = CommonUtil.ConvertToInt(dataReader[FieldStatus]);
             this.FinishTime = CommonUtil.ConvertToDateTime(dataReader[FieldFinishTime]);
             this.BookingTime = CommonUtil.ConvertToDateTime(dataReader[FieldBookingTime]);
             this.Attn = CommonUtil.ConvertToString(dataReader[FieldAttn]);
             this.AttnTel = CommonUtil.ConvertToString(dataReader[FieldAttnTel]);
-            this.Priority = CommonUtil.ConvertToInt(dataReader[FieldPriority]);
+            this.Content = CommonUtil.ConvertToString(dataReader[FieldContent]);
             return this;
         }
 
@@ -303,18 +339,20 @@ namespace JSNet.Model
         {
             sqlBuilder.SetValue(FieldID, entity.ID);
             sqlBuilder.SetValue(FieldOrderNo, entity.OrderNo);
-            sqlBuilder.SetValue(FieldStaffID, entity.StaffID);
+            sqlBuilder.SetValue(FieldStarterID, entity.StarterID);
+            sqlBuilder.SetValue(FieldHandlerID, entity.HandlerID);
+            sqlBuilder.SetValue(FieldAppointerID, entity.AppointerID);
             sqlBuilder.SetValue(FieldOperatorID, entity.OperatorID);
             sqlBuilder.SetValue(FieldNextOperatorID, entity.NextOperatorID);
-            sqlBuilder.SetValue(FieldContent, entity.Content);
-            sqlBuilder.SetValue(FieldRemark, entity.Remark);
             sqlBuilder.SetValue(FieldAssignDpt, entity.AssignDpt);
+            sqlBuilder.SetValue(FieldRemark, entity.Remark);
+            sqlBuilder.SetValue(FieldPriority, entity.Priority);
             sqlBuilder.SetValue(FieldStatus, entity.Status);
             sqlBuilder.SetValue(FieldFinishTime, entity.FinishTime);
             sqlBuilder.SetValue(FieldBookingTime, entity.BookingTime);
             sqlBuilder.SetValue(FieldAttn, entity.Attn);
             sqlBuilder.SetValue(FieldAttnTel, entity.AttnTel);
-            sqlBuilder.SetValue(FieldPriority, entity.Priority);
+            sqlBuilder.SetValue(FieldContent, entity.Content);
         }
 
         public void GetFromExpand(System.Data.DataRow dataRow)
