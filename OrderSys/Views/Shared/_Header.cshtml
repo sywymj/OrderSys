@@ -1,0 +1,50 @@
+﻿@{
+    Layout = null;
+}
+<!--头部-->
+<div class="top">
+    <span class="iconfont top_nav">
+        <i>&#xe65b;</i>
+        <div class="top_nav_in">
+            <div class="top_nav_in_t">
+                <div class="top_nav_in_avatar circle">
+                    <img src="images/avatar_t2.png" width="100%" />
+                </div>
+                <div class="top_nav_in_name">伊丽莎白班克斯</div>
+            </div>
+            <ul>
+                <li>
+                    <em class="iconfont">&#xe690;</em>发起工单
+                </li>
+                <li>
+                    <em class="iconfont">&#xe668;</em>我的工单
+                </li>
+                <li>
+                    <em class="iconfont">&#xe700;</em>我的委派
+                </li>
+            </ul>
+        </div>
+        <div class="top_nav_in2"></div>
+        <script>
+            $(function () {
+                var w_h = $(document).height();
+                var w_w = $(document).width();
+                $('.top_nav_in').height(w_h);
+                $('.top_nav_in2').width(w_h);
+                $('.top_nav_in2').height(w_h);
+            });
+        </script>
+        <script>
+            $('.top_nav i').click(function () {
+                $('.top_nav_in').css('left', '0');
+                $('.top_nav_in2').fadeIn(200);
+            });
+            $('.top_nav_in2').click(function () {
+                $('.top_nav_in').css('left', '-200px');
+                $('.top_nav_in2').fadeOut(200);
+            });
+        </script>
+    </span>
+    已发出
+    <label class="iconfont"></label>
+</div>

@@ -123,6 +123,29 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Content Include="Content\css\css.css" />
+    <Content Include="Content\css\jquery-weui.css" />
+    <Content Include="Content\css\jquery-weui.min.css" />
+    <Content Include="Content\css\style.css" />
+    <Content Include="Content\iconfont\demo.css" />
+    <Content Include="Content\iconfont\demo_fontclass.html" />
+    <Content Include="Content\iconfont\demo_symbol.html" />
+    <Content Include="Content\iconfont\demo_unicode.html" />
+    <Content Include="Content\iconfont\iconfont.css" />
+    <Content Include="Content\iconfont\iconfont.js" />
+    <Content Include="Content\iconfont\iconfont.svg" />
+    <Content Include="Content\images\avatar_t2.png" />
+    <Content Include="Content\js\city-picker.js" />
+    <Content Include="Content\js\city-picker.min.js" />
+    <Content Include="Content\js\jquery-weui.js" />
+    <Content Include="Content\js\jquery-weui.min.js" />
+    <Content Include="Content\js\swiper.js" />
+    <Content Include="Content\js\swiper.min.js" />
+    <Content Include="Content\lib\fastclick.js" />
+    <Content Include="Content\lib\jquery-2.1.4.js" />
+    <Content Include="Content\lib\weui.css" />
+    <Content Include="Content\lib\weui.min.css" />
+    <Content Include="Content\lib\zepto.js" />
     <Content Include="Global.asax" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
@@ -139,6 +162,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Content\fonts\" />
     <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
@@ -158,6 +182,29 @@
       <Project>{9c16e557-1f7a-4111-bf98-229a95879a71}</Project>
       <Name>7Utilities</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Order\GetMyAppointedOrders.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Order\MyStartedOrders.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Shared\_Layout.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\_ViewStart.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Shared\_Header.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Content\iconfont\iconfont.eot" />
+    <Content Include="Content\iconfont\iconfont.ttf" />
+    <Content Include="Content\iconfont\iconfont.woff" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Order\MyStartIndex.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

@@ -428,6 +428,31 @@ namespace JSNet.Service
             return dt;
         }
 
+        public DataRow GetOrderDetail(Guid orderID)
+        {
+            //只能查视图
+            ViewManager manager = new ViewManager("VO_Order");
+
+            DataRow dr = manager.GetSingle(orderID, OrderEntity.FieldID);
+            return dr;
+        }
+
+        public DataTable GetOrderHandlers(Guid orderID)
+        {
+            //只能查视图
+            ViewManager manager = new ViewManager("VO_OrderHandlers");
+
+            WhereStatement where = new WhereStatement();
+            where.Add(OrderHandlerEntity.FieldOrderID, Comparison.Equals, orderID.ToString());
+            
+            OrderByStatement orderby = new OrderByStatement();
+            orderby.Add(OrderHandlerEntity.FieldIsLeader, Sorting.Descending);
+
+            int count = 0;
+            DataTable dt = manager.GetDataTable(where, out count, orderby);
+            return dt;
+        }
+
         private int GetLeaderHandlerID(int[] orderHandlerIDs)
         {
             int count = 0;

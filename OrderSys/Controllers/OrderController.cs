@@ -138,10 +138,18 @@ namespace OrderSys.Controllers
         {
             var list = orderService.GetMyStartedOrders();
 
-            JsonResult res = new JsonResult();
-            res.Data = new JSResponse(list);
-
-            return res;
+            if (list.Rows.Count > 0)
+            {
+                return View(list);
+            }
+            else
+            {
+                JsonResult res = new JsonResult()
+                {
+                    Data = new JSResponse(list)
+                };
+                return res;
+            }
         }
 
         [HttpGet]
