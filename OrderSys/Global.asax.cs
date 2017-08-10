@@ -1,4 +1,5 @@
-﻿using System;
+﻿using JSNet.BaseSys;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -19,6 +20,9 @@ namespace OrderSys
             WebApiConfig.Register(GlobalConfiguration.Configuration);
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
+
+            //获取配置文件配置项
+            BaseConfiguration.GetSetting();
         }
     }
 }

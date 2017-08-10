@@ -26,7 +26,8 @@ namespace JSNet.DbUtilities
         {
             // 这里是每次都获取新的数据库连接,否则会有并发访问的问题存在
             string dbHelperClass = GetDbHelperClass(dbType);
-            IDbHelper dbHelper = (IDbHelper)Assembly.Load("JSNet.DbUtilities").CreateInstance(dbHelperClass, true);
+            Assembly assembly = Assembly.Load("JSNet.DbUtilities");//JSNet.DbUtilities.SqlHelper
+            IDbHelper dbHelper = (IDbHelper)assembly.CreateInstance(dbHelperClass, true);
             if (!string.IsNullOrEmpty(connectionString))
             {
                 dbHelper.ConnectionString = connectionString;
@@ -45,26 +46,26 @@ namespace JSNet.DbUtilities
         /// <returns>数据库访问实现类</returns>
         public static string GetDbHelperClass(DbTypeName dbType)
         {
-            string returnValue = "DotNet.Utilities.SqlHelper";
+            string returnValue = "JSNet.DbUtilities.SqlHelper";
             switch (dbType)
             {
                 case DbTypeName.SqlServer:
-                    returnValue = "DotNet.Utilities.SqlHelper";
+                    returnValue = "JSNet.DbUtilities.SqlHelper";
                     break;
                 case DbTypeName.Oracle:
-                    returnValue = "DotNet.Utilities.MSOracleHelper";
+                    returnValue = "JSNet.DbUtilities.MSOracleHelper";
                     break;
                 case DbTypeName.Access:
-                    returnValue = "DotNet.Utilities.OleDbHelper";
+                    returnValue = "JSNet.DbUtilities.OleDbHelper";
                     break;
                 case DbTypeName.MySql:
-                    returnValue = "DotNet.Utilities.MySqlHelper";
+                    returnValue = "JSNet.DbUtilities.MySqlHelper";
                     break;
                 case DbTypeName.DB2:
-                    returnValue = "DotNet.Utilities.DB2Helper";
+                    returnValue = "JSNet.DbUtilities.DB2Helper";
                     break;
                 case DbTypeName.SQLite:
-                    returnValue = "DotNet.Utilities.SqLiteHelper";
+                    returnValue = "JSNet.DbUtilities.SqLiteHelper";
                     break;
             }
             return returnValue;

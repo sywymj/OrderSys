@@ -13,16 +13,17 @@
     <link rel="stylesheet" type="text/css" href="/Content/css/style.css" />
     <link rel="stylesheet" href="/Content/css/css.css">
     <script src="/Content/lib/jquery-2.1.4.js"></script>
+    <script src="/Content/js/public.js"></script>
 </head>
 
 <body ontouchstart>
-    @Html.Action("_Header", "Shared")
+    @Html.Partial("~/Views/Shared/_Header.cshtml")
     @RenderBody()
     <script src="/Content/lib/fastclick.js"></script>
     <script>
-        $(function () {
-            FastClick.attach(document.body);
-        });
+    $(function () {
+        FastClick.attach(document.body);
+    });
     </script>
     <script src="/Content/js/jquery-weui.js"></script>
 </body>

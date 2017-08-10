@@ -4,6 +4,65 @@ namespace JSNet.BaseSys
 {
     public partial class BaseSystemInfo
     {
+        
+
+        /// <summary>
+        /// 时间格式
+        /// </summary>
+        public static string TimeFormat = "HH:mm:ss";
+
+        /// <summary>
+        /// 日期短格式
+        /// </summary>
+        public static string DateFormat = "yyyy-MM-dd";
+
+        /// <summary>
+        /// 日期长格式
+        /// </summary>
+        public static string DateTimeFormat = "yyyy-MM-dd HH:mm:ss";
+
+        /// <summary>
+        /// 是否登记异常
+        /// </summary>
+        public static bool LogException = true;
+
+        /// <summary>
+        /// 是否登记数据库操作
+        /// </summary>
+        public static bool LogSQL = false;
+
+        /// <summary>
+        /// 是否登记到 Windows 系统异常中
+        /// </summary>
+        public static bool EventLog = false;
+
+        /// <summary>
+        /// 是否进行日志记录
+        /// </summary>
+        public static bool RecordLog = true;
+
+        /// <summary>
+        /// 当前网站的安装地址
+        /// </summary>
+        public static string StartupPath = System.Web.HttpRuntime.AppDomainAppPath.ToString();
+
+        /// <summary>
+        /// Xml配置文件文件名
+        /// </summary>
+        public static string XmlFileName = "Config.xml";
+
+        /// <summary>
+        /// Xml配置文件文件夹路径
+        /// </summary>
+        public static string XmlDirectoryName = StartupPath + "Xml\\";
+
+
+        /// <summary>
+        /// RegistryKey、Configuration、UserConfig 注册表或者配置文件读取参数
+        /// </summary>
+        public static ConfigurationCategory ConfigurationFrom = ConfigurationCategory.Configuration;
+
+
         /// <summary>
         /// 当前版本
         /// </summary>
@@ -68,61 +127,5 @@ namespace JSNet.BaseSys
         /// 服务器端加密存储密码
         /// </summary>
         public static bool ServerEncryptPassword = XmlConfigHelper.GetBoolValue("ServerEncryptPassword");
-
-        /// <summary>
-        /// 时间格式
-        /// </summary>
-        public static string TimeFormat = "HH:mm:ss";
-
-        /// <summary>
-        /// 日期短格式
-        /// </summary>
-        public static string DateFormat = "yyyy-MM-dd";
-
-        /// <summary>
-        /// 日期长格式
-        /// </summary>
-        public static string DateTimeFormat = "yyyy-MM-dd HH:mm:ss";
-
-        /// <summary>
-        /// 是否登记异常
-        /// </summary>
-        public static bool LogException = true;
-
-        /// <summary>
-        /// 是否登记数据库操作
-        /// </summary>
-        public static bool LogSQL = false;
-
-        /// <summary>
-        /// 是否登记到 Windows 系统异常中
-        /// </summary>
-        public static bool EventLog = false;
-
-        /// <summary>
-        /// 是否进行日志记录
-        /// </summary>
-        public static bool RecordLog = true;
-
-        /// <summary>
-        /// 当前网站的安装地址
-        /// </summary>
-        public static string StartupPath = System.Environment.CurrentDirectory;
-
-        /// <summary>
-        /// Xml配置文件文件名
-        /// </summary>
-        public static string XmlFileName = "Config.xml";
-
-        /// <summary>
-        /// Xml配置文件文件夹路径
-        /// </summary>
-        public static string XmlDirectoryName = StartupPath + string.Empty;
-
-
-        /// <summary>
-        /// RegistryKey、Configuration、UserConfig 注册表或者配置文件读取参数
-        /// </summary>
-        public static ConfigurationCategory ConfigurationFrom = ConfigurationCategory.Configuration;
     }
 }

@@ -1,4 +1,5 @@
-﻿using JSNet.BaseSys;
+﻿using FastJSON;
+using JSNet.BaseSys;
 using JSNet.Model;
 using JSNet.Service;
 using System;
@@ -9,11 +10,17 @@ using System.Web.Mvc;
 
 namespace OrderSys.Controllers
 {
-    public class OrderController : Controller
+    public class OrderController : BaseController
     {
         private OrderService orderService = new OrderService();
 
         public ActionResult Index()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public ActionResult MyStartIndex()
         {
             return View();
         }
@@ -136,19 +143,29 @@ namespace OrderSys.Controllers
         [HttpGet]
         public ActionResult GetMyStartedOrders()
         {
-            var list = orderService.GetMyStartedOrders();
+            try
+            {
+                string s = BaseSystemInfo.XmlFileName;
 
-            if (list.Rows.Count > 0)
-            {
-                return View(list);
-            }
-            else
-            {
-                JsonResult res = new JsonResult()
+
+                var list = orderService.GetMyStartedOrders();
+
+                if (list.Rows.Count > 0)
                 {
-                    Data = new JSResponse(list)
-                };
-                return res;
+                    return PartialView("MyStartedOrders", list);
+                }
+                else
+                {
+                    ContentResult res = new ContentResult()
+                    {
+                        Content = JSON.ToJSON(new JSResponse("201", "没有数据可以加载了！"), jsonParameters)
+                    };
+                    return res;
+                }
+            }
+            catch (Exception e)
+            {
+                throw e;
             }
         }
 

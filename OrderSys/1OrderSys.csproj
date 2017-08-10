@@ -112,6 +112,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\OrderController.cs" />
     <Compile Include="Controllers\PermissionController.cs" />
     <Compile Include="Global.asax.cs">
@@ -139,6 +140,7 @@
     <Content Include="Content\js\city-picker.min.js" />
     <Content Include="Content\js\jquery-weui.js" />
     <Content Include="Content\js\jquery-weui.min.js" />
+    <Content Include="Content\js\public.js" />
     <Content Include="Content\js\swiper.js" />
     <Content Include="Content\js\swiper.min.js" />
     <Content Include="Content\lib\fastclick.js" />

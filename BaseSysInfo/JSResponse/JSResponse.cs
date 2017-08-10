@@ -10,7 +10,7 @@ namespace JSNet.BaseSys
         /// <summary>
         /// 成功返回，返回码默认200，消息提示类型默认message
         /// </summary>
-        /// <param name="msg">返回消息</param>
+        /// <param name="msg">返回消息（展示给用户看）</param>
         public JSResponse(string msg)
             : this(ResponseType.Message, "200", msg, "", "", null)
         {
@@ -33,7 +33,7 @@ namespace JSNet.BaseSys
         /// </summary>
         /// <param name="resType">消息提示类型</param>
         /// <param name="msg">返回消息</param>
-        /// <param name="data">返回消息</param>
+        /// <param name="data">返回消息（展示给用户看）</param>
         public JSResponse(ResponseType resType, string msg)
             : this(resType, "200", msg, "", "", null)
         {
@@ -46,7 +46,7 @@ namespace JSNet.BaseSys
         /// <param name="errcode"></param>
         /// <param name="errmsg"></param>
         public JSResponse(string errcode, string errmsg)
-            : this("", errcode, errmsg)
+            : this("服务器繁忙，请重试！", errcode, errmsg)
         {
 
         }
@@ -54,6 +54,7 @@ namespace JSNet.BaseSys
         /// <summary>
         /// 返回错误提示，返回码默认500
         /// </summary>
+        /// <param name="msg">返回消息（展示给用户看）</param>
         /// <param name="errcode">错误代码</param>
         /// <param name="errmsg">错误消息</param>
         public JSResponse(string msg, string errcode, string errmsg)
@@ -68,7 +69,7 @@ namespace JSNet.BaseSys
         /// 返回错误提示
         /// </summary>
         /// <param name="code">返回码</param>
-        /// <param name="msg">返回消息</param>
+        /// <param name="msg">返回消息（展示给用户看）</param>
         /// <param name="errcode">错误代码</param>
         /// <param name="errmsg">错误消息</param>
         public JSResponse(string code, string msg, string errcode, string errmsg)

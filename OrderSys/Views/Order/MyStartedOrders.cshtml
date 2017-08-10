@@ -1,22 +1,31 @@
 ﻿@model System.Data.DataTable
 
-<div class="list_sym">
-    <div class="list_sym_l">
-        @foreach (System.Data.DataRow dr in Model.Rows)
-        {
+@foreach (System.Data.DataRow dr in Model.Rows)
+{
+    <div class="list_sym">
+        <div class="list_sym_l">
             <div class="list_sym_l_in">
                 <div class="list_sym_l_in_t">报障单号：@dr["OrderNo"]</div>
                 <div class="list_sym_l_in_m">
                     <ul>
-                        <li><font color="#009966">状态：@dr["Priority"]</font></li>
+                        <li><font color="#ed3232" size="2">状态：@dr["Priority"]</font></li>
+                        <div class="clear"></div>
                         <li>待办人：@dr["NextOperaterName"]</li>
-                        <li>联系电话：@dr["NextOperaterTel"]</li>
+                        <li>电话：@dr["NextOperaterTel"]</li>
                         <div class="clear"></div>
                     </ul>
                 </div>
+                <div class="list_sym_l_in_b">
+                    工单内容：<br />
+                    @dr["Content"]
+                </div>
             </div>
-        }
+        </div>
+        <div class="list_sym_r">
+            <a href="@Url.Action("","")" class="orders">接单</a>
+            <a href="@Url.Action("","")" class="details">详情</a>
+        </div>
+        <div class="clear"></div>
     </div>
-    <div class="list_sym_r"></div>
-    <div class="clear"></div>
-</div>
+}
+

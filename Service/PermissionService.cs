@@ -55,12 +55,10 @@ namespace JSNet.Service
 
         public StaffEntity GetCurrentStaff()
         {
-            string openID = JSRequest.GetSessionParm("OpenID").ToString();
             
-            if(string.IsNullOrEmpty(openID))
-            {
-                throw new JSException(JSErrMsg.ERR_CODE_SESSIONKEY_MISSING,string.Format(JSErrMsg.ERR_MSG_SESSIONKEY_MISSING,"OpenID"));
-            }
+            //string openID = JSRequest.GetSessionParm("OpenID").ToString();
+
+            string openID = "1";//调试用
 
             StaffEntity staff = new StaffEntity();
             EntityManager<StaffEntity> manager = new EntityManager<StaffEntity>();

@@ -21,11 +21,24 @@
 
 
 /*列表*/
-.list_sym{width:100%; border-bottom:1px solid #dedede;}
+.list_sym{width:100%; border-bottom:1px solid #dedede; background:#fff; margin-bottom:10px;}
 .list_sym_l{width:80%; float:left;}
 .list_sym_l_in{padding:10px;}
-.list_sym_l_in_t{color:#09F; font-size:16px;}
+.list_sym_l_in_t{color:#484848; font-size:16px;}
 .list_sym_l_in_m{color:#999; font-size:12px; line-height:20px;}
 .list_sym_l_in_m ul li{margin-right:5%; float:left;}
 .list_sym_l_in_m ul li span{margin-right:5px;}
+.list_sym_l_in_b{width:96%; height:60px; font-size:12px; line-height:20px; overflow:scroll; border:1px solid #dedede; padding:5px 2%; border-radius:4px; color:#666; margin-top:5px;}
 .list_sym_r{width:20%; position:relative; float:left;}
+.list_sym_r a{width:80%; height:26px; line-height:26px; display:block; border-radius:3px; text-align:center; margin-top:10px; margin-right:20%;}
+.list_sym_r a.revoke{background:#ef4f4f; color:#fff;}
+.list_sym_r a.revoke:active{background:#cb3d3d; color:#fff;}
+
+.list_sym_r a.orders{background:#13bc4b; color:#fff;}
+.list_sym_r a.orders:hover{background:#0d8936; color:#fff;}
+
+.list_sym_r a.details{background:#1382bc; color:#fff;}
+.list_sym_r a.details:hover{background:#106592; color:#fff;}
+
+.tablist {display: none;}
+.block {display: block;}
