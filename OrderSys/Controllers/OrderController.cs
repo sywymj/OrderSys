@@ -4,6 +4,7 @@ using JSNet.Model;
 using JSNet.Service;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -28,11 +29,19 @@ namespace OrderSys.Controllers
         [HttpGet]
         public ActionResult StartOrder(OrderEntity order)
         {
+            string sBookingTime = JSRequest.GetRequestFormParm(OrderEntity.FieldBookingTime);
+            JSRequest.GetRequestFormParm(OrderEntity.FieldAttn);
+            JSRequest.GetRequestFormParm(OrderEntity.FieldAttnTel);
+            JSRequest.GetRequestFormParm(OrderEntity.FieldPriority);
+            JSRequest.GetRequestFormParm(OrderEntity.FieldContent);
+            JSRequest.GetRequestFormParm(OrderEntity.FieldRemark);
+
+
+
             orderService.StartOrder(order);
 
-            JsonResult res = new JsonResult();
-            res.Data = new JSResponse("操作成功");
-
+            ContentResult res = new ContentResult();
+            res.Content = JSON.ToJSON(new JSResponse("操作成功！"), jsonParams);
             return res;
         }
 
@@ -47,9 +56,8 @@ namespace OrderSys.Controllers
 
             orderService.AppointOrder(orderID, handlerIDs);
 
-            JsonResult res = new JsonResult();
-            res.Data = new JSResponse("操作成功");
-
+            ContentResult res = new ContentResult();
+            res.Content = JSON.ToJSON(new JSResponse("操作成功！"), jsonParams);
             return res;
         }
 
@@ -57,14 +65,12 @@ namespace OrderSys.Controllers
         public ActionResult ReceiveOrder()
         {
             string sOrderID = JSRequest.GetRequestUrlParm(OrderEntity.FieldID);
-
             Guid orderID = JSValidator.ValidateGuid(OrderEntity.FieldID, sOrderID, true);
 
             orderService.ReceiveOrder(orderID);
 
-            JsonResult res = new JsonResult();
-            res.Data = new JSResponse("操作成功");
-
+            ContentResult res = new ContentResult();
+            res.Content = JSON.ToJSON(new JSResponse("操作成功！"), jsonParams);
             return res;
 
         }
@@ -74,9 +80,8 @@ namespace OrderSys.Controllers
         {
             orderService.AddHandleDetail(orderHandleDetail);
 
-            JsonResult res = new JsonResult();
-            res.Data = new JSResponse("操作成功");
-
+            ContentResult res = new ContentResult();
+            res.Content = JSON.ToJSON(new JSResponse("操作成功！"), jsonParams);
             return res;
         }
 
@@ -89,9 +94,8 @@ namespace OrderSys.Controllers
 
             orderService.CompleteOrder(orderID);
 
-            JsonResult res = new JsonResult();
-            res.Data = new JSResponse("操作成功");
-
+            ContentResult res = new ContentResult();
+            res.Content = JSON.ToJSON(new JSResponse("操作成功！"), jsonParams);
             return res;
         }
 
@@ -104,9 +108,8 @@ namespace OrderSys.Controllers
 
             orderService.RejectOrder(orderID);
 
-            JsonResult res = new JsonResult();
-            res.Data = new JSResponse("操作成功");
-
+            ContentResult res = new ContentResult();
+            res.Content = JSON.ToJSON(new JSResponse("操作成功！"), jsonParams);
             return res;
         }
 
@@ -119,9 +122,8 @@ namespace OrderSys.Controllers
 
             orderService.FinishOrder(orderID);
 
-            JsonResult res = new JsonResult();
-            res.Data = new JSResponse("操作成功");
-
+            ContentResult res = new ContentResult();
+            res.Content = JSON.ToJSON(new JSResponse("操作成功！"), jsonParams);
             return res;
         }
 
@@ -134,38 +136,25 @@ namespace OrderSys.Controllers
 
             orderService.CancelOrder(orderID);
 
-            JsonResult res = new JsonResult();
-            res.Data = new JSResponse("操作成功");
-
+            ContentResult res = new ContentResult();
+            res.Content = JSON.ToJSON(new JSResponse("操作成功！"), jsonParams);
             return res;
         }
 
         [HttpGet]
         public ActionResult GetMyStartedOrders()
         {
-            try
+            var list = orderService.GetMyStartedOrders();
+
+            if (list.Rows.Count > 0)
             {
-                string s = BaseSystemInfo.XmlFileName;
-
-
-                var list = orderService.GetMyStartedOrders();
-
-                if (list.Rows.Count > 0)
-                {
-                    return PartialView("MyStartedOrders", list);
-                }
-                else
-                {
-                    ContentResult res = new ContentResult()
-                    {
-                        Content = JSON.ToJSON(new JSResponse("201", "没有数据可以加载了！"), jsonParameters)
-                    };
-                    return res;
-                }
+                return PartialView("MyStartedOrders", list);
             }
-            catch (Exception e)
+            else
             {
-                throw e;
+                ContentResult res = new ContentResult();
+                res.Content = JSON.ToJSON(new JSResponse(ResponseType.None,"没有数据了！"), jsonParams);
+                return res;
             }
         }
 
@@ -223,5 +212,18 @@ namespace OrderSys.Controllers
 
             return res;
         }
+
+        [HttpGet]
+        public ActionResult GetOrderDetail()
+        {
+            string sOrderID = JSRequest.GetRequestUrlParm(OrderEntity.FieldID);
+
+            Guid orderID = JSValidator.ValidateGuid(OrderEntity.FieldID, sOrderID, true);
+
+            DataRow dr = orderService.GetOrderDetail(orderID);
+
+            return PartialView("OrderDetail", dr);
+        }
+
     }
 }

@@ -145,16 +145,16 @@ namespace JSNet.BaseSys
         }
     }
 
+    /// <summary>
+    /// 前端消息提示方式
+    /// </summary>
     public enum ResponseType
     {
-        Error=-1,
-        None = 0,        // 0 消息。
-        Message=1,
-        Remind = 2,         // 1 提示。
-        Warning = 3,        // 2 警示。
-        WaitForAudit = 4,   // 3 待审核事项。
-        Comment = 5,        // 4 评论。
-        TodoList = 6,       // 5 待审核。
-        Note = 7            // 6 备忘录。Error
+        Error=-1,           // -1 错误消息。
+        None = 0,           // 无，前端可以自定义提示方式
+        Message = 1,        // 1 普通消息。
+        Remind = 2,         // 2 提示消息。
+        Warning = 3,        // 3 警告信息。
+        Redict = 4,         // 4 跳转页面。
     }
 }

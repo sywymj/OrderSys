@@ -1,4 +1,6 @@
 ﻿@model System.Data.DataTable
+@using JSNet.Utilities;
+@using JSNet.BaseSys;
 
 @foreach (System.Data.DataRow dr in Model.Rows)
 {
@@ -8,7 +10,7 @@
                 <div class="list_sym_l_in_t">报障单号：@dr["OrderNo"]</div>
                 <div class="list_sym_l_in_m">
                     <ul>
-                        <li><font color="#ed3232" size="2">状态：@dr["Priority"]</font></li>
+                        <li><font color="#ed3232" size="2">状态：@EnumExtensions.ToDescription((OrderPriority)dr["Priority"])</font></li>
                         <div class="clear"></div>
                         <li>待办人：@dr["NextOperaterName"]</li>
                         <li>电话：@dr["NextOperaterTel"]</li>
@@ -22,10 +24,29 @@
             </div>
         </div>
         <div class="list_sym_r">
-            <a href="@Url.Action("","")" class="orders">接单</a>
-            <a href="@Url.Action("","")" class="details">详情</a>
+            <label class="state">待接单</label>
+            <a class="orders" onclick="receiveOrder('@Url.Action("ReceiveOrder", "Order", new { ID = dr["ID"] })')">接单</a>
+            <a href="@Url.Action("GetOrderDetail", "Order", new { ID = dr["ID"] }))" class="details">详情</a>
         </div>
         <div class="clear"></div>
     </div>
 }
+<script>
+    receiveOrder = function (url) {
+        $.ajax({
+            type: "GET",
+            url: url,
+            success: function (data) {
+                ajaxSuccessTips(data);
+                pageIndex= 1;
+                //重新查询
+                querymystarted();
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                alert(errorThrown);
+            }
+        })
+    }
+</script>
+
 

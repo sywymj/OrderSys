@@ -8,13 +8,13 @@
         <li class="weui_navbar_item" onclick="setTab(1,0)">
             新发起
         </li>
-        <li class="weui_navbar_item weui_bar_item_on" id="querymystarted-btn" onclick="setTab(1, 1), querymystarted()">
+        <li class="weui_navbar_item weui_bar_item_on" id="querymystarted-btn" onclick="setTab(1, 1)">
             已发起
         </li>
     </div>
     <div class="weui_tab_bd" id="tablist1">
-        <div class="tablist" id="">
-            发起工单的页面
+        <div class="tablist" id="startorder">
+            @Html.Partial("~/Views/Order/StartOrder.cshtml") 
         </div>
         <div class="tablist block" id="my-receving">
 
@@ -23,19 +23,28 @@
 </div>
 
 <script>
+    var pageIndex = 1;
+    var pageSize = 20;
+
     $(function () {
+        init();
         querymystarted();
     })
-    
+
+    init = function () {
+    }
 
     querymystarted = function () {
-        query('my-receving', '@Url.Action("GetMyStartedOrders", "Order")');
         $('#querymystarted-btn').off('click', querymystarted);
 
-        //点击完要off('click',querymyreceiving)
+        if (pageIndex == 1) {
+            clearDom('my-receving');
+        }
+        query(
+            'my-receving',
+            '@Url.Action("GetMyStartedOrders", "Order")',
+            { pageInde: pageIndex, pageSize: pageSize });
+        pageIndex++;
     }
 
-    querymyhadnling = function () {
-
-    }
 </script>

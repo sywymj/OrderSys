@@ -66,7 +66,7 @@ namespace JSNet.Service
             staff =manager.GetSingle(openID,StaffEntity.FieldOpenID);
             if (staff == null)
             {
-                throw new JSException(JSErrMsg.ERR_CODE_OBJECT_MISSING, string.Format(JSErrMsg.ERR_MSG_OBJECT_MISSING, "员工"));
+                throw new JSException(JSErrMsg.ERR_CODE_DATA_MISSING, string.Format(JSErrMsg.ERR_MSG_DATA_MISSING, "员工"));
             }
 
             return staff;

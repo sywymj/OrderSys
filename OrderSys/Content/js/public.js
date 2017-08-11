@@ -1,6 +1,6 @@
 ﻿
-query = function (domID, url, urlParms) {
-    var urlParms = { pageIndex: 1, pageCount: 10 } || urlParms;
+query = function (domID, url, urlParmsObj) {
+    var urlParms = urlParmsObj || { pageIndex: 1, pageCount: 20 };
     $.ajax({
         type: "GET",
         url: url,
@@ -11,10 +11,10 @@ query = function (domID, url, urlParms) {
                 addDom(domID, data);
             }
             else {
-                //通过这种方法可将字符串转换为对象
-                var jdata = eval('(' + data + ')');
-                console.log(jdata.ErrCode + ":" + jdata.ErrMsg);
-                $.alert(jdata.Msg);
+                var jdata = ajaxTips(data);
+                if (jdata.RspType == 0) {
+                    //底部提示没有消息了
+                }
             }
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -23,8 +23,46 @@ query = function (domID, url, urlParms) {
     })
 }
 
+getDicData = function (url) {
+    var dicData;
+    $.ajax({
+        type: "GET",
+        url: url,
+        async: false, //默认设置为true，所有请求均为异步请求。
+        success: function (data) {
+            dicData = ajaxTips(data);
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+            alert(errorThrown);
+        }
+    })
+
+    return dicData.Data;
+}
+
+ajaxTips = function (json) {
+    //通过这种方法可将字符串转换为对象
+    var jdata = eval('(' + json + ')');
+    console.log(jdata.ErrCode + ":" + jdata.ErrMsg);
+    if (jdata.RspType == -1) {
+        //错误消息提示
+        $.alert(jdata.Msg);
+    } else if (jdata.RspType == 1) {
+        //提示信息提示
+        $.alert(jdata.Msg);
+    } else if (jdata.RspType == 4) {
+        //跳转页面
+        window.location.href = jdata.data;
+    }
+    return jdata
+}
+
 addDom = function (id, data) {
     $('#' + id).append(data);
+}
+
+clearDom = function (id) {
+    $('#' + id).html('');
 }
 
 setTab = function (m, n) {
@@ -40,4 +78,14 @@ setTab = function (m, n) {
         menu[i].className = i == n ? "weui_navbar_item weui_bar_item_on" : "weui_navbar_item";
         showdiv[i].style.display = i == n ? "block" : "none";
     }
+}
+
+//此方法没用
+formatDic = function (value, data) {
+    var arr = data;
+    $.each(data, function (i, item) {
+        if (value == item.k) {
+            return item.v;
+        }
+    });
 }

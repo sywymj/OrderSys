@@ -52,7 +52,7 @@ namespace JSNet.Service
             int rows = orderManager.Update(kvps, orderID);
             if (rows == 0)
             {
-                throw new JSException(JSErrMsg.ERR_CODE_OBJECT_MISSING, string.Format(JSErrMsg.ERR_MSG_OBJECT_MISSING, "工单实体"));
+                throw new JSException(JSErrMsg.ERR_CODE_DATA_MISSING, string.Format(JSErrMsg.ERR_MSG_DATA_MISSING, "工单实体"));
             }
 
             //3.0 添加工作流实体
@@ -78,10 +78,11 @@ namespace JSNet.Service
             EntityManager<OrderEntity> orderManager = new EntityManager<OrderEntity>();
             List<KeyValuePair<string, object>> kvps = new List<KeyValuePair<string, object>>();
             kvps.Add(new KeyValuePair<string, object>(OrderEntity.FieldStatus, (int)OrderStatus.Handling));
+            kvps.Add(new KeyValuePair<string,object>(OrderEntity.FieldNextOperatorID, staff.ID));
             int rows = orderManager.Update(kvps, orderID);
             if (rows == 0)
             {
-                throw new JSException(JSErrMsg.ERR_CODE_OBJECT_MISSING, string.Format(JSErrMsg.ERR_MSG_OBJECT_MISSING, "工单实体"));
+                throw new JSException(JSErrMsg.ERR_CODE_DATA_MISSING, string.Format(JSErrMsg.ERR_MSG_DATA_MISSING, "工单实体"));
             }
 
             //3.0 添加工作流实体
@@ -128,14 +129,14 @@ namespace JSNet.Service
             int rows = orderManager.Update(kvps, orderID);
             if (rows == 0)
             {
-                throw new JSException(JSErrMsg.ERR_CODE_OBJECT_MISSING, string.Format(JSErrMsg.ERR_MSG_OBJECT_MISSING, "工单实体"));
+                throw new JSException(JSErrMsg.ERR_CODE_DATA_MISSING, string.Format(JSErrMsg.ERR_MSG_DATA_MISSING, "工单实体"));
             }
 
             //2.1 获取工单实体，以备获取发起人信息
             OrderEntity order = orderManager.GetSingle(orderID);
             if (order == null)
             {
-                throw new JSException(JSErrMsg.ERR_CODE_OBJECT_MISSING, string.Format(JSErrMsg.ERR_MSG_OBJECT_MISSING, "工单实体"));
+                throw new JSException(JSErrMsg.ERR_CODE_DATA_MISSING, string.Format(JSErrMsg.ERR_MSG_DATA_MISSING, "工单实体"));
             }
 
             //3.0 添加工作流实体
@@ -166,7 +167,7 @@ namespace JSNet.Service
             int rows = orderManager.Update(kvps, orderID);
             if (rows == 0)
             {
-                throw new JSException(JSErrMsg.ERR_CODE_OBJECT_MISSING, string.Format(JSErrMsg.ERR_MSG_OBJECT_MISSING, "工单实体"));
+                throw new JSException(JSErrMsg.ERR_CODE_DATA_MISSING, string.Format(JSErrMsg.ERR_MSG_DATA_MISSING, "工单实体"));
             }
 
             //2.1 获取工单处理者列表，必备获取领队人的信息
@@ -203,7 +204,7 @@ namespace JSNet.Service
             int rows = orderManager.Update(kvps, orderID);
             if (rows == 0)
             {
-                throw new JSException(JSErrMsg.ERR_CODE_OBJECT_MISSING, string.Format(JSErrMsg.ERR_MSG_OBJECT_MISSING, "工单实体"));
+                throw new JSException(JSErrMsg.ERR_CODE_DATA_MISSING, string.Format(JSErrMsg.ERR_MSG_DATA_MISSING, "工单实体"));
             }
 
             //3.0 添加工作流实体
@@ -234,7 +235,7 @@ namespace JSNet.Service
             int rows = orderManager.Update(kvps, orderID);
             if (rows == 0)
             {
-                throw new JSException(JSErrMsg.ERR_CODE_OBJECT_MISSING, string.Format(JSErrMsg.ERR_MSG_OBJECT_MISSING, "工单实体"));
+                throw new JSException(JSErrMsg.ERR_CODE_DATA_MISSING, string.Format(JSErrMsg.ERR_MSG_DATA_MISSING, "工单实体"));
             }
 
             //3.0 添加工作流实体
