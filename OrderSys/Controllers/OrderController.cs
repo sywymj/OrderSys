@@ -31,17 +31,17 @@ namespace OrderSys.Controllers
         {
             //获取参数
             string sBookingTime = JSRequest.GetRequestFormParm(OrderEntity.FieldBookingTime);
-            string sAttn =  JSRequest.GetRequestFormParm(OrderEntity.FieldAttn);
-            string sAttnTel = JSRequest.GetRequestFormParm(OrderEntity.FieldAttnTel);
+            string sAttn =  JSRequest.GetRequestFormParm(OrderEntity.FieldAttn,false);
+            string sAttnTel = JSRequest.GetRequestFormParm(OrderEntity.FieldAttnTel,false);
             string sPriority = JSRequest.GetRequestFormParm(OrderEntity.FieldPriority);
             string sContent = JSRequest.GetRequestFormParm(OrderEntity.FieldContent);
-            string sRemark = JSRequest.GetRequestFormParm(OrderEntity.FieldRemark);
+            string sRemark = JSRequest.GetRequestFormParm(OrderEntity.FieldRemark,false);
 
             //参数验证
             OrderEntity order = new OrderEntity();
             order.BookingTime = JSValidator.ValidateDateTime(OrderEntity.FieldBookingTime, sBookingTime, true);
-            order.Attn = JSValidator.ValidateString(OrderEntity.FieldAttn, sAttn, true);
-            order.AttnTel = JSValidator.ValidateString(OrderEntity.FieldAttnTel, sAttnTel, true);
+            order.Attn = JSValidator.ValidateString(OrderEntity.FieldAttn, sAttn, false);
+            order.AttnTel = JSValidator.ValidateString(OrderEntity.FieldAttnTel, sAttnTel, false);
             order.Priority = JSValidator.ValidateInt(OrderEntity.FieldPriority, sPriority, true);
             order.Content = JSValidator.ValidateString(OrderEntity.FieldContent, sContent, true);
             order.Remark = JSValidator.ValidateString(OrderEntity.FieldRemark, sRemark, false);
@@ -49,7 +49,7 @@ namespace OrderSys.Controllers
             orderService.StartOrder(order);
 
             ContentResult res = new ContentResult();
-            res.Content = JSON.ToJSON(new JSResponse("操作成功！"), jsonParams);
+            res.Content = JSON.ToJSON(new JSResponse("成功发起报账单！"), jsonParams);
             return res;
         }
 
@@ -59,7 +59,7 @@ namespace OrderSys.Controllers
             string sOrderID = JSRequest.GetRequestUrlParm(OrderEntity.FieldID);
             string sHandlerIDs = JSRequest.GetRequestUrlParm(OrderHandlerEntity.FieldHandlerID + "s");
 
-            Guid orderID = JSValidator.ValidateGuid(OrderEntity.FieldID,sOrderID,true);
+            Guid orderID = (Guid)JSValidator.ValidateGuid(OrderEntity.FieldID, sOrderID, true);
             int[] handlerIDs =  JSValidator.ValidateStrings(OrderHandlerEntity.FieldHandlerID + "s",sHandlerIDs,true);
 
             orderService.AppointOrder(orderID, handlerIDs);
@@ -73,7 +73,7 @@ namespace OrderSys.Controllers
         public ActionResult ReceiveOrder()
         {
             string sOrderID = JSRequest.GetRequestUrlParm(OrderEntity.FieldID);
-            Guid orderID = JSValidator.ValidateGuid(OrderEntity.FieldID, sOrderID, true);
+            Guid orderID = (Guid)JSValidator.ValidateGuid(OrderEntity.FieldID, sOrderID, true);
 
             orderService.ReceiveOrder(orderID);
 
@@ -98,7 +98,7 @@ namespace OrderSys.Controllers
         {
             string sOrderID = JSRequest.GetRequestUrlParm(OrderEntity.FieldID);
 
-            Guid orderID = JSValidator.ValidateGuid(OrderEntity.FieldID, sOrderID, true);
+            Guid orderID = (Guid)JSValidator.ValidateGuid(OrderEntity.FieldID, sOrderID, true);
 
             orderService.CompleteOrder(orderID);
 
@@ -112,7 +112,7 @@ namespace OrderSys.Controllers
         {
             string sOrderID = JSRequest.GetRequestUrlParm(OrderEntity.FieldID);
 
-            Guid orderID = JSValidator.ValidateGuid(OrderEntity.FieldID, sOrderID, true);
+            Guid orderID = (Guid)JSValidator.ValidateGuid(OrderEntity.FieldID, sOrderID, true);
 
             orderService.RejectOrder(orderID);
 
@@ -126,7 +126,7 @@ namespace OrderSys.Controllers
         {
             string sOrderID = JSRequest.GetRequestUrlParm(OrderEntity.FieldID);
 
-            Guid orderID = JSValidator.ValidateGuid(OrderEntity.FieldID, sOrderID, true);
+            Guid orderID = (Guid)JSValidator.ValidateGuid(OrderEntity.FieldID, sOrderID, true);
 
             orderService.FinishOrder(orderID);
 
@@ -140,7 +140,7 @@ namespace OrderSys.Controllers
         {
             string sOrderID = JSRequest.GetRequestUrlParm(OrderEntity.FieldID);
 
-            Guid orderID = JSValidator.ValidateGuid(OrderEntity.FieldID, sOrderID, true);
+            Guid orderID = (Guid)JSValidator.ValidateGuid(OrderEntity.FieldID, sOrderID, true);
 
             orderService.CancelOrder(orderID);
 
@@ -226,7 +226,7 @@ namespace OrderSys.Controllers
         {
             string sOrderID = JSRequest.GetRequestUrlParm(OrderEntity.FieldID);
 
-            Guid orderID = JSValidator.ValidateGuid(OrderEntity.FieldID, sOrderID, true);
+            Guid orderID = (Guid)JSValidator.ValidateGuid(OrderEntity.FieldID, sOrderID, true);
 
             DataRow dr = orderService.GetOrderDetail(orderID);
 

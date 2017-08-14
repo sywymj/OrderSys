@@ -13,8 +13,12 @@ namespace JSNet.BaseSys
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
-        public static string GetRequestUrlParm(string key)
+        public static string GetRequestUrlParm(string key,bool required = true)
         {
+            if (!required)
+            {
+                return string.Empty;
+            }
             if (!CheckRequestUrlParms(key))
             {
                 throw new JSException(JSErrMsg.ERR_CODE_KEY_MISSING, string.Format(JSErrMsg.ERR_MSG_KEY_MISSING, key));
@@ -27,8 +31,12 @@ namespace JSNet.BaseSys
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
-        public static string GetRequestFormParm(string key)
+        public static string GetRequestFormParm(string key,bool required=true)
         {
+            if (!required)
+            {
+                return string.Empty;
+            }
             if (!CheckRequestFormParms(key))
             {
                 throw new JSException(JSErrMsg.ERR_CODE_KEY_MISSING, string.Format(JSErrMsg.ERR_MSG_KEY_MISSING, key));

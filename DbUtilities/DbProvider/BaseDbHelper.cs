@@ -523,6 +523,15 @@ namespace JSNet.DbUtilities
         }
         #endregion
 
+
+        public virtual int ExecuteNonQuery(string commandText, IDbDataParameter[] dbParameters, CommandType commandType)
+        {
+            List<IDbDataParameter> outDbParameters = new List<IDbDataParameter>();
+            int rows = ExecuteNonQuery(commandText, dbParameters, commandType,out outDbParameters);
+            return rows;
+        }
+
+
         #region public virtual int ExecuteNonQuery(string commandText, IDbDataParameter[] dbParameters, CommandType commandType) 执行查询
         /// <summary>
         /// 执行查询
@@ -532,7 +541,7 @@ namespace JSNet.DbUtilities
         /// <param name="dbParameters">参数集</param>
         /// <param name="commandType">命令分类</param>
         /// <returns>影响行数</returns>
-        public virtual int ExecuteNonQuery(string commandText, IDbDataParameter[] dbParameters, CommandType commandType)
+        public virtual int ExecuteNonQuery(string commandText, IDbDataParameter[] dbParameters, CommandType commandType, out List<IDbDataParameter> outDbParameters)
         {
             // 写入调试信息
 #if (DEBUG)
@@ -570,6 +579,8 @@ namespace JSNet.DbUtilities
                 }
             }
             int returnValue = this._dbCommand.ExecuteNonQuery();
+            outDbParameters = GetOutParameters();
+
             this._dbCommand.Parameters.Clear();
 
             // 自动关闭
@@ -690,7 +701,7 @@ namespace JSNet.DbUtilities
         /// <returns>数据表</returns>
         public virtual DataTable Fill(string commandText)
         {
-            DataTable dataTable = new DataTable("DotNet");
+            DataTable dataTable = new DataTable("JSNet");
             return this.Fill(dataTable, commandText, CommandType.Text, null);
         }
 
@@ -713,7 +724,7 @@ namespace JSNet.DbUtilities
         /// <returns>数据表</returns>
         public virtual DataTable Fill(string commandText, IDbDataParameter[] dbParameters)
         {
-            DataTable dataTable = new DataTable("DotNet");
+            DataTable dataTable = new DataTable("JSNet");
             return this.Fill(dataTable, commandText, CommandType.Text, dbParameters);
         }
 
@@ -752,12 +763,12 @@ namespace JSNet.DbUtilities
         /// <returns>数据表</returns>
         public virtual DataTable Fill(DataTable dataTable, string commandText, CommandType commandType, IDbDataParameter[] dbParameters)
         {
-            DbParameterCollection outDbParameters;
+            List<IDbDataParameter> outDbParameters = new List<IDbDataParameter>();
             DataTable dt = Fill(dataTable, commandText, commandType, dbParameters, out outDbParameters);
             return dt;
         }
 
-        public virtual DataTable Fill(DataTable dataTable, string commandText, CommandType commandType, IDbDataParameter[] dbParameters, out DbParameterCollection outDbParameters)
+        public virtual DataTable Fill(DataTable dataTable, string commandText, CommandType commandType, IDbDataParameter[] dbParameters, out List<IDbDataParameter> outDbParameters)
         {
             //>>>EDIT BY JSON 170424
             DataSet ds = new DataSet();
@@ -807,11 +818,11 @@ namespace JSNet.DbUtilities
         /// <returns>数据权限</returns>
         public virtual DataSet Fill(string tableName, DataSet dataSet, string commandText, CommandType commandType, IDbDataParameter[] dbParameters)
         {
-            DbParameterCollection outDbParameters;
+            List<IDbDataParameter> outDbParameters = new List<IDbDataParameter>();
             return Fill(tableName, dataSet, commandText, commandType, dbParameters, out outDbParameters);
         }
 
-        public virtual DataSet Fill(string tableName, DataSet dataSet, string commandText, CommandType commandType, IDbDataParameter[] dbParameters, out DbParameterCollection outDbParameters)
+        public virtual DataSet Fill(string tableName, DataSet dataSet, string commandText, CommandType commandType, IDbDataParameter[] dbParameters, out List<IDbDataParameter> outDbParameters)
         {
             // 写入调试信息
 #if (DEBUG)
@@ -858,16 +869,8 @@ namespace JSNet.DbUtilities
                 this._dbDataAdapter = this.GetInstance().CreateDataAdapter();
                 this._dbDataAdapter.SelectCommand = this._dbCommand;
                 this._dbDataAdapter.Fill(dataSet, tableName);
-                //返回输出 // TODO 
-                outDbParameters = this._dbCommand.Parameters;
-                List<IDbDataParameter> lsParameters = new List<IDbDataParameter>();
-                foreach(DbParameter p in outDbParameters)
-                {
-                    if (p.Direction == ParameterDirection.Output) {
-                        lsParameters.Add(p);
-                    };
-                }
-                
+                //返回输出
+                outDbParameters = GetOutParameters();
 
                 this._dbDataAdapter.SelectCommand.Parameters.Clear();
                 if (this.AutoOpenClose)
@@ -919,10 +922,9 @@ namespace JSNet.DbUtilities
         /// <param name="procedureName">存储过程名</param>
         /// <param name="dbParameters">参数集</param>
         /// <returns>影响行数</returns>
-        public virtual int ExecuteProcedure(string procedureName, IDbDataParameter[] dbParameters,out DbParameterCollection outDbParameters)
+        public virtual int ExecuteProcedure(string procedureName, IDbDataParameter[] dbParameters,out List<IDbDataParameter> outDbParameters)
         {
-            int rows = this.ExecuteNonQuery(procedureName, dbParameters, CommandType.StoredProcedure);
-            outDbParameters = this._dbCommand.Parameters;
+            int rows = this.ExecuteNonQuery(procedureName, dbParameters, CommandType.StoredProcedure,out outDbParameters);
             return rows;
         }
         #endregion
@@ -951,11 +953,10 @@ namespace JSNet.DbUtilities
         /// <param name="tableName">填充表</param>
         /// <param name="dbParameters">参数集</param>
         /// <returns>数据权限</returns>
-        public virtual DataTable ExecuteProcedureForDataTable(string procedureName, string tableName, IDbDataParameter[] dbParameters,out DbParameterCollection outDbParameters)
+        public virtual DataTable ExecuteProcedureForDataTable(string procedureName, string tableName, IDbDataParameter[] dbParameters, out List<IDbDataParameter> outDbParameters)
         {
             DataTable dt = new DataTable(tableName);
             this.Fill(dt, procedureName, CommandType.StoredProcedure, dbParameters, out outDbParameters);
-            outDbParameters = this._dbCommand.Parameters;
             return dt;
         }
         #endregion
@@ -1150,5 +1151,18 @@ namespace JSNet.DbUtilities
 
         }
         #endregion
+
+        private List<IDbDataParameter> GetOutParameters()
+        {
+            List<IDbDataParameter> lsParameters = new List<IDbDataParameter>();
+            foreach (DbParameter p in this._dbCommand.Parameters)
+            {
+                if (p.Direction == ParameterDirection.Output)
+                {
+                    lsParameters.Add(p);
+                };
+            }
+            return lsParameters;
+        }
     }
 }

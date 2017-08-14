@@ -14,13 +14,17 @@ namespace JSNet.BaseSys
         /// </summary>
         /// <param name="name">参数名称</param>
         /// <param name="value">参数值</param>
-        /// <param name="isRequired">是否必须</param>
+        /// <param name="require">是否必须</param>
         /// <returns></returns>
-        public static string ValidateString(string name, string value, bool isRequired = false)
+        public static string ValidateString(string name, string value, bool require = false)
         {
             //TODO 过滤危险字符
             string re = string.Empty;
-            if (isRequired && string.IsNullOrEmpty(value))
+            if (!require)
+            {
+                return re;
+            }
+            if (require && string.IsNullOrEmpty(value))
             {
                 throw new JSException(JSErrMsg.ERR_CODE_PARAM_MISSING, string.Format(JSErrMsg.ERR_MSG_PARAM_MISSING, name));
             }
@@ -28,10 +32,15 @@ namespace JSNet.BaseSys
             return re;
         }
 
-        public static int ValidateInt(string name, string value, bool isRequired=false)
+        public static int? ValidateInt(string name, string value, bool require=false)
         {
             int re = 0;
-            if (isRequired && string.IsNullOrEmpty(value))
+            if (!require)
+            {
+                return null;
+            }
+
+            if (require && string.IsNullOrEmpty(value))
             {
                 throw new JSException(JSErrMsg.ERR_CODE_PARAM_MISSING, string.Format(JSErrMsg.ERR_MSG_PARAM_MISSING, name));
             }
@@ -44,10 +53,14 @@ namespace JSNet.BaseSys
             return re;
         }
 
-        public static DateTime ValidateDateTime(string name, string value, bool isRequired = false)
+        public static DateTime? ValidateDateTime(string name, string value, bool require = false)
         {
             DateTime re;
-            if (isRequired && string.IsNullOrEmpty(value))
+            if (!require)
+            {
+                return null;
+            }
+            if (require && string.IsNullOrEmpty(value))
             {
                 throw new JSException(JSErrMsg.ERR_CODE_PARAM_MISSING, string.Format(JSErrMsg.ERR_MSG_PARAM_MISSING, name));
             }
@@ -64,12 +77,16 @@ namespace JSNet.BaseSys
         /// </summary>
         /// <param name="name">参数名称</param>
         /// <param name="value">参数值</param>
-        /// <param name="isRequired">是否必须</param>
+        /// <param name="require">是否必须</param>
         /// <returns>返回 短时间 {HH:mm}</returns>
-        public static string ValidateShortTime(string name, string value, bool isRequired = false)
+        public static string ValidateShortTime(string name, string value, bool require = false)
         {
-            DateTime re = ValidateDateTime(name, value, isRequired);
-            return re.ToString("HH:mm");
+            if (!require)
+            {
+                return null;
+            }
+            DateTime? re = ValidateDateTime(name, value, require);
+            return ((DateTime)re).ToString("HH:mm");
         }
 
         /// <summary>
@@ -81,8 +98,8 @@ namespace JSNet.BaseSys
         /// <returns>返回 短时间 {HH:mm:ss}</returns>
         public static string ValidateTime(string name, string value, bool isRequired = false)
         {
-            DateTime re = ValidateDateTime(name, value, isRequired);
-            return re.ToString("HH:mm:ss");
+            DateTime? re = ValidateDateTime(name, value, isRequired);
+            return ((DateTime)re).ToString("HH:mm:ss");
         }
 
         /// <summary>
@@ -94,14 +111,18 @@ namespace JSNet.BaseSys
         /// <returns>返回 日期 {yyyy-MM-dd}</returns>
         public static string ValidateDate(string name, string value, bool isRequired = false)
         {
-            DateTime re = ValidateDateTime(name, value, isRequired);
-            return re.ToString("yyyy-MM-dd");
+            DateTime? re = ValidateDateTime(name, value, isRequired);
+            return ((DateTime)re).ToString("yyyy-MM-dd");
         }
 
-        public static bool ValidateBoolen(string name, string value, bool isRequired = false)
+        public static bool? ValidateBoolen(string name, string value, bool require = false)
         {
             bool re;
-            if (isRequired && string.IsNullOrEmpty(value))
+            if (!require)
+            {
+                return null;
+            }
+            if (require && string.IsNullOrEmpty(value))
             {
                 throw new JSException(JSErrMsg.ERR_CODE_PARAM_MISSING, string.Format(JSErrMsg.ERR_MSG_PARAM_MISSING, name));
             }
@@ -113,10 +134,14 @@ namespace JSNet.BaseSys
             return re;
         }
 
-        public static Guid ValidateGuid(string name, string value, bool isRequired = false )
+        public static Guid? ValidateGuid(string name, string value, bool require = false)
         {
             Guid re;
-            if (isRequired && string.IsNullOrEmpty(value))
+            if (!require)
+            {
+                return null;
+            }
+            if (require && string.IsNullOrEmpty(value))
             {
                 throw new JSException(JSErrMsg.ERR_CODE_PARAM_MISSING, string.Format(JSErrMsg.ERR_MSG_PARAM_MISSING, name));
             }
@@ -128,20 +153,28 @@ namespace JSNet.BaseSys
             return re;
         }
 
-        public static int[] ValidateStrings(string name, string value, bool isRequired = false)
+        public static int[] ValidateStrings(string name, string value, bool require = false)
         {
-            if (isRequired && string.IsNullOrEmpty(value))
+            if (!require)
+            {
+                return null;
+            }
+            if (require && string.IsNullOrEmpty(value))
             {
                 throw new JSException(JSErrMsg.ERR_CODE_PARAM_MISSING, string.Format(JSErrMsg.ERR_MSG_PARAM_MISSING, name));
             }
 
             string[] values = value.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-            return ValidateStrings(name, values, isRequired);
+            return ValidateStrings(name, values, require);
         }
 
-        public static int[] ValidateStrings(string name, string[] value, bool isRequired = false)
+        public static int[] ValidateStrings(string name, string[] value, bool require = false)
         {
-            if (isRequired && value.Length <= 0)
+            if (!require)
+            {
+                return null;
+            }
+            if (require && value.Length <= 0)
             {
                 throw new JSException(JSErrMsg.ERR_CODE_PARAM_MISSING, string.Format(JSErrMsg.ERR_MSG_PARAM_MISSING, name));
             }
@@ -149,15 +182,19 @@ namespace JSNet.BaseSys
             int[] re = new int[value.Length];
             for (int i = 0; i < value.Length; i++)
             {
-                int n = ValidateInt(name, value[i], isRequired);
-                re[i] = n;
+                int? n = ValidateInt(name, value[i], require);
+                re[i] = (int)n;
             }
             return re;
         }
 
-        public static string[] ValidateInts(string name, int[] value, bool isRequired = false)
+        public static string[] ValidateInts(string name, int[] value, bool require = false)
         {
-            if (isRequired && value.Length <= 0)
+            if (!require)
+            {
+                return null;
+            }
+            if (require && value.Length <= 0)
             {
                 throw new JSException(JSErrMsg.ERR_CODE_PARAM_MISSING, string.Format(JSErrMsg.ERR_MSG_PARAM_MISSING, name));
             }
@@ -165,7 +202,7 @@ namespace JSNet.BaseSys
             string[] re = new string[value.Length];
             for (int i = 0; i < value.Length; i++)
             {
-                string s = ValidateString(name, value[i].ToString(), isRequired);
+                string s = ValidateString(name, value[i].ToString(), require);
                 re[i] = s;
             }
             return re;

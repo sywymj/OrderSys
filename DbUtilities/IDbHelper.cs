@@ -309,7 +309,7 @@ namespace JSNet.DbUtilities
         /// <param name="dbParameters"></param>
         /// <param name="outDbParameters"></param>
         /// <returns></returns>
-        DataTable Fill(DataTable dataTable, string commandText, CommandType commandType, IDbDataParameter[] dbParameters, out DbParameterCollection outDbParameters);
+        DataTable Fill(DataTable dataTable, string commandText, CommandType commandType, IDbDataParameter[] dbParameters, out List<IDbDataParameter> outDbParameters);
 
         /// <summary>
         /// 填充数据权限
@@ -351,7 +351,7 @@ namespace JSNet.DbUtilities
         /// <param name="dbParameters"></param>
         /// <param name="outDbParameters"></param>
         /// <returns></returns>
-        DataSet Fill(string tableName, DataSet dataSet, string commandText, CommandType commandType, IDbDataParameter[] dbParameters, out DbParameterCollection outDbParameters);
+        DataSet Fill(string tableName, DataSet dataSet, string commandText, CommandType commandType, IDbDataParameter[] dbParameters, out List<IDbDataParameter> outDbParameters);
 
         /// <summary>
         /// 执行数据库查询
@@ -385,15 +385,7 @@ namespace JSNet.DbUtilities
         /// <param name="dbParameters">参数集</param>
         /// <param name="outDbParameters">用于返回输出参数</param>
         /// <returns>数据权限</returns>
-        DataTable ExecuteProcedureForDataTable(string procedureName, string tableName, IDbDataParameter[] dbParameters,out DbParameterCollection outDbParameters);
-
-        /// <summary>
-        /// 获取输出参数
-        /// </summary>
-        /// <param name="paramName">参数</param>
-        /// <param name="dbType">数据类型</param>
-        /// <returns></returns>
-        IDbDataParameter MakeOutParam(string paramName, string dbType);
+        DataTable ExecuteProcedureForDataTable(string procedureName, string tableName, IDbDataParameter[] dbParameters,out List<IDbDataParameter> outDbParameters);
 
         /// <summary>
         /// 获取输出参数

@@ -30,6 +30,7 @@ namespace JSNet.Service
 
             //2.0 添加工单实体
             order.ID = Guid.NewGuid();
+            order.OrderNo = orderNo;
             order.Status = (int)OrderStatus.Appointing;
             order.StarterID = staff.ID;
             order.OperatorID = staff.ID;
@@ -39,11 +40,11 @@ namespace JSNet.Service
                 order.Attn = staff.Name;
                 order.AttnTel = staff.Tel;
             }
-            string orderID = orderManager.Insert(order);
+            orderManager.Insert(order);
 
             //3.0 添加工作流实体
             OrderFlowEntity orderFlow = new OrderFlowEntity();
-            orderFlow.OrderID = Guid.Parse(orderID);
+            orderFlow.OrderID = order.ID;
             orderFlow.OperatorID=staff.ID;
             orderFlow.NextOperatorID = 0;
             orderFlow.Operation = (int)OperationEnum.Start;
@@ -509,12 +510,13 @@ namespace JSNet.Service
         /// <returns></returns>
         private string GetNewOrderNo()
         {
-            DbParameterCollection outputParameters;
-            EntityManager<OrderEntity> orderManager = new EntityManager<OrderEntity>();
+            List<IDbDataParameter> outDbParameters = new List<IDbDataParameter>();
+            IDbHelper dbHelper = DbHelperFactory.GetHelper(BaseSystemInfo.CenterDbConnectionString);
 
-            IDbDataParameter[] dbParameters = new IDbDataParameter[] { orderManager.MakeOutParam("sn", SqlDbType.VarChar.ToString(), 14) };
-            DataTable dt = orderManager.GetFromProcedure("[uspSN]", dbParameters, out outputParameters);
-            string orderNo = outputParameters["sn"].ToString();
+            IDbDataParameter[] dbParameters = new IDbDataParameter[] { dbHelper.MakeOutParam("sn", SqlDbType.VarChar.ToString(), 14) };
+            DataTable dt = dbHelper.ExecuteProcedureForDataTable("[uspSN]", "JSNet", dbParameters, out outDbParameters);
+
+            string orderNo = outDbParameters.FirstOrDefault(p => p.ParameterName == dbHelper.GetParameter("sn")).Value.ToString();
             return orderNo;
         }
 

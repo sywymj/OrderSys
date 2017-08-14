@@ -207,19 +207,6 @@ namespace JSNet.DbUtilities
         }
         #endregion
 
-        #region public IDbDataParameter MakeOutParam(string paramName, DbType dbType) 获取输出参数
-        /// <summary>
-        /// 获取输出参数
-        /// </summary>
-        /// <param name="paramName">参数</param>
-        /// <param name="dbType">数据类型</param>
-        /// <returns></returns>
-        public IDbDataParameter MakeOutParam(string paramName, string sqlDbType)
-        {
-            return MakeParameter(paramName, null, sqlDbType, 0, ParameterDirection.Output);
-        }
-        #endregion
-
         #region public IDbDataParameter MakeOutParam(string paramName, DbType dbType, int size) 获取输出参数
         /// <summary>
         /// 获取输出参数

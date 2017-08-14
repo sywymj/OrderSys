@@ -52,12 +52,6 @@ namespace JSNet.Manager
             return this.DbHelper.MakeInParam(paramName, dbType, size, value);
         }
 
-        public IDbDataParameter MakeOutParam(string paramName, string dbType)
-        {
-
-            return this.DbHelper.MakeOutParam(paramName, dbType);
-        }
-
         public IDbDataParameter MakeOutParam(string paramName,string dbType, int size)
         {
 
@@ -69,7 +63,7 @@ namespace JSNet.Manager
             return this.DbHelper.ExecuteProcedureForDataTable(procedureName, this.CurrentTableName, dbParameters);
         }
 
-        public DataTable GetFromProcedure(string procedureName, IDbDataParameter[] dbParameters, out DbParameterCollection outDbParameters)
+        public DataTable GetFromProcedure(string procedureName, IDbDataParameter[] dbParameters, out List<IDbDataParameter> outDbParameters)
         {
             return this.DbHelper.ExecuteProcedureForDataTable(procedureName, this.CurrentTableName, dbParameters,out outDbParameters);
         }
