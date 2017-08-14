@@ -89,6 +89,7 @@ namespace JSNet.BaseSys
         /// <param name="data">返回数据</param>
         public JSResponse(ResponseType rspType, string code, string msg, string errcode, string errmsg, object data)
         {
+            RspTypeCode = (int)rspType;
             RspType = rspType;
             Code = code;
             Msg = msg;
@@ -133,6 +134,12 @@ namespace JSNet.BaseSys
         [XmlElement("rsp_type")]
         public ResponseType RspType { get; set; }
 
+        /// <summary>
+        /// 相应的类型代码
+        /// </summary>
+        [XmlElement("rsp_typecode")]
+        public int RspTypeCode { get; set; }
+        
         /// <summary>
         /// 响应结果是否错误
         /// </summary>

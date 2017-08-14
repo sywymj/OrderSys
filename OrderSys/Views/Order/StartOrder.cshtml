@@ -8,13 +8,13 @@
     <div class="weui_cell">
         <div class="weui_cell_hd"><label class="weui_label">联系人</label></div>
         <div class="weui_cell_bd weui_cell_primary">
-            <input class="weui_input" id="StarterName" type="" placeholder="不填默认发单人">
+            <input class="weui_input" id="Attn" type="" placeholder="不填默认发单人">
         </div>
     </div>
     <div class="weui_cell">
         <div class="weui_cell_hd"><label class="weui_label">联系电话</label></div>
         <div class="weui_cell_bd weui_cell_primary">
-            <input class="weui_input" id="StarterTel" type="" placeholder="不填默认发单人电话">
+            <input class="weui_input" id="AttnTel" type="" placeholder="不填默认发单人电话">
         </div>
     </div>
 
@@ -72,20 +72,22 @@
             url: "@Url.Action("StartOrder", "Order")",
             data: {
                 BookingTime: $('#BookingTime').val(),
-                StarterName: $('#StarterName').val(),
-                StarterTel: $('#StarterTel').val(),
+                Attn: $('#Attn').val(),
+                AttnTel: $('#Attn').val(),
                 Priority: $("input[name='Priority']:checked").val(),
                 Content: $('#Content').val(),
                 Remark: $('#Remark').val()
             },
-            dataType: "json", //xml、html、script、jsonp、text
+            dataType: "text", //xml、html、script、jsonp、text
             beforeSend: function () { },
             complete: function () { },
             success: function (data) {
                 //我这里跳转之后，怎么返回我想要回的页面
-                alert(data)
+                ajaxTips(data);
+                //alert(data)
             },
             error: function () { },
         });
+        
     }
 </script>

@@ -1,11 +1,13 @@
 ﻿using CodeEngine.Framework.QueryBuilder;
 using CodeEngine.Framework.QueryBuilder.Enums;
 using JSNet.BaseSys;
+using JSNet.DbUtilities;
 using JSNet.Manager;
 using JSNet.Model;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Common;
 using System.Linq;
 using System.Text;
 
@@ -23,8 +25,20 @@ namespace JSNet.Service
             //1.0 获取当前员工数据
             StaffEntity staff = permissionService.GetCurrentStaff();
 
+            //2.0获取最新的工单号
+            string orderNo = GetNewOrderNo();
+
             //2.0 添加工单实体
+            order.ID = Guid.NewGuid();
             order.Status = (int)OrderStatus.Appointing;
+            order.StarterID = staff.ID;
+            order.OperatorID = staff.ID;
+            order.Status = (int)OrderStatus.Appointing;
+            if (string.IsNullOrEmpty(order.Attn) || string.IsNullOrEmpty(order.AttnTel))
+            {
+                order.Attn = staff.Name;
+                order.AttnTel = staff.Tel;
+            }
             string orderID = orderManager.Insert(order);
 
             //3.0 添加工作流实体
@@ -487,6 +501,21 @@ namespace JSNet.Service
                 throw new JSException(JSErrMsg.ERR_CODE_NOLEADER, string.Format(JSErrMsg.ERR_MSG_NOLEADER));
             }
             return leaderID;
+        }
+
+        /// <summary>
+        /// 返回工单号（不支持事务）
+        /// </summary>
+        /// <returns></returns>
+        private string GetNewOrderNo()
+        {
+            DbParameterCollection outputParameters;
+            EntityManager<OrderEntity> orderManager = new EntityManager<OrderEntity>();
+
+            IDbDataParameter[] dbParameters = new IDbDataParameter[] { orderManager.MakeOutParam("sn", SqlDbType.VarChar.ToString(), 14) };
+            DataTable dt = orderManager.GetFromProcedure("[uspSN]", dbParameters, out outputParameters);
+            string orderNo = outputParameters["sn"].ToString();
+            return orderNo;
         }
 
     }

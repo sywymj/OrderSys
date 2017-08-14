@@ -26,18 +26,26 @@ namespace OrderSys.Controllers
             return View();
         }
 
-        [HttpGet]
-        public ActionResult StartOrder(OrderEntity order)
+        [HttpPost]
+        public ActionResult StartOrder()
         {
+            //获取参数
             string sBookingTime = JSRequest.GetRequestFormParm(OrderEntity.FieldBookingTime);
-            JSRequest.GetRequestFormParm(OrderEntity.FieldAttn);
-            JSRequest.GetRequestFormParm(OrderEntity.FieldAttnTel);
-            JSRequest.GetRequestFormParm(OrderEntity.FieldPriority);
-            JSRequest.GetRequestFormParm(OrderEntity.FieldContent);
-            JSRequest.GetRequestFormParm(OrderEntity.FieldRemark);
+            string sAttn =  JSRequest.GetRequestFormParm(OrderEntity.FieldAttn);
+            string sAttnTel = JSRequest.GetRequestFormParm(OrderEntity.FieldAttnTel);
+            string sPriority = JSRequest.GetRequestFormParm(OrderEntity.FieldPriority);
+            string sContent = JSRequest.GetRequestFormParm(OrderEntity.FieldContent);
+            string sRemark = JSRequest.GetRequestFormParm(OrderEntity.FieldRemark);
 
-
-
+            //参数验证
+            OrderEntity order = new OrderEntity();
+            order.BookingTime = JSValidator.ValidateDateTime(OrderEntity.FieldBookingTime, sBookingTime, true);
+            order.Attn = JSValidator.ValidateString(OrderEntity.FieldAttn, sAttn, true);
+            order.AttnTel = JSValidator.ValidateString(OrderEntity.FieldAttnTel, sAttnTel, true);
+            order.Priority = JSValidator.ValidateInt(OrderEntity.FieldPriority, sPriority, true);
+            order.Content = JSValidator.ValidateString(OrderEntity.FieldContent, sContent, true);
+            order.Remark = JSValidator.ValidateString(OrderEntity.FieldRemark, sRemark, false);
+            
             orderService.StartOrder(order);
 
             ContentResult res = new ContentResult();

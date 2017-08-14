@@ -115,7 +115,7 @@ namespace JSNet.DbUtilities
         /// <param name="parameterSize">长度</param>
         /// <param name="parameterDirection">输入输出类型</param>
         /// <returns>参数</returns>
-        IDbDataParameter MakeParameter(string parameterName, object parameterValue, DbType dbType, Int32 parameterSize, ParameterDirection parameterDirection);
+        IDbDataParameter MakeParameter(string parameterName, object parameterValue, string dbType, int parameterSize, ParameterDirection parameterDirection);
 
         /// <summary>
         /// 获取数据库连接
@@ -288,17 +288,28 @@ namespace JSNet.DbUtilities
         /// <param name="dbParameters">参数集</param>
         /// <param name="CommandType">命令分类</param>
         /// <returns>数据表</returns>
-        DataTable Fill(string commandText, IDbDataParameter[] dbParameters, CommandType commandType);
+        DataTable Fill(string commandText, CommandType commandType, IDbDataParameter[] dbParameters);
 
         /// <summary>
         /// 填充数据表
         /// </summary>
         /// <param name="dataTable">目标数据表</param>
         /// <param name="commandText">sql查询</param>
-        /// <param name="dbParameters">参数集</param>
         /// <param name="commandType">命令分类</param>
+        /// <param name="dbParameters">参数集</param>
         /// <returns>数据表</returns>
-        DataTable Fill(DataTable dataTable, string commandText, IDbDataParameter[] dbParameters, CommandType commandType);
+        DataTable Fill(DataTable dataTable, string commandText, CommandType commandType, IDbDataParameter[] dbParameters);
+
+        /// <summary>
+        /// 填充数据权限
+        /// </summary>
+        /// <param name="dataTable"></param>
+        /// <param name="commandText"></param>
+        /// <param name="commandType"></param>
+        /// <param name="dbParameters"></param>
+        /// <param name="outDbParameters"></param>
+        /// <returns></returns>
+        DataTable Fill(DataTable dataTable, string commandText, CommandType commandType, IDbDataParameter[] dbParameters, out DbParameterCollection outDbParameters);
 
         /// <summary>
         /// 填充数据权限
@@ -307,28 +318,40 @@ namespace JSNet.DbUtilities
         /// <param name="commandText">查询</param>
         /// <param name="tableName">填充表</param>
         /// <returns>数据权限</returns>
-        DataSet Fill(DataSet dataSet, string commandText, string tableName);
+        DataSet Fill(string tableName,DataSet dataSet, string commandText );
 
         /// <summary>
         /// 填充数据权限
         /// </summary>
+        /// <param name="tableName">填充表</param>
         /// <param name="dataSet">数据权限</param>
         /// <param name="commandText">sql查询</param>
-        /// <param name="tableName">填充表</param>
         /// <param name="dbParameters">参数集</param>
         /// <returns>数据权限</returns>
-        DataSet Fill(DataSet dataSet, string commandText, string tableName, IDbDataParameter[] dbParameters);
+        DataSet Fill(string tableName, DataSet dataSet, string commandText, IDbDataParameter[] dbParameters);
 
         /// <summary>
         /// 填充数据权限
         /// </summary>
+        /// <param name="tableName">填充表</param>
         /// <param name="dataSet">数据权限</param>
+        /// <param name="commandText">sql查询</param>
         /// <param name="commandType">命令分类</param>
-        /// <param name="commandText">sql查询</param>
-        /// <param name="tableName">填充表</param>
         /// <param name="dbParameters">参数集</param>
         /// <returns>数据权限</returns>
-        DataSet Fill(DataSet dataSet, CommandType commandType, string commandText, string tableName, IDbDataParameter[] dbParameters);
+        DataSet Fill(string tableName, DataSet dataSet, string commandText, CommandType commandType, IDbDataParameter[] dbParameters);
+
+        /// <summary>
+        /// 填充数据权限
+        /// </summary>
+        /// <param name="tableName"></param>
+        /// <param name="dataSet"></param>
+        /// <param name="commandText"></param>
+        /// <param name="commandType"></param>
+        /// <param name="dbParameters"></param>
+        /// <param name="outDbParameters"></param>
+        /// <returns></returns>
+        DataSet Fill(string tableName, DataSet dataSet, string commandText, CommandType commandType, IDbDataParameter[] dbParameters, out DbParameterCollection outDbParameters);
 
         /// <summary>
         /// 执行数据库查询
@@ -353,6 +376,43 @@ namespace JSNet.DbUtilities
         /// <param name="dbParameters">参数集</param>
         /// <returns>数据权限</returns>
         DataTable ExecuteProcedureForDataTable(string procedureName, string tableName, IDbDataParameter[] dbParameters);
+
+        /// <summary>
+        /// 执行数据库脚本
+        /// </summary>
+        /// <param name="procedureName">存储过程</param>
+        /// <param name="tableName">填充表</param>
+        /// <param name="dbParameters">参数集</param>
+        /// <param name="outDbParameters">用于返回输出参数</param>
+        /// <returns>数据权限</returns>
+        DataTable ExecuteProcedureForDataTable(string procedureName, string tableName, IDbDataParameter[] dbParameters,out DbParameterCollection outDbParameters);
+
+        /// <summary>
+        /// 获取输出参数
+        /// </summary>
+        /// <param name="paramName">参数</param>
+        /// <param name="dbType">数据类型</param>
+        /// <returns></returns>
+        IDbDataParameter MakeOutParam(string paramName, string dbType);
+
+        /// <summary>
+        /// 获取输出参数
+        /// </summary>
+        /// <param name="paramName">参数</param>
+        /// <param name="dbType">数据类型</param>
+        /// <param name="size">长度</param>
+        /// <returns></returns>
+        IDbDataParameter MakeOutParam(string paramName, string dbType, int size);
+
+        /// <summary>
+        /// 获取输入参数
+        /// </summary>
+        /// <param name="paramName">参数</param>
+        /// <param name="dbType">数据类型</param>
+        /// <param name="Size">长度</param>
+        /// <param name="value">值</param>
+        /// <returns></returns>
+        IDbDataParameter MakeInParam(string paramName, string dbType, int Size, object value);
 
         /// <summary>
         /// 写入sql查询日志

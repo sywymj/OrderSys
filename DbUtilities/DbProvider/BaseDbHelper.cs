@@ -683,7 +683,6 @@ namespace JSNet.DbUtilities
         }
         #endregion
 
-        #region public virtual DataTable Fill(string commandText) 填充数据表
         /// <summary>
         /// 填充数据表
         /// </summary>
@@ -692,11 +691,9 @@ namespace JSNet.DbUtilities
         public virtual DataTable Fill(string commandText)
         {
             DataTable dataTable = new DataTable("DotNet");
-            return this.Fill(dataTable, commandText, null, CommandType.Text);
+            return this.Fill(dataTable, commandText, CommandType.Text, null);
         }
-        #endregion
 
-        #region public virtual DataTable Fill(DataTable dataTable, string commandText) 填充数据表
         /// <summary>
         /// 填充数据表
         /// </summary>
@@ -705,11 +702,9 @@ namespace JSNet.DbUtilities
         /// <returns>数据表</returns>
         public virtual DataTable Fill(DataTable dataTable, string commandText)
         {
-            return this.Fill(dataTable, commandText, null, CommandType.Text);
+            return this.Fill(dataTable, commandText, CommandType.Text, null);
         }
-        #endregion
 
-        #region public virtual DataTable Fill(string commandText, IDbDataParameter[] dbParameters) 填充数据表
         /// <summary>
         /// 填充数据表
         /// </summary>
@@ -719,11 +714,9 @@ namespace JSNet.DbUtilities
         public virtual DataTable Fill(string commandText, IDbDataParameter[] dbParameters)
         {
             DataTable dataTable = new DataTable("DotNet");
-            return this.Fill(dataTable, commandText, dbParameters, CommandType.Text);
+            return this.Fill(dataTable, commandText, CommandType.Text, dbParameters);
         }
-        #endregion
 
-        #region public virtual DataTable Fill(DataTable dataTable, string commandText, IDbDataParameter[] dbParameters) 填充数据表
         /// <summary>
         /// 填充数据表
         /// </summary>
@@ -733,89 +726,92 @@ namespace JSNet.DbUtilities
         /// <returns>数据表</returns>
         public virtual DataTable Fill(DataTable dataTable, string commandText, IDbDataParameter[] dbParameters)
         {
-            return this.Fill(dataTable, commandText, dbParameters, CommandType.Text);
+            return this.Fill(dataTable, commandText, CommandType.Text, dbParameters);
         }
-        #endregion
 
-        #region public virtual DataTable Fill(string commandText, IDbDataParameter[] dbParameters, CommandType commandType) 填充数据表
         /// <summary>
         /// 填充数据表
         /// </summary>
         /// <param name="commandText">sql查询</param>
-        /// <param name="commandType">命令分类</param>
         /// <param name="dbParameters">参数集</param>
+        /// <param name="commandType">命令分类</param>
         /// <returns>数据表</returns>
-        public virtual DataTable Fill(string commandText, IDbDataParameter[] dbParameters, CommandType commandType)
+        public virtual DataTable Fill(string commandText, CommandType commandType, IDbDataParameter[] dbParameters)
         {
-            DataTable dataTable = new DataTable("DotNet");
-            return this.Fill(dataTable, commandText, dbParameters, commandType);
+            DataTable dataTable = new DataTable("JSNet");
+            return this.Fill(dataTable, commandText, commandType, dbParameters);
         }
-        #endregion
 
-        #region public virtual DataTable Fill(DataTable dataTable, string commandText, IDbDataParameter[] dbParameters, CommandType commandType) 填充数据表
         /// <summary>
         /// 填充数据表
         /// </summary>
         /// <param name="dataTable">目标数据表</param>
         /// <param name="commandText">sql查询</param>
-        /// <param name="dbParameters">参数集</param>
         /// <param name="commandType">命令分类</param>
+        /// <param name="dbParameters">参数集</param>
         /// <returns>数据表</returns>
-        public virtual DataTable Fill(DataTable dataTable, string commandText, IDbDataParameter[] dbParameters, CommandType commandType)
+        public virtual DataTable Fill(DataTable dataTable, string commandText, CommandType commandType, IDbDataParameter[] dbParameters)
+        {
+            DbParameterCollection outDbParameters;
+            DataTable dt = Fill(dataTable, commandText, commandType, dbParameters, out outDbParameters);
+            return dt;
+        }
+
+        public virtual DataTable Fill(DataTable dataTable, string commandText, CommandType commandType, IDbDataParameter[] dbParameters, out DbParameterCollection outDbParameters)
         {
             //>>>EDIT BY JSON 170424
             DataSet ds = new DataSet();
-            dataTable.TableName = string.IsNullOrEmpty(dataTable.TableName) ? "DotNet" : dataTable.TableName;
-            ds = this.Fill(ds, commandType, commandText, dataTable.TableName, dbParameters);
+            dataTable.TableName = string.IsNullOrEmpty(dataTable.TableName) ? "JSNet" : dataTable.TableName;
+            ds = this.Fill(dataTable.TableName, ds, commandText, commandType, dbParameters, out outDbParameters);
             if (ds.Tables.Count > 0)
             {
-                dataTable= ds.Tables[0];
+                dataTable = ds.Tables[0];
             }
             return dataTable;
             //<<<
         }
-        #endregion
 
-        #region public virtual DataSet Fill(DataSet dataSet, string commandText, string tableName) 填充数据权限
         /// <summary>
         /// 填充数据权限
         /// </summary>
+        /// <param name="tableName">填充表</param>
         /// <param name="dataSet">目标数据权限</param>
         /// <param name="commandText">查询</param>
-        /// <param name="tableName">填充表</param>
         /// <returns>数据权限</returns>
-        public virtual DataSet Fill(DataSet dataSet, string commandText, string tableName)
+        public virtual DataSet Fill(string tableName, DataSet dataSet, string commandText)
         {
-            return this.Fill(dataSet, CommandType.Text, commandText, tableName, null);
+            return this.Fill(tableName, dataSet, commandText, CommandType.Text, null);
         }
-        #endregion
 
-        #region public virtual DataSet Fill(DataSet dataSet, string commandText, string tableName, IDbDataParameter[] dbParameters) 填充数据权限
         /// <summary>
         /// 填充数据权限
         /// </summary>
+        /// <param name="tableName">填充表</param>
         /// <param name="dataSet">数据权限</param>
         /// <param name="commandText">sql查询</param>
-        /// <param name="tableName">填充表</param>
         /// <param name="dbParameters">参数集</param>
         /// <returns>数据权限</returns>
-        public virtual DataSet Fill(DataSet dataSet, string commandText, string tableName, IDbDataParameter[] dbParameters)
+        public virtual DataSet Fill(string tableName, DataSet dataSet, string commandText, IDbDataParameter[] dbParameters)
         {
-            return this.Fill(dataSet, CommandType.Text, commandText, tableName, dbParameters);
+            return this.Fill(tableName, dataSet, commandText, CommandType.Text, dbParameters);
         }
-        #endregion
 
-        #region public virtual DataSet Fill(DataSet dataSet, CommandType commandType, string commandText, string tableName, IDbDataParameter[] dbParameters) 填充数据权限
         /// <summary>
         /// 填充数据权限
         /// </summary>
+        /// <param name="tableName">填充表</param>
         /// <param name="dataSet">数据权限</param>
+        /// <param name="commandText">sql查询</param>
         /// <param name="commandType">命令分类</param>
-        /// <param name="commandText">sql查询</param>
-        /// <param name="tableName">填充表</param>
         /// <param name="dbParameters">参数集</param>
         /// <returns>数据权限</returns>
-        public virtual DataSet Fill(DataSet dataSet, CommandType commandType, string commandText, string tableName, IDbDataParameter[] dbParameters)
+        public virtual DataSet Fill(string tableName, DataSet dataSet, string commandText, CommandType commandType, IDbDataParameter[] dbParameters)
+        {
+            DbParameterCollection outDbParameters;
+            return Fill(tableName, dataSet, commandText, commandType, dbParameters, out outDbParameters);
+        }
+
+        public virtual DataSet Fill(string tableName, DataSet dataSet, string commandText, CommandType commandType, IDbDataParameter[] dbParameters, out DbParameterCollection outDbParameters)
         {
             // 写入调试信息
 #if (DEBUG)
@@ -862,8 +858,18 @@ namespace JSNet.DbUtilities
                 this._dbDataAdapter = this.GetInstance().CreateDataAdapter();
                 this._dbDataAdapter.SelectCommand = this._dbCommand;
                 this._dbDataAdapter.Fill(dataSet, tableName);
-                this._dbDataAdapter.SelectCommand.Parameters.Clear();
+                //返回输出 // TODO 
+                outDbParameters = this._dbCommand.Parameters;
+                List<IDbDataParameter> lsParameters = new List<IDbDataParameter>();
+                foreach(DbParameter p in outDbParameters)
+                {
+                    if (p.Direction == ParameterDirection.Output) {
+                        lsParameters.Add(p);
+                    };
+                }
+                
 
+                this._dbDataAdapter.SelectCommand.Parameters.Clear();
                 if (this.AutoOpenClose)
                 {
                     this.Close();
@@ -880,7 +886,6 @@ namespace JSNet.DbUtilities
             this.WriteLog(commandText);
             return dataSet;
         }
-        #endregion
 
         #region public virtual int ExecuteProcedure(string procedureName) 执行存储过程
         /// <summary>
@@ -907,6 +912,21 @@ namespace JSNet.DbUtilities
         }
         #endregion
 
+        #region public virtual int ExecuteProcedure(string procedureName, IDbDataParameter[] dbParameters) 执行代参数的存储过程
+        /// <summary>
+        /// 执行代参数的存储过程
+        /// </summary>
+        /// <param name="procedureName">存储过程名</param>
+        /// <param name="dbParameters">参数集</param>
+        /// <returns>影响行数</returns>
+        public virtual int ExecuteProcedure(string procedureName, IDbDataParameter[] dbParameters,out DbParameterCollection outDbParameters)
+        {
+            int rows = this.ExecuteNonQuery(procedureName, dbParameters, CommandType.StoredProcedure);
+            outDbParameters = this._dbCommand.Parameters;
+            return rows;
+        }
+        #endregion
+
         #region public virtual DataTable ExecuteProcedureForDataTable(string procedureName, string tableName, IDbDataParameter[] dbParameters) 执行存储过程返回数据表
         /// <summary>
         /// 执行存储过程返回数据表
@@ -918,8 +938,25 @@ namespace JSNet.DbUtilities
         public virtual DataTable ExecuteProcedureForDataTable(string procedureName, string tableName, IDbDataParameter[] dbParameters)
         {
             DataTable dataTable = new DataTable(tableName);
-            this.Fill(dataTable, procedureName, dbParameters, CommandType.StoredProcedure);
+            this.Fill(dataTable, procedureName, CommandType.StoredProcedure, dbParameters);
             return dataTable;
+        }
+        #endregion
+
+        #region public virtual DataTable ExecuteProcedureForDataTable(string procedureName, string tableName, IDbDataParameter[] dbParameters,out DbParameterCollection outDbParameters) 执行存储过程返回数据表
+        /// <summary>
+        /// 执行存储过程返回数据表（注意需要手动开启关闭数据库，否则不能获取输出参数值）
+        /// </summary>
+        /// <param name="procedureName">存储过程</param>
+        /// <param name="tableName">填充表</param>
+        /// <param name="dbParameters">参数集</param>
+        /// <returns>数据权限</returns>
+        public virtual DataTable ExecuteProcedureForDataTable(string procedureName, string tableName, IDbDataParameter[] dbParameters,out DbParameterCollection outDbParameters)
+        {
+            DataTable dt = new DataTable(tableName);
+            this.Fill(dt, procedureName, CommandType.StoredProcedure, dbParameters, out outDbParameters);
+            outDbParameters = this._dbCommand.Parameters;
+            return dt;
         }
         #endregion
 

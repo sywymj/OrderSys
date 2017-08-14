@@ -69,6 +69,11 @@ namespace OrderSys
             }
             else
             {
+                var exception = ex;
+                if (exception != null)
+                {
+                    routeData.Values["action"] = "Http500";
+                }
             }
 
             IController controller = new ErrorController();

@@ -207,6 +207,19 @@ namespace JSNet.DbUtilities
         }
         #endregion
 
+        #region public IDbDataParameter MakeOutParam(string paramName, DbType dbType) 获取输出参数
+        /// <summary>
+        /// 获取输出参数
+        /// </summary>
+        /// <param name="paramName">参数</param>
+        /// <param name="dbType">数据类型</param>
+        /// <returns></returns>
+        public IDbDataParameter MakeOutParam(string paramName, string sqlDbType)
+        {
+            return MakeParameter(paramName, null, sqlDbType, 0, ParameterDirection.Output);
+        }
+        #endregion
+
         #region public IDbDataParameter MakeOutParam(string paramName, DbType dbType, int size) 获取输出参数
         /// <summary>
         /// 获取输出参数
@@ -215,9 +228,9 @@ namespace JSNet.DbUtilities
         /// <param name="dbType">数据类型</param>
         /// <param name="size">长度</param>
         /// <returns></returns>
-        public IDbDataParameter MakeOutParam(string paramName, DbType dbType, int size)
+        public IDbDataParameter MakeOutParam(string paramName, string sqlDbType, int size)
         {
-            return MakeParameter(paramName, null, dbType, size, ParameterDirection.Output);
+            return MakeParameter(paramName, null, sqlDbType, size, ParameterDirection.Output);
         }
         #endregion
 
@@ -230,9 +243,9 @@ namespace JSNet.DbUtilities
         /// <param name="Size">长度</param>
         /// <param name="value">值</param>
         /// <returns></returns>
-        public IDbDataParameter MakeInParam(string paramName, DbType dbType, int Size, object value)
+        public IDbDataParameter MakeInParam(string paramName, string sqlDbType, int Size, object value)
         {
-            return MakeParameter(paramName, value, dbType, Size, ParameterDirection.Input);
+            return MakeParameter(paramName, value, sqlDbType, Size, ParameterDirection.Input);
         }
         #endregion
 
@@ -246,17 +259,17 @@ namespace JSNet.DbUtilities
         /// <param name="parameterSize">长度</param>
         /// <param name="parameterDirection">参数类型</param>
         /// <returns>参数</returns>
-        public IDbDataParameter MakeParameter(string parameterName, object parameterValue, DbType dbType, Int32 parameterSize, ParameterDirection parameterDirection)
+        public IDbDataParameter MakeParameter(string parameterName, object parameterValue, string sqlDbType, int parameterSize, ParameterDirection parameterDirection)
         {
             SqlParameter parameter;
 
             if (parameterSize > 0)
             {
-                parameter = new SqlParameter(this.GetParameter(parameterName), ConvertToSqlDbType(dbType), parameterSize);
+                parameter = new SqlParameter(this.GetParameter(parameterName), ConvertToSqlDbType(sqlDbType), parameterSize);
             }
             else
             {
-                parameter = new SqlParameter(this.GetParameter(parameterName), ConvertToSqlDbType(dbType));
+                parameter = new SqlParameter(this.GetParameter(parameterName), ConvertToSqlDbType(sqlDbType));
             }
 
             parameter.Direction = parameterDirection;
@@ -275,10 +288,10 @@ namespace JSNet.DbUtilities
         /// </summary>
         /// <param name="dbType">数据类型</param>
         /// <returns>转换结果</returns>
-        private System.Data.SqlDbType ConvertToSqlDbType(System.Data.DbType dbType)
+        private System.Data.SqlDbType ConvertToSqlDbType(string sqlDbType)
         {
             SqlParameter sqlParameter = new SqlParameter();
-            sqlParameter.DbType = dbType;
+            sqlParameter.SqlDbType = (SqlDbType)Enum.Parse(typeof(SqlDbType), sqlDbType);
             return sqlParameter.SqlDbType;
         }
         #endregion

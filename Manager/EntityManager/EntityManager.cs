@@ -46,6 +46,34 @@ namespace JSNet.Manager
 
         }
 
+        public IDbDataParameter MakeInParam(string paramName, string dbType, int size, object value)
+        {
+
+            return this.DbHelper.MakeInParam(paramName, dbType, size, value);
+        }
+
+        public IDbDataParameter MakeOutParam(string paramName, string dbType)
+        {
+
+            return this.DbHelper.MakeOutParam(paramName, dbType);
+        }
+
+        public IDbDataParameter MakeOutParam(string paramName,string dbType, int size)
+        {
+
+            return this.DbHelper.MakeOutParam(paramName, dbType, size);
+        }
+
+        public DataTable GetFromProcedure(string procedureName,IDbDataParameter[] dbParameters)
+        {
+            return this.DbHelper.ExecuteProcedureForDataTable(procedureName, this.CurrentTableName, dbParameters);
+        }
+
+        public DataTable GetFromProcedure(string procedureName, IDbDataParameter[] dbParameters, out DbParameterCollection outDbParameters)
+        {
+            return this.DbHelper.ExecuteProcedureForDataTable(procedureName, this.CurrentTableName, dbParameters,out outDbParameters);
+        }
+
         public DataTable GetFromProcedure(string procedureName, string id)
         {
             string[] names = new string[1];

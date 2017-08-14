@@ -44,13 +44,13 @@ ajaxTips = function (json) {
     //通过这种方法可将字符串转换为对象
     var jdata = eval('(' + json + ')');
     console.log(jdata.ErrCode + ":" + jdata.ErrMsg);
-    if (jdata.RspType == -1) {
+    if (jdata.RspTypeCode == -1) {
         //错误消息提示
         $.alert(jdata.Msg);
-    } else if (jdata.RspType == 1) {
+    } else if (jdata.RspTypeCode == 1) {
         //提示信息提示
         $.alert(jdata.Msg);
-    } else if (jdata.RspType == 4) {
+    } else if (jdata.RspTypeCode == 4) {
         //跳转页面
         window.location.href = jdata.data;
     }
