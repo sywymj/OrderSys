@@ -1,6 +1,17 @@
-﻿
+﻿var loading = false;//用来监听鼠标下滚事件
+var loadingID = '.loading';
+var refreshID = '.refreshing'
+var endID = '.end';
+var end = false;
+
 query = function (domID, url, urlParmsObj) {
-    var urlParms = urlParmsObj || { pageIndex: 1, pageCount: 20 };
+    //add loading
+    if (end) {
+        return;
+    } 
+    showLoading(domID);
+
+    var urlParms = urlParmsObj || { PageIndex: 1, PageSize: 20 };
     $.ajax({
         type: "GET",
         url: url,
@@ -8,17 +19,23 @@ query = function (domID, url, urlParmsObj) {
         success: function (data) {
             //判断返回值不是 json 格式
             if (!data.match("^\{(\n?.+:.+,?\n?){1,}\}$")) {
-                addDom(domID, data);
+                hideEnding(domID);
+                appendDom(domID, data);
             }
             else {
                 var jdata = ajaxTips(data);
-                if (jdata.RspType == 0) {
-                    //底部提示没有消息了
+                if (jdata.RspTypeCode == 0) {
+                    //底部提示没有数据了
+                    showEnding(domID);
                 }
             }
+            pageIndex++;
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) {
             alert(errorThrown);
+        },
+        complete: function () {
+            hideLoading(domID);
         }
     })
 }
@@ -57,12 +74,46 @@ ajaxTips = function (json) {
     return jdata
 }
 
-addDom = function (id, data) {
-    $('#' + id).append(data);
+appendDom = function (DomID, Domdata) {
+    $('#' + DomID).append(Domdata);
 }
 
-clearDom = function (id) {
-    $('#' + id).html('');
+clearDom = function (DomID) {
+    $('#' + DomID).empty();
+}
+
+//在某个dom同辈添加loading
+showLoading = function (domID) {
+    //appendDom(domID, $(loadingID).get(0));
+    //$('#' + domID + '>' + loadingID).show();
+    $('#' + domID).siblings(loadingID).show();
+    loading = true;
+}
+
+//清除某个dom同辈面的loading
+hideLoading = function (domID) {
+    //$('#' + domID + '>' + loadingID).remove();
+    $('#' + domID).siblings(loadingID).hide();
+    loading = false;
+}
+
+showRefresh = function (domID) {
+    $('#' + domID).siblings(refreshID).show();
+}
+
+hideRefresh = function (domID) {
+    $('#' + domID).siblings(refreshID).hide();
+}
+
+
+showEnding = function (domID) {
+    $('#' + domID).siblings(endID).show();
+    end = true;
+}
+
+hideEnding = function (domID) {
+    $('#' + domID).siblings(endID).hide();
+    end = false;
 }
 
 setTab = function (m, n) {

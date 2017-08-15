@@ -268,7 +268,7 @@ namespace JSNet.Service
         /// 获取我的已发起工单
         /// </summary>
         /// <returns></returns>
-        public DataTable GetMyStartedOrders()
+        public DataTable GetMyStartedOrders(int pageIndex,int pageSize,out int count)
         {
             PermissionService permissionService = new PermissionService();
             ViewManager manager = new ViewManager("VO_Order");
@@ -282,8 +282,7 @@ namespace JSNet.Service
             where.Add(OrderEntity.FieldStarterID, Comparison.Equals, staff.ID);
 
             //3.0 获取已发起的数据
-            int count =0;
-            DataTable dt = manager.GetDataTable(where, out count);
+            DataTable dt = manager.GetDataTableByPage(where, out count, pageIndex, pageSize);
             return dt;
 
         }

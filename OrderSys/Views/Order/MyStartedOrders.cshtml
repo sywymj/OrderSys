@@ -2,9 +2,11 @@
 @using JSNet.Utilities;
 @using JSNet.BaseSys;
 
+
 @foreach (System.Data.DataRow dr in Model.Rows)
 {
     <div class="list_sym">
+        <div class="list_sym_cc circle rotate90deg">@EnumExtensions.ToDescription((OrderStatus)dr["Status"])</div>
         <div class="list_sym_l">
             <div class="list_sym_l_in">
                 <div class="list_sym_l_in_t">报障单号：@dr["OrderNo"]</div>
@@ -18,21 +20,21 @@
                     </ul>
                 </div>
                 <div class="list_sym_l_in_b">
-                    工单内容：<br />
                     @dr["Content"]
                 </div>
             </div>
         </div>
         <div class="list_sym_r">
-            <label class="state">待接单</label>
-            <a class="orders" onclick="receiveOrder('@Url.Action("ReceiveOrder", "Order", new { ID = dr["ID"] })')">接单</a>
+            <a class="orders" onclick="cancelOrder('@Url.Action("CancelOrder", "Order", new { ID = dr["ID"] })')">撤销</a>
             <a href="@Url.Action("GetOrderDetail", "Order", new { ID = dr["ID"] }))" class="details">详情</a>
         </div>
         <div class="clear"></div>
     </div>
 }
+
+
 <script>
-    receiveOrder = function (url) {
+    cancelOrder = function (url) {
         $.ajax({
             type: "GET",
             url: url,
@@ -48,5 +50,6 @@
         })
     }
 </script>
+
 
 

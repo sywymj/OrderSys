@@ -212,6 +212,15 @@
   <ItemGroup>
     <Content Include="Views\Order\StartOrder.cshtml" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Shared\_Loading.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Shared\_Refresh.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Shared\_End.cshtml" />
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

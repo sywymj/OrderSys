@@ -171,6 +171,7 @@ namespace JSNet.Manager
         /// <returns></returns>
         public virtual DataTable GetDataTableByPage(WhereStatement whereStatement, out int recordCount, int pageIndex = 1, int pageSize = 50, OrderByStatement orderByStatement = null)
         {
+            DataTable dataTable = new DataTable(this.CurrentTableName);
             whereStatement.DbHelper = this.DbHelper;
             SelectQueryBuilder sqlBuilder = new SelectQueryBuilder(this.DbHelper);
             sqlBuilder.SetSelectAllColumns();
@@ -181,13 +182,18 @@ namespace JSNet.Manager
             string sql = sqlBuilder.BuildSQL(out parameters);
             recordCount = Convert.ToInt32(this.DbHelper.ExecuteScalar(PagingBuilder.CreateCountingSql(sql), parameters));
 
+            if (pageIndex * 1.0 > Math.Ceiling(recordCount * 1.0 / pageSize * 1.0))
+            {
+                //超过总页数
+                return dataTable;
+            }
+
             if (orderByStatement == null)
                 orderByStatement = new OrderByStatement("ID", Sorting.Ascending);
 
             string orderBySql = orderByStatement.BuildOrderByStatement();
             string pagedSql = PagingBuilder.CreatePagingSql(recordCount, pageSize, pageIndex, sql, orderBySql);
 
-            DataTable dataTable = new DataTable(this.CurrentTableName);
             dataTable = this.DbHelper.Fill(pagedSql, parameters);
             return dataTable;
         }

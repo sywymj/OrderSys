@@ -150,9 +150,10 @@ namespace OrderSys.Controllers
         }
 
         [HttpGet]
-        public ActionResult GetMyStartedOrders()
+        public ActionResult GetMyStartedOrders(int pageIndex,int pageSize)
         {
-            var list = orderService.GetMyStartedOrders();
+            int count = 0;
+            var list = orderService.GetMyStartedOrders(pageIndex,pageSize,out count);
 
             if (list.Rows.Count > 0)
             {

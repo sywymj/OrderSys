@@ -16,15 +16,20 @@
         <div class="tablist" id="startorder">
             @Html.Partial("~/Views/Order/StartOrder.cshtml") 
         </div>
-        <div class="tablist block" id="my-receving">
-
+        <div class="tablist block">
+            @Html.Partial("~/Views/Shared/_Refresh.cshtml")
+            <div id="my-started-list"></div>
+            @Html.Partial("~/Views/Shared/_Loading.cshtml")
+            @Html.Partial("~/Views/Shared/_End.cshtml")
         </div>
     </div>
 </div>
 
+
 <script>
+    //每个页面都需要配置这个，否则query会报错
     var pageIndex = 1;
-    var pageSize = 20;
+    var pageSize = 5;
 
     $(function () {
         init();
@@ -38,13 +43,35 @@
         $('#querymystarted-btn').off('click', querymystarted);
 
         if (pageIndex == 1) {
-            clearDom('my-receving');
+            clearDom('my-started-list');
         }
         query(
-            'my-receving',
+            'my-started-list',
             '@Url.Action("GetMyStartedOrders", "Order")',
-            { pageInde: pageIndex, pageSize: pageSize });
-        pageIndex++;
+            { PageIndex: pageIndex, PageSize: pageSize }
+        );
+        //pageIndex++;// TODO 这里会有个bug，query ajax失败，会有问题
     }
+
+    //下拉分页，加载分页数据
+    $(document.body).infinite().on("infinite", function () {
+        if (loading) return;
+        var tabID = $(".weui_bar_item_on").attr("id");
+        //修改这里的id名称
+        if (tabID != "querymystarted-btn") {
+            return;
+        }
+        querymystarted();//修改这里的回调函数
+    });
+
+    //上拉刷新，重新加载数据
+    $(document.body).pullToRefresh().on("pull-to-refresh", function () {
+        //showRefresh('my-started-list');
+        pageIndex = 1;
+        end = false;
+        querymystarted();//修改这里的回调函数
+        $(document.body).pullToRefreshDone();
+        //hideRefresh('my-started-list');
+    });
 
 </script>
