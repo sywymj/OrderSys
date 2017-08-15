@@ -2,7 +2,6 @@
     ViewBag.Title = "MyStartIndex";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
 <div class="weui_tab">
     <div class="weui_navbar" id="tab1">
         <li class="weui_navbar_item" onclick="setTab(1,0)">
@@ -13,11 +12,10 @@
         </li>
     </div>
     <div class="weui_tab_bd" id="tablist1">
-        <div class="tablist" id="startorder">
-            @Html.Partial("~/Views/Order/StartOrder.cshtml") 
+        <div class="tablist">
+            <div id="startorder">@Html.Partial("~/Views/Order/StartOrder.cshtml") </div>
         </div>
         <div class="tablist block">
-            @Html.Partial("~/Views/Shared/_Refresh.cshtml")
             <div id="my-started-list"></div>
             @Html.Partial("~/Views/Shared/_Loading.cshtml")
             @Html.Partial("~/Views/Shared/_End.cshtml")
@@ -27,16 +25,15 @@
 
 
 <script>
-    //每个页面都需要配置这个，否则query会报错
-    var pageIndex = 1;
-    var pageSize = 5;
-
     $(function () {
         init();
         querymystarted();
     })
 
     init = function () {
+        //每个页面都需要配置这个，否则query会报错
+        pageIndex = 1;
+        pageSize = 5;
     }
 
     querymystarted = function () {
@@ -45,33 +42,13 @@
         if (pageIndex == 1) {
             clearDom('my-started-list');
         }
-        query(
+        doQuery(
             'my-started-list',
             '@Url.Action("GetMyStartedOrders", "Order")',
             { PageIndex: pageIndex, PageSize: pageSize }
         );
-        //pageIndex++;// TODO 这里会有个bug，query ajax失败，会有问题
     }
 
-    //下拉分页，加载分页数据
-    $(document.body).infinite().on("infinite", function () {
-        if (loading) return;
-        var tabID = $(".weui_bar_item_on").attr("id");
-        //修改这里的id名称
-        if (tabID != "querymystarted-btn") {
-            return;
-        }
-        querymystarted();//修改这里的回调函数
-    });
 
-    //上拉刷新，重新加载数据
-    $(document.body).pullToRefresh().on("pull-to-refresh", function () {
-        //showRefresh('my-started-list');
-        pageIndex = 1;
-        end = false;
-        querymystarted();//修改这里的回调函数
-        $(document.body).pullToRefreshDone();
-        //hideRefresh('my-started-list');
-    });
 
 </script>

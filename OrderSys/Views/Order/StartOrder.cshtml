@@ -66,28 +66,16 @@
 
 <script>
     doStartOrder = function () {
-        $.ajax({
-            type: "POST", //GET或POST,
-            async: true, //默认设置为true，所有请求均为异步请求。
-            url: "@Url.Action("StartOrder", "Order")",
-            data: {
-                BookingTime: $('#BookingTime').val(),
-                Attn: $('#Attn').val(),
-                AttnTel: $('#Attn').val(),
-                Priority: $("input[name='Priority']:checked").val(),
-                Content: $('#Content').val(),
-                Remark: $('#Remark').val()
-            },
-            dataType: "text", //xml、html、script、jsonp、text
-            beforeSend: function () { },
-            complete: function () { },
-            success: function (data) {
-                //我这里跳转之后，怎么返回我想要回的页面
-                ajaxTips(data);
-                //alert(data)
-            },
-            error: function () { },
-        });
-        
-    }
+        var data = {
+            BookingTime: $('#BookingTime').val(),
+            Attn: $('#Attn').val(),
+            AttnTel: $('#Attn').val(),
+            Priority: $("input[name='Priority']:checked").val(),
+            Content: $('#Content').val(),
+            Remark: $('#Remark').val()
+        };
+
+        doSubmit('@Url.Action("StartOrder", "Order")', data)
+    };
+
 </script>

@@ -136,13 +136,9 @@ namespace OrderSys.Controllers
         }
 
         [HttpGet]
-        public ActionResult CancelOrder()
+        public ActionResult CancelOrder(Guid id)
         {
-            string sOrderID = JSRequest.GetRequestUrlParm(OrderEntity.FieldID);
-
-            Guid orderID = (Guid)JSValidator.ValidateGuid(OrderEntity.FieldID, sOrderID, true);
-
-            orderService.CancelOrder(orderID);
+            orderService.CancelOrder(id);
 
             ContentResult res = new ContentResult();
             res.Content = JSON.ToJSON(new JSResponse("操作成功！"), jsonParams);
@@ -231,7 +227,7 @@ namespace OrderSys.Controllers
 
             DataRow dr = orderService.GetOrderDetail(orderID);
 
-            return PartialView("OrderDetail", dr);
+            return View("OrderDetailIndex", dr);
         }
 
     }

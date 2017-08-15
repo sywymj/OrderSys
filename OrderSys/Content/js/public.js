@@ -3,8 +3,9 @@ var loadingID = '.loading';
 var refreshID = '.refreshing'
 var endID = '.end';
 var end = false;
+var pageIndex,pageSize;
 
-query = function (domID, url, urlParmsObj) {
+doQuery = function (domID, url, urlParmsObj) {
     //add loading
     if (end) {
         return;
@@ -36,6 +37,47 @@ query = function (domID, url, urlParmsObj) {
         },
         complete: function () {
             hideLoading(domID);
+        }
+    })
+}
+
+doSubmit = function (url, postObj) {
+    //showLoading(domID);
+    $.ajax({
+        type: "POST", //GET或POST,
+        async: true, //默认设置为true，所有请求均为异步请求。
+        url: url,
+        data: postObj,
+        dataType: "text", //xml、html、script、jsonp、text
+        beforeSend: function () { },
+        complete: function () { },
+        success: function (data) {
+            //我这里跳转之后，怎么返回我想要回的页面
+            ajaxTips(data);
+            //alert(data)
+        },
+        error: function () { },
+        complete: function () {
+            //hideLoading(domID);
+        }
+    });
+}
+
+doGet = function (url, urlParmsObj, callback) {
+    var arglength = arguments.length;
+    $.ajax({
+        type: "GET",
+        url: url,
+        data: urlParmsObj,
+        success: function (data) {
+            //应该直接remove该dom，不需要重新刷新
+            var jdata = ajaxTips(data);
+            if (arglength == 3) {
+                callback(jdata);
+            }
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+            alert(errorThrown);
         }
     })
 }
@@ -130,6 +172,30 @@ setTab = function (m, n) {
         showdiv[i].style.display = i == n ? "block" : "none";
     }
 }
+
+//下拉分页，加载分页数据
+$(document.body).infinite().on("infinite", function () {
+    if (loading) return;
+    var tabID = $(".weui_bar_item_on").attr("id");
+    //修改这里的id名称
+    if (tabID == "querymystarted-btn") {
+        querymystarted();//修改这里的回调函数
+    }
+
+});
+
+//上拉刷新，重新加载数据
+$(document.body).pullToRefresh().on("pull-to-refresh", function () {
+
+    var tabID = $(".weui_bar_item_on").attr("id");
+    //修改这里的id名称
+    if (tabID == "querymystarted-btn") {
+        pageIndex = 1;
+        end = false;
+        querymystarted();
+    }
+    $(document.body).pullToRefreshDone();
+});
 
 //此方法没用
 formatDic = function (value, data) {
