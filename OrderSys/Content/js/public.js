@@ -41,7 +41,32 @@ doQuery = function (domID, url, urlParmsObj) {
     })
 }
 
-doSubmit = function (url, postObj) {
+doGetPartial = function (domID, url, urlParmsObj) {
+    clearDom(domID);
+    var urlParms = urlParmsObj;
+    $.ajax({
+        type: "GET",
+        url: url,
+        async: false, //默认设置为true，所有请求均为异步请求。
+        data: urlParms,
+        success: function (data) {
+            //判断返回值不是 json 格式
+            if (!data.match("^\{(\n?.+:.+,?\n?){1,}\}$")) {
+                appendDom(domID, data);
+            }
+            else {
+                var jdata = ajaxTips(data);
+            }
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+            alert(errorThrown);
+        },
+        complete: function () {
+        }
+    })
+}
+
+doSubmit = function (url, postObj,callback) {
     //showLoading(domID);
     $.ajax({
         type: "POST", //GET或POST,
@@ -53,8 +78,7 @@ doSubmit = function (url, postObj) {
         complete: function () { },
         success: function (data) {
             //我这里跳转之后，怎么返回我想要回的页面
-            ajaxTips(data);
-            //alert(data)
+            var jdata = ajaxTips(data,callback);
         },
         error: function () { },
         complete: function () {
@@ -64,17 +88,13 @@ doSubmit = function (url, postObj) {
 }
 
 doGet = function (url, urlParmsObj, callback) {
-    var arglength = arguments.length;
     $.ajax({
         type: "GET",
         url: url,
         data: urlParmsObj,
         success: function (data) {
             //应该直接remove该dom，不需要重新刷新
-            var jdata = ajaxTips(data);
-            if (arglength == 3) {
-                callback(jdata);
-            }
+            var jdata = ajaxTips(data, callback);
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) {
             alert(errorThrown);
@@ -99,19 +119,22 @@ getDicData = function (url) {
     return dicData.Data;
 }
 
-ajaxTips = function (json) {
+ajaxTips = function (json,callback) {
     //通过这种方法可将字符串转换为对象
     var jdata = eval('(' + json + ')');
     console.log(jdata.ErrCode + ":" + jdata.ErrMsg);
     if (jdata.RspTypeCode == -1) {
         //错误消息提示
-        $.alert(jdata.Msg);
+        $.toast(jdata.Msg, "forbidden");
     } else if (jdata.RspTypeCode == 1) {
         //提示信息提示
-        $.alert(jdata.Msg);
+        $.toast(jdata.Msg);
     } else if (jdata.RspTypeCode == 4) {
         //跳转页面
         window.location.href = jdata.data;
+    }
+    if (arguments.length == 2) {
+        callback(jdata);
     }
     return jdata
 }
@@ -193,7 +216,10 @@ $(document.body).pullToRefresh().on("pull-to-refresh", function () {
         pageIndex = 1;
         end = false;
         querymystarted();
+    } else if (tabID == "startemyorder-btn") {
+        doClearStartForm();
     }
+
     $(document.body).pullToRefreshDone();
 });
 

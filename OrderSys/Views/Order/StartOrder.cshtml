@@ -69,13 +69,29 @@
         var data = {
             BookingTime: $('#BookingTime').val(),
             Attn: $('#Attn').val(),
-            AttnTel: $('#Attn').val(),
+            AttnTel: $('#AttnTel').val(),
             Priority: $("input[name='Priority']:checked").val(),
             Content: $('#Content').val(),
             Remark: $('#Remark').val()
         };
 
-        doSubmit('@Url.Action("StartOrder", "Order")', data)
+        doSubmit('@Url.Action("StartOrder", "Order")', data, function (jdata) {
+            if (jdata.Code == "200") {
+                pageIndex = 1;
+                querymystarted();//查询
+                setTab(1, 1);//切换tab
+            }
+
+        })
     };
+
+    doClearStartForm = function () {
+        $('#BookingTime').val('');
+        $('#Attn').val('');
+        $('#AttnTel').val('');
+        $('#s11').prop("checked", true);
+        $('#Content').val('');
+        $('#Remark').val('');
+    }
 
 </script>

@@ -12,7 +12,7 @@
                 <div class="list_sym_l_in_t">报障单号：@dr["OrderNo"]</div>
                 <div class="list_sym_l_in_m">
                     <ul>
-                        <li><font color="#ed3232" size="2">状态：@EnumExtensions.ToDescription((OrderPriority)dr["Priority"])</font></li>
+                        <li>紧急程度：<font color="#ed3232" size="2">@EnumExtensions.ToDescription((OrderPriority)dr["Priority"])</font></li>
                         <div class="clear"></div>
                         <li>待办人：@dr["NextOperaterName"]</li>
                         <li>电话：@dr["NextOperaterTel"]</li>
@@ -25,25 +25,13 @@
             </div>
         </div>
         <div class="list_sym_r">
-            <a class="orders" onclick="cancelOrder('@dr["ID"]')">撤销</a>
-            <a href="@Url.Action("GetOrderDetail", "Order", new { ID = dr["ID"] }))" class="details">详情</a>
+            <a class="orders"  onclick="cancelOrder('@dr["ID"]')" >撤销</a>
+            <a class="details open-popup" data-target="#full" href="javascript:getOrderFlows('@dr["ID"]');">详情</a>
         </div>
         <div class="clear"></div>
     </div>
 }
 
-
-<script>
-    cancelOrder = function (orderID) {
-        var url = '@Url.Action("CancelOrder", "Order")';
-        var urlParm = { ID: orderID };
-        doGet(url,urlParm,function(jdata){
-            if (jdata.RspTypeCode) {
-                $('#order_' + orderID).remove();
-            }
-        });
-    }
-</script>
 
 
 

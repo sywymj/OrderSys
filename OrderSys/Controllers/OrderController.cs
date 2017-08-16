@@ -2,6 +2,7 @@
 using JSNet.BaseSys;
 using JSNet.Model;
 using JSNet.Service;
+using JSNet.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -218,17 +219,39 @@ namespace OrderSys.Controllers
             return res;
         }
 
-        [HttpGet]
-        public ActionResult GetOrderDetail()
+
+        public ActionResult GetOrderFlows(Guid id)
         {
-            string sOrderID = JSRequest.GetRequestUrlParm(OrderEntity.FieldID);
+            OrderEntity order = orderService.GetOrderEntity(id);
 
-            Guid orderID = (Guid)JSValidator.ValidateGuid(OrderEntity.FieldID, sOrderID, true);
+            ViewBag.OrderStatus = (OrderStatus)order.Status;
 
-            DataRow dr = orderService.GetOrderDetail(orderID);
+            var list = orderService.GetOrderFlows(id);
 
-            return View("OrderDetailIndex", dr);
+            if (list.Rows.Count > 0)
+            {
+                return PartialView("OrderFlows", list);
+            }
+            else
+            {
+                ContentResult res = new ContentResult();
+                res.Content = JSON.ToJSON(new JSResponse(ResponseType.None,"没有数据了！"), jsonParams);
+                return res;
+            }
         }
+
+
+        //[HttpGet]
+        //public ActionResult GetOrderDetail()
+        //{
+        //    string sOrderID = JSRequest.GetRequestUrlParm(OrderEntity.FieldID);
+
+        //    Guid orderID = (Guid)JSValidator.ValidateGuid(OrderEntity.FieldID, sOrderID, true);
+
+        //    DataRow dr = orderService.GetOrderDetail(orderID);
+
+        //    return View("OrderDetailIndex", dr);
+        //}
 
     }
 }

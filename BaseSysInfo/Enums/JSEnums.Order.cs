@@ -50,7 +50,7 @@ namespace JSNet.BaseSys
         [EnumDescription("待验收")]
         Checking = 4,
 
-        [EnumDescription("已完成")]
+        [EnumDescription("完成")]
         Finish = 99,
 
         [EnumDescription("已撤销")]

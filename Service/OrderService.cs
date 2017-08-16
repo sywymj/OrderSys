@@ -264,6 +264,13 @@ namespace JSNet.Service
             orderflowManager.Insert(orderflow);
         }
 
+        public OrderEntity GetOrderEntity(Guid orderID)
+        {
+            EntityManager<OrderEntity> orderManager = new EntityManager<OrderEntity>();
+            OrderEntity order = orderManager.GetSingle(orderID);
+            return order;
+        }
+
         /// <summary>
         /// 获取我的已发起工单
         /// </summary>

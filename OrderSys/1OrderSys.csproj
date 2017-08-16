@@ -222,7 +222,9 @@
     <Content Include="Views\Shared\_End.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\Order\OrderDetailIndex.cshtml" />
+    <None Include="Properties\PublishProfiles\1.pubxml" />
+    <Content Include="Views\Order\OrderFlows.cshtml" />
+    <Content Include="Views\Shared\_Back.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
