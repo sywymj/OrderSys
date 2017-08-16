@@ -1,0 +1,89 @@
+﻿@{
+    ViewBag.Title = "MyStartIndex";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="weui_tab">
+    <div class="weui_navbar" id="tab1">
+        <li class="weui_navbar_item" id="query_myappointing_btn" onclick="setTab(1,0)">
+            未委派
+        </li>
+        <li class="weui_navbar_item weui_bar_item_on" id="query_myappointed_btn" onclick="setTab(1, 1)">
+            已委派
+        </li>
+    </div>
+    <div class="weui_tab_bd" id="tablist1">
+        <div class="tablist">
+            <div id="myappointing_list"></div>
+            @Html.Partial("~/Views/Shared/_Loading.cshtml")
+            @Html.Partial("~/Views/Shared/_End.cshtml")
+        </div>
+        <div class="tablist block">
+            <div id="myappointed_list"></div>
+            @Html.Partial("~/Views/Shared/_Loading.cshtml")
+            @Html.Partial("~/Views/Shared/_End.cshtml")
+        </div>
+    </div>
+</div>
+
+<!--popup流程-->
+<div id="full" class='weui-popup-container'>
+    <div class="weui-popup-overlay"></div>
+    <div class="weui-popup-modal" id="orderflows"></div>
+</div>
+
+<script>
+    $(function () {
+        init();
+        querymyappointing();
+        querymyappointed();
+    })
+
+    init = function () {
+        //每个页面都需要配置这个，否则query会报错
+        pageIndex = 1;
+        pageSize = 5;
+    }
+
+    querymyappointing = function () {
+        var listDomID = 'myappointing_list';
+        if (pageIndex == 1) {
+            clearDom(listDomID);
+        }
+        doQuery(
+            listDomID,
+            '@Url.Action("GetMyAppointingOrders", "Order")',
+            { PageIndex: pageIndex, PageSize: pageSize }
+        );
+    }
+
+    querymyappointed = function () {
+        var listDomID = 'myappointed_list';
+        if (pageIndex == 1) {
+            clearDom(listDomID);
+        }
+        doQuery(
+            listDomID,
+            '@Url.Action("GetMyAppointedOrders", "Order")',
+            { PageIndex: pageIndex, PageSize: pageSize }
+        );
+    }
+
+
+
+    appointOrder = function (orderID) {
+        @*$.confirm("您确定要撤销这条工单吗?", "确认撤销?", function () {
+            //$.toast("文件已经删除!");
+            var url = '@Url.Action("CancelOrder", "Order")';
+            var urlParm = { ID: orderID };
+            doGet(url, urlParm, function (jdata) {
+                if (jdata.Code == "200") {
+                    $('#order_' + orderID).remove();
+                }
+            });
+        }, function () {
+            //取消操作
+        });*@
+    }
+
+
+</script>

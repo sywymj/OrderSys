@@ -27,6 +27,18 @@ namespace OrderSys.Controllers
             return View();
         }
 
+        [HttpGet]
+        public ActionResult MyAppointIndex()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public ActionResult MyHandleIndex()
+        {
+            return View();
+        }
+
         [HttpPost]
         public ActionResult StartOrder()
         {
@@ -154,7 +166,7 @@ namespace OrderSys.Controllers
 
             if (list.Rows.Count > 0)
             {
-                return PartialView("MyStartedOrders", list);
+                return PartialView("GetMyStartedOrders", list);
             }
             else
             {
@@ -198,25 +210,39 @@ namespace OrderSys.Controllers
         }
 
         [HttpGet]
-        public ActionResult GetMyAppointingOrders()
+        public ActionResult GetMyAppointingOrders(int pageIndex, int pageSize)
         {
-            var list = orderService.GetMyAppointingOrders();
+            int count = 0;
+            var list = orderService.GetMyAppointingOrders(pageIndex, pageSize, out count);
 
-            JsonResult res = new JsonResult();
-            res.Data = new JSResponse(list);
-
-            return res;
+            if (list.Rows.Count > 0)
+            {
+                return PartialView("GetMyAppointingOrders", list);
+            }
+            else
+            {
+                ContentResult res = new ContentResult();
+                res.Content = JSON.ToJSON(new JSResponse(ResponseType.None, "没有数据了！"), jsonParams);
+                return res;
+            }
         }
 
         [HttpGet]
-        public ActionResult GetMyAppointedOrders()
+        public ActionResult GetMyAppointedOrders(int pageIndex, int pageSize)
         {
-            var list = orderService.GetMyAppointedOrders();
+            int count = 0;
+            var list = orderService.GetMyAppointedOrders(pageIndex, pageSize, out count);
 
-            JsonResult res = new JsonResult();
-            res.Data = new JSResponse(list);
-
-            return res;
+            if (list.Rows.Count > 0)
+            {
+                return PartialView("GetMyAppointedOrders", list);
+            }
+            else
+            {
+                ContentResult res = new ContentResult();
+                res.Content = JSON.ToJSON(new JSResponse(ResponseType.None, "没有数据了！"), jsonParams);
+                return res;
+            }
         }
 
 
@@ -228,16 +254,7 @@ namespace OrderSys.Controllers
 
             var list = orderService.GetOrderFlows(id);
 
-            if (list.Rows.Count > 0)
-            {
-                return PartialView("OrderFlows", list);
-            }
-            else
-            {
-                ContentResult res = new ContentResult();
-                res.Content = JSON.ToJSON(new JSResponse(ResponseType.None,"没有数据了！"), jsonParams);
-                return res;
-            }
+            return PartialView("OrderFlows", list);
         }
 
 

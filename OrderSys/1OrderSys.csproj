@@ -190,7 +190,7 @@
     <Content Include="Views\Order\GetMyAppointedOrders.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\Order\MyStartedOrders.cshtml" />
+    <Content Include="Views\Order\GetMyStartedOrders.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Shared\_Layout.cshtml" />
@@ -225,6 +225,9 @@
     <None Include="Properties\PublishProfiles\1.pubxml" />
     <Content Include="Views\Order\OrderFlows.cshtml" />
     <Content Include="Views\Shared\_Back.cshtml" />
+    <Content Include="Views\Order\MyHandleIndex.cshtml" />
+    <Content Include="Views\Order\MyAppointIndex.cshtml" />
+    <Content Include="Views\Order\GetMyAppointingOrders.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

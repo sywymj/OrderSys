@@ -14,13 +14,13 @@
             </div>
             <ul>
                 <li>
-                    <em class="iconfont">&#xe690;</em>发起工单
+                    <em class="iconfont">&#xe690;</em><a href="@Url.Action("MyStartIndex","Order")">我的发起</a>
                 </li>
                 <li>
-                    <em class="iconfont">&#xe668;</em>我的工单
+                    <em class="iconfont">&#xe668;</em><a href="@Url.Action("MyAppointIndex","Order")">我的委派</a>
                 </li>
                 <li>
-                    <em class="iconfont">&#xe700;</em>我的委派
+                    <em class="iconfont">&#xe700;</em><a href="@Url.Action("MyHandleIndex","Order")">我的工单</a>
                 </li>
             </ul>
         </div>
@@ -45,6 +45,5 @@
             });
         </script>
     </span>
-    已发出
     <label class="iconfont"></label>
 </div>

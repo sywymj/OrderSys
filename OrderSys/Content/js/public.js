@@ -203,6 +203,10 @@ $(document.body).infinite().on("infinite", function () {
     //修改这里的id名称
     if (tabID == "querymystarted-btn") {
         querymystarted();//修改这里的回调函数
+    } else if (tabID == "query_myappointing_btn") {
+        querymyappointing();
+    } else if (tabID == "query_myappointed_btn") {
+        querymyappointed();
     }
 
 });
@@ -218,6 +222,14 @@ $(document.body).pullToRefresh().on("pull-to-refresh", function () {
         querymystarted();
     } else if (tabID == "startemyorder-btn") {
         doClearStartForm();
+    } else if (tabID == "query_myappointing_btn") {
+        pageIndex = 1;
+        end = false;
+        querymyappointing();
+    } else if (tabID == "query_myappointed_btn") {
+        pageIndex = 1;
+        end = false;
+        querymyappointed();
     }
 
     $(document.body).pullToRefreshDone();
