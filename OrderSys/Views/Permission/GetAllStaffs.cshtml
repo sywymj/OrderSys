@@ -1,0 +1,34 @@
+﻿@using JSNet.Model;
+@model List<StaffEntity>
+
+<div class="weui_cells_title">请选择</div>
+<!-- 代码部分begin -->
+
+<div id="letter"></div>
+<div class="sort_box" style="padding-top:20px;">
+    @foreach(StaffEntity staff in Model)
+    {
+        <div class="sort_list" onclick="alert('@staff.ID')">
+            <div class="num_logo"><img src="images/avatar_t2.png" /></div>
+            <div class="num_name">@staff.Name</div>
+        </div>
+    }
+</div>
+<div class="initials">
+    <ul>
+        <li><img src="images/068.png"></li>
+    </ul>
+</div>
+
+<!-- 代码部分end -->
+<script src="~/Content/js/jquery.charfirst.pinyin.js"></script>
+<script src="~/Content/js/sort.js"></script>
+
+<script>
+    chooseStaff = function (staffID,callback) {
+        staffs.push(staffID);
+        if (arguments.length == 2) {
+            callback();
+        }
+    }
+</script>

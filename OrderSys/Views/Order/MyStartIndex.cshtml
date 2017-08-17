@@ -30,6 +30,8 @@
 </div>
 
 <script>
+    var pageIndex1, pageSize1;
+
     $(function () {
         init();
         querymystarted();
@@ -37,20 +39,23 @@
 
     init = function () {
         //每个页面都需要配置这个，否则query会报错
-        pageIndex = 1;
-        pageSize = 5;
+        pageIndex1 = 1;
+        pageSize1 = 5;
     }
 
     querymystarted = function () {
         $('#querymystarted-btn').off('click', querymystarted);
 
-        if (pageIndex == 1) {
+        if (pageIndex1 == 1) {
             clearDom('my-started-list');
         }
         doQuery(
             'my-started-list',
             '@Url.Action("GetMyStartedOrders", "Order")',
-            { PageIndex: pageIndex, PageSize: pageSize }
+            { PageIndex: pageIndex1, PageSize: pageSize1 },
+            function () {
+                pageIndex1++;
+            }
         );
     }
 

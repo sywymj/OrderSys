@@ -157,11 +157,37 @@ namespace JSNet.BaseSys
     /// </summary>
     public enum ResponseType
     {
-        Error=-1,           // -1 错误消息。
-        None = 0,           // 无，前端可以自定义提示方式
-        Message = 1,        // 1 普通消息。
-        Remind = 2,         // 2 提示消息。
-        Warning = 3,        // 3 警告信息。
-        Redict = 4,         // 4 跳转页面。
+        /// <summary>
+        /// 错误消息
+        /// </summary>
+        Error=-1,
+        /// <summary>
+        /// 无，前端可以自定义提示方式
+        /// </summary>
+        None = 0,           
+        /// <summary>
+        /// 普通提示消息
+        /// </summary>
+        Message = 1,       
+        /// <summary>
+        /// 提示消息
+        /// </summary>
+        Remind = 2,         
+        /// <summary>
+        /// 警告消息
+        /// </summary>
+        Warning = 3,        
+        /// <summary>
+        /// 重定向
+        /// </summary>
+        Redict = 4,
+        /// <summary>
+        /// 提示没有数据
+        /// </summary>
+        NoData = 5,        
+        /// <summary>
+        /// 提示数据加载完
+        /// </summary>
+        NoMoreData = 6,
     }
 }

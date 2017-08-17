@@ -72,6 +72,18 @@ namespace JSNet.Service
             return staff;
         }
 
+        public List<StaffEntity> GetAllStaffs()
+        {
+            EntityManager<StaffEntity> manager = new EntityManager<StaffEntity>();
+
+            WhereStatement where = new WhereStatement();
+            where.Add(StaffEntity.FieldIsEnable, Comparison.Equals,(int)TrueFalse.True);
+            where.Add(StaffEntity.FieldIsOnJob, Comparison.Equals,(int)TrueFalse.True);
+
+            int count =0;
+            List<StaffEntity> list = manager.GetList(where, out count);
+            return list;
+        }
         public JSDictionary GetRoleDDL ()
         {
             int count = 0;

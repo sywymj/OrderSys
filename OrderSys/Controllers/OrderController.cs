@@ -171,42 +171,91 @@ namespace OrderSys.Controllers
             else
             {
                 ContentResult res = new ContentResult();
-                res.Content = JSON.ToJSON(new JSResponse(ResponseType.None,"没有数据了！"), jsonParams);
+                if (pageIndex > 1)
+                {
+                    res.Content = JSON.ToJSON(new JSResponse(ResponseType.NoMoreData, "— 数据已加载完毕 —"), jsonParams);
+                }
+                else
+                {
+                    res.Content = JSON.ToJSON(new JSResponse(ResponseType.NoData, "-暂无数据-"), jsonParams);
+                }
                 return res;
             }
         }
 
         [HttpGet]
-        public ActionResult GetMyRecevingOrders()
+        public ActionResult GetMyReceivingOrders(int pageIndex, int pageSize)
         {
-            var list = orderService.GetMyRecevingOrders();
+            int count = 0;
+            var list = orderService.GetMyReceivingOrders(pageIndex, pageSize, out count);
 
-            JsonResult res = new JsonResult();
-            res.Data = new JSResponse(list);
-
-            return res;
+            if (list.Rows.Count > 0)
+            {
+                return PartialView("GetMyStartedOrders", list);
+            }
+            else
+            {
+                ContentResult res = new ContentResult();
+                if (pageIndex > 1)
+                {
+                    res.Content = JSON.ToJSON(new JSResponse(ResponseType.NoMoreData, "— 数据已加载完毕 —"), jsonParams);
+                }
+                else
+                {
+                    res.Content = JSON.ToJSON(new JSResponse(ResponseType.NoData, "— 暂无数据 —"), jsonParams);
+                }
+                return res;
+            }
         }
 
         [HttpGet]
-        public ActionResult GetMyHandlingOrders()
+        public ActionResult GetMyHandlingOrders(int pageIndex, int pageSize)
         {
-            var list = orderService.GetMyHandlingOrders();
+            int count = 0;
+            var list = orderService.GetMyHandlingOrders(pageIndex, pageSize, out count);
 
-            JsonResult res = new JsonResult();
-            res.Data = new JSResponse(list);
-
-            return res;
+            if (list.Rows.Count > 0)
+            {
+                return PartialView("GetMyStartedOrders", list);
+            }
+            else
+            {
+                ContentResult res = new ContentResult();
+                if (pageIndex > 1)
+                {
+                    res.Content = JSON.ToJSON(new JSResponse(ResponseType.NoMoreData, "— 数据已加载完毕 —"), jsonParams);
+                }
+                else
+                {
+                    res.Content = JSON.ToJSON(new JSResponse(ResponseType.NoData, "— 暂无数据 —"), jsonParams);
+                }
+                return res;
+            }
         }
 
         [HttpGet]
-        public ActionResult GetMyHandledOrders()
+        public ActionResult GetMyHandledOrders(int pageIndex, int pageSize)
         {
-            var list = orderService.GetMyHandledOrders();
+            int count = 0;
+            var list = orderService.GetMyHandledOrders(pageIndex, pageSize, out count);
 
-            JsonResult res = new JsonResult();
-            res.Data = new JSResponse(list);
-
-            return res;
+            if (list.Rows.Count > 0)
+            {
+                return PartialView("GetMyStartedOrders", list);
+            }
+            else
+            {
+                ContentResult res = new ContentResult();
+                if (pageIndex > 1)
+                {
+                    res.Content = JSON.ToJSON(new JSResponse(ResponseType.NoMoreData, "— 数据已加载完毕 —"), jsonParams);
+                }
+                else
+                {
+                    res.Content = JSON.ToJSON(new JSResponse(ResponseType.NoData, "— 暂无数据 —"), jsonParams);
+                }
+                return res;
+            }
         }
 
         [HttpGet]
@@ -222,7 +271,14 @@ namespace OrderSys.Controllers
             else
             {
                 ContentResult res = new ContentResult();
-                res.Content = JSON.ToJSON(new JSResponse(ResponseType.None, "没有数据了！"), jsonParams);
+                if (pageIndex > 1)
+                {
+                    res.Content = JSON.ToJSON(new JSResponse(ResponseType.NoMoreData, "— 数据已加载完毕 —"), jsonParams);
+                }
+                else
+                {
+                    res.Content = JSON.ToJSON(new JSResponse(ResponseType.NoData, "— 暂无数据 —"), jsonParams);
+                }
                 return res;
             }
         }
@@ -240,35 +296,42 @@ namespace OrderSys.Controllers
             else
             {
                 ContentResult res = new ContentResult();
-                res.Content = JSON.ToJSON(new JSResponse(ResponseType.None, "没有数据了！"), jsonParams);
+                if (pageIndex > 1)
+                {
+                    res.Content = JSON.ToJSON(new JSResponse(ResponseType.NoMoreData, "— 数据已加载完毕 —"), jsonParams);
+                }
+                else
+                {
+                    res.Content = JSON.ToJSON(new JSResponse(ResponseType.NoData, "— 暂无数据 —"), jsonParams);
+                }
                 return res;
             }
         }
 
-
+        [HttpGet]
         public ActionResult GetOrderFlows(Guid id)
         {
             OrderEntity order = orderService.GetOrderEntity(id);
 
             ViewBag.OrderStatus = (OrderStatus)order.Status;
+            ViewBag.OrderID = order.ID;
 
             var list = orderService.GetOrderFlows(id);
 
             return PartialView("OrderFlows", list);
         }
 
+        [HttpGet]
+        public ActionResult GetOrderDetail(Guid id)
+        {
 
-        //[HttpGet]
-        //public ActionResult GetOrderDetail()
-        //{
-        //    string sOrderID = JSRequest.GetRequestUrlParm(OrderEntity.FieldID);
+            var handlers = orderService.GetOrderHandlers(id);
+            ViewBag.Handlers = handlers;
 
-        //    Guid orderID = (Guid)JSValidator.ValidateGuid(OrderEntity.FieldID, sOrderID, true);
 
-        //    DataRow dr = orderService.GetOrderDetail(orderID);
-
-        //    return View("OrderDetailIndex", dr);
-        //}
+            var dr = orderService.GetOrderDetail(id);
+            return PartialView("OrderDetail", dr);
+        }
 
     }
 }

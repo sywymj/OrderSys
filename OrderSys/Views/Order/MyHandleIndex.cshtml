@@ -1,1 +1,124 @@
-﻿
+﻿@{
+    ViewBag.Title = "MyStartIndex";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="weui_tab">
+    <div class="weui_navbar" id="tab1">
+        <li class="weui_navbar_item weui_bar_item_on" id="query_myreceiving_btn" onclick="setTab(1,0)">
+            未接单
+        </li>
+        <li class="weui_navbar_item" id="query_myhandling_btn" onclick="setTab(1, 1)">
+            处理中
+        </li>
+        <li class="weui_navbar_item" id="query_myhandled_btn" onclick="setTab(1, 2)">
+            已处理
+        </li>
+    </div>
+    <div class="weui_tab_bd" id="tablist1">
+        <div class="tablist block">
+            <div id="myreceiving_list"></div>
+            @Html.Partial("~/Views/Shared/_Loading.cshtml")
+            @Html.Partial("~/Views/Shared/_End.cshtml")
+        </div>
+        <div class="tablist">
+            <div id="myhandling_list"></div>
+            @Html.Partial("~/Views/Shared/_Loading.cshtml")
+            @Html.Partial("~/Views/Shared/_End.cshtml")
+        </div>
+        <div class="tablist">
+            <div id="myhandled_list"></div>
+            @Html.Partial("~/Views/Shared/_Loading.cshtml")
+            @Html.Partial("~/Views/Shared/_End.cshtml")
+        </div>
+    </div>
+</div>
+
+<!--popup流程-->
+<div id="full" class='weui-popup-container'>
+    <div class="weui-popup-overlay"></div>
+    <div class="weui-popup-modal" id="orderflows"></div>
+</div>
+
+<script>
+    var pageIndex1, pageSize1;
+    var pageIndex2, pageSize2;
+    var pageIndex3, pageSize3;
+
+    $(function () {
+        init();
+        querymyreceiving();
+        querymyhandling();
+        querymyhandled();
+    })
+
+    init = function () {
+        //每个页面都需要配置这个，否则query会报错
+        pageIndex1 = pageIndex2 = pageIndex3 = 1;
+        pageSize1 = pageSize2 = pageSize3 = 5;
+    }
+
+    querymyreceiving = function () {
+        var listDomID = 'myreceiving_list';
+
+        if (pageIndex1 == 1) {
+            clearDom(listDomID);
+        }
+        doQuery(
+            listDomID,
+            '@Url.Action("GetMyReceivingOrders", "Order")',
+            { PageIndex: pageIndex1, PageSize: pageSize1 },
+            function(){
+                pageIndex1++;
+            }
+        );
+    }
+
+    querymyhandling = function () {
+        var listDomID = 'myhandling_list';
+        if (pageIndex2 == 1) {
+            clearDom(listDomID);
+        }
+        doQuery(
+            listDomID,
+            '@Url.Action("GetMyHandlingOrders", "Order")',
+            { PageIndex: pageIndex2, PageSize: pageSize2 },
+            function(){
+                pageIndex2++;
+            }
+        );
+    }
+
+    querymyhandled = function () {
+        var listDomID = 'myhandled_list';
+        if (pageIndex3 == 1) {
+            clearDom(listDomID);
+        }
+        doQuery(
+            listDomID,
+            '@Url.Action("GetMyHandledOrders", "Order")',
+            { PageIndex: pageIndex3, PageSize: pageSize3 },
+            function () {
+                pageIndex3++;
+            }
+        );
+    }
+
+
+
+    appointOrder = function (orderID) {
+        @*$.confirm("您确定要撤销这条工单吗?", "确认撤销?", function () {
+            //$.toast("文件已经删除!");
+            var url = '@Url.Action("CancelOrder", "Order")';
+            var urlParm = { ID: orderID };
+            doGet(url, urlParm, function (jdata) {
+                if (jdata.Code == "200") {
+                    $('#order_' + orderID).remove();
+                }
+            });
+        }, function () {
+            //取消操作
+        });*@
+    }
+
+
+</script>

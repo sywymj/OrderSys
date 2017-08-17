@@ -341,7 +341,7 @@ namespace JSNet.Service
         /// 获取我的未接收工单
         /// </summary>
         /// <returns></returns>
-        public DataTable GetMyRecevingOrders()
+        public DataTable GetMyReceivingOrders(int pageIndex, int pageSize, out int count)
         {
             PermissionService permissionService = new PermissionService();
             ViewManager manager = new ViewManager("VO_Order");
@@ -355,8 +355,7 @@ namespace JSNet.Service
             where.Add(OrderEntity.FieldNextOperatorID, Comparison.Equals, staff.ID);
 
             //3.0 获取已发起的数据
-            int count = 0;
-            DataTable dt = manager.GetDataTable(where, out count);
+            DataTable dt = manager.GetDataTableByPage(where, out count, pageIndex, pageSize);
             return dt;
         }
 
@@ -364,7 +363,7 @@ namespace JSNet.Service
         /// 获取我处理中的工单
         /// </summary>
         /// <returns></returns>
-        public DataTable GetMyHandlingOrders()
+        public DataTable GetMyHandlingOrders(int pageIndex, int pageSize, out int count)
         {
             PermissionService permissionService = new PermissionService();
             ViewManager manager = new ViewManager("VO_Order");
@@ -378,8 +377,7 @@ namespace JSNet.Service
             where.Add(OrderEntity.FieldHandlerID, Comparison.Equals, staff.ID);
 
             //3.0 获取已发起的数据
-            int count = 0;
-            DataTable dt = manager.GetDataTable(where, out count);
+            DataTable dt = manager.GetDataTableByPage(where, out count, pageIndex, pageSize);
             return dt;
         }
 
@@ -387,7 +385,7 @@ namespace JSNet.Service
         /// 获取我已处理的工单
         /// </summary>
         /// <returns></returns>
-        public DataTable GetMyHandledOrders()
+        public DataTable GetMyHandledOrders(int pageIndex, int pageSize, out int count)
         {
             PermissionService permissionService = new PermissionService();
             ViewManager manager = new ViewManager("VO_Order");
@@ -401,8 +399,7 @@ namespace JSNet.Service
             where.Add(OrderEntity.FieldHandlerID, Comparison.Equals, staff.ID);
 
             //3.0 获取已发起的数据
-            int count = 0;
-            DataTable dt = manager.GetDataTable(where, out count);
+            DataTable dt = manager.GetDataTableByPage(where, out count, pageIndex, pageSize);
             return dt;
         }
 

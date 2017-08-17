@@ -2,6 +2,8 @@
 /*头部*/
 .top{width:100%; height:50px; background:#fff; border-bottom:1px solid #dedede; line-height:50px; text-align:center; position:relative; font-size:18px;}
 .top span{display:block; width:50px; height:50px; text-align:center; line-height:50px;  position:absolute; left:0; top:0; color:#999; font-size:24px;z-index:9;}
+.top em{display:block; height:50px; text-align:center; line-height:50px;  position:absolute; left:10px; top:0; color:#999;z-index:9; font-size:16px;}
+.top em a{color:#999;}
 .top label{display:block; width:50px; height:50px; text-align:center; line-height:50px;  position:absolute; right:0; top:0; color:#999; font-size:24px;}
 .top a{color:#999;}
 .top a:acitve{color:#096;}
@@ -15,7 +17,7 @@
 .top_nav_in_t{width:100%; padding:16px 0; background:#b2cefb; margin-bottom:10px;}
 .top_nav_in_avatar{width:80px; height:80px; margin:0 auto; margin-bottom:10px; overflow:hidden;}
 .top_nav_in_name{color:#fff; font-size:16px; line-height:20px;}
-.top_nav_in ul li{width:84%; height:50px; line-height:50px; padding-left:16%; color:#fff; font-size:18px; text-align:left;}
+.top_nav_in ul li{width:80%; height:50px; line-height:50px; padding-left:20%; color:#fff; font-size:18px; text-align:left; position:relative;}
 .top_nav_in ul li em{margin-right:16px; font-size:24px; font-style:normal;}
 .top_nav_in ul li a{color:#fff;}
 
@@ -111,5 +113,12 @@ a.times_btn2:active{background:#ffe5d2;}
     border-bottom: 8px solid #F60;
 	z-index:9;
 }
-.top em{display:block; height:50px; text-align:center; line-height:50px;  position:absolute; left:10px; top:0; color:#999;z-index:9; font-size:16px;}
-.top em a{color:#999;}
+
+/*处理过程*/
+.process{width:70%; margin-left:30%; border-left:1px solid #09F; padding:10px 0;}
+.process ul li{width:88%; line-height:20px; position:relative; padding:0 6%; margin:15px 0; font-size:12px; color:#363636;}
+.process ul li span{width:10px; height:10px; display:block; margin:0 auto; position:absolute; top:50%; margin-top:-5px; left:-6px; background:#bee5ff; border:1px solid #09F;}
+.process ul li label{width:42%; height:40px; position:absolute; text-align:right; padding-right:8%; font-size:12px; color:#999; position:absolute; left:-50%; top:50%; margin-top:-20px;}
+
+/*工作量*/
+.p_m{color:#999;}

@@ -141,7 +141,9 @@
     <Content Include="Content\js\city-picker.min.js" />
     <Content Include="Content\js\jquery-weui.js" />
     <Content Include="Content\js\jquery-weui.min.js" />
+    <Content Include="Content\js\jquery.charfirst.pinyin.js" />
     <Content Include="Content\js\public.js" />
+    <Content Include="Content\js\sort.js" />
     <Content Include="Content\js\swiper.js" />
     <Content Include="Content\js\swiper.min.js" />
     <Content Include="Content\lib\fastclick.js" />
@@ -228,6 +230,12 @@
     <Content Include="Views\Order\MyHandleIndex.cshtml" />
     <Content Include="Views\Order\MyAppointIndex.cshtml" />
     <Content Include="Views\Order\GetMyAppointingOrders.cshtml" />
+    <Content Include="Views\Order\GetMyReceivingOrders.cshtml" />
+    <Content Include="Views\Order\GetMyHandlingOrders.cshtml" />
+    <Content Include="Views\Order\GetMyHandledOrders.cshtml" />
+    <Content Include="Views\Order\OrderDetail.cshtml" />
+    <Content Include="Views\Order\HandleDetail.cshtml" />
+    <Content Include="Views\Permission\GetAllStaffs.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

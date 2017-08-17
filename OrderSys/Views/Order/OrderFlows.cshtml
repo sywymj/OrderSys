@@ -61,16 +61,21 @@
     </div>
 
     <div class="demos-content-padded bottom_btn">
-        <a href="javascript:;" class="weui_btn weui_btn_plain_default" style="width:46%; height:40px; line-height:40px;  float:left; margin:0; font-size:16px;">查看工单详情</a>
+        <a class="weui_btn weui_btn_plain_default open-popup" data-target="#full1" href="javascript:getOrderDetail('@ViewBag.OrderID');" style="width:46%; height:40px; line-height:40px;  float:left; margin:0; font-size:16px;">查看工单详情</a>
         <a href="javascript:;" class="weui_btn weui_btn_plain_default" style="width:46%; height:40px; line-height:40px; float:right; margin:0; font-size:16px; ">查看处理过程</a>
         <div class="clear"></div>
     </div>
-
 </div>
 
 <div class="reject" hidden="hidden">
     <em class="triangle_up"></em>
     <span>@EnumExtensions.ToDescription(ViewBag.OrderStatus)</span>
+</div>
+
+<!--popup流程-->
+<div id="full1" class='weui-popup-container'>
+    <div class="weui-popup-overlay"></div>
+    <div class="weui-popup-modal" id="orderDetail"></div>
 </div>
 
 <script>
@@ -83,8 +88,14 @@
         $("#" + status).prevAll().addClass("now");//给之前的流程添加样式
         appendDom(status, $(statusID).get());
 
-        $("#" + status).children(statusID).show()
+        $("#" + status).children(statusID).show();
 
+    }
+
+    getOrderDetail = function (orderID) {
+        var url = '@Url.Action("GetOrderDetail", "Order")';
+        var urlParm = { ID: orderID };
+        doGetPartial('orderDetail', url, urlParm);
     }
 </script>
 

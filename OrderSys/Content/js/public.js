@@ -3,16 +3,16 @@ var loadingID = '.loading';
 var refreshID = '.refreshing'
 var endID = '.end';
 var end = false;
-var pageIndex,pageSize;
 
-doQuery = function (domID, url, urlParmsObj) {
+doQuery = function (domID, url, urlParmsObj, callback) {
+    if (end) { return; }
+
     //add loading
-    if (end) {
-        return;
-    } 
     showLoading(domID);
 
+    var argumentLength = arguments.length
     var urlParms = urlParmsObj || { PageIndex: 1, PageSize: 20 };
+
     $.ajax({
         type: "GET",
         url: url,
@@ -25,12 +25,19 @@ doQuery = function (domID, url, urlParmsObj) {
             }
             else {
                 var jdata = ajaxTips(data);
-                if (jdata.RspTypeCode == 0) {
+                if (jdata.RspTypeCode == 6) {
                     //底部提示没有数据了
-                    showEnding(domID);
+                    showEnding(domID,jdata.Msg);
+                }
+                if (jdata.RspTypeCode == 5) {
+                    //底部提示没有数据了
+                    showEnding(domID,jdata.Msg);
                 }
             }
-            pageIndex++;
+            //整个分页效果显示完后的回调函数
+            if (argumentLength == 4) {
+                callback();
+            }
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) {
             alert(errorThrown);
@@ -149,15 +156,12 @@ clearDom = function (DomID) {
 
 //在某个dom同辈添加loading
 showLoading = function (domID) {
-    //appendDom(domID, $(loadingID).get(0));
-    //$('#' + domID + '>' + loadingID).show();
     $('#' + domID).siblings(loadingID).show();
     loading = true;
 }
 
 //清除某个dom同辈面的loading
 hideLoading = function (domID) {
-    //$('#' + domID + '>' + loadingID).remove();
     $('#' + domID).siblings(loadingID).hide();
     loading = false;
 }
@@ -171,8 +175,9 @@ hideRefresh = function (domID) {
 }
 
 
-showEnding = function (domID) {
+showEnding = function (domID,content) {
     $('#' + domID).siblings(endID).show();
+    $('#' + domID).siblings(endID).children("div").first().text(content);
     end = true;
 }
 
