@@ -78,9 +78,40 @@
         );
     }
 
-
+    //闭包，应该放在getallstaff.cshtml，为了保持可复用，加回调函数
+    handlers = function () {
+        var handlers = new Array();
+        return {
+            set: function (objs) {
+                //cleardom
+                //adddom
+                handlers = ojbs;
+            },
+            get: function () {
+                //gethandlers
+                return handlers;
+            },
+            getIDs: function () {
+                var ids;
+                $.each(handlers, function (index, obj) {
+                    ids += obj.ID + ',';
+                })
+                return ids.substring(0, ids.Length - 1);
+            },
+            remove: function (id) {
+                //removedom
+                //Todo
+                handlers = handlers.filter(function (obj) {
+                    return id != obj.ID;
+                })
+            }
+        }
+    }
+    
 
     appointOrder = function (orderID) {
+        var handlers = handlers.get();
+
         @*$.confirm("您确定要撤销这条工单吗?", "确认撤销?", function () {
             //$.toast("文件已经删除!");
             var url = '@Url.Action("CancelOrder", "Order")';

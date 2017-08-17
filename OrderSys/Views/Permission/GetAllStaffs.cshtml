@@ -8,7 +8,7 @@
 <div class="sort_box" style="padding-top:20px;">
     @foreach(StaffEntity staff in Model)
     {
-        <div class="sort_list" onclick="alert('@staff.ID')">
+        <div class="sort_list">
             <div class="num_logo"><img src="images/avatar_t2.png" /></div>
             <div class="num_name">@staff.Name</div>
         </div>
@@ -19,16 +19,23 @@
         <li><img src="images/068.png"></li>
     </ul>
 </div>
-
+<!--应该是多选的，选完有个确定-->
 <!-- 代码部分end -->
 <script src="~/Content/js/jquery.charfirst.pinyin.js"></script>
 <script src="~/Content/js/sort.js"></script>
 
 <script>
-    chooseStaff = function (staffID,callback) {
-        staffs.push(staffID);
-        if (arguments.length == 2) {
-            callback();
-        }
+    chooseStaffs = function () {
+        var staffs = new Array();
+        
+        $(".sort_list .check").each(function () {
+            var staff = new Object();
+            staff.ID = $(this).attr("StaffID");
+            staff.Name = $(this).attr("StaffName");
+            staffs.push(staff);
+        });
+        //close div
+        // TODO
+        handlers.set(staffs);
     }
 </script>
