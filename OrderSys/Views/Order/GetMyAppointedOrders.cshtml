@@ -35,7 +35,7 @@
 
 <script>
     getOrderFlows = function (orderID) {
-        var url = '@Url.Action("GetOrderFlows", "Order")';
+        var url = '@Url.Action("OrderFlowsPartialIndex", "Order")';
         var urlParm = { ID: orderID };
         doGetPartial('orderflows', url, urlParm);
         setOrderStatus();

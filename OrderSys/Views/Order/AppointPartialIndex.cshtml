@@ -1,0 +1,104 @@
+﻿
+
+<div class="slide_close iconfont">&#xe79a;</div>
+<div class="weui_cells_title">添加领队</div>
+<div class="weui_cells weui_cells_access">
+    <a class="weui_cell" href="javascript:showStaffListDiv();">
+        <div class="weui_cell_bd weui_cell_primary">
+            <p><span class="p_m iconfont">&#xe64c;</span> 添加</p>
+        </div>
+        <div class="weui_cell_ft">
+        </div>
+    </a>
+</div>
+
+<div class="weui_cells weui_cells_form">
+    <!--展示选中的员工-->
+</div>
+
+<div class="weui_btn_area">
+    <a class="weui_btn weui_btn_primary" href="javascript:doAppoint('@ViewBag.OrderID');" id="showTooltips">确定</a>
+</div>
+
+<!--已选员工模板-->
+<div class="weui_cell handler" hidden="hidden">
+    <div class="weui_cell_hd"><label class="weui_label" onclick="removeHandlerDom()"><span class="p_m iconfont">&#xe646; </span><span class="staffName"></span></label></div>
+    <div class="weui_cell_bd weui_cell_primary">
+        <input class="weui_input staffID" type="hidden" />
+        <input class="weui_input workload" type="" placeholder="请输入工作量">
+    </div>
+</div>
+
+<div class="clik_slide" id="staff_list" hidden="hidden">
+    <!--这里可以延迟加载，但是这样做的话会导致用户流量增大-->
+    @Html.Partial("~/Views/Permission/GetAllStaffs.cshtml")<!--如何获取工程部，传入参数就可以-->
+</div>
+
+<div style="height:40px"></div>
+
+<script>
+    showStaffListDiv = function () {
+        $('#staff_list').show();
+    }
+
+    hideStaffListDiv = function () {
+        $('#staff_list').hide();
+    }
+
+    //remove dom
+    removeHandlerDom = function () {
+        var id = $(this).parent('.weui_cell_hd div:first-child').val();
+        Staff.remove(id, function () {
+            $(this).parent('.weui_cell_hd').parent('.handler').remove();
+        })
+    }
+
+    addHandlerDom = function () {
+        $('.weui_cells_form').empty();
+        $.each(Staff.get(), function (index, handler) {
+            var handlerDom = $('.handler').clone(true).appendTo($('.weui_cells_form'));
+            handlerDom.childern(".staffID").val(handler.ID);
+            handlerDom.childern(".staffName").text(handler.Name);
+        });
+    }
+
+    setLeader = function () {
+        $(this).siblings().removeClass("check");
+        $(this).addClass("check");
+    }
+
+    doAppoint = function (orderID) {
+        //多个处理者情况下，必须有领队
+        var handlers = new Array();
+        $('.weui_cells_form > handler').each(function () {
+
+            var handler = new Object();
+            handler.ID = $(this).children(".staffID").val();
+            handler.OrderID = orderID;
+            handler.Workload = $(this).children(".workload").val();
+
+            if ($(this).hasClass("check")) {
+                handler.IsLeader = 1;
+            } else {
+                handler.IsLeader = 0;
+            }
+            handlers.push(handler);
+        })
+
+
+       $.confirm("请核对委派的资料是否正确?", "确认委派?", function () {
+            var url = '@Url.Action("AppointOrder", "Order")';
+            doSubmit(url, handlers, function (jdata) {
+                if (jdata.Code == "200") {
+                    //委派完成，关闭本div
+                    hideAppointDiv();
+                }
+            });
+        }, function () {
+            //取消操作
+        });
+    }
+
+
+</script>
+

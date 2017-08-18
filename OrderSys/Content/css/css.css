@@ -122,3 +122,7 @@ a.times_btn2:active{background:#ffe5d2;}
 
 /*工作量*/
 .p_m{color:#999;}
+
+/*弹出*/
+.clik_slide{background:#fff; width:100%; position:fixed; top:0; left:0; z-index:99999999; display:none;}
+.slide_close{width:40px; height:40px; position:absolute; top:0; right:0; text-align:center; line-height:40px;}

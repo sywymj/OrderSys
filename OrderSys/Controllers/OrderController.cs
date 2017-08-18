@@ -67,15 +67,18 @@ namespace OrderSys.Controllers
         }
 
         [HttpGet]
-        public ActionResult AppointOrder()
+        public ActionResult AppointOrder(string sHandlers)
         {
-            string sOrderID = JSRequest.GetRequestUrlParm(OrderEntity.FieldID);
-            string sHandlerIDs = JSRequest.GetRequestUrlParm(OrderHandlerEntity.FieldHandlerID + "s");
+            var handlers = FastJSON.JSON.ToObject(sHandlers);
+            
 
-            Guid orderID = (Guid)JSValidator.ValidateGuid(OrderEntity.FieldID, sOrderID, true);
-            int[] handlerIDs =  JSValidator.ValidateStrings(OrderHandlerEntity.FieldHandlerID + "s",sHandlerIDs,true);
+            //string sOrderID = JSRequest.GetRequestUrlParm(OrderEntity.FieldID);
+            //string sHandlerIDs = JSRequest.GetRequestUrlParm(OrderHandlerEntity.FieldHandlerID + "s");
 
-            orderService.AppointOrder(orderID, handlerIDs);
+            //Guid orderID = (Guid)JSValidator.ValidateGuid(OrderEntity.FieldID, sOrderID, true);
+            //int[] handlerIDs =  JSValidator.ValidateStrings(OrderHandlerEntity.FieldHandlerID + "s",sHandlerIDs,true);
+
+            //orderService.AppointOrder(orderID, handlerIDs);
 
             ContentResult res = new ContentResult();
             res.Content = JSON.ToJSON(new JSResponse("操作成功！"), jsonParams);
@@ -309,7 +312,14 @@ namespace OrderSys.Controllers
         }
 
         [HttpGet]
-        public ActionResult GetOrderFlows(Guid id)
+        public ActionResult AppointPartialIndex(Guid orderID)
+        {
+            ViewBag.OrderID = orderID;
+            return PartialView("AppointPartialIndex");
+        }
+
+        [HttpGet]
+        public ActionResult OrderFlowsPartialIndex(Guid id)
         {
             OrderEntity order = orderService.GetOrderEntity(id);
 
@@ -318,7 +328,7 @@ namespace OrderSys.Controllers
 
             var list = orderService.GetOrderFlows(id);
 
-            return PartialView("OrderFlows", list);
+            return PartialView("OrderFlowsPartialIndex", list);
         }
 
         [HttpGet]

@@ -100,7 +100,20 @@ doGet = function (url, urlParmsObj, callback) {
         url: url,
         data: urlParmsObj,
         success: function (data) {
-            //应该直接remove该dom，不需要重新刷新
+            var jdata = ajaxTips(data, callback);
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+            alert(errorThrown);
+        }
+    })
+}
+
+doPost = function (url, postData, callback) {
+    $.ajax({
+        type: "POST",
+        url: url,
+        data: postData,
+        success: function (data) {
             var jdata = ajaxTips(data, callback);
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -173,7 +186,6 @@ showRefresh = function (domID) {
 hideRefresh = function (domID) {
     $('#' + domID).siblings(refreshID).hide();
 }
-
 
 showEnding = function (domID,content) {
     $('#' + domID).siblings(endID).show();
