@@ -26,13 +26,16 @@
 </div>
 
 <!--工作流程-->
-<div id="full" class='weui-popup-container'>
+<div id="orderflows" class='weui-popup-container'>
     <div class="weui-popup-overlay"></div>
-    <div class="weui-popup-modal" id="orderflows"></div>
+    <div class="weui-popup-modal"></div>
 </div>
 
 <!--委派工单的页面-->
-<div class="clik_slide" id="appointOrder"></div>
+<div id="appointOrder" class='weui-popup-container'>
+    <div class="weui-popup-overlay"></div>
+    <div class="weui-popup-modal"></div>
+</div>
 
 <script>
     var pageIndex1, pageSize1;
@@ -52,7 +55,7 @@
     }
 
     querymyappointing = function () {
-        var listDomID = 'myappointing_list';
+        var listDomID = '#myappointing_list';
         if (pageIndex1 == 1) {
             clearDom(listDomID);
         }
@@ -67,7 +70,7 @@
     }
 
     querymyappointed = function () {
-        var listDomID = 'myappointed_list';
+        var listDomID = '#myappointed_list';
         if (pageIndex2 == 1) {
             clearDom(listDomID);
         }
@@ -90,7 +93,7 @@
     }
 
     hideAppointDiv = function () {
-        var domID = 'appointOrder';
+        var domID = '#appointOrder';
         clearDom(domID);
         $('#' + domID).hide();
     }

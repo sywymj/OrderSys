@@ -21,7 +21,7 @@
 </div>
 
 <!--已选员工模板-->
-<div class="weui_cell handler" hidden="hidden">
+<div class="weui_cell handler" style="display:none">
     <div class="weui_cell_hd"><label class="weui_label" onclick="removeHandlerDom()"><span class="p_m iconfont">&#xe646; </span><span class="staffName"></span></label></div>
     <div class="weui_cell_bd weui_cell_primary">
         <input class="weui_input staffID" type="hidden" />
@@ -29,9 +29,10 @@
     </div>
 </div>
 
-<div class="clik_slide" id="staff_list" hidden="hidden">
+<div class="clik_slide" id="staff_list" style="display:none;">
     <!--这里可以延迟加载，但是这样做的话会导致用户流量增大-->
-    @Html.Partial("~/Views/Permission/GetAllStaffs.cshtml")<!--如何获取工程部，传入参数就可以-->
+    @*@Html.Partial("~/Views/Permission/GetAllStaffs.cshtml")<!--如何获取工程部，传入参数就可以-->*@
+    @Html.Action("GetAllStaffs", "Permission")
 </div>
 
 <div style="height:40px"></div>

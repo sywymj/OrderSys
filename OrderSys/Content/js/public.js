@@ -4,11 +4,11 @@ var refreshID = '.refreshing'
 var endID = '.end';
 var end = false;
 
-doQuery = function (domID, url, urlParmsObj, callback) {
+doQuery = function (container, url, urlParmsObj, callback) {
     if (end) { return; }
 
     //add loading
-    showLoading(domID);
+    showLoading(container);
 
     var argumentLength = arguments.length
     var urlParms = urlParmsObj || { PageIndex: 1, PageSize: 20 };
@@ -20,18 +20,18 @@ doQuery = function (domID, url, urlParmsObj, callback) {
         success: function (data) {
             //判断返回值不是 json 格式
             if (!data.match("^\{(\n?.+:.+,?\n?){1,}\}$")) {
-                hideEnding(domID);
-                appendDom(domID, data);
+                hideEnding(container);
+                appendDom(container, data);
             }
             else {
                 var jdata = ajaxTips(data);
                 if (jdata.RspTypeCode == 6) {
                     //底部提示没有数据了
-                    showEnding(domID,jdata.Msg);
+                    showEnding(container,jdata.Msg);
                 }
                 if (jdata.RspTypeCode == 5) {
                     //底部提示没有数据了
-                    showEnding(domID,jdata.Msg);
+                    showEnding(container,jdata.Msg);
                 }
             }
             //整个分页效果显示完后的回调函数
@@ -43,13 +43,13 @@ doQuery = function (domID, url, urlParmsObj, callback) {
             alert(errorThrown);
         },
         complete: function () {
-            hideLoading(domID);
+            hideLoading(container);
         }
     })
 }
 
-doGetPartial = function (domID, url, urlParmsObj) {
-    clearDom(domID);
+doGetPartial = function (container, url, urlParmsObj) {
+    clearDom(container);
     var urlParms = urlParmsObj;
     $.ajax({
         type: "GET",
@@ -59,7 +59,7 @@ doGetPartial = function (domID, url, urlParmsObj) {
         success: function (data) {
             //判断返回值不是 json 格式
             if (!data.match("^\{(\n?.+:.+,?\n?){1,}\}$")) {
-                appendDom(domID, data);
+                appendDom(container, data);
             }
             else {
                 var jdata = ajaxTips(data);
@@ -159,42 +159,42 @@ ajaxTips = function (json,callback) {
     return jdata
 }
 
-appendDom = function (DomID, Domdata) {
-    $('#' + DomID).append(Domdata);
+appendDom = function (selector, Domdata) {
+    $(selector).append(Domdata);
 }
 
-clearDom = function (DomID) {
-    $('#' + DomID).empty();
+clearDom = function (selector) {
+    $(selector).empty();
 }
 
 //在某个dom同辈添加loading
-showLoading = function (domID) {
-    $('#' + domID).siblings(loadingID).show();
+showLoading = function (container) {
+    $(container).siblings(loadingID).show();
     loading = true;
 }
 
 //清除某个dom同辈面的loading
-hideLoading = function (domID) {
-    $('#' + domID).siblings(loadingID).hide();
+hideLoading = function (container) {
+    $(container).siblings(loadingID).hide();
     loading = false;
 }
 
-showRefresh = function (domID) {
-    $('#' + domID).siblings(refreshID).show();
+showRefresh = function (container) {
+    $(container).siblings(refreshID).show();
 }
 
-hideRefresh = function (domID) {
-    $('#' + domID).siblings(refreshID).hide();
+hideRefresh = function (container) {
+    $(container).siblings(refreshID).hide();
 }
 
-showEnding = function (domID,content) {
-    $('#' + domID).siblings(endID).show();
-    $('#' + domID).siblings(endID).children("div").first().text(content);
+showEnding = function (container,content) {
+    $(container).siblings(endID).show();
+    $(container).siblings(endID).children("div").first().text(content);
     end = true;
 }
 
-hideEnding = function (domID) {
-    $('#' + domID).siblings(endID).hide();
+hideEnding = function (container) {
+    $(container).siblings(endID).hide();
     end = false;
 }
 
