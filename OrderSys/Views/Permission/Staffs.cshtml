@@ -1,0 +1,72 @@
+﻿@using JSNet.Model;
+@using OrderSys.Model;
+@model List<StaffEntity>
+
+<link href="/Content/css/lanren.css" rel="stylesheet" />
+
+@Html.Partial("~/Views/Shared/_Back.cshtml", new BackViewModel() { Title = "员工列表", Popup = "#staffs_popup" })
+<div class="weui_cells_title">请选择</div>
+
+<!-- 代码部分begin -->
+<div id="letter"></div>
+<div class="sort_box" style="padding-top:20px;">
+    @foreach(StaffEntity staff in Model)
+    {
+        <div class="sort_list" id="@staff.ID">
+            <div class="num_logo"><img src="/Content/images/avatar_t2.png" /></div>
+            <div class="num_name">@staff.Name</div>
+        </div>
+    }
+</div>
+<div class="initials">
+    <ul></ul>
+</div>
+<!--应该是多选的，选完有个确定-->
+<!-- 代码部分end -->
+<script src="~/Content/js/jquery.charfirst.pinyin.js"></script>
+<script src="~/Content/js/sort.js"></script>
+
+<script>
+    //闭包，主要用户交互选择员工，应该放在getallstaff.cshtml，为了保持可复用，加回调函数
+    Staff = function () {
+        var staffs = new Array();
+        return {
+            set: function (objs, callback) {
+                // TO FIX BUG
+                staffs.push(ojbs);
+                $.unique(staffs);//需要去重
+
+                if ($(this).arguments.Length == 2) {
+                    callback();
+                }
+            },
+            get: function () {
+                return handlers;
+            },
+            remove: function (id, callback) {
+                staffs = staffs.filter(function (obj) {
+                    return id != obj.ID;
+                })
+                $("#" + id).removeClass("checked");
+                if ($(this).arguments.Length == 2) {
+                    callback();
+                }
+            }
+        }
+    }
+
+    chooseStaffs = function () {
+        //构建数组对象
+        var staffs = new Array();
+        $(".sort_list .check").each(function () {
+            var staff = new Object();
+            staff.ID = $(this).attr("StaffID");
+            staff.Name = $(this).attr("StaffName");
+            staffs.push(staff);
+        });
+
+        Staff.set(staffs, addHandlerDom());
+        closePopup('staffs_popup');
+    }
+
+</script>

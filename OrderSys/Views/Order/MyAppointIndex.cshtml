@@ -26,13 +26,13 @@
 </div>
 
 <!--工作流程-->
-<div id="orderflows" class='weui-popup-container'>
+<div id="orderflows_popup" class='weui-popup-container'>
     <div class="weui-popup-overlay"></div>
     <div class="weui-popup-modal"></div>
 </div>
 
 <!--委派工单的页面-->
-<div id="appointOrder" class='weui-popup-container'>
+<div id="appointorder_popup" class='weui-popup-container'>
     <div class="weui-popup-overlay"></div>
     <div class="weui-popup-modal"></div>
 </div>
@@ -61,7 +61,7 @@
         }
         doQuery(
             listDomID,
-            '@Url.Action("GetMyAppointingOrders", "Order")',
+            '@Url.Action("MyAppointingOrders", "Order")',
             { PageIndex: pageIndex1, PageSize: pageSize1 },
             function () {
                 pageIndex1++;
@@ -76,7 +76,7 @@
         }
         doQuery(
             listDomID,
-            '@Url.Action("GetMyAppointedOrders", "Order")',
+            '@Url.Action("MyAppointedOrders", "Order")',
             { PageIndex: pageIndex2, PageSize: pageSize2 },
             function () {
                 pageIndex2++;
@@ -84,19 +84,27 @@
         );
     }
 
-    showAppointDiv = function (orderID) {
-        var domID = 'appointOrder';
-        var url = '@Url.Action("AppointPartialIndex", "Order")';
+    openAppointPopup = function (orderID) {
+        //打开popup
+        var container = '#appointorder_popup';
+        var modal = '#appointorder_popup > .weui-popup-modal';
+        $.openMyPopup(container);
+
+        var url = '@Url.Action("AppointOrder", "Order")';
         var urlParmsObj = { orderID: orderID };
-        doGetPartial(domID, url, urlParmsObj);
-        $('#' + domID).show();
-    }
-
-    hideAppointDiv = function () {
-        var domID = '#appointOrder';
-        clearDom(domID);
-        $('#' + domID).hide();
+        doGetPartial(modal, url, urlParmsObj);
     }
 
 
+    openWorkflowsPopup = function (orderID) {
+        //打开popup
+        var container = '#orderflows_popup';
+        var modal = '#orderflows_popup > .weui-popup-modal';
+        $.openMyPopup(container);
+
+        var url = '@Url.Action("OrderFlows", "Order")';
+        var urlParmsObj = { ID: orderID };
+        doGetPartial(modal, url, urlParmsObj);
+        setOrderStatus();
+    }
 </script>

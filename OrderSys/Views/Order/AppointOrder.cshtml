@@ -1,0 +1,109 @@
+﻿@using OrderSys.Model;
+
+@Html.Partial("~/Views/Shared/_Back.cshtml", new BackViewModel() { Title = "委派工单", Popup = "#appointorder_popup" })
+<div class="weui_cells_title">添加领队</div>
+<div class="weui_cells weui_cells_access">
+    <a class="weui_cell" href="javascript:openStaffsPopup();">
+        <div class="weui_cell_bd weui_cell_primary">
+            <p><span class="p_m iconfont">&#xe64c;</span> 添加</p>
+        </div>
+        <div class="weui_cell_ft">
+        </div>
+    </a>
+</div>
+
+<div class="weui_cells weui_cells_form">
+    <!--展示选中的员工-->
+</div>
+
+<div class="weui_btn_area">
+    <a class="weui_btn weui_btn_primary" href="javascript:doAppoint('@ViewBag.OrderID');" id="showTooltips">确定</a>
+</div>
+
+<!--已选员工模板-->
+<div class="weui_cell handler" style="display:none">
+    <div class="weui_cell_hd"><label class="weui_label" onclick="removeHandlerDom()"><span class="p_m iconfont">&#xe646; </span><span class="staffName"></span></label></div>
+    <div class="weui_cell_bd weui_cell_primary">
+        <input class="weui_input staffID" type="hidden" />
+        <input class="weui_input workload" type="" placeholder="请输入工作量">
+    </div>
+</div>
+
+
+<!--员工列表-->
+<div id="staffs_popup" class='weui-popup-container'>
+    <div class="weui-popup-overlay"></div>
+    <div class="weui-popup-modal"></div>
+</div>
+
+<div style="height:40px"></div>
+
+<script>
+
+    openStaffsPopup = function () {
+        //打开popup
+        var container = '#staffs_popup';
+        var modal = '#staffs_popup > .weui-popup-modal';
+        $.openMyPopup(container);
+
+        var url = '@Url.Action("GetAllStaffs", "Permission")';
+        doGetPartial(modal, url);
+    }
+
+    //remove dom
+    removeHandlerDom = function () {
+        var id = $(this).parent('.weui_cell_hd div:first-child').val();
+        Staff.remove(id, function () {
+            $(this).parent('.weui_cell_hd').parent('.handler').remove();
+        })
+    }
+
+    addHandlerDom = function () {
+        $('.weui_cells_form').empty();
+        $.each(Staff.get(), function (index, handler) {
+            var handlerDom = $('.handler').clone(true).appendTo($('.weui_cells_form'));
+            handlerDom.childern(".staffID").val(handler.ID);
+            handlerDom.childern(".staffName").text(handler.Name);
+        });
+    }
+
+    setLeader = function () {
+        $(this).siblings().removeClass("check");
+        $(this).addClass("check");
+    }
+
+    doAppoint = function (orderID) {
+        //多个处理者情况下，必须有领队
+        var handlers = new Array();
+        $('.weui_cells_form > handler').each(function () {
+
+            var handler = new Object();
+            handler.ID = $(this).children(".staffID").val();
+            handler.OrderID = orderID;
+            handler.Workload = $(this).children(".workload").val();
+
+            if ($(this).hasClass("check")) {
+                handler.IsLeader = 1;
+            } else {
+                handler.IsLeader = 0;
+            }
+            handlers.push(handler);
+        })
+
+
+       $.confirm("请核对委派的资料是否正确?", "确认委派?", function () {
+            var url = '@Url.Action("DoAppointOrder", "Order")';
+            doSubmit(url, handlers, function (jdata) {
+                if (jdata.Code == "200") {
+                    //委派完成，关闭本div
+                    closePopup('appointorder_popup');
+                }
+            });
+        }, function () {
+            //取消操作
+        });
+    }
+
+
+</script>
+

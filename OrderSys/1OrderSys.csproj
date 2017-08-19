@@ -129,6 +129,7 @@
     <Content Include="Content\css\css.css" />
     <Content Include="Content\css\jquery-weui.css" />
     <Content Include="Content\css\jquery-weui.min.css" />
+    <Content Include="Content\css\lanren.css" />
     <Content Include="Content\css\style.css" />
     <Content Include="Content\iconfont\demo.css" />
     <Content Include="Content\iconfont\demo_fontclass.html" />
@@ -190,10 +191,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\Order\GetMyAppointedOrders.cshtml" />
+    <Content Include="Views\Order\MyAppointedOrders.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\Order\GetMyStartedOrders.cshtml" />
+    <Content Include="Views\Order\MyStartedOrders.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Shared\_Layout.cshtml" />
@@ -226,18 +227,18 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\PublishProfiles\1.pubxml" />
-    <Content Include="Views\Order\OrderFlowsPartialIndex.cshtml" />
+    <Content Include="Views\Order\OrderFlows.cshtml" />
     <Content Include="Views\Shared\_Back.cshtml" />
     <Content Include="Views\Order\MyHandleIndex.cshtml" />
     <Content Include="Views\Order\MyAppointIndex.cshtml" />
-    <Content Include="Views\Order\GetMyAppointingOrders.cshtml" />
-    <Content Include="Views\Order\GetMyReceivingOrders.cshtml" />
-    <Content Include="Views\Order\GetMyHandlingOrders.cshtml" />
-    <Content Include="Views\Order\GetMyHandledOrders.cshtml" />
+    <Content Include="Views\Order\MyAppointingOrders.cshtml" />
+    <Content Include="Views\Order\MyReceivingOrders.cshtml" />
+    <Content Include="Views\Order\MyHandlingOrders.cshtml" />
+    <Content Include="Views\Order\MyHandledOrders.cshtml" />
     <Content Include="Views\Order\OrderDetail.cshtml" />
     <Content Include="Views\Order\HandleDetail.cshtml" />
-    <Content Include="Views\Permission\GetAllStaffs.cshtml" />
-    <Content Include="Views\Order\AppointPartialIndex.cshtml" />
+    <Content Include="Views\Permission\Staffs.cshtml" />
+    <Content Include="Views\Order\AppointOrder.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

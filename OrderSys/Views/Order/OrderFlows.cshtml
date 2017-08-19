@@ -1,0 +1,127 @@
+﻿@model System.Data.DataTable
+@using JSNet.Utilities;
+@using JSNet.BaseSys;
+@using OrderSys.Model;
+
+@Html.Partial("~/Views/Shared/_Back.cshtml", new BackViewModel() { Title = "工单流程", Popup = "#orderflows_popup" })
+<div class="times">
+    
+    <!--流程图-->
+    <div class="times_t">
+        <div class="times_t_in">
+            <ul>
+                <li id="Appointing">
+                    <span>发起</span>
+                    <label class="circle"></label>
+                    <i></i>
+                </li>
+                <li id="Receving">
+                    <span>委派</span>
+                    <label class="circle"></label>
+                    <i></i>
+                </li>
+                <li id="Handling">
+                    <span>接单</span>
+                    <label class="circle"></label>
+                    <i></i>
+                </li>
+                <li id="Checking">
+                    <span>处理</span>
+                    <label class="circle"></label>
+                    <i></i>
+                </li>
+                <li id="Finish">
+                    <span>验收</span>
+                    <label class="circle"></label>
+                    <i></i>
+                </li>
+            </ul>
+        </div>   
+    </div>
+
+    <!--文字流程-->
+    <div class="times_m">
+        <ul>
+            @foreach(System.Data.DataRow dr in Model.Rows)
+            {
+                <li>
+                <div class="times_m_l">
+                    <span>@Convert.ToDateTime(dr["OperateTime"]).ToString(BaseSystemInfo.DateFormat)</span>
+                    <label>@Convert.ToDateTime(dr["OperateTime"]).ToString(BaseSystemInfo.TimeFormat)</label>
+                </div>
+                <div class="times_m_r">
+                    <span>[@EnumExtensions.ToDescription((OperationEnum)dr["Operation"])]@dr["OperatorName"]<br />电话：@dr["OperatorTel"]</span>
+                    <i class="circle iconfont">&#xe6ff;</i>
+                </div>
+                <div class="clear"></div>
+            </li>
+            }
+        </ul>
+    </div>
+
+    <div class="demos-content-padded bottom_btn">
+        <a href="javascript:openOrderdetailPopup('@ViewBag.OrderID');" class="weui_btn weui_btn_plain_default" style="width:46%; height:40px; line-height:40px;  float:left; margin:0; font-size:16px;">查看工单详情</a>
+        <a href="javascript:;" class="weui_btn weui_btn_plain_default" style="width:46%; height:40px; line-height:40px; float:right; margin:0; font-size:16px; ">查看处理过程</a>
+        <div class="clear"></div>
+    </div>
+</div>
+
+<!--工单状态-->
+<div class="reject" hidden="hidden">
+    <em class="triangle_up"></em>
+    <span>@EnumExtensions.ToDescription(ViewBag.OrderStatus)</span>
+</div>
+
+<!--popup工单内容-->
+<div id="orderdetail_popup" class='weui-popup-container'>
+    <div class="weui-popup-overlay"></div>
+    <div class="weui-popup-modal"></div>
+</div>
+
+<!--popup处理进度-->
+<div id="handledetail_popup" class='weui-popup-container'>
+    <div class="weui-popup-overlay"></div>
+    <div class="weui-popup-modal"></div>
+</div>
+
+<script>
+
+    setOrderStatus = function () {
+        var status = '@ViewBag.OrderStatus';
+        var statusID = ".reject";
+
+        $("#" + status).addClass("now");//给自己添加样式
+        $("#" + status).prevAll().addClass("now");//给之前的流程添加样式
+        appendDom("#"+status, $(statusID).get());
+
+        $("#" + status).children(statusID).show();
+    }
+
+    openOrderdetailPopup = function (orderID) {
+        //打开popup
+        var container = '#orderdetail_popup';
+        var modal = '#orderdetail_popup > .weui-popup-modal';
+        $.openMyPopup(container);
+
+        var url = '@Url.Action("OrderDetail", "Order")';
+        var urlParmObj = { ID: orderID };
+        doGetPartial(modal, url, urlParmObj);
+    }
+
+    openHandledetailPopup = function (orderID) {
+        //打开popup
+        var container = '#handledetail_popup';
+        var modal = '#handledetail_popup > .weui-popup-modal';
+        $.openMyPopup(container);
+
+        var url = '@Url.Action("HandleDetail", "Order")';
+        var urlParmObj = { ID: orderID };
+        doGetPartial(modal, url, urlParmObj);
+    }
+
+
+    
+</script>
+
+
+

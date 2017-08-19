@@ -4,10 +4,10 @@
 }
 <div class="weui_tab">
     <div class="weui_navbar" id="tab1">
-        <li class="weui_navbar_item" id="startemyorder-btn" onclick="setTab(1,0)">
+        <li class="weui_navbar_item" id="startemyorder_btn" onclick="setTab(1,0)">
             新发起
         </li>
-        <li class="weui_navbar_item weui_bar_item_on" id="querymystarted-btn" onclick="setTab(1, 1)">
+        <li class="weui_navbar_item weui_bar_item_on" id="query_mystarted_btn" onclick="setTab(1, 1)">
             已发起
         </li>
     </div>
@@ -16,7 +16,7 @@
             <div id="startorder">@Html.Partial("~/Views/Order/StartOrder.cshtml") </div>
         </div>
         <div class="tablist block">
-            <div id="my-started-list"></div>
+            <div id="mystarted_list"></div>
             @Html.Partial("~/Views/Shared/_Loading.cshtml")
             @Html.Partial("~/Views/Shared/_End.cshtml")
         </div>
@@ -24,9 +24,9 @@
 </div>
 
 <!--popup流程-->
-<div id="full" class='weui-popup-container'>
+<div id="orderflows_popup" class='weui-popup-container'>
     <div class="weui-popup-overlay"></div>
-    <div class="weui-popup-modal" id="orderflows"></div>
+    <div class="weui-popup-modal"></div>
 </div>
 
 <script>
@@ -44,19 +44,51 @@
     }
 
     querymystarted = function () {
-        $('#querymystarted-btn').off('click', querymystarted);
+        //$('#query_mystarted_btn').off('click', querymystarted);
+
+        var listDomID = '#mystarted_list';
+        if (pageIndex1 == 1) {
+            clearDom(listDomID);
+        }
 
         if (pageIndex1 == 1) {
-            clearDom('#my-started-list');
+            clearDom(listDomID);
         }
         doQuery(
-            'my-started-list',
-            '@Url.Action("GetMyStartedOrders", "Order")',
+            listDomID,
+            '@Url.Action("MyStartedOrders", "Order")',
             { PageIndex: pageIndex1, PageSize: pageSize1 },
             function () {
                 pageIndex1++;
             }
         );
+    }
+
+    cancelOrder = function (orderID) {
+        $.confirm("您确定要撤销这条工单吗?", "确认撤销?", function () {
+            //$.toast("文件已经删除!");
+            var url = '@Url.Action("CancelOrder", "Order")';
+            var urlParm = { ID: orderID };
+            doGet(url, urlParm, function (jdata) {
+                if (jdata.Code == "200") {
+                    $('#order_' + orderID).remove();
+                }
+            });
+        }, function () {
+            //取消操作
+        });
+    }
+
+    openWorkflowsPopup = function (orderID) {
+        //打开popup
+        var container = '#orderflows_popup';
+        var modal = '#orderflows_popup > .weui-popup-modal';
+        $.openMyPopup(container);
+
+        var url = '@Url.Action("OrderFlows", "Order")';
+        var urlParmsObj = { ID: orderID };
+        doGetPartial(modal, url, urlParmsObj);
+        setOrderStatus();
     }
 
 

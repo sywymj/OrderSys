@@ -32,7 +32,7 @@ namespace OrderSys.Controllers
 
             if (list.Count > 0)
             {
-                return PartialView("GetAllStaffs", list);
+                return PartialView("Staffs", list);
             }
             else
             {

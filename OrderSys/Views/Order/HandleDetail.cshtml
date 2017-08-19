@@ -1,1 +1,21 @@
-﻿
+﻿@model System.Data.DataTable
+@using JSNet.BaseSys;
+
+<div class="weui_cells weui_cells_form">
+    <div class="weui_cell">
+        <div class="process">
+            <ul>
+                @foreach (System.Data.DataRow dr in Model.Rows)
+                {
+                    <li>
+                        <label>
+                            @Convert.ToDateTime(dr["HandleTime"]).ToString(BaseSystemInfo.DateFormat)<br />
+                            @Convert.ToDateTime(dr["HandleTime"]).ToString(BaseSystemInfo.TimeFormat)
+                        </label>
+                        <span class="circle"></span>【@dr["HandleType"]】@dr["Remark"]
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+</div>

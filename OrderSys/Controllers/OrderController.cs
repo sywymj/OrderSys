@@ -40,7 +40,7 @@ namespace OrderSys.Controllers
         }
 
         [HttpPost]
-        public ActionResult StartOrder()
+        public ActionResult DoStartOrder()
         {
             //获取参数
             string sBookingTime = JSRequest.GetRequestFormParm(OrderEntity.FieldBookingTime);
@@ -67,7 +67,7 @@ namespace OrderSys.Controllers
         }
 
         [HttpGet]
-        public ActionResult AppointOrder(string sHandlers)
+        public ActionResult DoAppointOrder(string sHandlers)
         {
             var handlers = FastJSON.JSON.ToObject(sHandlers);
             
@@ -86,7 +86,7 @@ namespace OrderSys.Controllers
         }
 
         [HttpGet]
-        public ActionResult ReceiveOrder()
+        public ActionResult DoReceiveOrder()
         {
             string sOrderID = JSRequest.GetRequestUrlParm(OrderEntity.FieldID);
             Guid orderID = (Guid)JSValidator.ValidateGuid(OrderEntity.FieldID, sOrderID, true);
@@ -162,14 +162,14 @@ namespace OrderSys.Controllers
         }
 
         [HttpGet]
-        public ActionResult GetMyStartedOrders(int pageIndex,int pageSize)
+        public ActionResult MyStartedOrders(int pageIndex,int pageSize)
         {
             int count = 0;
             var list = orderService.GetMyStartedOrders(pageIndex,pageSize,out count);
 
             if (list.Rows.Count > 0)
             {
-                return PartialView("GetMyStartedOrders", list);
+                return PartialView("MyStartedOrders", list);
             }
             else
             {
@@ -187,14 +187,14 @@ namespace OrderSys.Controllers
         }
 
         [HttpGet]
-        public ActionResult GetMyReceivingOrders(int pageIndex, int pageSize)
+        public ActionResult MyReceivingOrders(int pageIndex, int pageSize)
         {
             int count = 0;
             var list = orderService.GetMyReceivingOrders(pageIndex, pageSize, out count);
 
             if (list.Rows.Count > 0)
             {
-                return PartialView("GetMyStartedOrders", list);
+                return PartialView("MyStartedOrders", list);
             }
             else
             {
@@ -212,14 +212,14 @@ namespace OrderSys.Controllers
         }
 
         [HttpGet]
-        public ActionResult GetMyHandlingOrders(int pageIndex, int pageSize)
+        public ActionResult MyHandlingOrders(int pageIndex, int pageSize)
         {
             int count = 0;
             var list = orderService.GetMyHandlingOrders(pageIndex, pageSize, out count);
 
             if (list.Rows.Count > 0)
             {
-                return PartialView("GetMyStartedOrders", list);
+                return PartialView("MyStartedOrders", list);
             }
             else
             {
@@ -237,14 +237,14 @@ namespace OrderSys.Controllers
         }
 
         [HttpGet]
-        public ActionResult GetMyHandledOrders(int pageIndex, int pageSize)
+        public ActionResult MyHandledOrders(int pageIndex, int pageSize)
         {
             int count = 0;
             var list = orderService.GetMyHandledOrders(pageIndex, pageSize, out count);
 
             if (list.Rows.Count > 0)
             {
-                return PartialView("GetMyStartedOrders", list);
+                return PartialView("MyStartedOrders", list);
             }
             else
             {
@@ -262,14 +262,14 @@ namespace OrderSys.Controllers
         }
 
         [HttpGet]
-        public ActionResult GetMyAppointingOrders(int pageIndex, int pageSize)
+        public ActionResult MyAppointingOrders(int pageIndex, int pageSize)
         {
             int count = 0;
             var list = orderService.GetMyAppointingOrders(pageIndex, pageSize, out count);
 
             if (list.Rows.Count > 0)
             {
-                return PartialView("GetMyAppointingOrders", list);
+                return PartialView("MyAppointingOrders", list);
             }
             else
             {
@@ -287,14 +287,14 @@ namespace OrderSys.Controllers
         }
 
         [HttpGet]
-        public ActionResult GetMyAppointedOrders(int pageIndex, int pageSize)
+        public ActionResult MyAppointedOrders(int pageIndex, int pageSize)
         {
             int count = 0;
             var list = orderService.GetMyAppointedOrders(pageIndex, pageSize, out count);
 
             if (list.Rows.Count > 0)
             {
-                return PartialView("GetMyAppointedOrders", list);
+                return PartialView("MyAppointedOrders", list);
             }
             else
             {
@@ -312,14 +312,14 @@ namespace OrderSys.Controllers
         }
 
         [HttpGet]
-        public ActionResult AppointPartialIndex(Guid orderID)
+        public ActionResult AppointOrder(Guid orderID)
         {
             ViewBag.OrderID = orderID;
-            return PartialView("AppointPartialIndex");
+            return PartialView("AppointOrder");
         }
 
         [HttpGet]
-        public ActionResult OrderFlowsPartialIndex(Guid id)
+        public ActionResult OrderFlows(Guid id)
         {
             OrderEntity order = orderService.GetOrderEntity(id);
 
@@ -328,19 +328,35 @@ namespace OrderSys.Controllers
 
             var list = orderService.GetOrderFlows(id);
 
-            return PartialView("OrderFlowsPartialIndex", list);
+            return PartialView("OrderFlows", list);
         }
 
         [HttpGet]
-        public ActionResult GetOrderDetail(Guid id)
+        public ActionResult OrderDetail(Guid id)
         {
-
             var handlers = orderService.GetOrderHandlers(id);
             ViewBag.Handlers = handlers;
 
 
             var dr = orderService.GetOrderDetail(id);
             return PartialView("OrderDetail", dr);
+        }
+
+        [HttpGet]
+        public ActionResult HandleDetail(Guid orderID)
+        {
+            var list = orderService.GetOrderHandleDetails(orderID);
+
+            if (list.Rows.Count > 0)
+            {
+                return PartialView("HandleDetail", list);
+            }
+            else
+            {
+                ContentResult res = new ContentResult();
+                res.Content = JSON.ToJSON(new JSResponse(ResponseType.NoData, "- 暂无进度 -"), jsonParams);
+                return res;
+            }
         }
 
     }

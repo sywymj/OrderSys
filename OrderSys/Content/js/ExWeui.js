@@ -1,12 +1,12 @@
-﻿$.openPopup = function (popup, className) {
+﻿$.openMyPopup = function (popup, className) {
 
     //$.closePopup();
 
     popup = $(popup);
     popup.show();
     popup.width();
-    popup.addClass("weui-popup__container--visible");
-    var modal = popup.find(className);
+    popup.addClass("weui-popup-container-visible");
+    var modal = popup.children(".weui-popup-modal");
     modal.width();
     modal.transitionEnd(function () {
         modal.trigger("open");
@@ -14,9 +14,9 @@
 }
 
 
-$.closePopup = function (container, remove) {
-    container = $(container || ".weui-popup__container--visible");
+$.closeMyPopup = function (container, remove) {
+    container = $(container || ".weui-popup-container-visible");
     remove && container.remove();
     container.hide();
-    container.removeClass("weui-popup__container--visible")
+    container.removeClass("weui-popup-container-visible")
 };
