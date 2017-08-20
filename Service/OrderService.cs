@@ -54,16 +54,22 @@ namespace JSNet.Service
         }
 
         //委派工作
-        public void AppointOrder(Guid orderID, int[] handlerIDs)
+        public void AppointOrder(Guid orderID, List<OrderHandlerEntity> handlers)
         {
             //1.0 获取当前员工数据
             PermissionService permissionService = new PermissionService();
+            EntityManager<OrderFlowEntity> orderflowManager = new EntityManager<OrderFlowEntity>();
+            EntityManager<OrderEntity> orderManager = new EntityManager<OrderEntity>();
+            EntityManager<OrderHandlerEntity> handlerManager = new EntityManager<OrderHandlerEntity>();
+
             StaffEntity staff = permissionService.GetCurrentStaff();
 
             //2.0 修改工单实体
-            EntityManager<OrderEntity> orderManager = new EntityManager<OrderEntity>();
+           
             List<KeyValuePair<string,object>> kvps = new List<KeyValuePair<string,object>>();
             kvps.Add(new KeyValuePair<string,object>(OrderEntity.FieldStatus,(int)OrderStatus.Receving));
+            kvps.Add(new KeyValuePair<string,object>(OrderEntity.FieldAppointerID,staff.ID));
+            kvps.Add(new KeyValuePair<string, object>(OrderEntity.FieldNextOperatorID, GetLeaderHandlerID(handlers)));
             int rows = orderManager.Update(kvps, orderID);
             if (rows == 0)
             {
@@ -74,12 +80,15 @@ namespace JSNet.Service
             OrderFlowEntity orderFlow = new OrderFlowEntity();
             orderFlow.OrderID = orderID;
             orderFlow.OperatorID = staff.ID;
-            orderFlow.NextOperatorID = GetLeaderHandlerID(handlerIDs);
+            orderFlow.NextOperatorID = GetLeaderHandlerID(handlers);
             orderFlow.Operation = (int)OperationEnum.Appoint;
             orderFlow.OperateTime = DateTime.Now;
             orderFlow.Remark = "";
-            EntityManager<OrderFlowEntity> orderflowManager = new EntityManager<OrderFlowEntity>();
             orderflowManager.Insert(orderFlow);
+
+            //4.0 添加工单处理者
+            handlerManager.Insert(handlers);
+
         }
 
         //接收报障单
@@ -87,13 +96,15 @@ namespace JSNet.Service
         {
             //1.0 获取当前员工数据
             PermissionService permissionService = new PermissionService();
+            EntityManager<OrderEntity> orderManager = new EntityManager<OrderEntity>();
+            EntityManager<OrderFlowEntity> orderflowManager = new EntityManager<OrderFlowEntity>();
             StaffEntity staff = permissionService.GetCurrentStaff();
 
             //2.0 修改工单实体
-            EntityManager<OrderEntity> orderManager = new EntityManager<OrderEntity>();
             List<KeyValuePair<string, object>> kvps = new List<KeyValuePair<string, object>>();
             kvps.Add(new KeyValuePair<string, object>(OrderEntity.FieldStatus, (int)OrderStatus.Handling));
             kvps.Add(new KeyValuePair<string,object>(OrderEntity.FieldNextOperatorID, staff.ID));
+            kvps.Add(new KeyValuePair<string, object>(OrderEntity.FieldHandlerID, staff.ID));
             int rows = orderManager.Update(kvps, orderID);
             if (rows == 0)
             {
@@ -108,7 +119,6 @@ namespace JSNet.Service
             orderflow.Operation = (int)OperationEnum.Receive;
             orderflow.OperateTime = DateTime.Now;
             orderflow.Remark = "";
-            EntityManager<OrderFlowEntity> orderflowManager = new EntityManager<OrderFlowEntity>();
             orderflowManager.Insert(orderflow);
         }
 
@@ -500,7 +510,7 @@ namespace JSNet.Service
             }
             if (leaderID == 0)
             {
-                throw new JSException(JSErrMsg.ERR_CODE_NOLEADER, string.Format(JSErrMsg.ERR_MSG_NOLEADER));
+                throw new JSException(JSErrMsg.ERR_CODE_NOLEADER, string.Format(JSErrMsg.ERR_MSG_NOLEADER,""));
             }
             return leaderID;
         }

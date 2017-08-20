@@ -66,19 +66,12 @@ namespace OrderSys.Controllers
             return res;
         }
 
-        [HttpGet]
-        public ActionResult DoAppointOrder(string sHandlers)
+        [HttpPost]
+        public ActionResult DoAppointOrder(string jsonHandlers,Guid orderID)
         {
-            var handlers = FastJSON.JSON.ToObject(sHandlers);
-            
+            List<OrderHandlerEntity> handlers = FastJSON.JSON.ToObject<List<OrderHandlerEntity>>(jsonHandlers);
 
-            //string sOrderID = JSRequest.GetRequestUrlParm(OrderEntity.FieldID);
-            //string sHandlerIDs = JSRequest.GetRequestUrlParm(OrderHandlerEntity.FieldHandlerID + "s");
-
-            //Guid orderID = (Guid)JSValidator.ValidateGuid(OrderEntity.FieldID, sOrderID, true);
-            //int[] handlerIDs =  JSValidator.ValidateStrings(OrderHandlerEntity.FieldHandlerID + "s",sHandlerIDs,true);
-
-            //orderService.AppointOrder(orderID, handlerIDs);
+            orderService.AppointOrder(orderID, handlers);
 
             ContentResult res = new ContentResult();
             res.Content = JSON.ToJSON(new JSResponse("操作成功！"), jsonParams);
@@ -86,10 +79,8 @@ namespace OrderSys.Controllers
         }
 
         [HttpGet]
-        public ActionResult DoReceiveOrder()
+        public ActionResult DoReceiveOrder(Guid orderID)
         {
-            string sOrderID = JSRequest.GetRequestUrlParm(OrderEntity.FieldID);
-            Guid orderID = (Guid)JSValidator.ValidateGuid(OrderEntity.FieldID, sOrderID, true);
 
             orderService.ReceiveOrder(orderID);
 
@@ -194,7 +185,7 @@ namespace OrderSys.Controllers
 
             if (list.Rows.Count > 0)
             {
-                return PartialView("MyStartedOrders", list);
+                return PartialView("MyReceivingOrders", list);
             }
             else
             {
@@ -219,7 +210,7 @@ namespace OrderSys.Controllers
 
             if (list.Rows.Count > 0)
             {
-                return PartialView("MyStartedOrders", list);
+                return PartialView("MyHandlingOrders", list);
             }
             else
             {
@@ -244,7 +235,7 @@ namespace OrderSys.Controllers
 
             if (list.Rows.Count > 0)
             {
-                return PartialView("MyStartedOrders", list);
+                return PartialView("MyHandledOrders", list);
             }
             else
             {

@@ -1,4 +1,5 @@
-﻿@{
+﻿@using OrderSys.Model;
+@{
     ViewBag.Title = "MyStartIndex";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
@@ -28,13 +29,23 @@
 <!--工作流程-->
 <div id="orderflows_popup" class='weui-popup-container'>
     <div class="weui-popup-overlay"></div>
-    <div class="weui-popup-modal"></div>
+    <div class="weui-popup-modal">
+        <header class='demos-header'>
+            @Html.Partial("~/Views/Shared/_Back.cshtml", new BackViewModel() { Title = "工单流程", Popup = "#orderflows_popup" })
+        </header>
+        <article class="weui-article"></article>
+    </div>
 </div>
 
 <!--委派工单的页面-->
 <div id="appointorder_popup" class='weui-popup-container'>
     <div class="weui-popup-overlay"></div>
-    <div class="weui-popup-modal"></div>
+    <div class="weui-popup-modal">
+        <header class='demos-header'>
+            @Html.Partial("~/Views/Shared/_Back.cshtml", new BackViewModel() { Title = "委派工单", Popup = "#appointorder_popup" })
+        </header>
+        <article class="weui-article"></article>
+    </div>
 </div>
 
 <script>
@@ -87,7 +98,7 @@
     openAppointPopup = function (orderID) {
         //打开popup
         var container = '#appointorder_popup';
-        var modal = '#appointorder_popup > .weui-popup-modal';
+        var modal = '#appointorder_popup > .weui-popup-modal > .weui-article';
         $.openMyPopup(container);
 
         var url = '@Url.Action("AppointOrder", "Order")';
@@ -95,11 +106,10 @@
         doGetPartial(modal, url, urlParmsObj);
     }
 
-
     openWorkflowsPopup = function (orderID) {
         //打开popup
         var container = '#orderflows_popup';
-        var modal = '#orderflows_popup > .weui-popup-modal';
+        var modal = '#orderflows_popup > .weui-popup-modal > .weui-article';
         $.openMyPopup(container);
 
         var url = '@Url.Action("OrderFlows", "Order")';

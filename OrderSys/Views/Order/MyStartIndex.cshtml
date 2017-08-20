@@ -1,4 +1,5 @@
-﻿@{
+﻿@using OrderSys.Model;
+@{
     ViewBag.Title = "MyStartIndex";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
@@ -26,7 +27,12 @@
 <!--popup流程-->
 <div id="orderflows_popup" class='weui-popup-container'>
     <div class="weui-popup-overlay"></div>
-    <div class="weui-popup-modal"></div>
+    <div class="weui-popup-modal">
+        <header class='demos-header'>
+            @Html.Partial("~/Views/Shared/_Back.cshtml", new BackViewModel() { Title = "工单流程", Popup = "#orderflows_popup" })
+        </header>
+        <article class="weui-article"></article>
+    </div>
 </div>
 
 <script>
@@ -71,7 +77,7 @@
             var urlParm = { ID: orderID };
             doGet(url, urlParm, function (jdata) {
                 if (jdata.Code == "200") {
-                    $('#order_' + orderID).remove();
+                    $('#startedorder_' + orderID).remove();
                 }
             });
         }, function () {
@@ -82,7 +88,7 @@
     openWorkflowsPopup = function (orderID) {
         //打开popup
         var container = '#orderflows_popup';
-        var modal = '#orderflows_popup > .weui-popup-modal';
+        var modal = '#orderflows_popup > .weui-popup-modal > .weui-article';
         $.openMyPopup(container);
 
         var url = '@Url.Action("OrderFlows", "Order")';

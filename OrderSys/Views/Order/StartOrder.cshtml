@@ -75,7 +75,7 @@
             Remark: $('#Remark').val()
         };
 
-        doSubmit('@Url.Action("StartOrder", "Order")', data, function (jdata) {
+        doSubmit('@Url.Action("DoStartOrder", "Order")', data, function (jdata) {
             if (jdata.Code == "200") {
                 pageIndex = 1;
                 querymystarted();//查询

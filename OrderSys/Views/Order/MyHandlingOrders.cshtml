@@ -5,7 +5,7 @@
 
 @foreach (System.Data.DataRow dr in Model.Rows)
 {
-    <div class="list_sym" id="order_@dr["ID"]">
+    <div class="list_sym" id="handlingorder_@dr["ID"]">
         <div class="list_sym_cc circle rotate90deg">@EnumExtensions.ToDescription((OrderStatus)dr["Status"])</div>
         <div class="list_sym_l">
             <div class="list_sym_l_in">
@@ -25,15 +25,15 @@
             </div>
         </div>
         <div class="list_sym_r">
-            <a class="orders" onclick="addHandleDetail('@dr["ID"]')">添加处理过程</a>
-            <a class="details open-popup" data-target="#full" href="javascript:getOrderFlows('@dr["ID"]');">详情</a>
+            <a class="orders" onclick="doAddHandleDetail('@dr["ID"]')">增加进度</a>
+            <a class="details open-popup" data-target="#full" href="javascript:openWorkflowsPopup('@dr["ID"]');">详情</a>
         </div>
         <div class="clear"></div>
     </div>
 }
 
 <script>
-    addHandleDetail = function (orderID) {
+    doAddHandleDetail = function (orderID) {
         @*$.confirm("您确定要撤销这条工单吗?", "确认撤销?", function () {
             //$.toast("文件已经删除!");
             var url = '@Url.Action("CancelOrder", "Order")';
@@ -46,13 +46,6 @@
         }, function () {
             //取消操作
         });*@
-    }
-
-    getOrderFlows = function (orderID) {
-        var url = '@Url.Action("GetOrderFlows", "Order")';
-        var urlParm = { ID: orderID };
-        doGetPartial('orderflows', url, urlParm);
-        setOrderStatus();
     }
 </script>
 

@@ -24,15 +24,8 @@ doQuery = function (container, url, urlParmsObj, callback) {
                 appendDom(container, data);
             }
             else {
-                var jdata = ajaxTips(data);
-                if (jdata.RspTypeCode == 6) {
-                    //底部提示没有数据了
-                    showEnding(container,jdata.Msg);
-                }
-                if (jdata.RspTypeCode == 5) {
-                    //底部提示没有数据了
-                    showEnding(container,jdata.Msg);
-                }
+                var jdata = ajaxTips(data, container);
+
             }
             //整个分页效果显示完后的回调函数
             if (argumentLength == 4) {
@@ -62,7 +55,7 @@ doGetPartial = function (container, url, urlParmsObj) {
                 appendDom(container, data);
             }
             else {
-                var jdata = ajaxTips(data);
+                var jdata = ajaxTips(data, container);
             }
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -139,12 +132,18 @@ getDicData = function (url) {
     return dicData.Data;
 }
 
-ajaxTips = function (json,callback) {
+ajaxTips = function (json, container, callback) {
+    if (typeof container === "function") {
+        container = undefined;
+        callback = container;
+    }
+    debugger;
     //通过这种方法可将字符串转换为对象
     var jdata = eval('(' + json + ')');
-    console.log(jdata.ErrCode + ":" + jdata.ErrMsg);
+
     if (jdata.RspTypeCode == -1) {
         //错误消息提示
+        console.log(jdata.ErrCode + ":" + jdata.ErrMsg);
         $.toast(jdata.Msg, "forbidden");
     } else if (jdata.RspTypeCode == 1) {
         //提示信息提示
@@ -152,10 +151,14 @@ ajaxTips = function (json,callback) {
     } else if (jdata.RspTypeCode == 4) {
         //跳转页面
         window.location.href = jdata.data;
+    } else if (jdata.RspTypeCode == 5) {
+        //没数据
+        showEnding(container, jdata.Msg);
+    } else if (jdata.RspTypeCode == 6) {
+        //数据加载完
+        showEnding(container, jdata.Msg);
     }
-    if (arguments.length == 2) {
-        callback(jdata);
-    }
+    callback && callback();
     return jdata
 }
 
@@ -218,12 +221,22 @@ $(document.body).infinite().on("infinite", function () {
     if (loading) return;
     var tabID = $(".weui_bar_item_on").attr("id");
     //修改这里的id名称
-    if (tabID == "querymystarted-btn") {
+    if (tabID == "query_mystarted_btn") {
         querymystarted();//修改这里的回调函数
     } else if (tabID == "query_myappointing_btn") {
         querymyappointing();
     } else if (tabID == "query_myappointed_btn") {
         querymyappointed();
+    } else if (tabID == "query_myappointed_btn") {
+        querymyappointed();
+    } else if (tabID == "query_myappointing_btn") {
+        querymyappointing();
+    } else if (tabID == "query_myreciving_btn") {
+        querymyreciving();
+    } else if (tabID == "query_myhandling_btn") {
+        querymyhandling();
+    } else if (tabID == "query_myhandled_btn") {
+        querymyhandled();
     }
 
 });
@@ -233,11 +246,12 @@ $(document.body).pullToRefresh().on("pull-to-refresh", function () {
 
     var tabID = $(".weui_bar_item_on").attr("id");
     //修改这里的id名称
-    if (tabID == "querymystarted-btn") {
+    if (tabID == "query_mystarted_btn") {
+        debugger;
         pageIndex = 1;
         end = false;
         querymystarted();
-    } else if (tabID == "startemyorder-btn") {
+    } else if (tabID == "startemyorder_btn") {
         doClearStartForm();
     } else if (tabID == "query_myappointing_btn") {
         pageIndex = 1;
@@ -247,6 +261,18 @@ $(document.body).pullToRefresh().on("pull-to-refresh", function () {
         pageIndex = 1;
         end = false;
         querymyappointed();
+    } else if (tabID == "query_myreciving_btn") {
+        pageIndex = 1;
+        end = false;
+        querymyreciving();
+    } else if (tabID == "query_myhandling_btn") {
+        pageIndex = 1;
+        end = false;
+        querymyhandling();
+    } else if (tabID == "query_myhandled_btn") {
+        pageIndex = 1;
+        end = false;
+        querymyhandled();
     }
 
     $(document.body).pullToRefreshDone();

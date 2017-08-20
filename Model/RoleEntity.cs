@@ -125,23 +125,25 @@ namespace JSNet.Model
 
         public RoleEntity GetFrom(System.Data.DataRow dataRow)
         {
-            this.ID = CommonUtil.ConvertToInt(dataRow[this.PrimaryKey]);
-            this.ParentID = CommonUtil.ConvertToInt(dataRow[FieldParentID]);
-            this.OrganizeID = CommonUtil.ConvertToInt(dataRow[FieldOrganizeID]);
-            this.Title = CommonUtil.ConvertToString(dataRow[FieldTitle]);
-            this.Remark = CommonUtil.ConvertToString(dataRow[FieldRemark]);
-            return this;
+            RoleEntity entity = new RoleEntity();
+            entity.ID = CommonUtil.ConvertToInt(dataRow[entity.PrimaryKey]);
+            entity.ParentID = CommonUtil.ConvertToInt(dataRow[FieldParentID]);
+            entity.OrganizeID = CommonUtil.ConvertToInt(dataRow[FieldOrganizeID]);
+            entity.Title = CommonUtil.ConvertToString(dataRow[FieldTitle]);
+            entity.Remark = CommonUtil.ConvertToString(dataRow[FieldRemark]);
+            return entity;
         }
 
 
         public RoleEntity GetFrom(System.Data.IDataReader dataReader)
         {
-            this.ID = CommonUtil.ConvertToInt(dataReader[this.PrimaryKey]);
-            this.ParentID = CommonUtil.ConvertToInt(dataReader[FieldParentID]);
-            this.OrganizeID = CommonUtil.ConvertToInt(dataReader[FieldOrganizeID]);
-            this.Title = CommonUtil.ConvertToString(dataReader[FieldTitle]);
-            this.Remark = CommonUtil.ConvertToString(dataReader[FieldRemark]);
-            return this;
+            RoleEntity entity = new RoleEntity();
+            entity.ID = CommonUtil.ConvertToInt(dataReader[entity.PrimaryKey]);
+            entity.ParentID = CommonUtil.ConvertToInt(dataReader[FieldParentID]);
+            entity.OrganizeID = CommonUtil.ConvertToInt(dataReader[FieldOrganizeID]);
+            entity.Title = CommonUtil.ConvertToString(dataReader[FieldTitle]);
+            entity.Remark = CommonUtil.ConvertToString(dataReader[FieldRemark]);
+            return entity;
         }
 
         public void SetEntity(NonQueryBuilder sqlBuilder, RoleEntity entity)

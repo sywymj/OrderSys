@@ -5,7 +5,7 @@
 
 @foreach (System.Data.DataRow dr in Model.Rows)
 {
-    <div class="list_sym" id="order_@dr["ID"]">
+    <div class="list_sym" id="appointedorder_@dr["ID"]">
         <div class="list_sym_cc circle rotate90deg">@EnumExtensions.ToDescription((OrderStatus)dr["Status"])</div>
         <div class="list_sym_l">
             <div class="list_sym_l_in">
@@ -27,25 +27,11 @@
             </div>
         </div>
         <div class="list_sym_r">
-            <a href="javascript:openWorkflowPopup('@dr["ID"]');" class="details">详情</a>
+            <a href="javascript:openWorkflowsPopup('@dr["ID"]');" class="details">详情</a>
         </div>
         <div class="clear"></div>
     </div>
 }
-
-<script>
-    openWorkflowsPopup = function (orderID) {
-        //打开popup
-        var container = '#orderflows_popup';
-        var modal = '#orderflows_popup > .weui-popup-modal';
-        $.openMyPopup(container);
-
-        var url = '@Url.Action("OrderFlows", "Order")';
-        var urlParmsObj = { ID: orderID };
-        doGetPartial(modal, url, urlParmsObj);
-        setOrderStatus();
-    }
-</script>
 
 
 

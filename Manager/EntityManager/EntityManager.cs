@@ -84,12 +84,14 @@ namespace JSNet.Manager
 
         public virtual List<T> ToList(DataTable dt)
         {
-            List<T> lstT = new List<T>();
+            List<T> list = new List<T>();
             foreach (DataRow dr in dt.Rows)
             {
-                lstT.Add(ToObject(dr));
+                T t = ToObject(dr);
+                
+                list.Add(t);
             }
-            return lstT;
+            return list;
         }
 
     }

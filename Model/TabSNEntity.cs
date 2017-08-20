@@ -63,17 +63,19 @@ namespace JSNet.Model
 
         public TabSNEntity GetFrom(System.Data.DataRow dataRow)
         {
-            this.Sn = CommonUtil.ConvertToInt(dataRow[FieldSn]);
-            this.SnDt = CommonUtil.ConvertToDateTime(dataRow[FieldSnDt]);
-            return this;
+            TabSNEntity entity = new TabSNEntity();
+            entity.Sn = CommonUtil.ConvertToInt(dataRow[FieldSn]);
+            entity.SnDt = CommonUtil.ConvertToDateTime(dataRow[FieldSnDt]);
+            return entity;
         }
 
 
         public TabSNEntity GetFrom(System.Data.IDataReader dataReader)
         {
-            this.Sn = CommonUtil.ConvertToInt(dataReader[FieldSn]);
-            this.SnDt = CommonUtil.ConvertToDateTime(dataReader[FieldSnDt]);
-            return this;
+            TabSNEntity entity = new TabSNEntity();
+            entity.Sn = CommonUtil.ConvertToInt(dataReader[FieldSn]);
+            entity.SnDt = CommonUtil.ConvertToDateTime(dataReader[FieldSnDt]);
+            return entity;
         }
 
         public void SetEntity(NonQueryBuilder sqlBuilder, TabSNEntity entity)

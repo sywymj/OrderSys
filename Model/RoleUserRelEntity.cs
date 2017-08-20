@@ -93,19 +93,21 @@ namespace JSNet.Model
 
         public RoleUserEntity GetFrom(System.Data.DataRow dataRow)
         {
-            this.ID = CommonUtil.ConvertToInt(dataRow[this.PrimaryKey]);
-            this.RoleID = CommonUtil.ConvertToInt(dataRow[FieldRoleID]);
-            this.UserID = CommonUtil.ConvertToInt(dataRow[FieldUserID]);
-            return this;
+            RoleUserEntity entity = new RoleUserEntity();
+            entity.ID = CommonUtil.ConvertToInt(dataRow[entity.PrimaryKey]);
+            entity.RoleID = CommonUtil.ConvertToInt(dataRow[FieldRoleID]);
+            entity.UserID = CommonUtil.ConvertToInt(dataRow[FieldUserID]);
+            return entity;
         }
 
 
         public RoleUserEntity GetFrom(System.Data.IDataReader dataReader)
         {
-            this.ID = CommonUtil.ConvertToInt(dataReader[this.PrimaryKey]);
-            this.RoleID = CommonUtil.ConvertToInt(dataReader[FieldRoleID]);
-            this.UserID = CommonUtil.ConvertToInt(dataReader[FieldUserID]);
-            return this;
+            RoleUserEntity entity = new RoleUserEntity();
+            entity.ID = CommonUtil.ConvertToInt(dataReader[entity.PrimaryKey]);
+            entity.RoleID = CommonUtil.ConvertToInt(dataReader[FieldRoleID]);
+            entity.UserID = CommonUtil.ConvertToInt(dataReader[FieldUserID]);
+            return entity;
         }
 
         public void SetEntity(NonQueryBuilder sqlBuilder, RoleUserEntity entity)

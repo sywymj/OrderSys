@@ -125,23 +125,25 @@ namespace JSNet.Model
 
         public OrderHandlerEntity GetFrom(System.Data.DataRow dataRow)
         {
-            this.ID = CommonUtil.ConvertToInt(dataRow[this.PrimaryKey]);
-            this.OrderID = CommonUtil.ConvertToGuid(dataRow[FieldOrderID]);
-            this.HandlerID = CommonUtil.ConvertToInt(dataRow[FieldHandlerID]);
-            this.Workload = CommonUtil.ConvertToInt(dataRow[FieldWorkload]);
-            this.IsLeader = CommonUtil.ConvertToInt(dataRow[FieldIsLeader]);
-            return this;
+            OrderHandlerEntity entity = new OrderHandlerEntity();
+            entity.ID = CommonUtil.ConvertToInt(dataRow[entity.PrimaryKey]);
+            entity.OrderID = CommonUtil.ConvertToGuid(dataRow[FieldOrderID]);
+            entity.HandlerID = CommonUtil.ConvertToInt(dataRow[FieldHandlerID]);
+            entity.Workload = CommonUtil.ConvertToInt(dataRow[FieldWorkload]);
+            entity.IsLeader = CommonUtil.ConvertToInt(dataRow[FieldIsLeader]);
+            return entity;
         }
 
 
         public OrderHandlerEntity GetFrom(System.Data.IDataReader dataReader)
         {
-            this.ID = CommonUtil.ConvertToInt(dataReader[this.PrimaryKey]);
-            this.OrderID = CommonUtil.ConvertToGuid(dataReader[FieldOrderID]);
-            this.HandlerID = CommonUtil.ConvertToInt(dataReader[FieldHandlerID]);
-            this.Workload = CommonUtil.ConvertToInt(dataReader[FieldWorkload]);
-            this.IsLeader = CommonUtil.ConvertToInt(dataReader[FieldIsLeader]);
-            return this;
+            OrderHandlerEntity entity = new OrderHandlerEntity();
+            entity.ID = CommonUtil.ConvertToInt(dataReader[entity.PrimaryKey]);
+            entity.OrderID = CommonUtil.ConvertToGuid(dataReader[FieldOrderID]);
+            entity.HandlerID = CommonUtil.ConvertToInt(dataReader[FieldHandlerID]);
+            entity.Workload = CommonUtil.ConvertToInt(dataReader[FieldWorkload]);
+            entity.IsLeader = CommonUtil.ConvertToInt(dataReader[FieldIsLeader]);
+            return entity;
         }
 
         public void SetEntity(NonQueryBuilder sqlBuilder, OrderHandlerEntity entity)

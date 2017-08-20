@@ -3,7 +3,6 @@
 @using JSNet.BaseSys;
 @using OrderSys.Model;
 
-@Html.Partial("~/Views/Shared/_Back.cshtml", new BackViewModel() { Title = "工单流程", Popup = "#orderflows_popup" })
 <div class="times">
     
     <!--流程图-->
@@ -61,7 +60,7 @@
 
     <div class="demos-content-padded bottom_btn">
         <a href="javascript:openOrderdetailPopup('@ViewBag.OrderID');" class="weui_btn weui_btn_plain_default" style="width:46%; height:40px; line-height:40px;  float:left; margin:0; font-size:16px;">查看工单详情</a>
-        <a href="javascript:;" class="weui_btn weui_btn_plain_default" style="width:46%; height:40px; line-height:40px; float:right; margin:0; font-size:16px; ">查看处理过程</a>
+        <a href="javascript:openHandledetailPopup('@ViewBag.OrderID');;" class="weui_btn weui_btn_plain_default" style="width:46%; height:40px; line-height:40px; float:right; margin:0; font-size:16px; ">查看处理过程</a>
         <div class="clear"></div>
     </div>
 </div>
@@ -75,13 +74,25 @@
 <!--popup工单内容-->
 <div id="orderdetail_popup" class='weui-popup-container'>
     <div class="weui-popup-overlay"></div>
-    <div class="weui-popup-modal"></div>
+    <div class="weui-popup-modal">
+        <header class='demos-header'>
+            @Html.Partial("~/Views/Shared/_Back.cshtml", new BackViewModel() { Title = "工单内容", Popup = "#orderdetail_popup" })
+        </header>
+        <article class="weui-article"></article>
+        @Html.Partial("~/Views/Shared/_End.cshtml")
+    </div>
 </div>
 
 <!--popup处理进度-->
 <div id="handledetail_popup" class='weui-popup-container'>
     <div class="weui-popup-overlay"></div>
-    <div class="weui-popup-modal"></div>
+    <div class="weui-popup-modal">
+        <header class='demos-header'>
+            @Html.Partial("~/Views/Shared/_Back.cshtml", new BackViewModel() { Title = "处理进度", Popup = "#handledetail_popup" })
+        </header>
+        <article class="weui-article"></article>
+        @Html.Partial("~/Views/Shared/_End.cshtml")
+    </div>
 </div>
 
 <script>
@@ -100,7 +111,7 @@
     openOrderdetailPopup = function (orderID) {
         //打开popup
         var container = '#orderdetail_popup';
-        var modal = '#orderdetail_popup > .weui-popup-modal';
+        var modal = '#orderdetail_popup > .weui-popup-modal > .weui-article';
         $.openMyPopup(container);
 
         var url = '@Url.Action("OrderDetail", "Order")';
@@ -111,11 +122,11 @@
     openHandledetailPopup = function (orderID) {
         //打开popup
         var container = '#handledetail_popup';
-        var modal = '#handledetail_popup > .weui-popup-modal';
+        var modal = '#handledetail_popup > .weui-popup-modal > .weui-article';
         $.openMyPopup(container);
 
         var url = '@Url.Action("HandleDetail", "Order")';
-        var urlParmObj = { ID: orderID };
+        var urlParmObj = { OrderID: orderID };
         doGetPartial(modal, url, urlParmObj);
     }
 

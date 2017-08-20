@@ -5,7 +5,7 @@
 
 @foreach (System.Data.DataRow dr in Model.Rows)
 {
-    <div class="list_sym" id="order_@dr["ID"]">
+    <div class="list_sym" id="startedorder_@dr["ID"]">
         <div class="list_sym_cc circle rotate90deg">@EnumExtensions.ToDescription((OrderStatus)dr["Status"])</div>
         <div class="list_sym_l">
             <div class="list_sym_l_in">

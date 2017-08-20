@@ -15,7 +15,7 @@ namespace OrderSys.Controllers
         {
             UseUTCDateTime = false,
             UsingGlobalTypes = false,
-            UseExtensions = false
+            UseExtensions = false,
         };
 
         public ActionResult GetOrderStatus()

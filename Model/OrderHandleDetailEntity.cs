@@ -173,29 +173,31 @@ namespace JSNet.Model
 
         public OrderHandleDetailEntity GetFrom(System.Data.DataRow dataRow)
         {
-            this.ID = CommonUtil.ConvertToInt(dataRow[this.PrimaryKey]);
-            this.OrderID = CommonUtil.ConvertToGuid(dataRow[FieldOrderID]);
-            this.HandlerID = CommonUtil.ConvertToInt(dataRow[FieldHandlerID]);
-            this.HandleType = CommonUtil.ConvertToInt(dataRow[FieldHandleType]);
-            this.HandleDetail = CommonUtil.ConvertToString(dataRow[FieldHandleDetail]);
-            this.Progress = CommonUtil.ConvertToInt(dataRow[FieldProgress]);
-            this.HandleTime = CommonUtil.ConvertToDateTime(dataRow[FieldHandleTime]);
-            this.Remark = CommonUtil.ConvertToString(dataRow[FieldRemark]);
-            return this;
+            OrderHandleDetailEntity entity = new OrderHandleDetailEntity();
+            entity.ID = CommonUtil.ConvertToInt(dataRow[this.PrimaryKey]);
+            entity.OrderID = CommonUtil.ConvertToGuid(dataRow[FieldOrderID]);
+            entity.HandlerID = CommonUtil.ConvertToInt(dataRow[FieldHandlerID]);
+            entity.HandleType = CommonUtil.ConvertToInt(dataRow[FieldHandleType]);
+            entity.HandleDetail = CommonUtil.ConvertToString(dataRow[FieldHandleDetail]);
+            entity.Progress = CommonUtil.ConvertToInt(dataRow[FieldProgress]);
+            entity.HandleTime = CommonUtil.ConvertToDateTime(dataRow[FieldHandleTime]);
+            entity.Remark = CommonUtil.ConvertToString(dataRow[FieldRemark]);
+            return entity;
         }
 
 
         public OrderHandleDetailEntity GetFrom(System.Data.IDataReader dataReader)
         {
-            this.ID = CommonUtil.ConvertToInt(dataReader[this.PrimaryKey]);
-            this.OrderID = CommonUtil.ConvertToGuid(dataReader[FieldOrderID]);
-            this.HandlerID = CommonUtil.ConvertToInt(dataReader[FieldHandlerID]);
-            this.HandleType = CommonUtil.ConvertToInt(dataReader[FieldHandleType]);
-            this.HandleDetail = CommonUtil.ConvertToString(dataReader[FieldHandleDetail]);
-            this.Progress = CommonUtil.ConvertToInt(dataReader[FieldProgress]);
-            this.HandleTime = CommonUtil.ConvertToDateTime(dataReader[FieldHandleTime]);
-            this.Remark = CommonUtil.ConvertToString(dataReader[FieldRemark]);
-            return this;
+            OrderHandleDetailEntity entity = new OrderHandleDetailEntity();
+            entity.ID = CommonUtil.ConvertToInt(dataReader[entity.PrimaryKey]);
+            entity.OrderID = CommonUtil.ConvertToGuid(dataReader[FieldOrderID]);
+            entity.HandlerID = CommonUtil.ConvertToInt(dataReader[FieldHandlerID]);
+            entity.HandleType = CommonUtil.ConvertToInt(dataReader[FieldHandleType]);
+            entity.HandleDetail = CommonUtil.ConvertToString(dataReader[FieldHandleDetail]);
+            entity.Progress = CommonUtil.ConvertToInt(dataReader[FieldProgress]);
+            entity.HandleTime = CommonUtil.ConvertToDateTime(dataReader[FieldHandleTime]);
+            entity.Remark = CommonUtil.ConvertToString(dataReader[FieldRemark]);
+            return entity;
         }
 
         public void SetEntity(NonQueryBuilder sqlBuilder, OrderHandleDetailEntity entity)

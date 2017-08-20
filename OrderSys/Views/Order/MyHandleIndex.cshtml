@@ -1,4 +1,5 @@
-﻿@{
+﻿@using OrderSys.Model;
+@{
     ViewBag.Title = "MyStartIndex";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
@@ -33,10 +34,15 @@
     </div>
 </div>
 
-<!--popup流程-->
-<div id="full" class='weui-popup-container'>
+<!--工作流程-->
+<div id="orderflows_popup" class='weui-popup-container'>
     <div class="weui-popup-overlay"></div>
-    <div class="weui-popup-modal" id="orderflows"></div>
+    <div class="weui-popup-modal">
+        <header class='demos-header'>
+            @Html.Partial("~/Views/Shared/_Back.cshtml", new BackViewModel() { Title = "工单流程", Popup = "#orderflows_popup" })
+        </header>
+        <article class="weui-article"></article>
+    </div>
 </div>
 
 <script>
@@ -65,7 +71,7 @@
         }
         doQuery(
             listDomID,
-            '@Url.Action("GetMyReceivingOrders", "Order")',
+            '@Url.Action("MyReceivingOrders", "Order")',
             { PageIndex: pageIndex1, PageSize: pageSize1 },
             function(){
                 pageIndex1++;
@@ -80,7 +86,7 @@
         }
         doQuery(
             listDomID,
-            '@Url.Action("GetMyHandlingOrders", "Order")',
+            '@Url.Action("MyHandlingOrders", "Order")',
             { PageIndex: pageIndex2, PageSize: pageSize2 },
             function(){
                 pageIndex2++;
@@ -95,7 +101,7 @@
         }
         doQuery(
             listDomID,
-            '@Url.Action("GetMyHandledOrders", "Order")',
+            '@Url.Action("MyHandledOrders", "Order")',
             { PageIndex: pageIndex3, PageSize: pageSize3 },
             function () {
                 pageIndex3++;
@@ -120,5 +126,16 @@
         });*@
     }
 
+    openWorkflowsPopup = function (orderID) {
+        //打开popup
+        var container = '#orderflows_popup';
+        var modal = '#orderflows_popup > .weui-popup-modal > .weui-article';
+        $.openMyPopup(container);
+
+        var url = '@Url.Action("OrderFlows", "Order")';
+        var urlParmsObj = { ID: orderID };
+        doGetPartial(modal, url, urlParmsObj);
+        setOrderStatus();
+    }
 
 </script>

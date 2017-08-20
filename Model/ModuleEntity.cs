@@ -189,31 +189,33 @@ namespace JSNet.Model
 
         public ModuleEntity GetFrom(System.Data.DataRow dataRow)
         {
-            this.ID = CommonUtil.ConvertToInt(dataRow[this.PrimaryKey]);
-            this.ParentID = CommonUtil.ConvertToInt(dataRow[FieldParentID]);
-            this.Title = CommonUtil.ConvertToString(dataRow[FieldTitle]);
-            this.Controller = CommonUtil.ConvertToString(dataRow[FieldController]);
-            this.Action = CommonUtil.ConvertToString(dataRow[FieldAction]);
-            this.JSFunName = CommonUtil.ConvertToString(dataRow[FieldJSFunName]);
-            this.Type = CommonUtil.ConvertToInt(dataRow[FieldType]);
-            this.Sort = CommonUtil.ConvertToInt(dataRow[FieldSort]);
-            this.Remark = CommonUtil.ConvertToString(dataRow[FieldRemark]);
-            return this;
+            ModuleEntity entity = new ModuleEntity();
+            entity.ID = CommonUtil.ConvertToInt(dataRow[this.PrimaryKey]);
+            entity.ParentID = CommonUtil.ConvertToInt(dataRow[FieldParentID]);
+            entity.Title = CommonUtil.ConvertToString(dataRow[FieldTitle]);
+            entity.Controller = CommonUtil.ConvertToString(dataRow[FieldController]);
+            entity.Action = CommonUtil.ConvertToString(dataRow[FieldAction]);
+            entity.JSFunName = CommonUtil.ConvertToString(dataRow[FieldJSFunName]);
+            entity.Type = CommonUtil.ConvertToInt(dataRow[FieldType]);
+            entity.Sort = CommonUtil.ConvertToInt(dataRow[FieldSort]);
+            entity.Remark = CommonUtil.ConvertToString(dataRow[FieldRemark]);
+            return entity;
         }
 
 
         public ModuleEntity GetFrom(System.Data.IDataReader dataReader)
         {
-            this.ID = CommonUtil.ConvertToInt(dataReader[this.PrimaryKey]);
-            this.ParentID = CommonUtil.ConvertToInt(dataReader[FieldParentID]);
-            this.Title = CommonUtil.ConvertToString(dataReader[FieldTitle]);
-            this.Controller = CommonUtil.ConvertToString(dataReader[FieldController]);
-            this.Action = CommonUtil.ConvertToString(dataReader[FieldAction]);
-            this.JSFunName = CommonUtil.ConvertToString(dataReader[FieldJSFunName]);
-            this.Type = CommonUtil.ConvertToInt(dataReader[FieldType]);
-            this.Sort = CommonUtil.ConvertToInt(dataReader[FieldSort]);
-            this.Remark = CommonUtil.ConvertToString(dataReader[FieldRemark]);
-            return this;
+            ModuleEntity entity = new ModuleEntity();
+            entity.ID = CommonUtil.ConvertToInt(dataReader[this.PrimaryKey]);
+            entity.ParentID = CommonUtil.ConvertToInt(dataReader[FieldParentID]);
+            entity.Title = CommonUtil.ConvertToString(dataReader[FieldTitle]);
+            entity.Controller = CommonUtil.ConvertToString(dataReader[FieldController]);
+            entity.Action = CommonUtil.ConvertToString(dataReader[FieldAction]);
+            entity.JSFunName = CommonUtil.ConvertToString(dataReader[FieldJSFunName]);
+            entity.Type = CommonUtil.ConvertToInt(dataReader[FieldType]);
+            entity.Sort = CommonUtil.ConvertToInt(dataReader[FieldSort]);
+            entity.Remark = CommonUtil.ConvertToString(dataReader[FieldRemark]);
+            return entity;
         }
 
         public void SetEntity(NonQueryBuilder sqlBuilder, ModuleEntity entity)

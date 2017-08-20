@@ -125,23 +125,25 @@ namespace JSNet.Model
 
         public OrganizeEntity GetFrom(System.Data.DataRow dataRow)
         {
-            this.ID = CommonUtil.ConvertToInt(dataRow[this.PrimaryKey]);
-            this.ParentID = CommonUtil.ConvertToInt(dataRow[FieldParentID]);
-            this.OrganizeName = CommonUtil.ConvertToString(dataRow[FieldOrganizeName]);
-            this.OrganizeCode = CommonUtil.ConvertToString(dataRow[FieldOrganizeCode]);
-            this.IsEnable = CommonUtil.ConvertToInt(dataRow[FieldIsEnable]);
-            return this;
+            OrganizeEntity entity = new OrganizeEntity();
+            entity.ID = CommonUtil.ConvertToInt(dataRow[entity.PrimaryKey]);
+            entity.ParentID = CommonUtil.ConvertToInt(dataRow[FieldParentID]);
+            entity.OrganizeName = CommonUtil.ConvertToString(dataRow[FieldOrganizeName]);
+            entity.OrganizeCode = CommonUtil.ConvertToString(dataRow[FieldOrganizeCode]);
+            entity.IsEnable = CommonUtil.ConvertToInt(dataRow[FieldIsEnable]);
+            return entity;
         }
 
 
         public OrganizeEntity GetFrom(System.Data.IDataReader dataReader)
         {
-            this.ID = CommonUtil.ConvertToInt(dataReader[this.PrimaryKey]);
-            this.ParentID = CommonUtil.ConvertToInt(dataReader[FieldParentID]);
-            this.OrganizeName = CommonUtil.ConvertToString(dataReader[FieldOrganizeName]);
-            this.OrganizeCode = CommonUtil.ConvertToString(dataReader[FieldOrganizeCode]);
-            this.IsEnable = CommonUtil.ConvertToInt(dataReader[FieldIsEnable]);
-            return this;
+            OrganizeEntity entity = new OrganizeEntity();
+            entity.ID = CommonUtil.ConvertToInt(dataReader[entity.PrimaryKey]);
+            entity.ParentID = CommonUtil.ConvertToInt(dataReader[FieldParentID]);
+            entity.OrganizeName = CommonUtil.ConvertToString(dataReader[FieldOrganizeName]);
+            entity.OrganizeCode = CommonUtil.ConvertToString(dataReader[FieldOrganizeCode]);
+            entity.IsEnable = CommonUtil.ConvertToInt(dataReader[FieldIsEnable]);
+            return entity;
         }
 
         public void SetEntity(NonQueryBuilder sqlBuilder, OrganizeEntity entity)

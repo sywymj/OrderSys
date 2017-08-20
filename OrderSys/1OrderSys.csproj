@@ -145,6 +145,7 @@
     <Content Include="Content\js\jquery-weui.js" />
     <Content Include="Content\js\jquery-weui.min.js" />
     <Content Include="Content\js\jquery.charfirst.pinyin.js" />
+    <Content Include="Content\js\json2.js" />
     <Content Include="Content\js\public.js" />
     <Content Include="Content\js\sort.js" />
     <Content Include="Content\js\swiper.js" />

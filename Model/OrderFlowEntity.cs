@@ -157,27 +157,29 @@ namespace JSNet.Model
 
         public OrderFlowEntity GetFrom(System.Data.DataRow dataRow)
         {
-            this.ID = CommonUtil.ConvertToInt(dataRow[this.PrimaryKey]);
-            this.OrderID = CommonUtil.ConvertToGuid(dataRow[FieldOrderID]);
-            this.OperatorID = CommonUtil.ConvertToInt(dataRow[FieldOperatorID]);
-            this.NextOperatorID = CommonUtil.ConvertToInt(dataRow[FieldNextOperatorID]);
-            this.Operation = CommonUtil.ConvertToInt(dataRow[FieldOperation]);
-            this.OperateTime = CommonUtil.ConvertToDateTime(dataRow[FieldOperateTime]);
-            this.Remark = CommonUtil.ConvertToString(dataRow[FieldRemark]);
-            return this;
+            OrderFlowEntity entity = new OrderFlowEntity();
+            entity.ID = CommonUtil.ConvertToInt(dataRow[this.PrimaryKey]);
+            entity.OrderID = CommonUtil.ConvertToGuid(dataRow[FieldOrderID]);
+            entity.OperatorID = CommonUtil.ConvertToInt(dataRow[FieldOperatorID]);
+            entity.NextOperatorID = CommonUtil.ConvertToInt(dataRow[FieldNextOperatorID]);
+            entity.Operation = CommonUtil.ConvertToInt(dataRow[FieldOperation]);
+            entity.OperateTime = CommonUtil.ConvertToDateTime(dataRow[FieldOperateTime]);
+            entity.Remark = CommonUtil.ConvertToString(dataRow[FieldRemark]);
+            return entity;
         }
 
 
         public OrderFlowEntity GetFrom(System.Data.IDataReader dataReader)
         {
-            this.ID = CommonUtil.ConvertToInt(dataReader[this.PrimaryKey]);
-            this.OrderID = CommonUtil.ConvertToGuid(dataReader[FieldOrderID]);
-            this.OperatorID = CommonUtil.ConvertToInt(dataReader[FieldOperatorID]);
-            this.NextOperatorID = CommonUtil.ConvertToInt(dataReader[FieldNextOperatorID]);
-            this.Operation = CommonUtil.ConvertToInt(dataReader[FieldOperation]);
-            this.OperateTime = CommonUtil.ConvertToDateTime(dataReader[FieldOperateTime]);
-            this.Remark = CommonUtil.ConvertToString(dataReader[FieldRemark]);
-            return this;
+            OrderFlowEntity entity = new OrderFlowEntity();
+            entity.ID = CommonUtil.ConvertToInt(dataReader[this.PrimaryKey]);
+            entity.OrderID = CommonUtil.ConvertToGuid(dataReader[FieldOrderID]);
+            entity.OperatorID = CommonUtil.ConvertToInt(dataReader[FieldOperatorID]);
+            entity.NextOperatorID = CommonUtil.ConvertToInt(dataReader[FieldNextOperatorID]);
+            entity.Operation = CommonUtil.ConvertToInt(dataReader[FieldOperation]);
+            entity.OperateTime = CommonUtil.ConvertToDateTime(dataReader[FieldOperateTime]);
+            entity.Remark = CommonUtil.ConvertToString(dataReader[FieldRemark]);
+            return entity;
         }
 
         public void SetEntity(NonQueryBuilder sqlBuilder, OrderFlowEntity entity)

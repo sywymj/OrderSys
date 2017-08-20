@@ -294,45 +294,47 @@ namespace JSNet.Model
 
         public OrderEntity GetFrom(System.Data.DataRow dataRow)
         {
-            this.ID = CommonUtil.ConvertToGuid(dataRow[FieldID]);
-            this.OrderNo = CommonUtil.ConvertToString(dataRow[FieldOrderNo]);
-            this.StarterID = CommonUtil.ConvertToInt(dataRow[FieldStarterID]);
-            this.HandlerID = CommonUtil.ConvertToInt(dataRow[FieldHandlerID]);
-            this.AppointerID = CommonUtil.ConvertToInt(dataRow[FieldAppointerID]);
-            this.OperatorID = CommonUtil.ConvertToInt(dataRow[FieldOperatorID]);
-            this.NextOperatorID = CommonUtil.ConvertToInt(dataRow[FieldNextOperatorID]);
-            this.AssignDpt = CommonUtil.ConvertToInt(dataRow[FieldAssignDpt]);
-            this.Remark = CommonUtil.ConvertToString(dataRow[FieldRemark]);
-            this.Priority = CommonUtil.ConvertToInt(dataRow[FieldPriority]);
-            this.Status = CommonUtil.ConvertToInt(dataRow[FieldStatus]);
-            this.FinishTime = CommonUtil.ConvertToDateTime(dataRow[FieldFinishTime]);
-            this.BookingTime = CommonUtil.ConvertToDateTime(dataRow[FieldBookingTime]);
-            this.Attn = CommonUtil.ConvertToString(dataRow[FieldAttn]);
-            this.AttnTel = CommonUtil.ConvertToString(dataRow[FieldAttnTel]);
-            this.Content = CommonUtil.ConvertToString(dataRow[FieldContent]);
-            return this;
+            OrderEntity entity = new OrderEntity();
+            entity.ID = CommonUtil.ConvertToGuid(dataRow[FieldID]);
+            entity.OrderNo = CommonUtil.ConvertToString(dataRow[FieldOrderNo]);
+            entity.StarterID = CommonUtil.ConvertToInt(dataRow[FieldStarterID]);
+            entity.HandlerID = CommonUtil.ConvertToInt(dataRow[FieldHandlerID]);
+            entity.AppointerID = CommonUtil.ConvertToInt(dataRow[FieldAppointerID]);
+            entity.OperatorID = CommonUtil.ConvertToInt(dataRow[FieldOperatorID]);
+            entity.NextOperatorID = CommonUtil.ConvertToInt(dataRow[FieldNextOperatorID]);
+            entity.AssignDpt = CommonUtil.ConvertToInt(dataRow[FieldAssignDpt]);
+            entity.Remark = CommonUtil.ConvertToString(dataRow[FieldRemark]);
+            entity.Priority = CommonUtil.ConvertToInt(dataRow[FieldPriority]);
+            entity.Status = CommonUtil.ConvertToInt(dataRow[FieldStatus]);
+            entity.FinishTime = CommonUtil.ConvertToDateTime(dataRow[FieldFinishTime]);
+            entity.BookingTime = CommonUtil.ConvertToDateTime(dataRow[FieldBookingTime]);
+            entity.Attn = CommonUtil.ConvertToString(dataRow[FieldAttn]);
+            entity.AttnTel = CommonUtil.ConvertToString(dataRow[FieldAttnTel]);
+            entity.Content = CommonUtil.ConvertToString(dataRow[FieldContent]);
+            return entity;
         }
 
 
         public OrderEntity GetFrom(System.Data.IDataReader dataReader)
         {
-            this.ID = CommonUtil.ConvertToGuid(dataReader[FieldID]);
-            this.OrderNo = CommonUtil.ConvertToString(dataReader[FieldOrderNo]);
-            this.StarterID = CommonUtil.ConvertToInt(dataReader[FieldStarterID]);
-            this.HandlerID = CommonUtil.ConvertToInt(dataReader[FieldHandlerID]);
-            this.AppointerID = CommonUtil.ConvertToInt(dataReader[FieldAppointerID]);
-            this.OperatorID = CommonUtil.ConvertToInt(dataReader[FieldOperatorID]);
-            this.NextOperatorID = CommonUtil.ConvertToInt(dataReader[FieldNextOperatorID]);
-            this.AssignDpt = CommonUtil.ConvertToInt(dataReader[FieldAssignDpt]);
-            this.Remark = CommonUtil.ConvertToString(dataReader[FieldRemark]);
-            this.Priority = CommonUtil.ConvertToInt(dataReader[FieldPriority]);
-            this.Status = CommonUtil.ConvertToInt(dataReader[FieldStatus]);
-            this.FinishTime = CommonUtil.ConvertToDateTime(dataReader[FieldFinishTime]);
-            this.BookingTime = CommonUtil.ConvertToDateTime(dataReader[FieldBookingTime]);
-            this.Attn = CommonUtil.ConvertToString(dataReader[FieldAttn]);
-            this.AttnTel = CommonUtil.ConvertToString(dataReader[FieldAttnTel]);
-            this.Content = CommonUtil.ConvertToString(dataReader[FieldContent]);
-            return this;
+            OrderEntity entity = new OrderEntity();
+            entity.ID = CommonUtil.ConvertToGuid(dataReader[FieldID]);
+            entity.OrderNo = CommonUtil.ConvertToString(dataReader[FieldOrderNo]);
+            entity.StarterID = CommonUtil.ConvertToInt(dataReader[FieldStarterID]);
+            entity.HandlerID = CommonUtil.ConvertToInt(dataReader[FieldHandlerID]);
+            entity.AppointerID = CommonUtil.ConvertToInt(dataReader[FieldAppointerID]);
+            entity.OperatorID = CommonUtil.ConvertToInt(dataReader[FieldOperatorID]);
+            entity.NextOperatorID = CommonUtil.ConvertToInt(dataReader[FieldNextOperatorID]);
+            entity.AssignDpt = CommonUtil.ConvertToInt(dataReader[FieldAssignDpt]);
+            entity.Remark = CommonUtil.ConvertToString(dataReader[FieldRemark]);
+            entity.Priority = CommonUtil.ConvertToInt(dataReader[FieldPriority]);
+            entity.Status = CommonUtil.ConvertToInt(dataReader[FieldStatus]);
+            entity.FinishTime = CommonUtil.ConvertToDateTime(dataReader[FieldFinishTime]);
+            entity.BookingTime = CommonUtil.ConvertToDateTime(dataReader[FieldBookingTime]);
+            entity.Attn = CommonUtil.ConvertToString(dataReader[FieldAttn]);
+            entity.AttnTel = CommonUtil.ConvertToString(dataReader[FieldAttnTel]);
+            entity.Content = CommonUtil.ConvertToString(dataReader[FieldContent]);
+            return entity;
         }
 
         public void SetEntity(NonQueryBuilder sqlBuilder, OrderEntity entity)

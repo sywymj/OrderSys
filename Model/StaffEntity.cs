@@ -173,29 +173,31 @@ namespace JSNet.Model
 
         public StaffEntity GetFrom(System.Data.DataRow dataRow)
         {
-            this.ID = CommonUtil.ConvertToInt(dataRow[this.PrimaryKey]);
-            this.OpenID = CommonUtil.ConvertToString(dataRow[FieldOpenID]);
-            this.Name = CommonUtil.ConvertToString(dataRow[FieldName]);
-            this.Tel = CommonUtil.ConvertToString(dataRow[FieldTel]);
-            this.Addr = CommonUtil.ConvertToString(dataRow[FieldAddr]);
-            this.IsEnable = CommonUtil.ConvertToInt(dataRow[FieldIsEnable]);
-            this.IsOnJob = CommonUtil.ConvertToInt(dataRow[FieldIsOnJob]);
-            this.Sex = CommonUtil.ConvertToInt(dataRow[FieldSex]);
-            return this;
+            StaffEntity entity = new StaffEntity();
+            entity.ID = CommonUtil.ConvertToInt(dataRow[entity.PrimaryKey]);
+            entity.OpenID = CommonUtil.ConvertToString(dataRow[FieldOpenID]);
+            entity.Name = CommonUtil.ConvertToString(dataRow[FieldName]);
+            entity.Tel = CommonUtil.ConvertToString(dataRow[FieldTel]);
+            entity.Addr = CommonUtil.ConvertToString(dataRow[FieldAddr]);
+            entity.IsEnable = CommonUtil.ConvertToInt(dataRow[FieldIsEnable]);
+            entity.IsOnJob = CommonUtil.ConvertToInt(dataRow[FieldIsOnJob]);
+            entity.Sex = CommonUtil.ConvertToInt(dataRow[FieldSex]);
+            return entity;
         }
 
 
         public StaffEntity GetFrom(System.Data.IDataReader dataReader)
         {
-            this.ID = CommonUtil.ConvertToInt(dataReader[this.PrimaryKey]);
-            this.OpenID = CommonUtil.ConvertToString(dataReader[FieldOpenID]);
-            this.Name = CommonUtil.ConvertToString(dataReader[FieldName]);
-            this.Tel = CommonUtil.ConvertToString(dataReader[FieldTel]);
-            this.Addr = CommonUtil.ConvertToString(dataReader[FieldAddr]);
-            this.IsEnable = CommonUtil.ConvertToInt(dataReader[FieldIsEnable]);
-            this.IsOnJob = CommonUtil.ConvertToInt(dataReader[FieldIsOnJob]);
-            this.Sex = CommonUtil.ConvertToInt(dataReader[FieldSex]);
-            return this;
+            StaffEntity entity = new StaffEntity();
+            entity.ID = CommonUtil.ConvertToInt(dataReader[entity.PrimaryKey]);
+            entity.OpenID = CommonUtil.ConvertToString(dataReader[FieldOpenID]);
+            entity.Name = CommonUtil.ConvertToString(dataReader[FieldName]);
+            entity.Tel = CommonUtil.ConvertToString(dataReader[FieldTel]);
+            entity.Addr = CommonUtil.ConvertToString(dataReader[FieldAddr]);
+            entity.IsEnable = CommonUtil.ConvertToInt(dataReader[FieldIsEnable]);
+            entity.IsOnJob = CommonUtil.ConvertToInt(dataReader[FieldIsOnJob]);
+            entity.Sex = CommonUtil.ConvertToInt(dataReader[FieldSex]);
+            return entity;
         }
 
         public void SetEntity(NonQueryBuilder sqlBuilder, StaffEntity entity)

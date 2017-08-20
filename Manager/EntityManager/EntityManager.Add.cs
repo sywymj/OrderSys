@@ -37,6 +37,10 @@ namespace JSNet.Manager
         public void Insert(List<T> entities)
         {
             // TODO 加个Insert List
+            foreach (T entity in entities)
+            {
+                Insert(entity,false);
+            }
         }
 
         /// <summary>
