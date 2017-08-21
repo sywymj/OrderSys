@@ -38,5 +38,20 @@ namespace JSNet.Utilities
             }
             return dic;
         }
+
+        public static string ToColorStyle(this Enum enumeration)
+        {
+            Type type = enumeration.GetType();
+            MemberInfo[] memInfo = type.GetMember(enumeration.ToString());
+            if (null != memInfo && memInfo.Length > 0)
+            {
+                object[] attrs = memInfo[0].GetCustomAttributes(typeof(EnumColorStyle), false);
+                if (null != attrs && attrs.Length > 0)
+                {
+                    return ((EnumColorStyle)attrs[0]).Text;
+                }
+            }
+            return enumeration.ToString();
+        }
     }
 }

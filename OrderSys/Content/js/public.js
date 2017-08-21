@@ -1,8 +1,122 @@
 ﻿var loading = false;//用来监听鼠标下滚事件
+var template = '#template';
 var loadingID = '.loading';
 var refreshID = '.refreshing'
 var endID = '.end';
-var end = false;
+
+function Query(container,pageSize) {
+    this.container = container;
+    this.pageSize = pageSize || 5;
+}
+Query.prototype = {
+    container:"",
+    pageIndex: 1,
+    pageSize: 5,
+    isLoading: false,
+    isEnd: false,
+
+    setNextPage: function () {
+        this.pageIndex++;
+    }
+}
+
+function Article(container) {
+    this.container = container;
+}
+Article.prototype = {
+    container: "",
+    isLoading: false,
+    isEnd: false,
+}
+
+
+doQuery1 = function (query,url,parms, callback) {
+
+    //if (typeof query !== 'Query') { throw new Error('query: query must be a Object "Query"'); }
+    query.isShow = true;
+    var container = query.container;
+
+    if (query.pageIndex == 1) {
+        //重新刷新
+        query.isLoading = false;
+        query.isEnd = false;
+        clearDom(container);
+        clearDom(container+"~"+"div");//清除旁边的加载中等元素
+    }
+
+    if (query.isLoading) { return;}
+    if (query.isEnd) { return; }
+
+    showLoading(container, 'append');
+    query.isLoading = true;
+
+    $.ajax({
+        type: "GET",
+        url: url,
+        data: parms,//筛选对象
+        success: function (data) {
+            //判断返回值不是 json 格式
+            //debugger;
+            if (!data.match("^\{(\n?.+:.+,?\n?){1,}\}$")) {
+                appendDom(container, data);
+            }
+            else {
+                var jdata = ajaxTips(data, container, callback);
+                if (jdata.RspTypeCode == 5 || jdata.RspTypeCode == 6) {
+                    //没数据
+                    query.isEnd = true;
+                }
+            }
+            query.setNextPage();//这里要重新考虑一下，现在是每加载一次，页面就加1
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+            alert(errorThrown);
+        },
+        complete: function () {
+            ////debugger;
+            hideLoading(container, 'append');//直接remove
+            query.isLoading = false;
+            query.isShow = false;
+        }
+    })
+}
+
+doGetPartial1 = function (article,url,parms, callback) {
+    //debugger;
+    loading = true;//禁止下拉刷新
+    if (article.isLoading) { return; }
+
+    var container = article.container;
+    clearDom(container);
+    clearDom(container + "~" + "div");//清除旁边的加载中等元素
+
+    showLoading(container, 'append');
+    article.isLoading = true;
+    //debugger;
+    $.ajax({
+        type: "GET",
+        url: url,
+        data: parms,
+        async: false, //默认设置为true，所有请求均为异步请求。
+        success: function (data) {
+            //debugger;
+            //判断返回值不是 json 格式
+            if (!data.match("^\{(\n?.+:.+,?\n?){1,}\}$")) {
+                appendDom(container, data);
+            }
+            else {
+                var jdata = ajaxTips(data, container,callback);
+            }
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+            alert(errorThrown);
+        },
+        complete: function () {
+            hideLoading(container, 'append');//直接remove
+            article.isLoading = false;
+        }
+    })
+}
 
 doQuery = function (container, url, urlParmsObj, callback) {
     if (end) { return; }
@@ -25,7 +139,6 @@ doQuery = function (container, url, urlParmsObj, callback) {
             }
             else {
                 var jdata = ajaxTips(data, container);
-
             }
             //整个分页效果显示完后的回调函数
             if (argumentLength == 4) {
@@ -41,6 +154,7 @@ doQuery = function (container, url, urlParmsObj, callback) {
     })
 }
 
+//container:数据div
 doGetPartial = function (container, url, urlParmsObj) {
     clearDom(container);
     var urlParms = urlParmsObj;
@@ -67,7 +181,7 @@ doGetPartial = function (container, url, urlParmsObj) {
 }
 
 doSubmit = function (url, postObj,callback) {
-    //showLoading(domID);
+    $.showLoading();
     $.ajax({
         type: "POST", //GET或POST,
         async: true, //默认设置为true，所有请求均为异步请求。
@@ -83,68 +197,47 @@ doSubmit = function (url, postObj,callback) {
         error: function () { },
         complete: function () {
             //hideLoading(domID);
+            $.hideLoading();
         }
     });
 }
 
 doGet = function (url, urlParmsObj, callback) {
+    $.showLoading();
     $.ajax({
-        type: "GET",
+        type: "GET", //GET或POST,
+        async: true, //默认设置为true，所有请求均为异步请求。
         url: url,
         data: urlParmsObj,
+        dataType: "text", //xml、html、script、jsonp、text
+        beforeSend: function () { },
+        complete: function () { },
         success: function (data) {
+            //我这里跳转之后，怎么返回我想要回的页面
             var jdata = ajaxTips(data, callback);
         },
-        error: function (XMLHttpRequest, textStatus, errorThrown) {
-            alert(errorThrown);
+        error: function () { },
+        complete: function () {
+            //hideLoading(domID);
+            $.hideLoading();
         }
-    })
+    });
 }
 
-doPost = function (url, postData, callback) {
-    $.ajax({
-        type: "POST",
-        url: url,
-        data: postData,
-        success: function (data) {
-            var jdata = ajaxTips(data, callback);
-        },
-        error: function (XMLHttpRequest, textStatus, errorThrown) {
-            alert(errorThrown);
-        }
-    })
-}
-
-getDicData = function (url) {
-    var dicData;
-    $.ajax({
-        type: "GET",
-        url: url,
-        async: false, //默认设置为true，所有请求均为异步请求。
-        success: function (data) {
-            dicData = ajaxTips(data);
-        },
-        error: function (XMLHttpRequest, textStatus, errorThrown) {
-            alert(errorThrown);
-        }
-    })
-
-    return dicData.Data;
-}
-
+//container:数据div，只负责【显示】提示信息
 ajaxTips = function (json, container, callback) {
     if (typeof container === "function") {
         container = undefined;
         callback = container;
     }
-    debugger;
+    //debugger;
     //通过这种方法可将字符串转换为对象
     var jdata = eval('(' + json + ')');
 
     if (jdata.RspTypeCode == -1) {
         //错误消息提示
         console.log(jdata.ErrCode + ":" + jdata.ErrMsg);
-        $.toast(jdata.Msg, "forbidden");
+        $.alert(jdata.Msg, "错误");
     } else if (jdata.RspTypeCode == 1) {
         //提示信息提示
         $.toast(jdata.Msg);
@@ -170,35 +263,94 @@ clearDom = function (selector) {
     $(selector).empty();
 }
 
-//在某个dom同辈添加loading
-showLoading = function (container) {
-    $(container).siblings(loadingID).show();
-    loading = true;
+//这里没用，可以删掉
+getDicData = function (url) {
+    var dicData;
+    $.ajax({
+        type: "GET",
+        url: url,
+        async: false, //默认设置为true，所有请求均为异步请求。
+        success: function (data) {
+            dicData = ajaxTips(data);
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+            alert(errorThrown);
+        }
+    })
+
+    return dicData.Data;
 }
 
-//清除某个dom同辈面的loading
-hideLoading = function (container) {
-    $(container).siblings(loadingID).hide();
-    loading = false;
+//这里没用，可以删掉
+doPost = function (url, postData, callback) {
+    $.ajax({
+        type: "POST",
+        url: url,
+        data: postData,
+        success: function (data) {
+            var jdata = ajaxTips(data, callback);
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+            alert(errorThrown);
+        }
+    })
 }
 
+//这里没用，可以删掉
 showRefresh = function (container) {
     $(container).siblings(refreshID).show();
 }
 
+//这里没用，可以删掉
 hideRefresh = function (container) {
     $(container).siblings(refreshID).hide();
 }
 
-showEnding = function (container,content) {
-    $(container).siblings(endID).show();
-    $(container).siblings(endID).children("div").first().text(content);
-    end = true;
+//显示loading dom
+//container:数据div
+showLoading = function (container, type) {
+    //type ：
+    //  'mid' => 浮于页面中间，
+    //  'append' => 页面内部append于div
+    //debugger;
+    type = type || 'append';
+    var loadingDom;
+    if (type == 'append') {
+        loadingDom = $(template + '>' + loadingID).clone(true).appendTo($(container).parent());
+        loadingDom.show();
+    } else if (type == 'mid') {
+        
+    }
+    
+}
+
+//清除loading dom
+//container:数据div
+hideLoading = function (container, type) {
+    type = type || 'append';
+    if (type == 'append') {
+        $(container).siblings(loadingID).remove();
+    } else if (type == 'mid') {
+        $.hideLoading();
+        return;
+    }
+}
+
+showEnding = function (container, content) {
+    var endDom;
+    endDom = $(template + '>' + endID).clone(true).appendTo($(container).parent());
+    endDom.children("div").first().text(content);
+    endDom.show();
+    //都是append
+    //$(container).siblings(endID).show();
+    //$(container).siblings(endID).children("div").first().text(content);
+    //end = true;
 }
 
 hideEnding = function (container) {
-    $(container).siblings(endID).hide();
-    end = false;
+    $(container).siblings(endID).remove();
+    //$(container).siblings(endID).hide();
+    //end = false;
 }
 
 setTab = function (m, n) {
@@ -247,31 +399,30 @@ $(document.body).pullToRefresh().on("pull-to-refresh", function () {
     var tabID = $(".weui_bar_item_on").attr("id");
     //修改这里的id名称
     if (tabID == "query_mystarted_btn") {
-        debugger;
-        pageIndex = 1;
-        end = false;
+        startedQuery.isEnd = false;
+        startedQuery.pageIndex = 1;
         querymystarted();
     } else if (tabID == "startemyorder_btn") {
         doClearStartForm();
     } else if (tabID == "query_myappointing_btn") {
-        pageIndex = 1;
-        end = false;
+        appointingQuery.isEnd = false;
+        appointingQuery.pageIndex = 1;
         querymyappointing();
     } else if (tabID == "query_myappointed_btn") {
-        pageIndex = 1;
-        end = false;
+        appointedQuery.isEnd = false;
+        appointedQuery.pageIndex = 1;
         querymyappointed();
     } else if (tabID == "query_myreciving_btn") {
-        pageIndex = 1;
-        end = false;
+        recivingQuery.isEnd = false;
+        recivingQuery.pageIndex = 1;
         querymyreciving();
     } else if (tabID == "query_myhandling_btn") {
-        pageIndex = 1;
-        end = false;
+        handlingQuery.isEnd = false;
+        handlingQuery.pageIndex = 1;
         querymyhandling();
     } else if (tabID == "query_myhandled_btn") {
-        pageIndex = 1;
-        end = false;
+        handledQuery.isEnd = false;
+        handledQuery.pageIndex = 1;
         querymyhandled();
     }
 
@@ -287,3 +438,10 @@ formatDic = function (value, data) {
         }
     });
 }
+
+/*
+*   根据习惯：ending,loading都是放在container div 后面（数据、内容部分）
+*   
+*
+*/
+

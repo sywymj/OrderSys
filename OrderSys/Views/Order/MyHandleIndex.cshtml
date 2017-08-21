@@ -18,124 +18,56 @@
     <div class="weui_tab_bd" id="tablist1">
         <div class="tablist block">
             <div id="myreceiving_list"></div>
-            @Html.Partial("~/Views/Shared/_Loading.cshtml")
-            @Html.Partial("~/Views/Shared/_End.cshtml")
         </div>
         <div class="tablist">
             <div id="myhandling_list"></div>
-            @Html.Partial("~/Views/Shared/_Loading.cshtml")
-            @Html.Partial("~/Views/Shared/_End.cshtml")
         </div>
         <div class="tablist">
             <div id="myhandled_list"></div>
-            @Html.Partial("~/Views/Shared/_Loading.cshtml")
-            @Html.Partial("~/Views/Shared/_End.cshtml")
         </div>
     </div>
 </div>
 
-<!--工作流程-->
-<div id="orderflows_popup" class='weui-popup-container'>
-    <div class="weui-popup-overlay"></div>
-    <div class="weui-popup-modal">
-        <header class='demos-header'>
-            @Html.Partial("~/Views/Shared/_Back.cshtml", new BackViewModel() { Title = "工单流程", Popup = "#orderflows_popup" })
-        </header>
-        <article class="weui-article"></article>
-    </div>
-</div>
+@Html.Partial("~/Views/Popup/WorkflowsPopup.cshtml")
 
 <script>
-    var pageIndex1, pageSize1;
-    var pageIndex2, pageSize2;
-    var pageIndex3, pageSize3;
+    var handledQuery, handlingQuery, receivingQuery;
 
     $(function () {
-        init();
-        querymyreceiving();
-        querymyhandling();
+        handledQuery = new Query('#myhandled_list');
+        handlingQuery = new Query('#myhandling_list');
+        receivingQuery = new Query('#myreceiving_list');
         querymyhandled();
+        querymyhandling();
+        querymyreciving();
     })
 
-    init = function () {
-        //每个页面都需要配置这个，否则query会报错
-        pageIndex1 = pageIndex2 = pageIndex3 = 1;
-        pageSize1 = pageSize2 = pageSize3 = 5;
-    }
-
-    querymyreceiving = function () {
-        var listDomID = '#myreceiving_list';
-
-        if (pageIndex1 == 1) {
-            clearDom(listDomID);
-        }
-        doQuery(
-            listDomID,
-            '@Url.Action("MyReceivingOrders", "Order")',
-            { PageIndex: pageIndex1, PageSize: pageSize1 },
-            function(){
-                pageIndex1++;
-            }
-        );
+    querymyreciving = function () {
+        var url = '@Url.Action("MyReceivingOrders", "Order")';
+        var parms = {
+            PageIndex: receivingQuery.pageIndex,
+            PageSize: receivingQuery.pageSize,
+        };
+        doQuery1(receivingQuery, url, parms);
     }
 
     querymyhandling = function () {
-        var listDomID = '#myhandling_list';
-        if (pageIndex2 == 1) {
-            clearDom(listDomID);
-        }
-        doQuery(
-            listDomID,
-            '@Url.Action("MyHandlingOrders", "Order")',
-            { PageIndex: pageIndex2, PageSize: pageSize2 },
-            function(){
-                pageIndex2++;
-            }
-        );
+        var url = '@Url.Action("MyHandlingOrders", "Order")';
+        var parms = {
+            PageIndex: handlingQuery.pageIndex,
+            PageSize: handlingQuery.pageSize,
+        };
+        doQuery1(handlingQuery, url, parms);
     }
 
     querymyhandled = function () {
-        var listDomID = '#myhandled_list';
-        if (pageIndex3 == 1) {
-            clearDom(listDomID);
-        }
-        doQuery(
-            listDomID,
-            '@Url.Action("MyHandledOrders", "Order")',
-            { PageIndex: pageIndex3, PageSize: pageSize3 },
-            function () {
-                pageIndex3++;
-            }
-        );
+        var url = '@Url.Action("MyHandledOrders", "Order")';
+        var parms = {
+            PageIndex: handledQuery.pageIndex,
+            PageSize: handledQuery.pageSize,
+        };
+        doQuery1(handledQuery, url, parms);
     }
 
-
-
-    appointOrder = function (orderID) {
-        @*$.confirm("您确定要撤销这条工单吗?", "确认撤销?", function () {
-            //$.toast("文件已经删除!");
-            var url = '@Url.Action("CancelOrder", "Order")';
-            var urlParm = { ID: orderID };
-            doGet(url, urlParm, function (jdata) {
-                if (jdata.Code == "200") {
-                    $('#order_' + orderID).remove();
-                }
-            });
-        }, function () {
-            //取消操作
-        });*@
-    }
-
-    openWorkflowsPopup = function (orderID) {
-        //打开popup
-        var container = '#orderflows_popup';
-        var modal = '#orderflows_popup > .weui-popup-modal > .weui-article';
-        $.openMyPopup(container);
-
-        var url = '@Url.Action("OrderFlows", "Order")';
-        var urlParmsObj = { ID: orderID };
-        doGetPartial(modal, url, urlParmsObj);
-        setOrderStatus();
-    }
 
 </script>

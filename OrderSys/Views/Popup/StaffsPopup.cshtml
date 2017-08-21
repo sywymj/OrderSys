@@ -1,0 +1,24 @@
+﻿@using OrderSys.Model;
+
+<!--员工列表-->
+<div id="staffs_popup" class='weui-popup-container'>
+    <div class="weui-popup-overlay"></div>
+    <div class="weui-popup-modal">
+        <header class='demos-header'>
+            @Html.Partial("~/Views/Shared/_Back.cshtml", new BackViewModel() { Title = "员工列表", Popup = "#staffs_popup" })
+        </header>
+        <article class="weui-article"></article>
+    </div>
+</div>
+<script>
+    $(function () {
+        //异步加载页面
+        $("#staffs_popup > .weui-popup-modal > .weui-article").load("@Url.Action("GetAllStaffs", "Permission")");
+    })
+
+    openStaffsPopup = function () {
+        var container = '#staffs_popup';
+        $.openMyPopup(container);
+    }
+</script>
+

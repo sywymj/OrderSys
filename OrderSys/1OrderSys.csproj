@@ -240,6 +240,11 @@
     <Content Include="Views\Order\HandleDetail.cshtml" />
     <Content Include="Views\Permission\Staffs.cshtml" />
     <Content Include="Views\Order\AppointOrder.cshtml" />
+    <Content Include="Views\Popup\WorkflowsPopup.cshtml" />
+    <Content Include="Views\Popup\AppointPopup.cshtml" />
+    <Content Include="Views\Popup\StaffsPopup.cshtml" />
+    <Content Include="Views\Popup\OrderdetailPopup.cshtml" />
+    <Content Include="Views\Popup\HandledetailPopup.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

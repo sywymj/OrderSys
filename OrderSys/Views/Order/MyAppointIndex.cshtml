@@ -5,7 +5,7 @@
 }
 <div class="weui_tab">
     <div class="weui_navbar" id="tab1">
-        <li class="weui_navbar_item" id="query_myappointing_btn" onclick="setTab(1,0)">
+        <li class="weui_navbar_item" id="query_myappointing_btn" onclick="setTab(1, 0)">
             未委派
         </li>
         <li class="weui_navbar_item weui_bar_item_on" id="query_myappointed_btn" onclick="setTab(1, 1)">
@@ -15,106 +15,42 @@
     <div class="weui_tab_bd" id="tablist1">
         <div class="tablist">
             <div id="myappointing_list"></div>
-            @Html.Partial("~/Views/Shared/_Loading.cshtml")
-            @Html.Partial("~/Views/Shared/_End.cshtml")
         </div>
         <div class="tablist block">
             <div id="myappointed_list"></div>
-            @Html.Partial("~/Views/Shared/_Loading.cshtml")
-            @Html.Partial("~/Views/Shared/_End.cshtml")
         </div>
     </div>
 </div>
 
-<!--工作流程-->
-<div id="orderflows_popup" class='weui-popup-container'>
-    <div class="weui-popup-overlay"></div>
-    <div class="weui-popup-modal">
-        <header class='demos-header'>
-            @Html.Partial("~/Views/Shared/_Back.cshtml", new BackViewModel() { Title = "工单流程", Popup = "#orderflows_popup" })
-        </header>
-        <article class="weui-article"></article>
-    </div>
-</div>
-
-<!--委派工单的页面-->
-<div id="appointorder_popup" class='weui-popup-container'>
-    <div class="weui-popup-overlay"></div>
-    <div class="weui-popup-modal">
-        <header class='demos-header'>
-            @Html.Partial("~/Views/Shared/_Back.cshtml", new BackViewModel() { Title = "委派工单", Popup = "#appointorder_popup" })
-        </header>
-        <article class="weui-article"></article>
-    </div>
-</div>
+@Html.Partial("~/Views/Popup/WorkflowsPopup.cshtml")
+@Html.Partial("~/Views/Popup/AppointPopup.cshtml")
 
 <script>
-    var pageIndex1, pageSize1;
-    var pageIndex2, pageSize2;
-
+    var myappointedQuery, myappointingQuery;
 
     $(function () {
-        init();
-        querymyappointing();
+        appointingQuery = new Query('#myappointing_list');
+        appointedQuery = new Query('#myappointed_list');
         querymyappointed();
+        querymyappointing();
     })
 
-    init = function () {
-        //每个页面都需要配置这个，否则query会报错
-        pageIndex1 = pageIndex2 = 1;
-        pageSize1 = pageSize2 = 5;
-    }
-
     querymyappointing = function () {
-        var listDomID = '#myappointing_list';
-        if (pageIndex1 == 1) {
-            clearDom(listDomID);
-        }
-        doQuery(
-            listDomID,
-            '@Url.Action("MyAppointingOrders", "Order")',
-            { PageIndex: pageIndex1, PageSize: pageSize1 },
-            function () {
-                pageIndex1++;
-            }
-        );
+        var url = '@Url.Action("MyAppointingOrders", "Order")';
+        var parms = {
+            PageIndex: appointingQuery.pageIndex,
+            PageSize: appointingQuery.pageSize,
+        };
+        doQuery1(appointingQuery, url, parms);
     }
 
     querymyappointed = function () {
-        var listDomID = '#myappointed_list';
-        if (pageIndex2 == 1) {
-            clearDom(listDomID);
-        }
-        doQuery(
-            listDomID,
-            '@Url.Action("MyAppointedOrders", "Order")',
-            { PageIndex: pageIndex2, PageSize: pageSize2 },
-            function () {
-                pageIndex2++;
-            }
-        );
+        var url = '@Url.Action("MyAppointedOrders", "Order")';
+        var parms = {
+            PageIndex: appointedQuery.pageIndex,
+            PageSize: appointedQuery.pageSize,
+        };
+        doQuery1(appointedQuery, url, parms);
     }
 
-    openAppointPopup = function (orderID) {
-        //打开popup
-        var container = '#appointorder_popup';
-        var modal = '#appointorder_popup > .weui-popup-modal > .weui-article';
-        $.openMyPopup(container);
-
-        var url = '@Url.Action("AppointOrder", "Order")';
-        var urlParmsObj = { orderID: orderID };
-        doGetPartial(modal, url, urlParmsObj);
-    }
-
-    openWorkflowsPopup = function (orderID) {
-        //打开popup
-        var container = '#orderflows_popup';
-        var modal = '#orderflows_popup > .weui-popup-modal > .weui-article';
-        $.openMyPopup(container);
-
-        var url = '@Url.Action("OrderFlows", "Order")';
-        var urlParmsObj = { ID: orderID };
-        doGetPartial(modal, url, urlParmsObj);
-        setOrderStatus();
-    }
 </script>

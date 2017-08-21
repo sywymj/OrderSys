@@ -12,10 +12,10 @@
                 <div class="list_sym_l_in_t">报障单号：@dr["OrderNo"]</div>
                 <div class="list_sym_l_in_m">
                     <ul>
-                        <li>紧急程度：<font color="#ed3232" size="2">@EnumExtensions.ToDescription((OrderPriority)dr["Priority"])</font></li>
+                        <li class="mypriority">紧急程度：<font color="@EnumExtensions.ToColorStyle((OrderPriority)dr["Priority"])" size="2">@EnumExtensions.ToDescription((OrderPriority)dr["Priority"])</font></li>
                         <div class="clear"></div>
-                        <li>待办人：@dr["NextOperaterName"]</li>
-                        <li>电话：@dr["NextOperaterTel"]</li>
+                        <li>待办人：@(string.IsNullOrEmpty(dr["NextOperaterName"].ToString())?"无":dr["NextOperaterName"])</li>
+                        <li>电话：@(string.IsNullOrEmpty(dr["NextOperaterTel"].ToString())?"无":dr["NextOperaterTel"])</li>
                         <div class="clear"></div>
                     </ul>
                 </div>

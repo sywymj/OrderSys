@@ -19,4 +19,22 @@ namespace JSNet.Utilities
             _text = text;
         }
     }
+
+    public class EnumColorStyle:Attribute
+    {
+        private string _text;
+
+        public string Text
+        {
+            get
+            {
+                return _text;
+            }
+        }
+
+        public EnumColorStyle(string text)
+        {
+            _text = text;
+        }
+    }
 }

@@ -71,29 +71,8 @@
     <span>@EnumExtensions.ToDescription(ViewBag.OrderStatus)</span>
 </div>
 
-<!--popup工单内容-->
-<div id="orderdetail_popup" class='weui-popup-container'>
-    <div class="weui-popup-overlay"></div>
-    <div class="weui-popup-modal">
-        <header class='demos-header'>
-            @Html.Partial("~/Views/Shared/_Back.cshtml", new BackViewModel() { Title = "工单内容", Popup = "#orderdetail_popup" })
-        </header>
-        <article class="weui-article"></article>
-        @Html.Partial("~/Views/Shared/_End.cshtml")
-    </div>
-</div>
-
-<!--popup处理进度-->
-<div id="handledetail_popup" class='weui-popup-container'>
-    <div class="weui-popup-overlay"></div>
-    <div class="weui-popup-modal">
-        <header class='demos-header'>
-            @Html.Partial("~/Views/Shared/_Back.cshtml", new BackViewModel() { Title = "处理进度", Popup = "#handledetail_popup" })
-        </header>
-        <article class="weui-article"></article>
-        @Html.Partial("~/Views/Shared/_End.cshtml")
-    </div>
-</div>
+@Html.Partial("~/Views/Popup/OrderdetailPopup.cshtml")
+@Html.Partial("~/Views/Popup/HandledetailPopup.cshtml")
 
 <script>
 
@@ -107,30 +86,6 @@
 
         $("#" + status).children(statusID).show();
     }
-
-    openOrderdetailPopup = function (orderID) {
-        //打开popup
-        var container = '#orderdetail_popup';
-        var modal = '#orderdetail_popup > .weui-popup-modal > .weui-article';
-        $.openMyPopup(container);
-
-        var url = '@Url.Action("OrderDetail", "Order")';
-        var urlParmObj = { ID: orderID };
-        doGetPartial(modal, url, urlParmObj);
-    }
-
-    openHandledetailPopup = function (orderID) {
-        //打开popup
-        var container = '#handledetail_popup';
-        var modal = '#handledetail_popup > .weui-popup-modal > .weui-article';
-        $.openMyPopup(container);
-
-        var url = '@Url.Action("HandleDetail", "Order")';
-        var urlParmObj = { OrderID: orderID };
-        doGetPartial(modal, url, urlParmObj);
-    }
-
-
     
 </script>
 

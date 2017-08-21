@@ -33,11 +33,11 @@
         var staffs = new Array();
         return {
             set: function (objs, callback) {
-                debugger;
+                //debugger;
                 $.each(objs, function (i, n) {
                     staffs.push(n);
                 })
-                debugger;
+                //debugger;
                 //去重
                 var ret = [];
                 var len = staffs.length;
@@ -80,7 +80,7 @@
             staff.Name = $(this).attr("StaffName");
             staffs.push(staff);
         });
-        debugger;
+        //debugger;
         Staff.set(staffs, addHandlerDom);
         closePopup('#staffs_popup');
     }

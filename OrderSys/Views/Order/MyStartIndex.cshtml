@@ -18,56 +18,27 @@
         </div>
         <div class="tablist block">
             <div id="mystarted_list"></div>
-            @Html.Partial("~/Views/Shared/_Loading.cshtml")
-            @Html.Partial("~/Views/Shared/_End.cshtml")
         </div>
     </div>
 </div>
 
-<!--popup流程-->
-<div id="orderflows_popup" class='weui-popup-container'>
-    <div class="weui-popup-overlay"></div>
-    <div class="weui-popup-modal">
-        <header class='demos-header'>
-            @Html.Partial("~/Views/Shared/_Back.cshtml", new BackViewModel() { Title = "工单流程", Popup = "#orderflows_popup" })
-        </header>
-        <article class="weui-article"></article>
-    </div>
-</div>
+@Html.Partial("~/Views/Popup/WorkflowsPopup.cshtml")
 
 <script>
-    var pageIndex1, pageSize1;
+    var startedQuery;
 
     $(function () {
-        init();
+        startedQuery = new Query('#mystarted_list');
         querymystarted();
     })
 
-    init = function () {
-        //每个页面都需要配置这个，否则query会报错
-        pageIndex1 = 1;
-        pageSize1 = 5;
-    }
-
     querymystarted = function () {
-        //$('#query_mystarted_btn').off('click', querymystarted);
-
-        var listDomID = '#mystarted_list';
-        if (pageIndex1 == 1) {
-            clearDom(listDomID);
-        }
-
-        if (pageIndex1 == 1) {
-            clearDom(listDomID);
-        }
-        doQuery(
-            listDomID,
-            '@Url.Action("MyStartedOrders", "Order")',
-            { PageIndex: pageIndex1, PageSize: pageSize1 },
-            function () {
-                pageIndex1++;
-            }
-        );
+        var url = '@Url.Action("MyStartedOrders", "Order")';
+        var parms = {
+            PageIndex: startedQuery.pageIndex,
+            PageSize: startedQuery.pageSize,
+        };
+        doQuery1(startedQuery, url, parms);
     }
 
     cancelOrder = function (orderID) {
@@ -84,18 +55,4 @@
             //取消操作
         });
     }
-
-    openWorkflowsPopup = function (orderID) {
-        //打开popup
-        var container = '#orderflows_popup';
-        var modal = '#orderflows_popup > .weui-popup-modal > .weui-article';
-        $.openMyPopup(container);
-
-        var url = '@Url.Action("OrderFlows", "Order")';
-        var urlParmsObj = { ID: orderID };
-        doGetPartial(modal, url, urlParmsObj);
-        setOrderStatus();
-    }
-
-
 </script>
