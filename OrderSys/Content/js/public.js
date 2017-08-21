@@ -227,8 +227,8 @@ doGet = function (url, urlParmsObj, callback) {
 //container:数据div，只负责【显示】提示信息
 ajaxTips = function (json, container, callback) {
     if (typeof container === "function") {
-        container = undefined;
         callback = container;
+        container = 'undefined';
     }
     //debugger;
     //通过这种方法可将字符串转换为对象
@@ -251,7 +251,7 @@ ajaxTips = function (json, container, callback) {
         //数据加载完
         showEnding(container, jdata.Msg);
     }
-    callback && callback();
+    callback && callback(jdata);
     return jdata
 }
 

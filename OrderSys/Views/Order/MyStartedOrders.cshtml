@@ -25,12 +25,72 @@
             </div>
         </div>
         <div class="list_sym_r">
-            <a href="javascript:cancelOrder('@dr["ID"]');" class="orders">撤销</a>
-            <a href="javascript:openWorkflowsPopup('@dr["ID"]');" class="details open-popup">详情</a>
+            <a href="javascript:doCancelOrder('@dr["ID"]');" class="orders">撤销</a>
+            <a href="javascript:checkOrder('@dr["ID"]');" class="orders">验收</a>
+            <a href="javascript:openWorkflowsPopup('@dr["ID"]');" class="details">详情</a>
         </div>
         <div class="clear"></div>
     </div>
 }
+
+<script>
+    doCancelOrder = function (orderID) {
+        $.confirm("您确定要撤销这条工单吗?", "确认撤销?", function () {
+            var url = '@Url.Action("CancelOrder", "Order")';
+            var urlParm = { ID: orderID };
+            doGet(url, urlParm, function (jdata) {
+                if (jdata.Code == "200") {
+                    $('#startedorder_' + orderID).remove();
+                }
+            });
+        }, function () {
+            //取消操作
+        });
+    }
+
+    checkOrder = function (orderID) {
+        $.modal({
+            title: "",
+            text: "请选择验收操作。",
+            buttons: [
+            { text: "通过", onClick: function () { doCheckOrder(orderID); } },
+            { text: "驳回", onClick: function () { doRejectOrder(orderID); } },
+            { text: "取消", className: "default"},
+            ]
+        });
+    }
+
+    doCheckOrder = function (orderID) {
+        var url = '@Url.Action("FinishOrder", "Order")';
+        var urlParm = { ID: orderID };
+        doGet(url, urlParm, function (jdata) {
+            if (jdata.Code == "200") {
+                //看看要怎么做
+                //$('#startedorder_' + orderID).remove();
+            }
+        });
+    }
+
+    doRejectOrder = function (orderID) {
+        $.prompt({
+            text: "请输入驳回的原因。",
+            title: "",
+            onOK: function (text) {
+                var url = '@Url.Action("RejectOrder", "Order")';
+                var urlParm = { ID: orderID, Remark: text };
+                doGet(url, urlParm, function (jdata) {
+                    if (jdata.Code == "200") {
+                        //看看要怎么做
+                        //$('#startedorder_' + orderID).remove();
+                    }
+                });
+            },
+            onCancel: function () {
+                console.log("取消了");
+            },
+        });
+    }
+</script>
 
 
 

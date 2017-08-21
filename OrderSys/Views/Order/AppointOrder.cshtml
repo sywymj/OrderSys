@@ -40,10 +40,7 @@
         })
     }
 
-    setLeader = function (id) {
-        $('#staff_' + id).siblings().removeClass("leader");
-        $('#staff_' + id).addClass("leader");
-    }
+
 
     addHandlerDom = function () {
         $('.weui_cells_form').empty();
@@ -62,6 +59,11 @@
             handlerDom.find(".staffName").text(handler.Name);
             handlerDom.show();
         });
+    }
+
+    setLeader = function (id) {
+        $('#staff_' + id).siblings().removeClass("leader");
+        $('#staff_' + id).addClass("leader");
     }
 
     doAppoint = function (orderID) {

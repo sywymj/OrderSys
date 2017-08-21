@@ -75,17 +75,23 @@
 @Html.Partial("~/Views/Popup/HandledetailPopup.cshtml")
 
 <script>
-
     setOrderStatus = function () {
         var status = '@ViewBag.OrderStatus';
         var statusID = ".reject";
 
         $("#" + status).addClass("now");//给自己添加样式
         $("#" + status).prevAll().addClass("now");//给之前的流程添加样式
-        appendDom("#"+status, $(statusID).get());
+        appendDom("#" + status, $(statusID).get());
 
         $("#" + status).children(statusID).show();
     }
+
+    $(function () {
+        //不知道为什么要卸载代码底部才能调用上面方法
+        setOrderStatus();
+    });
+
+
     
 </script>
 

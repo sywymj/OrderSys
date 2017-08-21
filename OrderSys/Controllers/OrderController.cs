@@ -74,7 +74,7 @@ namespace OrderSys.Controllers
             orderService.AppointOrder(orderID, handlers);
 
             ContentResult res = new ContentResult();
-            res.Content = JSON.ToJSON(new JSResponse("操作成功！"), jsonParams);
+            res.Content = JSON.ToJSON(new JSResponse("委派成功！"), jsonParams);
             return res;
         }
 
@@ -85,7 +85,7 @@ namespace OrderSys.Controllers
             orderService.ReceiveOrder(orderID);
 
             ContentResult res = new ContentResult();
-            res.Content = JSON.ToJSON(new JSResponse("操作成功！"), jsonParams);
+            res.Content = JSON.ToJSON(new JSResponse("接单成功！"), jsonParams);
             return res;
 
         }
@@ -101,39 +101,29 @@ namespace OrderSys.Controllers
         }
 
         [HttpGet]
-        public ActionResult CompleteOrder()
+        public ActionResult CompleteOrder(Guid orderID)
         {
-            string sOrderID = JSRequest.GetRequestUrlParm(OrderEntity.FieldID);
-
-            Guid orderID = (Guid)JSValidator.ValidateGuid(OrderEntity.FieldID, sOrderID, true);
-
             orderService.CompleteOrder(orderID);
 
             ContentResult res = new ContentResult();
-            res.Content = JSON.ToJSON(new JSResponse("操作成功！"), jsonParams);
+            res.Content = JSON.ToJSON(new JSResponse("验收成功！"), jsonParams);
             return res;
         }
 
         [HttpGet]
-        public ActionResult RejectOrder()
+        public ActionResult RejectOrder(Guid orderID,string remark)
         {
-            string sOrderID = JSRequest.GetRequestUrlParm(OrderEntity.FieldID);
 
-            Guid orderID = (Guid)JSValidator.ValidateGuid(OrderEntity.FieldID, sOrderID, true);
-
-            orderService.RejectOrder(orderID);
+            orderService.RejectOrder(orderID,remark);
 
             ContentResult res = new ContentResult();
-            res.Content = JSON.ToJSON(new JSResponse("操作成功！"), jsonParams);
+            res.Content = JSON.ToJSON(new JSResponse("驳回成功！"), jsonParams);
             return res;
         }
 
         [HttpGet]
-        public ActionResult FinishOrder()
+        public ActionResult FinishOrder(Guid orderID)
         {
-            string sOrderID = JSRequest.GetRequestUrlParm(OrderEntity.FieldID);
-
-            Guid orderID = (Guid)JSValidator.ValidateGuid(OrderEntity.FieldID, sOrderID, true);
 
             orderService.FinishOrder(orderID);
 

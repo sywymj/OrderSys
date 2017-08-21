@@ -28,7 +28,7 @@
         </div>
         <div class="list_sym_r">
             <a class="orders" onclick="doReceiveOrder('@dr["ID"]')">接单</a>
-            <a class="details open-popup" data-target="#full" href="javascript:openWorkflowsPopup('@dr["ID"]');">详情</a>
+            <a class="details"  href="javascript:openWorkflowsPopup('@dr["ID"]');">详情</a>
         </div>
         <div class="clear"></div>
     </div>
@@ -37,7 +37,6 @@
 <script>
     doReceiveOrder = function (orderID) {
         $.confirm("您确定要开始处理这条工单吗?", "确认?", function () {
-            //$.toast("文件已经删除!");
             var url = '@Url.Action("DoReceiveOrder", "Order")';
             var urlParm = { OrderID: orderID };
             doGet(url, urlParm, function (jdata) {
