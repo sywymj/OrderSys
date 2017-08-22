@@ -139,6 +139,7 @@
     <Content Include="Content\iconfont\iconfont.js" />
     <Content Include="Content\iconfont\iconfont.svg" />
     <Content Include="Content\images\avatar_t2.png" />
+    <Content Include="Content\images\leader.png" />
     <Content Include="Content\js\city-picker.js" />
     <Content Include="Content\js\city-picker.min.js" />
     <Content Include="Content\js\ExWeui.js" />
