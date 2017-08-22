@@ -25,8 +25,16 @@
             </div>
         </div>
         <div class="list_sym_r">
-            <a href="javascript:doCancelOrder('@dr["ID"]');" class="orders">撤销</a>
-            <a href="javascript:checkOrder('@dr["ID"]');" class="orders">验收</a>
+                @{if (Math.Abs((int)dr["Status"]) < (int)OrderStatus.Handling)
+                {
+                    <a href="javascript:doCancelOrder('@dr["ID"]');" class="orders">撤销</a>
+                }
+                }
+                @{if ((OrderStatus)dr["Status"] == OrderStatus.Checking)
+                {
+                    <a href="javascript:checkOrder('@dr["ID"]');" class="orders">验收</a>
+                }
+                }
             <a href="javascript:openWorkflowsPopup('@dr["ID"]');" class="details">详情</a>
         </div>
         <div class="clear"></div>
@@ -62,7 +70,7 @@
 
     doCheckOrder = function (orderID) {
         var url = '@Url.Action("FinishOrder", "Order")';
-        var urlParm = { ID: orderID };
+        var urlParm = { OrderID: orderID };
         doGet(url, urlParm, function (jdata) {
             if (jdata.Code == "200") {
                 //看看要怎么做
@@ -77,7 +85,7 @@
             title: "",
             onOK: function (text) {
                 var url = '@Url.Action("RejectOrder", "Order")';
-                var urlParm = { ID: orderID, Remark: text };
+                var urlParm = { OrderID: orderID, Remark: text };
                 doGet(url, urlParm, function (jdata) {
                     if (jdata.Code == "200") {
                         //看看要怎么做

@@ -101,9 +101,9 @@ namespace OrderSys.Controllers
         }
 
         [HttpGet]
-        public ActionResult CompleteOrder(Guid orderID)
+        public ActionResult HandledOrder(Guid orderID)
         {
-            orderService.CompleteOrder(orderID);
+            orderService.HandledOrder(orderID);
 
             ContentResult res = new ContentResult();
             res.Content = JSON.ToJSON(new JSResponse("验收成功！"), jsonParams);
@@ -113,7 +113,6 @@ namespace OrderSys.Controllers
         [HttpGet]
         public ActionResult RejectOrder(Guid orderID,string remark)
         {
-
             orderService.RejectOrder(orderID,remark);
 
             ContentResult res = new ContentResult();
@@ -305,6 +304,7 @@ namespace OrderSys.Controllers
             OrderEntity order = orderService.GetOrderEntity(id);
 
             ViewBag.OrderStatus = (OrderStatus)order.Status;
+            ViewBag.OrderStatus1 = (OrderStatus)Math.Abs((int)order.Status);//处理过的状态，只保留主流程
             ViewBag.OrderID = order.ID;
 
             var list = orderService.GetOrderFlows(id);

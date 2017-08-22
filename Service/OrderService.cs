@@ -138,11 +138,10 @@ namespace JSNet.Service
         }
 
         //报障处理完毕
-        public void CompleteOrder(Guid orderID)
+        public void HandledOrder(Guid orderID)
         {
             PermissionService permissionService = new PermissionService();
             EntityManager<OrderEntity> orderManager = new EntityManager<OrderEntity>();
-            
             EntityManager<OrderFlowEntity> orderflowManager = new EntityManager<OrderFlowEntity>();
 
             //1.0 获取当前员工数据
@@ -274,7 +273,7 @@ namespace JSNet.Service
             orderflow.OrderID = orderID;
             orderflow.OperatorID = staff.ID;
             orderflow.NextOperatorID = 0;
-            orderflow.Operation = (int)OperationEnum.reject;
+            orderflow.Operation = (int)OperationEnum.Cancel;
             orderflow.OperateTime = DateTime.Now;
             orderflow.Remark = "";
             orderflowManager.Insert(orderflow);
@@ -301,11 +300,13 @@ namespace JSNet.Service
 
             //2.0 构建where从句
             WhereStatement where = new WhereStatement();
-            where.Add(OrderEntity.FieldStatus, Comparison.GreaterOrEquals, (int)OrderStatus.Appointing);
             where.Add(OrderEntity.FieldStarterID, Comparison.Equals, staff.ID);
 
+            OrderByStatement orderby = new OrderByStatement();
+            orderby.Add(OrderEntity.FieldPriority, Sorting.Descending);
+            orderby.Add(OrderEntity.FieldBookingTime, Sorting.Ascending);
             //3.0 获取已发起的数据
-            DataTable dt = manager.GetDataTableByPage(where, out count, pageIndex, pageSize);
+            DataTable dt = manager.GetDataTableByPage(where, out count, pageIndex, pageSize,orderby);
             return dt;
 
         }
@@ -326,8 +327,13 @@ namespace JSNet.Service
             WhereStatement where = new WhereStatement();
             where.Add(OrderEntity.FieldStatus, Comparison.Equals, (int)OrderStatus.Appointing);
 
+            //2.1 构建orderby从句
+            OrderByStatement orderby = new OrderByStatement();
+            orderby.Add(OrderEntity.FieldPriority, Sorting.Descending);
+            orderby.Add(OrderEntity.FieldBookingTime, Sorting.Ascending);
+
             //3.0 获取已发起的数据
-            DataTable dt = manager.GetDataTableByPage(where, out count, pageIndex, pageSize);
+            DataTable dt = manager.GetDataTableByPage(where, out count, pageIndex, pageSize, orderby);
             return dt;
         }
 
@@ -348,8 +354,13 @@ namespace JSNet.Service
             where.Add(OrderEntity.FieldStatus, Comparison.GreaterOrEquals, (int)OrderStatus.Receving);
             where.Add(OrderEntity.FieldAppointerID, Comparison.Equals, staff.ID);
 
+            //2.1 构建orderby 从句
+            OrderByStatement orderby = new OrderByStatement();
+            orderby.Add(OrderEntity.FieldPriority, Sorting.Descending);
+            orderby.Add(OrderEntity.FieldBookingTime, Sorting.Ascending);
+
             //3.0 获取已发起的数据
-            DataTable dt = manager.GetDataTableByPage(where, out count, pageIndex, pageSize);
+            DataTable dt = manager.GetDataTableByPage(where, out count, pageIndex, pageSize,orderby);
             return dt;
         }
 
@@ -370,8 +381,13 @@ namespace JSNet.Service
             where.Add(OrderEntity.FieldStatus, Comparison.Equals, (int)OrderStatus.Receving);
             where.Add(OrderEntity.FieldNextOperatorID, Comparison.Equals, staff.ID);
 
+            //2.1 构建orderby 从句
+            OrderByStatement orderby = new OrderByStatement();
+            orderby.Add(OrderEntity.FieldPriority, Sorting.Descending);
+            orderby.Add(OrderEntity.FieldBookingTime, Sorting.Ascending);
+
             //3.0 获取已发起的数据
-            DataTable dt = manager.GetDataTableByPage(where, out count, pageIndex, pageSize);
+            DataTable dt = manager.GetDataTableByPage(where, out count, pageIndex, pageSize,orderby);
             return dt;
         }
 
@@ -389,11 +405,18 @@ namespace JSNet.Service
 
             //2.0 构建where从句
             WhereStatement where = new WhereStatement();
-            where.Add(OrderEntity.FieldStatus, Comparison.Equals, (int)OrderStatus.Handling);
+            WhereClause clause = new WhereClause(OrderEntity.FieldStatus, Comparison.Equals, (int)OrderStatus.Handling);
+            clause.AddClause(LogicOperator.Or, Comparison.Equals, (int)OrderStatus.Rejected);
+            where.Add(clause);
             where.Add(OrderEntity.FieldHandlerID, Comparison.Equals, staff.ID);
 
+            //2.1 构建orderby 从句
+            OrderByStatement orderby = new OrderByStatement();
+            orderby.Add(OrderEntity.FieldPriority, Sorting.Descending);
+            orderby.Add(OrderEntity.FieldBookingTime, Sorting.Ascending);
+
             //3.0 获取已发起的数据
-            DataTable dt = manager.GetDataTableByPage(where, out count, pageIndex, pageSize);
+            DataTable dt = manager.GetDataTableByPage(where, out count, pageIndex, pageSize,orderby);
             return dt;
         }
 
@@ -414,8 +437,13 @@ namespace JSNet.Service
             where.Add(OrderEntity.FieldStatus, Comparison.GreaterOrEquals, (int)OrderStatus.Checking);
             where.Add(OrderEntity.FieldHandlerID, Comparison.Equals, staff.ID);
 
+            //2.1 构建orderby 从句
+            OrderByStatement orderby = new OrderByStatement();
+            orderby.Add(OrderEntity.FieldPriority, Sorting.Descending);
+            orderby.Add(OrderEntity.FieldBookingTime, Sorting.Ascending);
+
             //3.0 获取已发起的数据
-            DataTable dt = manager.GetDataTableByPage(where, out count, pageIndex, pageSize);
+            DataTable dt = manager.GetDataTableByPage(where, out count, pageIndex, pageSize,orderby);
             return dt;
         }
 

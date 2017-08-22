@@ -21,36 +21,56 @@
         </div>
     </div>
 </div>
+@*<div class="weui_tab" id='page-ptr-navbar'>
+    <div class="weui_navbar">
+        <a href='#tab1' class="weui_navbar_item weui_bar_item_on">
+            选项一
+        </a>
+        <a href='#tab2' class="weui_navbar_item">
+            选项二
+        </a>
+    </div>
+    <div class="weui_tab_bd">
+        <div id="tab1" class="weui_tab_bd_item weui_tab_bd_item_active">
+            @Html.Partial("~/Views/Shared/_Refresh.cshtml")
+            <div id="myappointing_list"></div>
+        </div>
+        <div id="tab2" class="weui_tab_bd_item">
+            @Html.Partial("~/Views/Shared/_Refresh.cshtml")
+            <div id="myappointed_list"></div>
+        </div>
+    </div>
+</div>*@
 
-@Html.Partial("~/Views/Popup/WorkflowsPopup.cshtml")
-@Html.Partial("~/Views/Popup/AppointPopup.cshtml")
+    @Html.Partial("~/Views/Popup/WorkflowsPopup.cshtml")
+    @Html.Partial("~/Views/Popup/AppointPopup.cshtml")
 
-<script>
-    var myappointedQuery, myappointingQuery;
+    <script>
+        var myappointedQuery, myappointingQuery;
 
-    $(function () {
-        appointingQuery = new Query('#myappointing_list');
-        appointedQuery = new Query('#myappointed_list');
-        querymyappointed();
-        querymyappointing();
-    })
+        $(function () {
+            appointingQuery = new Query('#myappointing_list');
+            appointedQuery = new Query('#myappointed_list');
+            querymyappointed();
+            querymyappointing();
+        })
 
-    querymyappointing = function () {
-        var url = '@Url.Action("MyAppointingOrders", "Order")';
-        var parms = {
-            PageIndex: appointingQuery.pageIndex,
-            PageSize: appointingQuery.pageSize,
-        };
-        doQuery1(appointingQuery, url, parms);
-    }
+        querymyappointing = function () {
+            var url = '@Url.Action("MyAppointingOrders", "Order")';
+            var parms = {
+                PageIndex: appointingQuery.pageIndex,
+                PageSize: appointingQuery.pageSize,
+            };
+            doQuery1(appointingQuery, url, parms);
+        }
 
-    querymyappointed = function () {
-        var url = '@Url.Action("MyAppointedOrders", "Order")';
-        var parms = {
-            PageIndex: appointedQuery.pageIndex,
-            PageSize: appointedQuery.pageSize,
-        };
-        doQuery1(appointedQuery, url, parms);
-    }
+        querymyappointed = function () {
+            var url = '@Url.Action("MyAppointedOrders", "Order")';
+            var parms = {
+                PageIndex: appointedQuery.pageIndex,
+                PageSize: appointedQuery.pageSize,
+            };
+            doQuery1(appointedQuery, url, parms);
+        }
 
-</script>
+    </script>

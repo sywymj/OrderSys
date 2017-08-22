@@ -12,8 +12,8 @@
 <div class="sort_box" style="padding-top:20px;">
     @foreach (StaffEntity staff in Model)
 {
-    <div class="sort_list" id="@staff.ID" StaffID="@staff.ID" StaffName="@staff.Name" onclick="doCheck('#@staff.ID')">
-        <div class="num_logo"><img src="/Content/images/avatar_t2.png" /></div>
+    <div class="sort_list" id="staff_@staff.ID" StaffID="@staff.ID" StaffName="@staff.Name" onclick="doCheck('@staff.ID')">
+        <div class="num_logo  weui_icon_circle"></div>
         <div class="num_name">@staff.Name</div>
     </div>
 }
@@ -28,6 +28,7 @@
 <!-- 代码部分end -->
 <script>
 
+    var exStaffID = "staff_";//员工dom-id前缀
     //闭包，主要用户交互选择员工，应该放在getallstaff.cshtml，为了保持可复用，加回调函数
     var Staff = function () {
         var staffs = new Array();
@@ -60,24 +61,30 @@
                 staffs = staffs.filter(function (obj) {
                     return id != obj.ID;
                 })
-                $("#" + id).removeClass("checked");
+                $("#" + exStaffID + id).find('.num_logo').removeClass("checked");
                 callback && callback();
             }
         }
     }();
 
     doCheck = function (staffID) {
-        $(staffID).addClass("check");
+        var staffDomID = '#' + exStaffID + staffID;
+        var checkDom = $(staffDomID).find('.num_logo');
+        if (!checkDom.hasClass("checked")) {
+            checkDom.addClass("checked");
+        } else {
+            checkDom.removeClass("checked");
+        }
     }
 
     doChooseStaffs = function () {
         //构建数组对象
         var staffs = new Array();
-        $(".sort_list.check").each(function () {
+        $(".sort_list > .checked").each(function () {
             var staff = new Object();
-            $(this).removeClass('check');
-            staff.ID = $(this).attr("StaffID");
-            staff.Name = $(this).attr("StaffName");
+            $(this).removeClass('checked');
+            staff.ID = $(this).parent().attr("StaffID");
+            staff.Name = $(this).parent().attr("StaffName");
             staffs.push(staff);
         });
         //debugger;

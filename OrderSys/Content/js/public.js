@@ -31,9 +31,8 @@ Article.prototype = {
 
 
 doQuery1 = function (query,url,parms, callback) {
-
+    loading = true;
     //if (typeof query !== 'Query') { throw new Error('query: query must be a Object "Query"'); }
-    query.isShow = true;
     var container = query.container;
 
     if (query.pageIndex == 1) {
@@ -76,14 +75,13 @@ doQuery1 = function (query,url,parms, callback) {
             ////debugger;
             hideLoading(container, 'append');//直接remove
             query.isLoading = false;
-            query.isShow = false;
+            loading = false;
         }
     })
 }
 
 doGetPartial1 = function (article,url,parms, callback) {
     //debugger;
-    loading = true;//禁止下拉刷新
     if (article.isLoading) { return; }
 
     var container = article.container;
@@ -114,68 +112,6 @@ doGetPartial1 = function (article,url,parms, callback) {
         complete: function () {
             hideLoading(container, 'append');//直接remove
             article.isLoading = false;
-        }
-    })
-}
-
-doQuery = function (container, url, urlParmsObj, callback) {
-    if (end) { return; }
-
-    //add loading
-    showLoading(container);
-
-    var argumentLength = arguments.length
-    var urlParms = urlParmsObj || { PageIndex: 1, PageSize: 20 };
-
-    $.ajax({
-        type: "GET",
-        url: url,
-        data: urlParms,
-        success: function (data) {
-            //判断返回值不是 json 格式
-            if (!data.match("^\{(\n?.+:.+,?\n?){1,}\}$")) {
-                hideEnding(container);
-                appendDom(container, data);
-            }
-            else {
-                var jdata = ajaxTips(data, container);
-            }
-            //整个分页效果显示完后的回调函数
-            if (argumentLength == 4) {
-                callback();
-            }
-        },
-        error: function (XMLHttpRequest, textStatus, errorThrown) {
-            alert(errorThrown);
-        },
-        complete: function () {
-            hideLoading(container);
-        }
-    })
-}
-
-//container:数据div
-doGetPartial = function (container, url, urlParmsObj) {
-    clearDom(container);
-    var urlParms = urlParmsObj;
-    $.ajax({
-        type: "GET",
-        url: url,
-        async: false, //默认设置为true，所有请求均为异步请求。
-        data: urlParms,
-        success: function (data) {
-            //判断返回值不是 json 格式
-            if (!data.match("^\{(\n?.+:.+,?\n?){1,}\}$")) {
-                appendDom(container, data);
-            }
-            else {
-                var jdata = ajaxTips(data, container);
-            }
-        },
-        error: function (XMLHttpRequest, textStatus, errorThrown) {
-            alert(errorThrown);
-        },
-        complete: function () {
         }
     })
 }
@@ -263,49 +199,6 @@ clearDom = function (selector) {
     $(selector).empty();
 }
 
-//这里没用，可以删掉
-getDicData = function (url) {
-    var dicData;
-    $.ajax({
-        type: "GET",
-        url: url,
-        async: false, //默认设置为true，所有请求均为异步请求。
-        success: function (data) {
-            dicData = ajaxTips(data);
-        },
-        error: function (XMLHttpRequest, textStatus, errorThrown) {
-            alert(errorThrown);
-        }
-    })
-
-    return dicData.Data;
-}
-
-//这里没用，可以删掉
-doPost = function (url, postData, callback) {
-    $.ajax({
-        type: "POST",
-        url: url,
-        data: postData,
-        success: function (data) {
-            var jdata = ajaxTips(data, callback);
-        },
-        error: function (XMLHttpRequest, textStatus, errorThrown) {
-            alert(errorThrown);
-        }
-    })
-}
-
-//这里没用，可以删掉
-showRefresh = function (container) {
-    $(container).siblings(refreshID).show();
-}
-
-//这里没用，可以删掉
-hideRefresh = function (container) {
-    $(container).siblings(refreshID).hide();
-}
-
 //显示loading dom
 //container:数据div
 showLoading = function (container, type) {
@@ -341,16 +234,10 @@ showEnding = function (container, content) {
     endDom = $(template + '>' + endID).clone(true).appendTo($(container).parent());
     endDom.children("div").first().text(content);
     endDom.show();
-    //都是append
-    //$(container).siblings(endID).show();
-    //$(container).siblings(endID).children("div").first().text(content);
-    //end = true;
 }
 
 hideEnding = function (container) {
     $(container).siblings(endID).remove();
-    //$(container).siblings(endID).hide();
-    //end = false;
 }
 
 setTab = function (m, n) {
@@ -370,6 +257,7 @@ setTab = function (m, n) {
 
 //下拉分页，加载分页数据
 $(document.body).infinite().on("infinite", function () {
+    //debugger;
     if (loading) return;
     var tabID = $(".weui_bar_item_on").attr("id");
     //修改这里的id名称
@@ -395,7 +283,10 @@ $(document.body).infinite().on("infinite", function () {
 
 //上拉刷新，重新加载数据
 $(document.body).pullToRefresh().on("pull-to-refresh", function () {
-
+    if (myTop > 0) {
+        $(document.body).pullToRefreshDone();
+        return;
+    }
     var tabID = $(".weui_bar_item_on").attr("id");
     //修改这里的id名称
     if (tabID == "query_mystarted_btn") {

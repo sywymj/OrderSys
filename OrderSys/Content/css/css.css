@@ -121,10 +121,22 @@ a.times_btn2:active{background:#ffe5d2;}
 .process ul li label{width:42%; height:40px; position:absolute; text-align:right; padding-right:8%; font-size:12px; color:#999; position:absolute; left:-50%; top:50%; margin-top:-20px;}
 
 /*工作量*/
-.p_m{color:#999;}
+.p_m{color:#999; font-size:12px; float:left; display:block; margin-top:4px; margin-right:6px;}
+.p_m2{float:left; display:block;}
+.p_name{position:relative;}
+.p_name_btn{width:14px; height:14px; position:absolute; top:50%; margin-top:-7px; left:0;}
 
 /*弹出*/
 .clik_slide{background:#fff; width:100%; position:fixed; top:0; left:0; z-index:99999999; display:none;}
 .slide_close{width:40px; height:40px; position:absolute; top:0; right:0; text-align:center; line-height:40px;}
 
-.leader {border:1px black solid;}
+.leader{/*border:2px solid #5e95fa;*/ position:relative;}
+.leader:after {font-family:"iconfont" !important;font-size:16px;font-style:normal;text-align:left;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;content: "";color:#fff;position:absolute;top:0;right:0;width: 47px;height: 47px; z-index:9;background:url(../images/leader.png);}
+.leader:before{}
+.banScroll {height: 100%;overflow: hidden;}
+
+
+/*通讯录*/
+.num_logo.checked:before {content: "\EA06"}
+.num_logo.checked:before {font-size: 23px;color: #09bb07}
+

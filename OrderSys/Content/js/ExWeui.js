@@ -1,6 +1,8 @@
 ﻿$.openMyPopup = function (popup, className) {
-
-    //$.closePopup();
+    myTop++;
+    //弹出时禁止下拉
+    $("html,body").addClass("banScroll");
+    //$(document.body).pullRefresh().setStopped(true);
 
     popup = $(popup);
     popup.show();
@@ -15,6 +17,10 @@
 
 
 $.closeMyPopup = function (container, remove) {
+    myTop--;
+    if (myTop == 0) {
+        $("html,body").removeClass("banScroll");
+    }
     container = $(container || ".weui-popup-container-visible");
     remove && container.remove();
     container.hide();

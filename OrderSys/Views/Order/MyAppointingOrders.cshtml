@@ -12,7 +12,7 @@
                 <div class="list_sym_l_in_t">报障单号：@dr["OrderNo"]</div>
                 <div class="list_sym_l_in_m">
                     <ul>
-                        <li>紧急程度：<font color="#ed3232" size="2">@EnumExtensions.ToDescription((OrderPriority)dr["Priority"])</font></li>
+                        <li>紧急程度：<font color="@EnumExtensions.ToColorStyle((OrderPriority)dr["Priority"])" size="2">@EnumExtensions.ToDescription((OrderPriority)dr["Priority"])</font></li>
                         <div class="clear"></div>
                         <li>发起人：@dr["StarterName"]</li>
                         <li>电话：@dr["StarterTel"]</li>
