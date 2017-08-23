@@ -116,7 +116,7 @@ doGetPartial1 = function (article,url,parms, callback) {
     })
 }
 
-doSubmit = function (url, postObj,callback) {
+doPost = function (url, postObj,callback) {
     $.showLoading();
     $.ajax({
         type: "POST", //GET或POST,
@@ -139,7 +139,7 @@ doSubmit = function (url, postObj,callback) {
 }
 
 doGet = function (url, urlParmsObj, callback) {
-    //$.showLoading();
+    $.showLoading();
     $.ajax({
         type: "GET", //GET或POST,
         async: true, //默认设置为true，所有请求均为异步请求。
@@ -154,9 +154,8 @@ doGet = function (url, urlParmsObj, callback) {
         },
         error: function () { },
         complete: function () {
-            debugger;
             //hideLoading(domID);
-            //$.hideLoading();
+            $.hideLoading();
         }
     });
 }
@@ -333,7 +332,7 @@ formatDic = function (value, data) {
 
 /*
 *   根据习惯：ending,loading都是放在container div 后面（数据、内容部分）
-*   
+*   部分页面的代码里，不要再次引用jquery，否则会导致其他文件出错
 *
 */
 

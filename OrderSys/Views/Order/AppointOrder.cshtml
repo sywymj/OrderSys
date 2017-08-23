@@ -105,7 +105,7 @@
 
         $.confirm("请核对委派的资料是否正确?", "确认委派?", function () {
             var url = '@Url.Action("DoAppointOrder", "Order")';
-            doSubmit(url, { jsonHandlers: json, orderID: orderID }, function (jdata) {
+            doPost(url, { jsonHandlers: json, orderID: orderID }, function (jdata) {
                 if (jdata.Code == "200") {
                     $('#appointingorder_' + orderID).remove();
                     //需要刷新已委派

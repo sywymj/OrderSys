@@ -252,6 +252,7 @@
     <Content Include="Views\Popup\HandledetailPopup.cshtml" />
     <Content Include="Views\Order\AddHandleDetail.cshtml" />
     <Content Include="Views\Popup\AddhandledetailPopup.cshtml" />
+    <Content Include="Views\Popup\_DemoPopup.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

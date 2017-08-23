@@ -75,7 +75,7 @@
             Remark: $('#Remark').val()
         };
 
-        doSubmit('@Url.Action("DoStartOrder", "Order")', data, function (jdata) {
+        doPost('@Url.Action("DoStartOrder", "Order")', data, function (jdata) {
             debugger;
             if (jdata.Code == "200") {
                 startedQuery.pageIndex = 1;

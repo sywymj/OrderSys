@@ -2,9 +2,9 @@
 <link href="~/Content/tinyselect/css/tinyselect.css" rel="stylesheet" />
 <div>
     <div class="pad96">
-
         <div class="pad96_t">进度内容</div>
-        <select id="select1" style="width: 100%;"></select>
+        <select id="select1" style="width: 100%;">
+        </select>
         <textarea id="remark" rows="2" placeholder="请输入备注"></textarea>
 
         <div class="demos-content-padded" style="margin-top:20px;">
@@ -15,34 +15,9 @@
     </div>
 </div>  
 <!--带搜索的select js-->
-<script src="~/Content/tinyselect/js/jquery-1.11.0.min.js"></script>
+@*<script src="~/Content/tinyselect/js/jquery-1.11.0.min.js"></script>*@
 <script src="~/Content/tinyselect/js/tinyselect.js"></script>
-<script>
-    /* This parser won't respect "---" selection */
-    function dataParserA(data, selected) {
-        retval = [{ val: "-1", text: "---" }];
 
-        data.forEach(function (v) {
-            if (selected == "-1" && v.val == 3)
-                v.selected = true;
-            retval.push(v);
-        });
-
-        return retval;
-    }
-
-    /* This parser let's the component to handle selection */
-    function dataParserB(data, selected) {
-        retval = [{ val: "-1", text: "---" }];
-        data.forEach(function (v) { retval.push(v); });
-        return retval;
-    }
-
-    /* Create select elements */
-    $("#select1").tinyselect();
-    $("#havoc").show()
-
-</script>
 <script>
     getOrderHandleType = function () {
         var url = '@Url.Action("GetOrderHandleType", "Base")';
@@ -53,6 +28,8 @@
                     var value = item.v;
                     $('#select1').append('<option value="' + key + '">' + value + '</option>');
                 });
+                $("#select1").tinyselect();
+                $("#havoc").show()
             }
         })
     }
@@ -98,9 +75,30 @@
         });
     }
 
+    /* This parser won't respect "---" selection */
+    function dataParserA(data, selected) {
+        retval = [{ val: "-1", text: "---" }];
+
+        data.forEach(function (v) {
+            if (selected == "-1" && v.val == 3)
+                v.selected = true;
+            retval.push(v);
+        });
+
+        return retval;
+    }
+
+    /* This parser let's the component to handle selection */
+    function dataParserB(data, selected) {
+        retval = [{ val: "-1", text: "---" }];
+        data.forEach(function (v) { retval.push(v); });
+        return retval;
+    }
+
     $(function () {
-        debugger;
+        //debugger;
         getOrderHandleType();
+
     })
 
 </script>

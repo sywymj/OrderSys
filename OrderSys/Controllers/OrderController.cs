@@ -323,7 +323,7 @@ namespace OrderSys.Controllers
             orderService.HandledOrder(orderID);
 
             ContentResult res = new ContentResult();
-            res.Content = JSON.ToJSON(new JSResponse("验收成功！"), jsonParams);
+            res.Content = JSON.ToJSON(new JSResponse("处理成功！"), jsonParams);
             return res;
         }
 
@@ -344,7 +344,7 @@ namespace OrderSys.Controllers
             orderService.FinishOrder(orderID);
 
             ContentResult res = new ContentResult();
-            res.Content = JSON.ToJSON(new JSResponse("操作成功！"), jsonParams);
+            res.Content = JSON.ToJSON(new JSResponse("验收成功！"), jsonParams);
             return res;
         }
 
@@ -354,7 +354,7 @@ namespace OrderSys.Controllers
             orderService.CancelOrder(id);
 
             ContentResult res = new ContentResult();
-            res.Content = JSON.ToJSON(new JSResponse("操作成功！"), jsonParams);
+            res.Content = JSON.ToJSON(new JSResponse("取消成功！"), jsonParams);
             return res;
         }
 

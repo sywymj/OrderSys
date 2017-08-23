@@ -1,5 +1,6 @@
 ﻿@model System.Data.DataTable
 @using JSNet.BaseSys;
+@using JSNet.Utilities;
 
 <div class="weui_cells weui_cells_form">
     <div class="weui_cell">
@@ -12,7 +13,7 @@
                             @Convert.ToDateTime(dr["HandleTime"]).ToString(BaseSystemInfo.DateFormat)<br />
                             @Convert.ToDateTime(dr["HandleTime"]).ToString(BaseSystemInfo.TimeFormat)
                         </label>
-                        <span class="circle"></span>【@dr["HandleType"]】@dr["Remark"]
+                        <span class="circle"></span>【@EnumExtensions.ToDescription((OrderHandleType)dr["HandleType"])】@dr["Remark"]
                     </li>
                 }
             </ul>

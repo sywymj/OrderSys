@@ -167,6 +167,6 @@ background:url(../images/leader.png);
 }
 
 /*弹出3*/
-.pad96{width:auto; padding:50px 4%;}
+.pad96{width:auto; padding:10px 4%;}
 .pad96 textarea{width:96%; margin-top:16px; border:1px solid #ccc; border-radius:3px; padding:10px 2%}
 .pad96_t{width:100%; margin-bottom:10px;}
