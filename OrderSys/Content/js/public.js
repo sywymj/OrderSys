@@ -139,7 +139,7 @@ doSubmit = function (url, postObj,callback) {
 }
 
 doGet = function (url, urlParmsObj, callback) {
-    $.showLoading();
+    //$.showLoading();
     $.ajax({
         type: "GET", //GET或POST,
         async: true, //默认设置为true，所有请求均为异步请求。
@@ -154,8 +154,9 @@ doGet = function (url, urlParmsObj, callback) {
         },
         error: function () { },
         complete: function () {
+            debugger;
             //hideLoading(domID);
-            $.hideLoading();
+            //$.hideLoading();
         }
     });
 }

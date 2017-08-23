@@ -27,6 +27,16 @@ namespace OrderSys.Controllers
             return res;
         }
 
-        
+        [HttpGet]
+        public ActionResult GetOrderHandleType()
+        {
+            Dictionary<int, string> dic = EnumExtensions.GetEnumDescription<OrderHandleType>();
+
+            ContentResult res = new ContentResult();
+            res.Content = JSON.ToJSON(new JSResponse(dic), jsonParams);
+            return res;
+
+            //return PartialView("AddHandleDetail", dic);
+        }
     }
 }

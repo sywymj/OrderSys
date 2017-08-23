@@ -132,7 +132,8 @@ namespace JSNet.Service
             //2.0 添加工作处理明细实体
             orderHandleDetail.HandlerID = currentStaff.ID;
             orderHandleDetail.HandleTime = DateTime.Now;
-            orderHandleDetail.Remark = "";
+            orderHandleDetail.HandleDetail = "";
+            orderHandleDetail.Progress = 0;
             EntityManager<OrderHandleDetailEntity> orderHandleDetailManager = new EntityManager<OrderHandleDetailEntity>();
             orderHandleDetailManager.Insert(orderHandleDetail);
         }

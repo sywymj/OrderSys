@@ -1,0 +1,109 @@
+﻿
+<link href="~/Content/tinyselect/css/tinyselect.css" rel="stylesheet" />
+<div>
+    <div class="pad96">
+
+        <div class="pad96_t">进度内容</div>
+        <select id="select1" style="width: 100%;"></select>
+        <textarea id="remark" rows="2" placeholder="请输入备注"></textarea>
+
+        <div class="demos-content-padded" style="margin-top:20px;">
+            <a href="javascript:doAddOrderHandleDetail('@ViewBag.OrderID');" class="weui_btn weui_btn_primary" style="width:46%; height:40px; line-height:40px;  float:left; margin:0; font-size:16px;">增加进度</a>
+            <a href="javascript:doHandled('@ViewBag.OrderID');" class="weui_btn weui_btn_primary" style="width:46%; height:40px; line-height:40px; float:right; margin:0; font-size:16px; ">完成处理</a>
+            <div class="clear"></div>
+        </div>
+    </div>
+</div>  
+<!--带搜索的select js-->
+<script src="~/Content/tinyselect/js/jquery-1.11.0.min.js"></script>
+<script src="~/Content/tinyselect/js/tinyselect.js"></script>
+<script>
+    /* This parser won't respect "---" selection */
+    function dataParserA(data, selected) {
+        retval = [{ val: "-1", text: "---" }];
+
+        data.forEach(function (v) {
+            if (selected == "-1" && v.val == 3)
+                v.selected = true;
+            retval.push(v);
+        });
+
+        return retval;
+    }
+
+    /* This parser let's the component to handle selection */
+    function dataParserB(data, selected) {
+        retval = [{ val: "-1", text: "---" }];
+        data.forEach(function (v) { retval.push(v); });
+        return retval;
+    }
+
+    /* Create select elements */
+    $("#select1").tinyselect();
+    $("#havoc").show()
+
+</script>
+<script>
+    getOrderHandleType = function () {
+        var url = '@Url.Action("GetOrderHandleType", "Base")';
+        doGet(url, null, function (jdata) {
+            if (jdata.Code == "200") {
+                $.each(jdata.Data, function (i, item) {
+                    var key = item.k;
+                    var value = item.v;
+                    $('#select1').append('<option value="' + key + '">' + value + '</option>');
+                });
+            }
+        })
+    }
+
+    doAddOrderHandleDetail = function (orderID) {
+        var handleType = $('#select1').val();
+        var remark = $('#remark').val();
+        var orderID = orderID;
+
+        $.confirm("您确定添加这条进度?", "确认?", function () {
+            var url = '@Url.Action("DoAddHandleDetail", "Order")';
+            var urlParm = {
+                OrderID: orderID,
+                HandleType: handleType,
+                Remark: remark
+            };
+            doPost(url, urlParm, function (jdata) {
+                if (jdata.Code == "200") {
+                    //返回
+                    //委派完成，关闭本div
+                    closePopup('#addhandledetail_popup');
+                }
+            });
+        }, function () {
+            //取消操作
+        });
+    }
+
+    doHandled = function (orderID) {
+        $.confirm("您确定完成了这条工单?", "确认?", function () {
+            var url = '@Url.Action("HandledOrder", "Order")';
+            var urlParm = { OrderID: orderID };
+            doGet(url, urlParm, function (jdata) {
+                if (jdata.Code == "200") {
+                    //刷新已完成
+                    handledQuery.pageIndex = 1;
+                    querymyhandled();
+                    $('#handlingorder_' + orderID).remove();
+                }
+            });
+        }, function () {
+            //取消操作
+        });
+    }
+
+    $(function () {
+        debugger;
+        getOrderHandleType();
+    })
+
+</script>
+
+
+

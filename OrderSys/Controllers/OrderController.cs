@@ -16,6 +16,7 @@ namespace OrderSys.Controllers
     {
         private OrderService orderService = new OrderService();
 
+        #region GetIndex
         public ActionResult Index()
         {
             return View();
@@ -38,114 +39,72 @@ namespace OrderSys.Controllers
         {
             return View();
         }
+        #endregion
 
-        [HttpPost]
-        public ActionResult DoStartOrder()
+        #region GetPartialView
+        [HttpGet]
+        public ActionResult AppointOrder(Guid orderID)
         {
-            //获取参数
-            string sBookingTime = JSRequest.GetRequestFormParm(OrderEntity.FieldBookingTime);
-            string sAttn =  JSRequest.GetRequestFormParm(OrderEntity.FieldAttn,false);
-            string sAttnTel = JSRequest.GetRequestFormParm(OrderEntity.FieldAttnTel,false);
-            string sPriority = JSRequest.GetRequestFormParm(OrderEntity.FieldPriority);
-            string sContent = JSRequest.GetRequestFormParm(OrderEntity.FieldContent);
-            string sRemark = JSRequest.GetRequestFormParm(OrderEntity.FieldRemark,false);
-
-            //参数验证
-            OrderEntity order = new OrderEntity();
-            order.BookingTime = JSValidator.ValidateDateTime(OrderEntity.FieldBookingTime, sBookingTime, true);
-            order.Attn = JSValidator.ValidateString(OrderEntity.FieldAttn, sAttn, false);
-            order.AttnTel = JSValidator.ValidateString(OrderEntity.FieldAttnTel, sAttnTel, false);
-            order.Priority = JSValidator.ValidateInt(OrderEntity.FieldPriority, sPriority, true);
-            order.Content = JSValidator.ValidateString(OrderEntity.FieldContent, sContent, true);
-            order.Remark = JSValidator.ValidateString(OrderEntity.FieldRemark, sRemark, false);
-            
-            orderService.StartOrder(order);
-
-            ContentResult res = new ContentResult();
-            res.Content = JSON.ToJSON(new JSResponse("成功发起报账单！"), jsonParams);
-            return res;
-        }
-
-        [HttpPost]
-        public ActionResult DoAppointOrder(string jsonHandlers,Guid orderID)
-        {
-            List<OrderHandlerEntity> handlers = FastJSON.JSON.ToObject<List<OrderHandlerEntity>>(jsonHandlers);
-
-            orderService.AppointOrder(orderID, handlers);
-
-            ContentResult res = new ContentResult();
-            res.Content = JSON.ToJSON(new JSResponse("委派成功！"), jsonParams);
-            return res;
+            ViewBag.OrderID = orderID;
+            return PartialView("AppointOrder");
         }
 
         [HttpGet]
-        public ActionResult DoReceiveOrder(Guid orderID)
+        public ActionResult OrderFlows(Guid id)
         {
+            OrderEntity order = orderService.GetOrderEntity(id);
 
-            orderService.ReceiveOrder(orderID);
+            ViewBag.OrderStatus = (OrderStatus)order.Status;
+            ViewBag.OrderStatus1 = (OrderStatus)Math.Abs((int)order.Status);//处理过的状态，只保留主流程
+            ViewBag.OrderID = order.ID;
 
-            ContentResult res = new ContentResult();
-            res.Content = JSON.ToJSON(new JSResponse("接单成功！"), jsonParams);
-            return res;
+            var list = orderService.GetOrderFlows(id);
 
+            return PartialView("OrderFlows", list);
         }
 
         [HttpGet]
-        public ActionResult AddHandleDetail(OrderHandleDetailEntity orderHandleDetail)
+        public ActionResult OrderDetail(Guid id)
         {
-            orderService.AddHandleDetail(orderHandleDetail);
+            var handlers = orderService.GetOrderHandlers(id);
+            ViewBag.Handlers = handlers;
 
-            ContentResult res = new ContentResult();
-            res.Content = JSON.ToJSON(new JSResponse("操作成功！"), jsonParams);
-            return res;
+
+            var dr = orderService.GetOrderDetail(id);
+            return PartialView("OrderDetail", dr);
         }
 
         [HttpGet]
-        public ActionResult HandledOrder(Guid orderID)
+        public ActionResult HandleDetail(Guid orderID)
         {
-            orderService.HandledOrder(orderID);
+            var list = orderService.GetOrderHandleDetails(orderID);
 
-            ContentResult res = new ContentResult();
-            res.Content = JSON.ToJSON(new JSResponse("验收成功！"), jsonParams);
-            return res;
+            if (list.Rows.Count > 0)
+            {
+                return PartialView("HandleDetail", list);
+            }
+            else
+            {
+                ContentResult res = new ContentResult();
+                res.Content = JSON.ToJSON(new JSResponse(ResponseType.NoData, "- 暂无进度 -"), jsonParams);
+                return res;
+            }
         }
 
         [HttpGet]
-        public ActionResult RejectOrder(Guid orderID,string remark)
+        public ActionResult AddHandleDetail(Guid orderID)
         {
-            orderService.RejectOrder(orderID,remark);
-
-            ContentResult res = new ContentResult();
-            res.Content = JSON.ToJSON(new JSResponse("驳回成功！"), jsonParams);
-            return res;
+            ViewBag.OrderID = orderID;
+            return PartialView("AddHandleDetail");
         }
+        #endregion
 
+        #region GetList
         [HttpGet]
-        public ActionResult FinishOrder(Guid orderID)
-        {
-
-            orderService.FinishOrder(orderID);
-
-            ContentResult res = new ContentResult();
-            res.Content = JSON.ToJSON(new JSResponse("操作成功！"), jsonParams);
-            return res;
-        }
-
-        [HttpGet]
-        public ActionResult CancelOrder(Guid id)
-        {
-            orderService.CancelOrder(id);
-
-            ContentResult res = new ContentResult();
-            res.Content = JSON.ToJSON(new JSResponse("操作成功！"), jsonParams);
-            return res;
-        }
-
-        [HttpGet]
-        public ActionResult MyStartedOrders(int pageIndex,int pageSize)
+        public ActionResult MyStartedOrders(int pageIndex, int pageSize)
         {
             int count = 0;
-            var list = orderService.GetMyStartedOrders(pageIndex,pageSize,out count);
+            var list = orderService.GetMyStartedOrders(pageIndex, pageSize, out count);
 
             if (list.Rows.Count > 0)
             {
@@ -290,55 +249,117 @@ namespace OrderSys.Controllers
                 return res;
             }
         }
+        #endregion
 
-        [HttpGet]
-        public ActionResult AppointOrder(Guid orderID)
+        #region DoAction
+        [HttpPost]
+        public ActionResult DoStartOrder()
         {
-            ViewBag.OrderID = orderID;
-            return PartialView("AppointOrder");
+            //获取参数
+            string sBookingTime = JSRequest.GetRequestFormParm(OrderEntity.FieldBookingTime);
+            string sAttn = JSRequest.GetRequestFormParm(OrderEntity.FieldAttn, false);
+            string sAttnTel = JSRequest.GetRequestFormParm(OrderEntity.FieldAttnTel, false);
+            string sPriority = JSRequest.GetRequestFormParm(OrderEntity.FieldPriority);
+            string sContent = JSRequest.GetRequestFormParm(OrderEntity.FieldContent);
+            string sRemark = JSRequest.GetRequestFormParm(OrderEntity.FieldRemark, false);
+
+            //参数验证
+            OrderEntity order = new OrderEntity();
+            order.BookingTime = JSValidator.ValidateDateTime(OrderEntity.FieldBookingTime, sBookingTime, true);
+            order.Attn = JSValidator.ValidateString(OrderEntity.FieldAttn, sAttn, false);
+            order.AttnTel = JSValidator.ValidateString(OrderEntity.FieldAttnTel, sAttnTel, false);
+            order.Priority = JSValidator.ValidateInt(OrderEntity.FieldPriority, sPriority, true);
+            order.Content = JSValidator.ValidateString(OrderEntity.FieldContent, sContent, true);
+            order.Remark = JSValidator.ValidateString(OrderEntity.FieldRemark, sRemark, false);
+
+            orderService.StartOrder(order);
+
+            ContentResult res = new ContentResult();
+            res.Content = JSON.ToJSON(new JSResponse("成功发起报账单！"), jsonParams);
+            return res;
+        }
+
+        [HttpPost]
+        public ActionResult DoAppointOrder(string jsonHandlers, Guid orderID)
+        {
+            List<OrderHandlerEntity> handlers = FastJSON.JSON.ToObject<List<OrderHandlerEntity>>(jsonHandlers);
+
+            orderService.AppointOrder(orderID, handlers);
+
+            ContentResult res = new ContentResult();
+            res.Content = JSON.ToJSON(new JSResponse("委派成功！"), jsonParams);
+            return res;
         }
 
         [HttpGet]
-        public ActionResult OrderFlows(Guid id)
+        public ActionResult DoReceiveOrder(Guid orderID)
         {
-            OrderEntity order = orderService.GetOrderEntity(id);
 
-            ViewBag.OrderStatus = (OrderStatus)order.Status;
-            ViewBag.OrderStatus1 = (OrderStatus)Math.Abs((int)order.Status);//处理过的状态，只保留主流程
-            ViewBag.OrderID = order.ID;
+            orderService.ReceiveOrder(orderID);
 
-            var list = orderService.GetOrderFlows(id);
+            ContentResult res = new ContentResult();
+            res.Content = JSON.ToJSON(new JSResponse("接单成功！"), jsonParams);
+            return res;
 
-            return PartialView("OrderFlows", list);
+        }
+
+        [HttpPost]
+        public ActionResult DoAddHandleDetail(Guid orderID, int handleType, string Remark)
+        {
+            OrderHandleDetailEntity orderHandleDetail = new OrderHandleDetailEntity();
+            orderHandleDetail.OrderID = orderID;
+            orderHandleDetail.HandleType = handleType;
+            orderHandleDetail.Remark = Remark;
+            orderService.AddHandleDetail(orderHandleDetail);
+
+            ContentResult res = new ContentResult();
+            res.Content = JSON.ToJSON(new JSResponse("操作成功！"), jsonParams);
+            return res;
         }
 
         [HttpGet]
-        public ActionResult OrderDetail(Guid id)
+        public ActionResult HandledOrder(Guid orderID)
         {
-            var handlers = orderService.GetOrderHandlers(id);
-            ViewBag.Handlers = handlers;
+            orderService.HandledOrder(orderID);
 
-
-            var dr = orderService.GetOrderDetail(id);
-            return PartialView("OrderDetail", dr);
+            ContentResult res = new ContentResult();
+            res.Content = JSON.ToJSON(new JSResponse("验收成功！"), jsonParams);
+            return res;
         }
 
         [HttpGet]
-        public ActionResult HandleDetail(Guid orderID)
+        public ActionResult RejectOrder(Guid orderID, string remark)
         {
-            var list = orderService.GetOrderHandleDetails(orderID);
+            orderService.RejectOrder(orderID, remark);
 
-            if (list.Rows.Count > 0)
-            {
-                return PartialView("HandleDetail", list);
-            }
-            else
-            {
-                ContentResult res = new ContentResult();
-                res.Content = JSON.ToJSON(new JSResponse(ResponseType.NoData, "- 暂无进度 -"), jsonParams);
-                return res;
-            }
+            ContentResult res = new ContentResult();
+            res.Content = JSON.ToJSON(new JSResponse("驳回成功！"), jsonParams);
+            return res;
         }
 
+        [HttpGet]
+        public ActionResult FinishOrder(Guid orderID)
+        {
+
+            orderService.FinishOrder(orderID);
+
+            ContentResult res = new ContentResult();
+            res.Content = JSON.ToJSON(new JSResponse("操作成功！"), jsonParams);
+            return res;
+        }
+
+        [HttpGet]
+        public ActionResult CancelOrder(Guid id)
+        {
+            orderService.CancelOrder(id);
+
+            ContentResult res = new ContentResult();
+            res.Content = JSON.ToJSON(new JSResponse("操作成功！"), jsonParams);
+            return res;
+        }
+
+        #endregion
+
+        
     }
 }

@@ -17,7 +17,7 @@ namespace JSNet.BaseSys
         [EnumDescription("委派")]
         Appoint = 2,
 
-        [EnumDescription("接单")]
+        [EnumDescription("受理")]
         Receive = 3,
 
         [EnumDescription("处理")]
@@ -41,7 +41,7 @@ namespace JSNet.BaseSys
         [EnumDescription("待委派")]
         Appointing = 1,
 
-        [EnumDescription("待接单")]
+        [EnumDescription("待受理")]
         Receving = 2,
 
         [EnumDescription("处理中")]
@@ -74,7 +74,7 @@ namespace JSNet.BaseSys
     {
         [EnumDescription("简易维护")]
         Normal = 0,
-        [EnumDescription("等件")]
+        [EnumDescription("等待零件")]
         DengJian = 1,
         [EnumDescription("换件")]
         HuanJian=2,

@@ -156,6 +156,10 @@
     <Content Include="Content\lib\weui.css" />
     <Content Include="Content\lib\weui.min.css" />
     <Content Include="Content\lib\zepto.js" />
+    <Content Include="Content\tinyselect\css\tinyselect.css" />
+    <Content Include="Content\tinyselect\css\zzsc-demo.css" />
+    <Content Include="Content\tinyselect\js\jquery-1.11.0.min.js" />
+    <Content Include="Content\tinyselect\js\tinyselect.js" />
     <Content Include="Global.asax" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
@@ -246,6 +250,8 @@
     <Content Include="Views\Popup\StaffsPopup.cshtml" />
     <Content Include="Views\Popup\OrderdetailPopup.cshtml" />
     <Content Include="Views\Popup\HandledetailPopup.cshtml" />
+    <Content Include="Views\Order\AddHandleDetail.cshtml" />
+    <Content Include="Views\Popup\AddhandledetailPopup.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
