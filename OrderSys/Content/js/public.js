@@ -283,6 +283,7 @@ $(document.body).infinite().on("infinite", function () {
 
 //上拉刷新，重新加载数据
 $(document.body).pullToRefresh().on("pull-to-refresh", function () {
+    return;
     if (myTop > 0) {
         $(document.body).pullToRefreshDone();
         return;

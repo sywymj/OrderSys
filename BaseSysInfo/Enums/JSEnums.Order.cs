@@ -59,10 +59,10 @@ namespace JSNet.BaseSys
 
     public enum OrderPriority
     {
-        [EnumColorStyle("blue")]
+        [EnumColorStyle("#0cc760")]
         [EnumDescription("一般")]
         Normal = 0,
-        [EnumColorStyle("red")]
+        [EnumColorStyle("#ff4f4f")]
         [EnumDescription("紧急")]
         Urgent = 1,
     }

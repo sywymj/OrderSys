@@ -1,6 +1,6 @@
 
 /*头部*/
-.top{width:100%; height:50px; background:#fff; border-bottom:1px solid #dedede; line-height:50px; text-align:center; position:relative; font-size:18px;}
+.top{width:100%; height:50px; background:#fff; border-bottom:1px solid #dedede; line-height:50px; text-align:center; position:relative; font-size:18px; z-index:999999999999;}
 .top span{display:block; width:50px; height:50px; text-align:center; line-height:50px;  position:absolute; left:0; top:0; color:#999; font-size:24px;z-index:9;}
 .top em{display:block; height:50px; text-align:center; line-height:50px;  position:absolute; left:10px; top:0; color:#999;z-index:9; font-size:16px;}
 .top em a{color:#999;}
@@ -32,16 +32,17 @@
     -webkit-transform: rotate(30deg); /* Safari 和 Chrome */
     -o-transform: rotate(30deg); /* Opera */
 }
-.list_sym_l{width:80%; float:left;}
-.list_sym_l_in{padding:10px;}
+.list_sym_l{width:76%; float:left;}
+.list_sym_l_in{padding:10px; padding-right:0;}
 .list_sym_l_in_t{color:#484848; font-size:16px;}
 .list_sym_l_in_m{color:#999; font-size:12px; line-height:20px;}
 .list_sym_l_in_m ul li{margin-right:5%; float:left;}
 .list_sym_l_in_m ul li 
 .list_sym_l_in_m ul li span{margin-right:5px;}
-.list_sym_l_in_b{width:96%; height:60px; font-size:12px; line-height:20px; overflow:scroll; border:1px solid #dedede; padding:5px 2%; border-radius:4px; color:#666; margin-top:5px;}
-.list_sym_r{width:20%; position:relative; float:left;}
-.list_sym_r a{width:80%; height:26px; line-height:26px; display:block; border-radius:3px; text-align:center; margin-top:10px; margin-right:20%; margin-left:7px;}
+.list_sym_l_in_b{width:96%; height:60px; font-size:12px; line-height:20px; overflow:scroll; /*border:1px solid #dedede; padding:5px 2%;*/ border-radius:4px; color:#666; margin-top:5px;}
+.list_sym_l_in_b:before{content:"内容：";}
+.list_sym_r{width:24%; position:relative; float:left;}
+.list_sym_r a{width:80%; height:26px; line-height:26px; display:block; border-radius:3px; text-align:center; margin-top:10px; margin-right:20%; margin-left:7px; font-size:12px;}
 .list_sym_r a.revoke{background:#ef4f4f; color:#fff;}
 .list_sym_r a.revoke:active{background:#cb3d3d; color:#fff;}
 
@@ -67,7 +68,7 @@
 .times_t_in ul li.now span{color:#09F;}
 .times_t_in ul li.now label{background:#bee5ff; border:1px solid #09F;}
 .times_t_in ul li.now i{background:#09F;}
-.times_m{width:100%; background:#fff; margin-bottom:70px;}
+.times_m{width:100%; background:#fff;}
 .times_m ul li{width:100%; border-bottom:1px solid #efefef;}
 .times_m_l{width:24%; float:left; text-align:center; position:relative; padding:10px 0;}
 .times_m_l span{display:block; color:#b8b8b8; font-size:12px;}
@@ -93,7 +94,7 @@
 a.times_btn2 {color:#ea9335; display:block; border:1px solid #ea9335; border-radius:3px; width:auto; height:30px; line-height:30px; text-align:center; color:#ea9335; margin:0 15px; margin-bottom:20px; display:block;}
 a.times_btn2:active{background:#ffe5d2;}
 
-.bottom_btn{width:90%; margin:0 auto; padding:15px; position:fixed; bottom:0; left:0; background:#fff; border-top:1px solid #dedede;}
+.bottom_btn{width:90%; margin:0 auto; padding:15px; position:fixed; bottom:0; left:0; background:#fff; border-top:1px solid #dedede; z-index:99999;}
 
 .bottom_load{width:100%; height:18px; line-height:18px; text-align:center; background:#f6f6f6; color:#999; position:fixed; bottom:0; left:0; font-size:12px;}
 
@@ -116,8 +117,8 @@ a.times_btn2:active{background:#ffe5d2;}
 
 /*处理过程*/
 .process{width:70%; margin-left:30%; border-left:1px solid #09F; padding:10px 0;}
-.process ul li{width:88%; line-height:20px; position:relative; padding:0 6%; margin:15px 0; font-size:12px; color:#363636;}
-.process ul li span{width:10px; height:10px; display:block; margin:0 auto; position:absolute; top:50%; margin-top:-5px; left:-6px; background:#bee5ff; border:1px solid #09F;}
+.process ul li{width:88%; line-height:20px; position:relative; padding:0 6%; font-size:12px; color:#363636; margin-bottom:40px}
+.process ul li span{width:10px; height:10px; display:block; margin:0 auto; position:absolute; top:50%; margin-top:-5px; left:-6px; background:#bee5ff; border:1px solid #09F; line-height:20px;}
 .process ul li label{width:42%; height:40px; position:absolute; text-align:right; padding-right:8%; font-size:12px; color:#999; position:absolute; left:-50%; top:50%; margin-top:-20px;}
 
 /*工作量*/
@@ -170,3 +171,11 @@ background:url(../images/leader.png);
 .pad96{width:auto; padding:10px 4%;}
 .pad96 textarea{width:96%; margin-top:16px; border:1px solid #ccc; border-radius:3px; padding:10px 2%}
 .pad96_t{width:100%; margin-bottom:10px;}
+
+/*popup*/
+.weui-popup-container{z-index:999999999999;}
+#orderflows_popup{z-index:999999999999;}
+#orderdetail_popup{z-index:9999999999999;}
+#handledetail_popup{z-index:9999999999999;}
+.weui_mask{z-index:9999999999999;}
+.weui_dialog{z-index:9999999999999;}

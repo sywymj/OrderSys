@@ -73,11 +73,11 @@
 }
 
 .tinyselect .dropdown .searchbox {
-	width: 100%;
+	width: 90%;
 	border: 1px solid #ccc;
 	font-size: 10pt;
 	line-height: 2em;
-	padding: 0 5px;
+	padding: 0 5%;
 }
 
 .tinyselect .dropdown .searchicon {
@@ -126,3 +126,6 @@
 	font-weight: bold;
 	color: red;
 }
+
+input{outline:none;}
+textarea{outline:none;}

@@ -9,28 +9,33 @@
     <div class="times_t">
         <div class="times_t_in">
             <ul>
+                <li id="Start">
+                    <span>开始</span>
+                    <label class="circle"></label>
+                    <i></i>
+                </li>
                 <li id="Appointing">
-                    <span>发起</span>
+                    <span>待委派</span>
                     <label class="circle"></label>
                     <i></i>
                 </li>
                 <li id="Receving">
-                    <span>委派</span>
+                    <span>待受理</span>
                     <label class="circle"></label>
                     <i></i>
                 </li>
                 <li id="Handling">
-                    <span>接单</span>
+                    <span>处理中</span>
                     <label class="circle"></label>
                     <i></i>
                 </li>
                 <li id="Checking">
-                    <span>处理</span>
+                    <span>待验收</span>
                     <label class="circle"></label>
                     <i></i>
                 </li>
                 <li id="Finish">
-                    <span>验收</span>
+                    <span>完成</span>
                     <label class="circle"></label>
                     <i></i>
                 </li>
@@ -77,13 +82,13 @@
 <script>
     setOrderStatus = function () {
         var status = '@ViewBag.OrderStatus1';
-        var statusID = ".reject";
-
+        $("#" + status).find('span').text('@EnumExtensions.ToDescription(ViewBag.OrderStatus)');//给自己添加样式
         $("#" + status).addClass("now");//给自己添加样式
         $("#" + status).prevAll().addClass("now");//给之前的流程添加样式
-        appendDom("#" + status, $(statusID).get());
 
-        $("#" + status).children(statusID).show();
+        //var statusID = ".reject";
+        //appendDom("#" + status, $(statusID).get());
+        //$("#" + status).children(statusID).show();
     }
 
     $(function () {
@@ -92,7 +97,7 @@
     });
 
 
-    
+
 </script>
 
 
