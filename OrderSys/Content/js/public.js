@@ -1,17 +1,17 @@
-﻿var loading = false;//用来监听鼠标下滚事件
-var template = '#template';
+﻿var template = '#template';
 var loadingID = '.loading';
 var refreshID = '.refreshing'
 var endID = '.end';
+var pageID = '.fresh';
 
 function Query(container,pageSize) {
     this.container = container;
-    this.pageSize = pageSize || 5;
+    this.pageSize = pageSize || this.pageSize;
 }
 Query.prototype = {
     container:"",
     pageIndex: 1,
-    pageSize: 5,
+    pageSize: 10,
     isLoading: false,
     isEnd: false,
 
@@ -29,23 +29,23 @@ Article.prototype = {
     isEnd: false,
 }
 
-
 doQuery1 = function (query,url,parms, callback) {
-    loading = true;
     //if (typeof query !== 'Query') { throw new Error('query: query must be a Object "Query"'); }
-    var container = query.container;
+    if (query.isLoading) { return; }
 
+    var container = query.container;
     if (query.pageIndex == 1) {
+        debugger;
         //重新刷新
         query.isLoading = false;
         query.isEnd = false;
         clearDom(container);
-        clearDom(container+"~"+"div");//清除旁边的加载中等元素
+        $(container).siblings(loadingID).remove();
+        $(container).siblings(endID).remove();
     }
 
-    if (query.isLoading) { return;}
     if (query.isEnd) { return; }
-
+    hidePaging(container);
     showLoading(container, 'append');
     query.isLoading = true;
 
@@ -58,6 +58,7 @@ doQuery1 = function (query,url,parms, callback) {
             //debugger;
             if (!data.match("^\{(\n?.+:.+,?\n?){1,}\}$")) {
                 appendDom(container, data);
+                showPaging(container);
             }
             else {
                 var jdata = ajaxTips(data, container, callback);
@@ -73,9 +74,8 @@ doQuery1 = function (query,url,parms, callback) {
         },
         complete: function () {
             ////debugger;
-            hideLoading(container, 'append');//直接remove
             query.isLoading = false;
-            loading = false;
+            hideLoading(container, 'append');//直接remove
         }
     })
 }
@@ -214,7 +214,6 @@ showLoading = function (container, type) {
     } else if (type == 'mid') {
         
     }
-    
 }
 
 //清除loading dom
@@ -229,10 +228,18 @@ hideLoading = function (container, type) {
     }
 }
 
+showPaging = function(container){
+    $(container).siblings(pageID).show();
+}
+
+hidePaging = function(container){
+    $(container).siblings(pageID).hide();
+}
+
 showEnding = function (container, content) {
     var endDom;
     endDom = $(template + '>' + endID).clone(true).appendTo($(container).parent());
-    endDom.children("div").first().text(content);
+    content && endDom.children("div").first().text(content);
     endDom.show();
 }
 
@@ -256,70 +263,71 @@ setTab = function (m, n) {
 }
 
 //下拉分页，加载分页数据
-$(document.body).infinite().on("infinite", function () {
-    //debugger;
-    if (loading) return;
-    var tabID = $(".weui_bar_item_on").attr("id");
-    //修改这里的id名称
-    if (tabID == "query_mystarted_btn") {
-        querymystarted();//修改这里的回调函数
-    } else if (tabID == "query_myappointing_btn") {
-        querymyappointing();
-    } else if (tabID == "query_myappointed_btn") {
-        querymyappointed();
-    } else if (tabID == "query_myappointed_btn") {
-        querymyappointed();
-    } else if (tabID == "query_myappointing_btn") {
-        querymyappointing();
-    } else if (tabID == "query_myreciving_btn") {
-        querymyreciving();
-    } else if (tabID == "query_myhandling_btn") {
-        querymyhandling();
-    } else if (tabID == "query_myhandled_btn") {
-        querymyhandled();
-    }
+//$(document.body).infinite().on("infinite", function () {
+//    return;
+//    //debugger;
+//    if (loading) return;
+//    var tabID = $(".weui_bar_item_on").attr("id");
+//    //修改这里的id名称
+//    if (tabID == "query_mystarted_btn") {
+//        querymystarted();//修改这里的回调函数
+//    } else if (tabID == "query_myappointing_btn") {
+//        querymyappointing();
+//    } else if (tabID == "query_myappointed_btn") {
+//        querymyappointed();
+//    } else if (tabID == "query_myappointed_btn") {
+//        querymyappointed();
+//    } else if (tabID == "query_myappointing_btn") {
+//        querymyappointing();
+//    } else if (tabID == "query_myreciving_btn") {
+//        querymyreciving();
+//    } else if (tabID == "query_myhandling_btn") {
+//        querymyhandling();
+//    } else if (tabID == "query_myhandled_btn") {
+//        querymyhandled();
+//    }
 
-});
+//});
 
 //上拉刷新，重新加载数据
-$(document.body).pullToRefresh().on("pull-to-refresh", function () {
-    return;
-    if (myTop > 0) {
-        $(document.body).pullToRefreshDone();
-        return;
-    }
-    var tabID = $(".weui_bar_item_on").attr("id");
-    //修改这里的id名称
-    if (tabID == "query_mystarted_btn") {
-        startedQuery.isEnd = false;
-        startedQuery.pageIndex = 1;
-        querymystarted();
-    } else if (tabID == "startemyorder_btn") {
-        doClearStartForm();
-    } else if (tabID == "query_myappointing_btn") {
-        appointingQuery.isEnd = false;
-        appointingQuery.pageIndex = 1;
-        querymyappointing();
-    } else if (tabID == "query_myappointed_btn") {
-        appointedQuery.isEnd = false;
-        appointedQuery.pageIndex = 1;
-        querymyappointed();
-    } else if (tabID == "query_myreciving_btn") {
-        recivingQuery.isEnd = false;
-        recivingQuery.pageIndex = 1;
-        querymyreciving();
-    } else if (tabID == "query_myhandling_btn") {
-        handlingQuery.isEnd = false;
-        handlingQuery.pageIndex = 1;
-        querymyhandling();
-    } else if (tabID == "query_myhandled_btn") {
-        handledQuery.isEnd = false;
-        handledQuery.pageIndex = 1;
-        querymyhandled();
-    }
+//$(document.body).pullToRefresh().on("pull-to-refresh", function () {
+//    return;
+//    if (myTop > 0) {
+//        $(document.body).pullToRefreshDone();
+//        return;
+//    }
+//    var tabID = $(".weui_bar_item_on").attr("id");
+//    //修改这里的id名称
+//    if (tabID == "query_mystarted_btn") {
+//        startedQuery.isEnd = false;
+//        startedQuery.pageIndex = 1;
+//        querymystarted();
+//    } else if (tabID == "startemyorder_btn") {
+//        doClearStartForm();
+//    } else if (tabID == "query_myappointing_btn") {
+//        appointingQuery.isEnd = false;
+//        appointingQuery.pageIndex = 1;
+//        querymyappointing();
+//    } else if (tabID == "query_myappointed_btn") {
+//        appointedQuery.isEnd = false;
+//        appointedQuery.pageIndex = 1;
+//        querymyappointed();
+//    } else if (tabID == "query_myreciving_btn") {
+//        recivingQuery.isEnd = false;
+//        recivingQuery.pageIndex = 1;
+//        querymyreciving();
+//    } else if (tabID == "query_myhandling_btn") {
+//        handlingQuery.isEnd = false;
+//        handlingQuery.pageIndex = 1;
+//        querymyhandling();
+//    } else if (tabID == "query_myhandled_btn") {
+//        handledQuery.isEnd = false;
+//        handledQuery.pageIndex = 1;
+//        querymyhandled();
+//    }
 
-    $(document.body).pullToRefreshDone();
-});
+//    $(document.body).pullToRefreshDone();
+//});
 
 //此方法没用
 formatDic = function (value, data) {

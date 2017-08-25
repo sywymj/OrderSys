@@ -120,6 +120,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\BackViewModel.cs" />
+    <Compile Include="Models\HeaderViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -253,6 +254,7 @@
     <Content Include="Views\Order\AddHandleDetail.cshtml" />
     <Content Include="Views\Popup\AddhandledetailPopup.cshtml" />
     <Content Include="Views\Popup\_DemoPopup.cshtml" />
+    <Content Include="Views\Shared\_Fresh.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

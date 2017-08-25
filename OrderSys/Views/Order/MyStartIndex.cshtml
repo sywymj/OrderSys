@@ -18,6 +18,7 @@
         </div>
         <div class="tablist block">
             <div id="mystarted_list"></div>
+            @Html.Partial("~/Views/Shared/_Fresh.cshtml", "querymystarted()")
         </div>
     </div>
 </div>
@@ -31,6 +32,16 @@
         startedQuery = new Query('#mystarted_list');
         querymystarted();
     })
+
+    //每个页面必重载的方法
+    refresh = function () {
+        debugger;
+        var tabID = $(".weui_bar_item_on").attr("id");
+        if (tabID == "query_mystarted_btn") {
+            startedQuery.pageIndex = 1;
+            querymystarted();
+        }
+    }
 
     querymystarted = function () {
         var url = '@Url.Action("MyStartedOrders", "Order")';

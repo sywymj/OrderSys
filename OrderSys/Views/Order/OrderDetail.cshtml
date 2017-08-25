@@ -12,7 +12,7 @@
     <div class="weui_cell">
         <div class="weui_cell_hd"><label class="weui_label">联系人</label></div>
         <div class="weui_cell_bd weui_cell_primary">
-            @Model["Attn"];
+            @Model["Attn"]
         </div>
     </div>
     <div class="weui_cell">
@@ -25,13 +25,13 @@
     <div class="weui_cell">
         <div class="weui_cell_hd"><label class="weui_label">发起人</label></div>
         <div class="weui_cell_bd weui_cell_primary">
-            @Model["Attn"]
+            @Model["StarterName"]
         </div>
     </div>
     <div class="weui_cell">
         <div class="weui_cell_hd"><label class="weui_label">联系电话</label></div>
         <div class="weui_cell_bd weui_cell_primary">
-            @Model["Attn"]
+            @Model["StarterTel"]
         </div>
     </div>
 
@@ -50,9 +50,9 @@
 
     @foreach(System.Data.DataRow dr in ViewBag.Handlers.Rows){
         <div class="weui_cell">
-            <div class="weui_cell_hd"><label class="weui_label">委派人</label></div>
+            <div class="weui_cell_hd"><label class="weui_label">处理者</label></div>
             <div class="weui_cell_bd weui_cell_primary">
-                @dr["Name"]@dr["IsLeader"]
+                @dr["Name"] @((int)dr["IsLeader"] == (int)TrueFalse.True ? "（领队）" : "")
             </div>
         </div>
         <div class="weui_cell">
@@ -86,6 +86,6 @@
 <div class="weui_cells_title">备注</div>
 <div class="weui_cells weui_cells_form">
     <div class="weui_cell">
-        @Model["Remark"]
+        @(string.IsNullOrEmpty(Model["Remark"].ToString()) ? "无" : Model["Remark"])
     </div>
 </div>

@@ -18,12 +18,15 @@
     <div class="weui_tab_bd" id="tablist1">
         <div class="tablist block">
             <div id="myreceiving_list"></div>
+            @Html.Partial("~/Views/Shared/_Fresh.cshtml", "querymyreciving()")
         </div>
         <div class="tablist">
             <div id="myhandling_list"></div>
+            @Html.Partial("~/Views/Shared/_Fresh.cshtml", "querymyhandling()")
         </div>
         <div class="tablist">
             <div id="myhandled_list"></div>
+            @Html.Partial("~/Views/Shared/_Fresh.cshtml", "querymyhandled()")
         </div>
     </div>
 </div>
@@ -42,6 +45,23 @@
         querymyhandling();
         querymyreciving();
     })
+
+    //每个页面必重载的方法
+    refresh = function () {
+        debugger;
+        var tabID = $(".weui_bar_item_on").attr("id");
+        if (tabID == "query_myreciving_btn") {
+            recivingQuery.pageIndex = 1;
+            querymyreciving();
+        } 
+        else if (tabID == "query_myhandling_btn") {
+            handlingQuery.pageIndex = 1;
+            querymyhandling();
+        } else if (tabID == "query_myhandled_btn") {
+            handledQuery.pageIndex = 1;
+            querymyhandled();
+        }
+    }
 
     querymyreciving = function () {
         var url = '@Url.Action("MyReceivingOrders", "Order")';

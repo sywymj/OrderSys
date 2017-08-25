@@ -1,8 +1,8 @@
 ﻿@using OrderSys.Model;
 @{
-    ViewBag.Title = "MyStartIndex";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
 <div class="weui_tab">
     <div class="weui_navbar" id="tab1">
         <li class="weui_navbar_item" id="query_myappointing_btn" onclick="setTab(1, 0)">
@@ -15,62 +15,57 @@
     <div class="weui_tab_bd" id="tablist1">
         <div class="tablist">
             <div id="myappointing_list"></div>
+            @Html.Partial("~/Views/Shared/_Fresh.cshtml", "querymyappointing()")
         </div>
         <div class="tablist block">
             <div id="myappointed_list"></div>
+            @Html.Partial("~/Views/Shared/_Fresh.cshtml", "querymyappointed()")
         </div>
     </div>
 </div>
-@*<div class="weui_tab" id='page-ptr-navbar'>
-    <div class="weui_navbar">
-        <a href='#tab1' class="weui_navbar_item weui_bar_item_on">
-            选项一
-        </a>
-        <a href='#tab2' class="weui_navbar_item">
-            选项二
-        </a>
-    </div>
-    <div class="weui_tab_bd">
-        <div id="tab1" class="weui_tab_bd_item weui_tab_bd_item_active">
-            @Html.Partial("~/Views/Shared/_Refresh.cshtml")
-            <div id="myappointing_list"></div>
-        </div>
-        <div id="tab2" class="weui_tab_bd_item">
-            @Html.Partial("~/Views/Shared/_Refresh.cshtml")
-            <div id="myappointed_list"></div>
-        </div>
-    </div>
-</div>*@
 
-    @Html.Partial("~/Views/Popup/WorkflowsPopup.cshtml")
-    @Html.Partial("~/Views/Popup/AppointPopup.cshtml")
+@Html.Partial("~/Views/Popup/WorkflowsPopup.cshtml")
+@Html.Partial("~/Views/Popup/AppointPopup.cshtml")
 
-    <script>
-        var myappointedQuery, myappointingQuery;
+<script>
+    var myappointedQuery, myappointingQuery;
 
-        $(function () {
-            appointingQuery = new Query('#myappointing_list');
-            appointedQuery = new Query('#myappointed_list');
-            querymyappointed();
+    $(function () {
+        appointingQuery = new Query('#myappointing_list');
+        appointedQuery = new Query('#myappointed_list');
+        querymyappointed();
+        querymyappointing();
+    })
+
+    //每个页面必重载的方法
+    refresh = function () {
+        debugger;
+        var tabID = $(".weui_bar_item_on").attr("id");
+        if (tabID == "query_myappointing_btn") {
+            appointingQuery.pageIndex = 1;
             querymyappointing();
-        })
-
-        querymyappointing = function () {
-            var url = '@Url.Action("MyAppointingOrders", "Order")';
-            var parms = {
-                PageIndex: appointingQuery.pageIndex,
-                PageSize: appointingQuery.pageSize,
-            };
-            doQuery1(appointingQuery, url, parms);
+        } else if (tabID == "query_myappointed_btn") {
+            appointedQuery.pageIndex = 1;
+            querymyappointed();
         }
+    }
 
-        querymyappointed = function () {
-            var url = '@Url.Action("MyAppointedOrders", "Order")';
-            var parms = {
-                PageIndex: appointedQuery.pageIndex,
-                PageSize: appointedQuery.pageSize,
-            };
-            doQuery1(appointedQuery, url, parms);
-        }
+    querymyappointing = function () {
+        var url = '@Url.Action("MyAppointingOrders", "Order")';
+        var parms = {
+            PageIndex:appointingQuery.pageIndex,
+            PageSize: appointingQuery.pageSize,
+        };
+        doQuery1(appointingQuery, url, parms);
+    }
 
-    </script>
+    querymyappointed = function () {
+        var url = '@Url.Action("MyAppointedOrders", "Order")';
+        var parms = {
+            PageIndex:  appointedQuery.pageIndex,
+            PageSize: appointedQuery.pageSize,
+        };
+        doQuery1(appointedQuery, url, parms);
+    }
+
+</script>
