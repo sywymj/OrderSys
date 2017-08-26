@@ -28,7 +28,7 @@
         </div>
         <div class="list_sym_r">
             <a class="orders" onclick="doReceiveOrder('@dr["ID"]')">接单</a>
-            <a class="details"  href="javascript:openWorkflowsPopup('@dr["ID"]');">详情</a>
+            <a class="details"  href="@Url.Action("OrderFlows", "Order", new { OrderID = dr["ID"] })">详情</a>
         </div>
         <div class="clear"></div>
     </div>

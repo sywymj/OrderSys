@@ -144,6 +144,7 @@
     <Content Include="Content\js\city-picker.js" />
     <Content Include="Content\js\city-picker.min.js" />
     <Content Include="Content\js\ExWeui.js" />
+    <Content Include="Content\js\jquery-1.8.3.min.js" />
     <Content Include="Content\js\jquery-weui.js" />
     <Content Include="Content\js\jquery-weui.min.js" />
     <Content Include="Content\js\jquery.charfirst.pinyin.js" />
@@ -255,6 +256,7 @@
     <Content Include="Views\Popup\AddhandledetailPopup.cshtml" />
     <Content Include="Views\Popup\_DemoPopup.cshtml" />
     <Content Include="Views\Shared\_Fresh.cshtml" />
+    <Content Include="Views\Shared\_InnerLayout.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

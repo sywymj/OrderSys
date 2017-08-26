@@ -39,6 +39,9 @@ namespace OrderSys.Controllers
         {
             return View();
         }
+
+
+
         #endregion
 
         #region GetPartialView
@@ -46,32 +49,32 @@ namespace OrderSys.Controllers
         public ActionResult AppointOrder(Guid orderID)
         {
             ViewBag.OrderID = orderID;
-            return PartialView("AppointOrder");
+            return View("AppointOrder");
         }
 
         [HttpGet]
-        public ActionResult OrderFlows(Guid id)
+        public ActionResult OrderFlows(Guid orderID)
         {
-            OrderEntity order = orderService.GetOrderEntity(id);
+            OrderEntity order = orderService.GetOrderEntity(orderID);
 
             ViewBag.OrderStatus = (OrderStatus)order.Status;
             ViewBag.OrderStatus1 = (OrderStatus)Math.Abs((int)order.Status);//处理过的状态，只保留主流程
             ViewBag.OrderID = order.ID;
 
-            var list = orderService.GetOrderFlows(id);
+            var list = orderService.GetOrderFlows(orderID);
 
-            return PartialView("OrderFlows", list);
+            return View("OrderFlows", list);
         }
 
         [HttpGet]
-        public ActionResult OrderDetail(Guid id)
+        public ActionResult OrderDetail(Guid orderID)
         {
-            var handlers = orderService.GetOrderHandlers(id);
+            var handlers = orderService.GetOrderHandlers(orderID);
             ViewBag.Handlers = handlers;
 
 
-            var dr = orderService.GetOrderDetail(id);
-            return PartialView("OrderDetail", dr);
+            var dr = orderService.GetOrderDetail(orderID);
+            return View("OrderDetail", dr);
         }
 
         [HttpGet]
@@ -81,7 +84,7 @@ namespace OrderSys.Controllers
 
             if (list.Rows.Count > 0)
             {
-                return PartialView("HandleDetail", list);
+                return View("HandleDetail", list);
             }
             else
             {
@@ -95,7 +98,7 @@ namespace OrderSys.Controllers
         public ActionResult AddHandleDetail(Guid orderID)
         {
             ViewBag.OrderID = orderID;
-            return PartialView("AddHandleDetail");
+            return View("AddHandleDetail");
         }
         #endregion
 

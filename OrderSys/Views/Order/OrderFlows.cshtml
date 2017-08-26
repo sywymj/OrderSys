@@ -3,6 +3,9 @@
 @using JSNet.BaseSys;
 @using OrderSys.Model;
 
+@{
+    Layout = "~/Views/Shared/_InnerLayout.cshtml";
+}
 <div class="times">
     
     <!--流程图-->
@@ -45,8 +48,8 @@
 	
 	<!--按钮-->
 	<div class="demos-content-padded bottom_btn">
-		<a href="javascript:openOrderdetailPopup('@ViewBag.OrderID');" class="weui_btn weui_btn_plain_default" style="width:46%; height:30px; line-height:30px;  float:left; margin:0; font-size:14px;  border-radius:60px; ">查看工单详情</a>
-		<a href="javascript:openHandledetailPopup('@ViewBag.OrderID');;" class="weui_btn weui_btn_plain_default" style="width:46%; height:30px; line-height:30px; float:right; margin:0; font-size:14px;  border-radius:60px; ">查看处理过程</a>
+        <a href="@Url.Action("OrderDetail", "Order", new { OrderID = ViewBag.OrderID })" class="weui_btn weui_btn_plain_default" style="width:46%; height:30px; line-height:30px;  float:left; margin:0; font-size:14px;  border-radius:60px; ">查看工单详情</a>
+        <a href="@Url.Action("HandleDetail", "Order", new { OrderID = ViewBag.OrderID })" class="weui_btn weui_btn_plain_default" style="width:46%; height:30px; line-height:30px; float:right; margin:0; font-size:14px;  border-radius:60px; ">查看处理过程</a>
 		<div class="clear"></div>
 	</div>
 

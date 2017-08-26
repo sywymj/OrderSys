@@ -1,0 +1,43 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>报障系统</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="description" content="Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
+">
+    <link rel="stylesheet" href="/Content/lib/weui.min.css">
+    <link rel="stylesheet" href="/Content/css/jquery-weui.css">
+    <link rel="stylesheet" type="text/css" href="/Content/iconfont/iconfont.css" />
+    <link rel="stylesheet" type="text/css" href="/Content/css/style.css" />
+    <link rel="stylesheet" href="/Content/css/css.css">
+    <script src="/Content/lib/jquery-2.1.4.js"></script>
+    <script src="/Content/lib/fastclick.js"></script>
+    <script src="/Content/js/jquery-weui.js"></script>
+    <script src="~/Content/js/json2.js"></script>
+
+    <style>
+        /*.weui-pull-to-refresh {
+            margin-top:0;
+        }*/
+    </style>
+</head>
+
+<body ontouchstart>
+    <div id="template">
+        @Html.Partial("~/Views/Shared/_Loading.cshtml")
+        @Html.Partial("~/Views/Shared/_End.cshtml")
+    </div>
+    @RenderBody()
+    <script src="/Content/js/public.js"></script>
+    <script src="/Content/js/ExWeui.js"></script>
+    <script>
+        var myTop = 0;
+        $(function () {
+            FastClick.attach(document.body);
+        });
+    </script>
+
+</body>
+</html>

@@ -25,8 +25,8 @@
             </div>
         </div>
         <div class="list_sym_r">
-            <a class="orders" href="javascript:openAppointPopup('@dr["id"]');">委派</a>
-            <a class="details" href="javascript:openWorkflowsPopup('@dr["ID"]');">详情</a>
+            <a class="orders" href="@Url.Action("AppointOrder", "Order", new { OrderID = dr["ID"] })">委派</a>
+            <a class="details" href="@Url.Action("OrderFlows", "Order", new { OrderID = dr["ID"] })">详情</a>
         </div>
         <div class="clear"></div>
     </div>

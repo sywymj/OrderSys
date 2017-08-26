@@ -26,8 +26,8 @@
         </div>
         <div class="list_sym_r">
             @*<a class="orders" onclick="doHandled('@dr["ID"]')">完成</a>*@
-            <a class="orders" href="javascript:openAddhandledetailPopup('@dr["ID"]');">增加进度</a>
-            <a class="details" href="javascript:openWorkflowsPopup('@dr["ID"]');">详情</a>
+            <a class="orders" href="@Url.Action("AddHandleDetail", "Order", new { OrderID = dr["ID"] })">增加进度</a>
+            <a class="details" href="@Url.Action("OrderFlows", "Order", new { OrderID = dr["ID"] })">详情</a>
         </div>
         <div class="clear"></div>
     </div>

@@ -2,7 +2,6 @@
 @using JSNet.Utilities;
 @using JSNet.BaseSys;
 
-
 @foreach (System.Data.DataRow dr in Model.Rows)
 {
     <div class="list_sym" id="startedorder_@dr["ID"]">
@@ -35,7 +34,8 @@
                     <a href="javascript:checkOrder('@dr["ID"]');" class="orders">验收</a>
                 }
                 }
-            <a href="javascript:openWorkflowsPopup('@dr["ID"]');" class="details">详情</a>
+            @*<a href="@Url.Action("OrderFlows", "Order", new { ID = dr["ID"] })" class="details">详情</a>*@
+            <a href="@Url.Action("OrderFlows", "Order", new { OrderID = dr["ID"] })" class="details">详情</a>
         </div>
         <div class="clear"></div>
     </div>
