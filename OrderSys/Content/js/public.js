@@ -35,7 +35,7 @@ doQuery1 = function (query,url,parms, callback) {
 
     var container = query.container;
     if (query.pageIndex == 1) {
-        debugger;
+        //debugger;
         //重新刷新
         query.isLoading = false;
         query.isEnd = false;
@@ -116,7 +116,7 @@ doGetPartial1 = function (article,url,parms, callback) {
     })
 }
 
-doPost = function (url, postObj,callback) {
+doPost = function (url, postObj, callback) {
     $.showLoading();
     $.ajax({
         type: "POST", //GET或POST,
@@ -125,15 +125,14 @@ doPost = function (url, postObj,callback) {
         data: postObj,
         dataType: "text", //xml、html、script、jsonp、text
         beforeSend: function () { },
-        complete: function () { },
         success: function (data) {
-            //我这里跳转之后，怎么返回我想要回的页面
+            $.hideLoading();
             var jdata = ajaxTips(data,callback);
         },
-        error: function () { },
-        complete: function () {
-            //hideLoading(domID);
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
             $.hideLoading();
+        },
+        complete: function () {
         }
     });
 }
@@ -147,12 +146,14 @@ doGet = function (url, urlParmsObj, callback) {
         data: urlParmsObj,
         dataType: "text", //xml、html、script、jsonp、text
         beforeSend: function () { },
-        complete: function () { },
         success: function (data) {
             //我这里跳转之后，怎么返回我想要回的页面
+            $.hideLoading();
             var jdata = ajaxTips(data, callback);
         },
-        error: function () { },
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+            $.hideLoading();
+        },
         complete: function () {
             //hideLoading(domID);
             $.hideLoading();
@@ -162,6 +163,7 @@ doGet = function (url, urlParmsObj, callback) {
 
 //container:数据div，只负责【显示】提示信息
 ajaxTips = function (json, container, callback) {
+    $.toast.prototype.defaults.duration = 1000;
     if (typeof container === "function") {
         callback = container;
         container = 'undefined';
@@ -169,17 +171,27 @@ ajaxTips = function (json, container, callback) {
     //debugger;
     //通过这种方法可将字符串转换为对象
     var jdata = eval('(' + json + ')');
-
     if (jdata.RspTypeCode == -1) {
         //错误消息提示
         console.log(jdata.ErrCode + ":" + jdata.ErrMsg);
-        $.alert(jdata.Msg, "错误");
+        $.alert(jdata.Msg, '错误', function () {
+            callback && callback(jdata);
+        });
+        return jdata;
     } else if (jdata.RspTypeCode == 1) {
         //提示信息提示
-        $.toast(jdata.Msg);
+        $.alert(jdata.Msg, '成功', function () {
+            callback && callback(jdata);
+        });
+        return jdata;
+        //$.toast("操作成功", function () {
+        //    console.log('close');
+        //});
+        //$.toptip(jdata.Msg, 'success');
     } else if (jdata.RspTypeCode == 4) {
         //跳转页面
         window.location.href = jdata.data;
+        return jdata;
     } else if (jdata.RspTypeCode == 5) {
         //没数据
         showEnding(container, jdata.Msg);
@@ -187,8 +199,9 @@ ajaxTips = function (json, container, callback) {
         //数据加载完
         showEnding(container, jdata.Msg);
     }
+
     callback && callback(jdata);
-    return jdata
+    return jdata;
 }
 
 appendDom = function (selector, Domdata) {

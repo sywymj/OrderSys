@@ -13,7 +13,7 @@
 <script>
     $(function () {
         //异步加载页面
-        $("#staffs_popup > .weui-popup-modal > .weui-article").load("@Url.Action("GetAllStaffs", "Permission")");
+        $("#staffs_popup > .weui-popup-modal > .weui-article").load("@Url.Action("AllStaffs", "Permission")");
     })
 
     openStaffsPopup = function () {

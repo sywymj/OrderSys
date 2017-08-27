@@ -4,6 +4,7 @@ using JSNet.BaseSys;
 using JSNet.DbUtilities;
 using JSNet.Manager;
 using JSNet.Model;
+using JSNet.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -25,22 +26,20 @@ namespace JSNet.Service
             //1.0 获取当前员工数据
             StaffEntity staff = permissionService.GetCurrentStaff();
 
-            //2.0获取最新的工单号
-            string orderNo = GetNewOrderNo();
-
             //2.0 添加工单实体
             order.ID = Guid.NewGuid();
-            order.OrderNo = orderNo;
             order.Status = (int)OrderStatus.Appointing;
             order.StarterID = staff.ID;
             order.OperatorID = staff.ID;
             order.Status = (int)OrderStatus.Appointing;
+            order.StartTime = DateTime.Now;
+            order.OperateTime = DateTime.Now;
             if (string.IsNullOrEmpty(order.Attn) || string.IsNullOrEmpty(order.AttnTel))
             {
                 order.Attn = staff.Name;
                 order.AttnTel = staff.Tel;
             }
-            orderManager.Insert(order);
+            string s = orderManager.Insert(order);
 
             //3.0 添加工作流实体
             OrderFlowEntity orderFlow = new OrderFlowEntity();
@@ -70,6 +69,7 @@ namespace JSNet.Service
             kvps.Add(new KeyValuePair<string,object>(OrderEntity.FieldStatus,(int)OrderStatus.Receving));
             kvps.Add(new KeyValuePair<string,object>(OrderEntity.FieldAppointerID,staff.ID));
             kvps.Add(new KeyValuePair<string, object>(OrderEntity.FieldNextOperatorID, GetLeaderHandlerID(handlers)));
+            kvps.Add(new KeyValuePair<string, object>(OrderEntity.FieldOperateTime,DateTime.Now));
             int rows = orderManager.Update(kvps, orderID);
             if (rows == 0)
             {
@@ -91,7 +91,7 @@ namespace JSNet.Service
 
         }
 
-        //接收报障单
+        //受理报障单
         public void ReceiveOrder(Guid orderID)
         {
             //1.0 获取当前员工数据
@@ -105,6 +105,7 @@ namespace JSNet.Service
             kvps.Add(new KeyValuePair<string, object>(OrderEntity.FieldStatus, (int)OrderStatus.Handling));
             kvps.Add(new KeyValuePair<string,object>(OrderEntity.FieldNextOperatorID, staff.ID));
             kvps.Add(new KeyValuePair<string, object>(OrderEntity.FieldHandlerID, staff.ID));
+            kvps.Add(new KeyValuePair<string, object>(OrderEntity.FieldOperateTime, DateTime.Now));
             int rows = orderManager.Update(kvps, orderID);
             if (rows == 0)
             {
@@ -120,6 +121,14 @@ namespace JSNet.Service
             orderflow.OperateTime = DateTime.Now;
             orderflow.Remark = "";
             orderflowManager.Insert(orderflow);
+
+            //4.0 添加处理进度
+            OrderHandleDetailEntity orderHandleDetail = new OrderHandleDetailEntity();
+            orderHandleDetail.OrderID = orderID;
+            orderHandleDetail.HandleType = (int)OrderHandleType.Others;
+            orderHandleDetail.HandleDetail = "受理";
+            orderHandleDetail.Remark = "已受理，准备处理。";
+            AddHandleDetail(orderHandleDetail);
         }
 
         //增加处理明细
@@ -132,7 +141,10 @@ namespace JSNet.Service
             //2.0 添加工作处理明细实体
             orderHandleDetail.HandlerID = currentStaff.ID;
             orderHandleDetail.HandleTime = DateTime.Now;
-            orderHandleDetail.HandleDetail = "";
+            if (string.IsNullOrEmpty(orderHandleDetail.HandleDetail))
+            {
+                orderHandleDetail.HandleDetail = EnumExtensions.ToDescription((OrderHandleType)orderHandleDetail.HandleType);
+            }
             orderHandleDetail.Progress = 0;
             EntityManager<OrderHandleDetailEntity> orderHandleDetailManager = new EntityManager<OrderHandleDetailEntity>();
             orderHandleDetailManager.Insert(orderHandleDetail);
@@ -160,6 +172,7 @@ namespace JSNet.Service
             kvps.Add(new KeyValuePair<string, object>(OrderEntity.FieldOperatorID, staff.ID));
             kvps.Add(new KeyValuePair<string, object>(OrderEntity.FieldNextOperatorID, order.StarterID));
             kvps.Add(new KeyValuePair<string, object>(OrderEntity.FieldStatus, (int)OrderStatus.Checking));
+            kvps.Add(new KeyValuePair<string, object>(OrderEntity.FieldOperateTime, DateTime.Now));
             int rows = orderManager.Update(kvps, orderID);
             if (rows == 0)
             {
@@ -175,6 +188,13 @@ namespace JSNet.Service
             orderflow.OperateTime = DateTime.Now;
             orderflow.Remark = "";
             orderflowManager.Insert(orderflow);
+
+            //4.0 添加处理进度
+            OrderHandleDetailEntity orderHandleDetail = new OrderHandleDetailEntity();
+            orderHandleDetail.OrderID = orderID;
+            orderHandleDetail.HandleType = (int)OrderHandleType.WanCheng;
+            orderHandleDetail.Remark = "已完成，送检。";
+            AddHandleDetail(orderHandleDetail);
         }
 
         //驳回报障，需继续处理
@@ -199,6 +219,7 @@ namespace JSNet.Service
             kvps.Add(new KeyValuePair<string, object>(OrderEntity.FieldOperatorID, staff.ID));
             kvps.Add(new KeyValuePair<string, object>(OrderEntity.FieldNextOperatorID, GetLeaderHandlerID(orderHandlers)));
             kvps.Add(new KeyValuePair<string, object>(OrderEntity.FieldStatus, (int)OrderStatus.Rejected));
+            kvps.Add(new KeyValuePair<string, object>(OrderEntity.FieldOperateTime, DateTime.Now));
             int rows = orderManager.Update(kvps, orderID);
             if (rows == 0)
             {
@@ -214,6 +235,13 @@ namespace JSNet.Service
             orderflow.OperateTime = DateTime.Now;
             orderflow.Remark = remark;
             orderflowManager.Insert(orderflow);
+
+            OrderHandleDetailEntity orderHandleDetail = new OrderHandleDetailEntity();
+            orderHandleDetail.OrderID = orderID;
+            orderHandleDetail.HandleType = (int)OrderHandleType.Others;
+            orderHandleDetail.HandleDetail = "驳回";
+            orderHandleDetail.Remark = remark;
+            AddHandleDetail(orderHandleDetail);
         }
 
         //报障验收完成
@@ -232,6 +260,7 @@ namespace JSNet.Service
             kvps.Add(new KeyValuePair<string, object>(OrderEntity.FieldNextOperatorID, null));
             kvps.Add(new KeyValuePair<string, object>(OrderEntity.FieldStatus, (int)OrderStatus.Finish));
             kvps.Add(new KeyValuePair<string, object>(OrderEntity.FieldFinishTime, DateTime.Now));
+            kvps.Add(new KeyValuePair<string, object>(OrderEntity.FieldOperateTime, DateTime.Now));
             int rows = orderManager.Update(kvps, orderID);
             if (rows == 0)
             {
@@ -247,6 +276,14 @@ namespace JSNet.Service
             orderflow.OperateTime = DateTime.Now;
             orderflow.Remark = "";
             orderflowManager.Insert(orderflow);
+
+            //4.0 添加进度为完成
+            OrderHandleDetailEntity orderHandleDetail = new OrderHandleDetailEntity();
+            orderHandleDetail.OrderID = orderID;
+            orderHandleDetail.HandleType = (int)OrderHandleType.Others;
+            orderHandleDetail.HandleDetail = "完成";
+            orderHandleDetail.Remark = "完成，验收通过！";
+            AddHandleDetail(orderHandleDetail);
         }
 
         //取消报障单
@@ -263,6 +300,7 @@ namespace JSNet.Service
             //2.0 修改工单实体
             List<KeyValuePair<string, object>> kvps = new List<KeyValuePair<string, object>>();
             kvps.Add(new KeyValuePair<string, object>(OrderEntity.FieldStatus, (int)OrderStatus.Canceled));
+            kvps.Add(new KeyValuePair<string, object>(OrderEntity.FieldOperateTime, DateTime.Now));
             int rows = orderManager.Update(kvps, orderID);
             if (rows == 0)
             {
@@ -293,6 +331,12 @@ namespace JSNet.Service
         /// <returns></returns>
         public DataTable GetMyStartedOrders(int pageIndex,int pageSize,out int count)
         {
+            WhereStatement where = new WhereStatement();
+            //string sStatus = JSRequest.GetRequestUrlParm(OrderEntity.FieldStatus, false);
+            //int? status = JSValidator.ValidateInt(OrderEntity.FieldStatus, sStatus, false);
+            //if (status != null) { where.Add(OrderEntity.FieldStatus, Comparison.Equals, status); }
+
+
             PermissionService permissionService = new PermissionService();
             ViewManager manager = new ViewManager("VO_Order");
                         
@@ -300,8 +344,8 @@ namespace JSNet.Service
             StaffEntity staff = permissionService.GetCurrentStaff();
 
             //2.0 构建where从句
-            WhereStatement where = new WhereStatement();
             where.Add(OrderEntity.FieldStarterID, Comparison.Equals, staff.ID);
+            where.Add(OrderEntity.FieldStatus, Comparison.NotEquals, (int)OrderStatus.Canceled);
 
             OrderByStatement orderby = new OrderByStatement();
             orderby.Add(OrderEntity.FieldPriority, Sorting.Descending);
@@ -556,6 +600,7 @@ namespace JSNet.Service
         /// <returns></returns>
         private string GetNewOrderNo()
         {
+            //不调用这个了，直接用触发器
             List<IDbDataParameter> outDbParameters = new List<IDbDataParameter>();
             IDbHelper dbHelper = DbHelperFactory.GetHelper(BaseSystemInfo.CenterDbConnectionString);
 

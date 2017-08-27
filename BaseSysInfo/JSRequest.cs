@@ -15,13 +15,19 @@ namespace JSNet.BaseSys
         /// <returns></returns>
         public static string GetRequestUrlParm(string key,bool required = true)
         {
-            if (!required)
+            if (required)
             {
-                return string.Empty;
+                if (!CheckRequestUrlParms(key))
+                {
+                    throw new JSException(JSErrMsg.ERR_CODE_KEY_MISSING, string.Format(JSErrMsg.ERR_MSG_KEY_MISSING, key));
+                }
             }
-            if (!CheckRequestUrlParms(key))
+            else
             {
-                throw new JSException(JSErrMsg.ERR_CODE_KEY_MISSING, string.Format(JSErrMsg.ERR_MSG_KEY_MISSING, key));
+                if(!CheckRequestUrlParms(key))
+                {
+                    return string.Empty;
+                }
             }
             return HttpContext.Current.Request[key].ToString();
         }
@@ -33,13 +39,19 @@ namespace JSNet.BaseSys
         /// <returns></returns>
         public static string GetRequestFormParm(string key,bool required=true)
         {
-            if (!required)
+            if (required)
             {
-                return string.Empty;
+                if (!CheckRequestFormParms(key))
+                {
+                    throw new JSException(JSErrMsg.ERR_CODE_KEY_MISSING, string.Format(JSErrMsg.ERR_MSG_KEY_MISSING, key));
+                }
             }
-            if (!CheckRequestFormParms(key))
+            else
             {
-                throw new JSException(JSErrMsg.ERR_CODE_KEY_MISSING, string.Format(JSErrMsg.ERR_MSG_KEY_MISSING, key));
+                if (!CheckRequestFormParms(key))
+                {
+                    return string.Empty;
+                }
             }
             return HttpContext.Current.Request[key].ToString();
         }
@@ -61,7 +73,7 @@ namespace JSNet.BaseSys
         //检查Request参数是否为null或为空
         private static bool CheckRequestUrlParms(string key)
         {
-            if (HttpContext.Current.Request[key] != null && !string.IsNullOrWhiteSpace(HttpContext.Current.Request[key].ToString()))
+            if (HttpContext.Current.Request[key] != null)
             {
                 return true;
             }
@@ -71,7 +83,7 @@ namespace JSNet.BaseSys
         //检查Request参数是否为null或为空
         private static bool CheckRequestFormParms(string key)
         {
-            if (HttpContext.Current.Request.Form[key] != null && !string.IsNullOrWhiteSpace(HttpContext.Current.Request.Form[key].ToString()))
+            if (HttpContext.Current.Request.Form[key] != null)
             {
                 return true;
             }
@@ -81,7 +93,7 @@ namespace JSNet.BaseSys
         //检查Session参数是否为null或为空
         private static bool CheckSessionParms(string key)
         {
-            if (HttpContext.Current.Session[key] != null && !string.IsNullOrWhiteSpace(HttpContext.Current.Session[key].ToString()))
+            if (HttpContext.Current.Session[key] != null)
             {
                 return true;
             }

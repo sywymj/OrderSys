@@ -156,7 +156,7 @@ z-index:9;
 background:url(../images/leader.png);
 }
 
-.leader:before{content: "123";}
+.leader:before{}
 
 .banScroll {height: 100%;overflow: hidden;}
 

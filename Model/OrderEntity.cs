@@ -175,6 +175,24 @@ namespace JSNet.Model
             get { return _content; }
             set { _content = value; }
         }
+        /// <summary>
+        /// StartTime
+        /// </summary>		
+        private DateTime? _startTime;
+        public DateTime? StartTime
+        {
+            get { return _startTime; }
+            set { _startTime = value; }
+        }
+        /// <summary>
+        /// OperateTime
+        /// </summary>		
+        private DateTime? _operateTime;
+        public DateTime? OperateTime
+        {
+            get { return _operateTime; }
+            set { _operateTime = value; }
+        }
         #endregion
 
         #region  数据库字段名称
@@ -290,6 +308,20 @@ namespace JSNet.Model
         {
             get { return "Content"; }
         }
+        /// <summary>
+        /// FiledName:StartTime
+        /// </summary>		
+        public static string FieldStartTime
+        {
+            get { return "StartTime"; }
+        }
+                /// <summary>
+        /// FiledName:OperateTime
+        /// </summary>		
+        public static string FieldOperateTime
+        {
+            get { return "OperateTime"; }
+        }
         #endregion
 
         public OrderEntity GetFrom(System.Data.DataRow dataRow)
@@ -311,6 +343,8 @@ namespace JSNet.Model
             entity.Attn = CommonUtil.ConvertToString(dataRow[FieldAttn]);
             entity.AttnTel = CommonUtil.ConvertToString(dataRow[FieldAttnTel]);
             entity.Content = CommonUtil.ConvertToString(dataRow[FieldContent]);
+            entity.StartTime = CommonUtil.ConvertToDateTime(dataRow[FieldStartTime]);
+            entity.OperateTime = CommonUtil.ConvertToDateTime(dataRow[FieldOperateTime]);
             return entity;
         }
 
@@ -334,6 +368,8 @@ namespace JSNet.Model
             entity.Attn = CommonUtil.ConvertToString(dataReader[FieldAttn]);
             entity.AttnTel = CommonUtil.ConvertToString(dataReader[FieldAttnTel]);
             entity.Content = CommonUtil.ConvertToString(dataReader[FieldContent]);
+            entity.StartTime = CommonUtil.ConvertToDateTime(dataReader[FieldStartTime]);
+            entity.OperateTime = CommonUtil.ConvertToDateTime(dataReader[FieldOperateTime]);
             return entity;
         }
 
@@ -355,6 +391,8 @@ namespace JSNet.Model
             sqlBuilder.SetValue(FieldAttn, entity.Attn);
             sqlBuilder.SetValue(FieldAttnTel, entity.AttnTel);
             sqlBuilder.SetValue(FieldContent, entity.Content);
+            sqlBuilder.SetValue(FieldStartTime, entity.StartTime);
+            sqlBuilder.SetValue(FieldOperateTime, entity.OperateTime);
         }
 
         public void GetFromExpand(System.Data.DataRow dataRow)

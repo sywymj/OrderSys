@@ -1,4 +1,7 @@
-﻿@{
+﻿@model System.Data.DataTable
+@using JSNet.BaseSys;
+@using JSNet.Utilities;
+@{
     Layout = "~/Views/Shared/_InnerLayout.cshtml";
 }
 <link href="~/Content/tinyselect/css/tinyselect.css" rel="stylesheet" />
@@ -51,8 +54,9 @@
             doPost(url, urlParm, function (jdata) {
                 if (jdata.Code == "200") {
                     //返回
+                    history.back(-1);
                     //委派完成，关闭本div
-                    closePopup('#addhandledetail_popup');
+                    //closePopup('#addhandledetail_popup');
                 }
             });
         }, function () {
@@ -67,9 +71,7 @@
             doGet(url, urlParm, function (jdata) {
                 if (jdata.Code == "200") {
                     //刷新已完成
-                    handledQuery.pageIndex = 1;
-                    querymyhandled();
-                    $('#handlingorder_' + orderID).remove();
+                    history.back(-1);
                 }
             });
         }, function () {

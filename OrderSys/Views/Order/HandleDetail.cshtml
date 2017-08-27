@@ -4,6 +4,7 @@
 @{
     Layout = "~/Views/Shared/_InnerLayout.cshtml";
 }
+
 <div class="weui_cells weui_cells_form">
     <div class="weui_cell">
         <div class="process">
@@ -15,7 +16,7 @@
                             @Convert.ToDateTime(dr["HandleTime"]).ToString(BaseSystemInfo.DateFormat)<br />
                             @Convert.ToDateTime(dr["HandleTime"]).ToString(BaseSystemInfo.TimeFormat)
                         </label>
-                        <span class="circle"></span>【@EnumExtensions.ToDescription((OrderHandleType)dr["HandleType"])】@dr["Remark"]
+                        <span class="circle"></span>【@dr["HandleDetail"]】@dr["Remark"]
                     </li>
                 }
             </ul>

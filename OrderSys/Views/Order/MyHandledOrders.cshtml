@@ -14,10 +14,23 @@
                     <ul>
                         <li>紧急程度：<font color="@EnumExtensions.ToColorStyle((OrderPriority)dr["Priority"])" size="2">@EnumExtensions.ToDescription((OrderPriority)dr["Priority"])</font></li>
                         <div class="clear"></div>
-                        <li>发起人：@dr["StarterName"]</li>
-                        <li>电话：@dr["StarterTel"]</li>
+                        <li>截止日期：@Convert.ToDateTime(dr["BookingTime"]).ToString(BaseSystemInfo.DateFormat)</li>
+                        <div class="clear"></div>
+                        @{if (Math.Abs((int)dr["Status"]) == (int)OrderStatus.Finish)
+                        {
+                            <li>验收时间：@Convert.ToDateTime(dr["FinishTime"]).ToString(BaseSystemInfo.DateTimeFormat)</li>
+                            <div class="clear"></div>
+                        }
+                        }
+                        @{if (Math.Abs((int)dr["Status"]) == (int)OrderStatus.Checking)
+                        {
+                            <li>待办人：@dr["NextOperaterName"]</li>
+                            <li>电话：<a href="tel:@dr["NextOperaterTel"]">@dr["NextOperaterTel"]</a></li>
+                            <div class="clear"></div>
+                        }
+                        }
                         <li>委派人：@dr["AppointerName"]</li>
-                        <li>电话：@dr["AppointerTel"]</li>
+                        <li>电话：<a href="tel:@dr["AppointerTel"]">@dr["AppointerTel"]</a></li>
                         <div class="clear"></div>
                     </ul>
                 </div>

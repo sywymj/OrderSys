@@ -1,12 +1,12 @@
 ﻿@using JSNet.Model;
 @model List<StaffEntity>
 
-<link href="/Content/css/lanren.css" rel="stylesheet" />
-<script src="/Content/js/jquery.charfirst.pinyin.js"></script>
-<script src="/Content/js/sort.js"></script>
+@{
+    Layout = "~/Views/Shared/_InnerLayout.cshtml";
+}
 
+<!--TODO 改成index时，怎么保持Staff对象的状态，目前使用Popup-->
 <div class="weui_cells_title">请选择</div>
-
 <!-- 代码部分begin -->
 <div id="letter"></div>
 <div class="sort_box" style="padding-top:20px;">
@@ -18,14 +18,17 @@
     </div>
 }
 </div>
-<div class="initials">
+@*<div class="initials">
     <ul></ul>
-</div>
+</div>*@
 <div class="weui_btn_area">
     <a class="weui_btn weui_btn_primary" href="javascript:doChooseStaffs();">确定</a>
 </div>
 
 <!-- 代码部分end -->
+<link href="/Content/css/lanren.css" rel="stylesheet" />
+<script src="/Content/js/jquery.charfirst.pinyin.js"></script>
+<script src="/Content/js/sort.js"></script>
 <script>
 
     var exStaffID = "staff_";//员工dom-id前缀
@@ -88,8 +91,12 @@
             staffs.push(staff);
         });
         //debugger;
+
+        //尝试存入.
         Staff.set(staffs, addHandlerDom);
+        //localStorage.setItem("Staff", Staff);
         closePopup('#staffs_popup');
+        //history.back(-1);
     }
 
 </script>

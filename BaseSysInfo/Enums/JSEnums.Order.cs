@@ -20,7 +20,7 @@ namespace JSNet.BaseSys
         [EnumDescription("受理")]
         Receive = 3,
 
-        [EnumDescription("处理")]
+        [EnumDescription("送检")]
         Handle = 4,
 
         [EnumDescription("验收")]
@@ -80,6 +80,10 @@ namespace JSNet.BaseSys
         HuanJian=2,
         [EnumDescription("外包")]
         WaiBao = 3,
+        [EnumDescription("完成")]
+        WanCheng = 99,
+        [EnumDescription("其他")]
+        Others = 9,
     }
 
     public enum TrueFalse

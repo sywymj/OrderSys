@@ -26,13 +26,13 @@ namespace OrderSys.Controllers
         }
 
         [HttpGet]
-        public ActionResult GetAllStaffs()
+        public ActionResult AllStaffs()
         {
             var list = permissionService.GetAllStaffs();
 
             if (list.Count > 0)
             {
-                return PartialView("Staffs", list);
+                return View("Staffs", list);
             }
             else
             {

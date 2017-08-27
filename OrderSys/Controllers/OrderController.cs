@@ -88,9 +88,7 @@ namespace OrderSys.Controllers
             }
             else
             {
-                ContentResult res = new ContentResult();
-                res.Content = JSON.ToJSON(new JSResponse(ResponseType.NoData, "- 暂无进度 -"), jsonParams);
-                return res;
+                return View("_NoData");
             }
         }
 
@@ -98,7 +96,8 @@ namespace OrderSys.Controllers
         public ActionResult AddHandleDetail(Guid orderID)
         {
             ViewBag.OrderID = orderID;
-            return View("AddHandleDetail");
+            var list = orderService.GetOrderHandleDetails(orderID);
+            return View("AddHandleDetail",list);
         }
         #endregion
 
@@ -278,7 +277,7 @@ namespace OrderSys.Controllers
             orderService.StartOrder(order);
 
             ContentResult res = new ContentResult();
-            res.Content = JSON.ToJSON(new JSResponse("成功发起报账单！"), jsonParams);
+            res.Content = JSON.ToJSON(new JSResponse("成功发起！"), jsonParams);
             return res;
         }
 
@@ -352,12 +351,12 @@ namespace OrderSys.Controllers
         }
 
         [HttpGet]
-        public ActionResult CancelOrder(Guid id)
+        public ActionResult CancelOrder(Guid orderID)
         {
-            orderService.CancelOrder(id);
+            orderService.CancelOrder(orderID);
 
             ContentResult res = new ContentResult();
-            res.Content = JSON.ToJSON(new JSResponse("取消成功！"), jsonParams);
+            res.Content = JSON.ToJSON(new JSResponse("撤销成功！"), jsonParams);
             return res;
         }
 

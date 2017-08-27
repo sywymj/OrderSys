@@ -20,7 +20,7 @@ namespace JSNet.BaseSys
         {
             //TODO 过滤危险字符
             string re = string.Empty;
-            if (!require)
+            if (!require && string.IsNullOrEmpty(value.Trim()))
             {
                 return re;
             }
@@ -35,7 +35,7 @@ namespace JSNet.BaseSys
         public static int? ValidateInt(string name, string value, bool require=false)
         {
             int re = 0;
-            if (!require)
+            if (!require && string.IsNullOrEmpty(value.Trim()))
             {
                 return null;
             }
@@ -56,7 +56,7 @@ namespace JSNet.BaseSys
         public static DateTime? ValidateDateTime(string name, string value, bool require = false)
         {
             DateTime re;
-            if (!require)
+            if (!require && string.IsNullOrEmpty(value.Trim()))
             {
                 return null;
             }
@@ -81,7 +81,7 @@ namespace JSNet.BaseSys
         /// <returns>返回 短时间 {HH:mm}</returns>
         public static string ValidateShortTime(string name, string value, bool require = false)
         {
-            if (!require)
+            if (!require && string.IsNullOrEmpty(value.Trim()))
             {
                 return null;
             }
@@ -118,7 +118,7 @@ namespace JSNet.BaseSys
         public static bool? ValidateBoolen(string name, string value, bool require = false)
         {
             bool re;
-            if (!require)
+            if (!require && string.IsNullOrEmpty(value.Trim()))
             {
                 return null;
             }
@@ -137,7 +137,7 @@ namespace JSNet.BaseSys
         public static Guid? ValidateGuid(string name, string value, bool require = false)
         {
             Guid re;
-            if (!require)
+            if (!require && string.IsNullOrEmpty(value.Trim()))
             {
                 return null;
             }
@@ -155,7 +155,7 @@ namespace JSNet.BaseSys
 
         public static int[] ValidateStrings(string name, string value, bool require = false)
         {
-            if (!require)
+            if (!require && string.IsNullOrEmpty(value.Trim()))
             {
                 return null;
             }

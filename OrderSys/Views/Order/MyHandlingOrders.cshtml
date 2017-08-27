@@ -14,8 +14,16 @@
                     <ul>
                         <li>紧急程度：<font color="@EnumExtensions.ToColorStyle((OrderPriority)dr["Priority"])" size="2">@EnumExtensions.ToDescription((OrderPriority)dr["Priority"])</font></li>
                         <div class="clear"></div>
-                        <li>联系人：@dr["Attn"]</li>
-                        <li>电话：@dr["AttnTel"]</li>
+                        <li>截止日期：@Convert.ToDateTime(dr["BookingTime"]).ToString(BaseSystemInfo.DateFormat)</li>
+                        <div class="clear"></div>
+                        @{if ((int)dr["Status"] == (int)OrderStatus.Rejected)
+                        {
+                            <li>驳回人：@dr["OperaterName"]</li>
+                            <li>电话：<a href="tel:@dr["OperaterTel"]">@dr["OperaterTel"]</a></li>
+                            <div class="clear"></div>
+                        }
+                        }
+                        <li>联系人：@dr["Attn"]</li><li>电话：<a href="tel:@dr["AttnTel"]">@dr["AttnTel"]</a></li>
                         <div class="clear"></div>
                     </ul>
                 </div>

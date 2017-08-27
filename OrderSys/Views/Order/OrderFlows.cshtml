@@ -49,7 +49,7 @@
 	<!--按钮-->
 	<div class="demos-content-padded bottom_btn">
         <a href="@Url.Action("OrderDetail", "Order", new { OrderID = ViewBag.OrderID })" class="weui_btn weui_btn_plain_default" style="width:46%; height:30px; line-height:30px;  float:left; margin:0; font-size:14px;  border-radius:60px; ">查看工单详情</a>
-        <a href="@Url.Action("HandleDetail", "Order", new { OrderID = ViewBag.OrderID })" class="weui_btn weui_btn_plain_default" style="width:46%; height:30px; line-height:30px; float:right; margin:0; font-size:14px;  border-radius:60px; ">查看处理过程</a>
+        <a href="@Url.Action("HandleDetail", "Order", new { OrderID = ViewBag.OrderID })" class="weui_btn weui_btn_plain_default" style="width:46%; height:30px; line-height:30px; float:right; margin:0; font-size:14px;  border-radius:60px; ">查看处理进度</a>
 		<div class="clear"></div>
 	</div>
 
@@ -60,11 +60,16 @@
             {
                 <li>
                 <div class="times_m_l">
-                    <span>@Convert.ToDateTime(dr["OperateTime"]).ToString(BaseSystemInfo.DateFormat)</span>
                     <label>@Convert.ToDateTime(dr["OperateTime"]).ToString(BaseSystemInfo.TimeFormat)</label>
+                    <span>@Convert.ToDateTime(dr["OperateTime"]).ToString(BaseSystemInfo.DateFormat)</span>
                 </div>
                 <div class="times_m_r">
-                    <span>[@EnumExtensions.ToDescription((OperationEnum)dr["Operation"])]@dr["OperatorName"]<br />电话：@dr["OperatorTel"]</span>
+                    <span>
+                        [@EnumExtensions.ToDescription((OperationEnum)dr["Operation"])]@dr["OperatorName"]
+                        <br />电话：<a href="tel:@dr["OperatorTel"]">@dr["OperatorTel"]</a>
+                        <br />@(string.IsNullOrEmpty(dr["Remark"].ToString())?"":"备注："+dr["Remark"])
+                    </span>
+                    
                     <i class="circle iconfont">&#xe6ff;</i>
                 </div>
                 <div class="clear"></div>
@@ -82,19 +87,12 @@
     <span>@EnumExtensions.ToDescription(ViewBag.OrderStatus)</span>
 </div>
 
-@Html.Partial("~/Views/Popup/OrderdetailPopup.cshtml")
-@Html.Partial("~/Views/Popup/HandledetailPopup.cshtml")
-
 <script>
     setOrderStatus = function () {
         var status = '@ViewBag.OrderStatus1';
         $("#" + status).find('span').text('@EnumExtensions.ToDescription(ViewBag.OrderStatus)');//给自己添加样式
         $("#" + status).addClass("now");//给自己添加样式
         $("#" + status).prevAll().addClass("now");//给之前的流程添加样式
-
-        //var statusID = ".reject";
-        //appendDom("#" + status, $(statusID).get());
-        //$("#" + status).children(statusID).show();
     }
 
     $(function () {

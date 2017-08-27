@@ -1,6 +1,6 @@
 ﻿<div class="weui_cells weui_cells_form">
     <div class="weui_cell">
-        <div class="weui_cell_hd"><label for="" class="weui_label">此天前完成</label></div>
+        <div class="weui_cell_hd"><label for="" class="weui_label">截止日期</label></div>
         <div class="weui_cell_bd weui_cell_primary">
             <input class="weui_input" id="BookingTime" type="date" value="">
         </div>
@@ -8,13 +8,13 @@
     <div class="weui_cell">
         <div class="weui_cell_hd"><label class="weui_label">联系人</label></div>
         <div class="weui_cell_bd weui_cell_primary">
-            <input class="weui_input" id="Attn" type="" placeholder="不填默认发单人">
+            <input class="weui_input" id="Attn" type="text" placeholder="不填默认发单人">
         </div>
     </div>
     <div class="weui_cell">
         <div class="weui_cell_hd"><label class="weui_label">联系电话</label></div>
         <div class="weui_cell_bd weui_cell_primary">
-            <input class="weui_input" id="AttnTel" type="" placeholder="不填默认发单人电话">
+            <input class="weui_input" id="AttnTel" type="text" placeholder="不填默认发单人电话">
         </div>
     </div>
 
@@ -46,7 +46,6 @@
     <div class="weui_cell">
         <div class="weui_cell_bd weui_cell_primary">
             <textarea class="weui_textarea" id="Content" placeholder="请输入报账单内容" rows="3"></textarea>
-            @*<div class="weui_textarea_counter"><span>0</span>/200</div>*@
         </div>
     </div>
 </div>
@@ -55,7 +54,6 @@
     <div class="weui_cell">
         <div class="weui_cell_bd weui_cell_primary">
             <textarea class="weui_textarea" id="Remark" placeholder="请输入备注" rows="2"></textarea>
-            @*<div class="weui_textarea_counter"><span>0</span>/200</div>*@
         </div>
     </div>
 </div>
@@ -76,11 +74,11 @@
         };
 
         doPost('@Url.Action("DoStartOrder", "Order")', data, function (jdata) {
-            debugger;
             if (jdata.Code == "200") {
                 startedQuery.pageIndex = 1;
                 querymystarted();//查询
-                setTab(1, 1);//切换tab
+                doClearStartForm();
+                //setTab(1, 1);//切换tab
             }
 
         })
@@ -94,5 +92,7 @@
         $('#Content').val('');
         $('#Remark').val('');
     }
+
+
 
 </script>

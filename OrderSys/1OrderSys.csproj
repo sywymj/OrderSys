@@ -228,9 +228,6 @@
     <Content Include="Views\Shared\_Loading.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\Shared\_Refresh.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="Views\Shared\_End.cshtml" />
   </ItemGroup>
   <ItemGroup>
@@ -257,6 +254,7 @@
     <Content Include="Views\Popup\_DemoPopup.cshtml" />
     <Content Include="Views\Shared\_Fresh.cshtml" />
     <Content Include="Views\Shared\_InnerLayout.cshtml" />
+    <Content Include="Views\Shared\_NoData.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

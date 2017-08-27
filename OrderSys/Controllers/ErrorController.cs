@@ -23,7 +23,7 @@ namespace OrderSys.Controllers
             string message = RouteData.Values["exception"].ToString();
             ContentResult res = new ContentResult()
             {
-                Content = JSON.ToJSON(new JSResponse(message,"403", message), jsonParams)
+                Content = JSON.ToJSON(new JSResponse(message,"500", message), jsonParams)
             };
             return res;
         }
@@ -81,10 +81,9 @@ namespace OrderSys.Controllers
         public ActionResult Http500()
         {
             string message = RouteData.Values["exception"].ToString();
-            Response.Charset = "utf-8";
             ContentResult res = new ContentResult()
             {
-                Content = JSON.ToJSON(new JSResponse(message, "500", message), jsonParams)
+                Content = JSON.ToJSON(new JSResponse("服务器出错！", "500", message), jsonParams)
             };
             return res;
         }
