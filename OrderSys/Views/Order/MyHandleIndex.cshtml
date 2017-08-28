@@ -5,7 +5,7 @@
 }
 <div class="weui_tab">
     <div class="weui_navbar" id="tab1">
-        <li class="weui_navbar_item weui_bar_item_on" id="query_myreceiving_btn" onclick="setTab(1,0)">
+        <li class="weui_navbar_item weui_bar_item_on" id="query_myreciving_btn" onclick="setTab(1,0)">
             未接单
         </li>
         <li class="weui_navbar_item" id="query_myhandling_btn" onclick="setTab(1, 1)">
@@ -51,7 +51,7 @@
         //debugger;
         var tabID = $(".weui_bar_item_on").attr("id");
         if (tabID == "query_myreciving_btn") {
-            recivingQuery.pageIndex = 1;
+            receivingQuery.pageIndex = 1;
             querymyreciving();
         } 
         else if (tabID == "query_myhandling_btn") {

@@ -71,7 +71,7 @@
             doGet(url, urlParm, function (jdata) {
                 if (jdata.Code == "200") {
                     //刷新已完成
-                    history.back(-1);
+                    self.location = document.referrer;
                 }
             });
         }, function () {
