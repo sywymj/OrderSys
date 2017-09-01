@@ -45,6 +45,7 @@
     <Compile Include="BaseSystemInfo.cs" />
     <Compile Include="BaseSystemInfo.Database.cs" />
     <Compile Include="Enums\JSEnums.Order.cs" />
+    <Compile Include="Enums\JSEnums.Sys.cs" />
     <Compile Include="JSDictionary.cs" />
     <Compile Include="Configuration\BaseConfiguration.cs" />
     <Compile Include="Configuration\ConfigurationCategory.cs" />
