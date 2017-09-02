@@ -8,15 +8,15 @@ using JSNet.Model;
 using JSNet.DbUtilities;
 namespace JSNet.Model
 {
-	//P_Organize
-	public class OrganizeEntity:BaseEntity,IEntity<OrganizeEntity>
+	//P_PermissionItem
+	public class PermissionItemEntity:BaseEntity,IEntity<PermissionItemEntity>
 	{
 		/// <summary>
 		/// TableName
 		/// </summary>
 		public string TableName
         {
-            get { return "[P_Organize]"; }
+            get { return "[P_PermissionItem]"; }
         }
 	
 		/// <summary>
@@ -28,6 +28,13 @@ namespace JSNet.Model
         }
 				
 	
+		/// <summary>
+        /// 主键自动递增
+        /// </summary>
+        public override bool IsIdenty
+        {
+        	get { return true; }
+        }
 		
 	
    		#region 字段、属性
@@ -41,22 +48,13 @@ namespace JSNet.Model
             set{ _id = value; }
         }        
 		/// <summary>
-		/// ParentID
+		/// ParentId
         /// </summary>		
 		private int? _parentid;
-        public int? ParentID
+        public int? ParentId
         {
             get{ return _parentid; }
             set{ _parentid = value; }
-        }        
-		/// <summary>
-		/// OrganizeCategoryID
-        /// </summary>		
-		private string _organizecategoryid;
-        public string OrganizeCategoryID
-        {
-            get{ return _organizecategoryid; }
-            set{ _organizecategoryid = value; }
         }        
 		/// <summary>
 		/// Code
@@ -77,94 +75,76 @@ namespace JSNet.Model
             set{ _fullname = value; }
         }        
 		/// <summary>
-		/// ShortName
+		/// SysCategory
         /// </summary>		
-		private string _shortname;
-        public string ShortName
+		private string _syscategory;
+        public string SysCategory
         {
-            get{ return _shortname; }
-            set{ _shortname = value; }
+            get{ return _syscategory; }
+            set{ _syscategory = value; }
         }        
 		/// <summary>
-		/// OuterPhone
+		/// ActionName
         /// </summary>		
-		private string _outerphone;
-        public string OuterPhone
+		private string _actionname;
+        public string ActionName
         {
-            get{ return _outerphone; }
-            set{ _outerphone = value; }
+            get{ return _actionname; }
+            set{ _actionname = value; }
         }        
 		/// <summary>
-		/// InnerPhone
+		/// ActionParameter
         /// </summary>		
-		private string _innerphone;
-        public string InnerPhone
+		private string _actionparameter;
+        public string ActionParameter
         {
-            get{ return _innerphone; }
-            set{ _innerphone = value; }
+            get{ return _actionparameter; }
+            set{ _actionparameter = value; }
         }        
 		/// <summary>
-		/// Fax
+		/// AllowEdit
         /// </summary>		
-		private string _fax;
-        public string Fax
+		private int? _allowedit;
+        public int? AllowEdit
         {
-            get{ return _fax; }
-            set{ _fax = value; }
+            get{ return _allowedit; }
+            set{ _allowedit = value; }
         }        
 		/// <summary>
-		/// Email
+		/// AllowDelete
         /// </summary>		
-		private string _email;
-        public string Email
+		private int? _allowdelete;
+        public int? AllowDelete
         {
-            get{ return _email; }
-            set{ _email = value; }
+            get{ return _allowdelete; }
+            set{ _allowdelete = value; }
         }        
 		/// <summary>
-		/// Postalcode
+		/// IsVisible
         /// </summary>		
-		private string _postalcode;
-        public string Postalcode
+		private int? _isvisible;
+        public int? IsVisible
         {
-            get{ return _postalcode; }
-            set{ _postalcode = value; }
+            get{ return _isvisible; }
+            set{ _isvisible = value; }
         }        
 		/// <summary>
-		/// Address
+		/// IsEnable
         /// </summary>		
-		private string _address;
-        public string Address
+		private int? _isenable;
+        public int? IsEnable
         {
-            get{ return _address; }
-            set{ _address = value; }
+            get{ return _isenable; }
+            set{ _isenable = value; }
         }        
 		/// <summary>
-		/// Web
+		/// IsPublic
         /// </summary>		
-		private string _web;
-        public string Web
+		private int? _ispublic;
+        public int? IsPublic
         {
-            get{ return _web; }
-            set{ _web = value; }
-        }        
-		/// <summary>
-		/// Layer
-        /// </summary>		
-		private int? _layer;
-        public int? Layer
-        {
-            get{ return _layer; }
-            set{ _layer = value; }
-        }        
-		/// <summary>
-		/// SortCode
-        /// </summary>		
-		private int? _sortcode;
-        public int? SortCode
-        {
-            get{ return _sortcode; }
-            set{ _sortcode = value; }
+            get{ return _ispublic; }
+            set{ _ispublic = value; }
         }        
 		/// <summary>
 		/// Description
@@ -176,6 +156,15 @@ namespace JSNet.Model
             set{ _description = value; }
         }        
 		/// <summary>
+		/// SortCode
+        /// </summary>		
+		private int? _sortcode;
+        public int? SortCode
+        {
+            get{ return _sortcode; }
+            set{ _sortcode = value; }
+        }        
+		/// <summary>
 		/// DeletionStateCode
         /// </summary>		
 		private int? _deletionstatecode;
@@ -183,15 +172,6 @@ namespace JSNet.Model
         {
             get{ return _deletionstatecode; }
             set{ _deletionstatecode = value; }
-        }        
-		/// <summary>
-		/// IsEnable
-        /// </summary>		
-		private int? _isenable;
-        public int? IsEnable
-        {
-            get{ return _isenable; }
-            set{ _isenable = value; }
         }        
 		/// <summary>
 		/// CreateOn
@@ -258,18 +238,11 @@ namespace JSNet.Model
             get{ return "ID"; }
         }        
 		/// <summary>
-		/// FiledName:ParentID
+		/// FiledName:ParentId
         /// </summary>		
-        public static string FieldParentID
+        public static string FieldParentId
         {
-            get{ return "ParentID"; }
-        }        
-		/// <summary>
-		/// FiledName:OrganizeCategoryID
-        /// </summary>		
-        public static string FieldOrganizeCategoryID
-        {
-            get{ return "OrganizeCategoryID"; }
+            get{ return "ParentId"; }
         }        
 		/// <summary>
 		/// FiledName:Code
@@ -286,74 +259,60 @@ namespace JSNet.Model
             get{ return "FullName"; }
         }        
 		/// <summary>
-		/// FiledName:ShortName
+		/// FiledName:SysCategory
         /// </summary>		
-        public static string FieldShortName
+        public static string FieldSysCategory
         {
-            get{ return "ShortName"; }
+            get{ return "SysCategory"; }
         }        
 		/// <summary>
-		/// FiledName:OuterPhone
+		/// FiledName:ActionName
         /// </summary>		
-        public static string FieldOuterPhone
+        public static string FieldActionName
         {
-            get{ return "OuterPhone"; }
+            get{ return "ActionName"; }
         }        
 		/// <summary>
-		/// FiledName:InnerPhone
+		/// FiledName:ActionParameter
         /// </summary>		
-        public static string FieldInnerPhone
+        public static string FieldActionParameter
         {
-            get{ return "InnerPhone"; }
+            get{ return "ActionParameter"; }
         }        
 		/// <summary>
-		/// FiledName:Fax
+		/// FiledName:AllowEdit
         /// </summary>		
-        public static string FieldFax
+        public static string FieldAllowEdit
         {
-            get{ return "Fax"; }
+            get{ return "AllowEdit"; }
         }        
 		/// <summary>
-		/// FiledName:Email
+		/// FiledName:AllowDelete
         /// </summary>		
-        public static string FieldEmail
+        public static string FieldAllowDelete
         {
-            get{ return "Email"; }
+            get{ return "AllowDelete"; }
         }        
 		/// <summary>
-		/// FiledName:Postalcode
+		/// FiledName:IsVisible
         /// </summary>		
-        public static string FieldPostalcode
+        public static string FieldIsVisible
         {
-            get{ return "Postalcode"; }
+            get{ return "IsVisible"; }
         }        
 		/// <summary>
-		/// FiledName:Address
+		/// FiledName:IsEnable
         /// </summary>		
-        public static string FieldAddress
+        public static string FieldIsEnable
         {
-            get{ return "Address"; }
+            get{ return "IsEnable"; }
         }        
 		/// <summary>
-		/// FiledName:Web
+		/// FiledName:IsPublic
         /// </summary>		
-        public static string FieldWeb
+        public static string FieldIsPublic
         {
-            get{ return "Web"; }
-        }        
-		/// <summary>
-		/// FiledName:Layer
-        /// </summary>		
-        public static string FieldLayer
-        {
-            get{ return "Layer"; }
-        }        
-		/// <summary>
-		/// FiledName:SortCode
-        /// </summary>		
-        public static string FieldSortCode
-        {
-            get{ return "SortCode"; }
+            get{ return "IsPublic"; }
         }        
 		/// <summary>
 		/// FiledName:Description
@@ -363,18 +322,18 @@ namespace JSNet.Model
             get{ return "Description"; }
         }        
 		/// <summary>
+		/// FiledName:SortCode
+        /// </summary>		
+        public static string FieldSortCode
+        {
+            get{ return "SortCode"; }
+        }        
+		/// <summary>
 		/// FiledName:DeletionStateCode
         /// </summary>		
         public static string FieldDeletionStateCode
         {
             get{ return "DeletionStateCode"; }
-        }        
-		/// <summary>
-		/// FiledName:IsEnable
-        /// </summary>		
-        public static string FieldIsEnable
-        {
-            get{ return "IsEnable"; }
         }        
 		/// <summary>
 		/// FiledName:CreateOn
@@ -420,27 +379,24 @@ namespace JSNet.Model
         }        
 		   		#endregion
    		
-   		public OrganizeEntity GetFrom(System.Data.DataRow dataRow)
+   		public PermissionItemEntity GetFrom(System.Data.DataRow dataRow)
         {
-        	OrganizeEntity entity = new OrganizeEntity();
-	   		entity.ID = CommonUtil.ConvertToInt(dataRow[FieldID]);
-			entity.ParentID = CommonUtil.ConvertToInt(dataRow[FieldParentID]);
-			entity.OrganizeCategoryID = CommonUtil.ConvertToString(dataRow[FieldOrganizeCategoryID]);
+        	PermissionItemEntity entity = new PermissionItemEntity();
+	   		entity.ID = CommonUtil.ConvertToInt(dataRow[this.PrimaryKey]);
+				entity.ParentId = CommonUtil.ConvertToInt(dataRow[FieldParentId]);
 			entity.Code = CommonUtil.ConvertToString(dataRow[FieldCode]);
 			entity.FullName = CommonUtil.ConvertToString(dataRow[FieldFullName]);
-			entity.ShortName = CommonUtil.ConvertToString(dataRow[FieldShortName]);
-			entity.OuterPhone = CommonUtil.ConvertToString(dataRow[FieldOuterPhone]);
-			entity.InnerPhone = CommonUtil.ConvertToString(dataRow[FieldInnerPhone]);
-			entity.Fax = CommonUtil.ConvertToString(dataRow[FieldFax]);
-			entity.Email = CommonUtil.ConvertToString(dataRow[FieldEmail]);
-			entity.Postalcode = CommonUtil.ConvertToString(dataRow[FieldPostalcode]);
-			entity.Address = CommonUtil.ConvertToString(dataRow[FieldAddress]);
-			entity.Web = CommonUtil.ConvertToString(dataRow[FieldWeb]);
-			entity.Layer = CommonUtil.ConvertToInt(dataRow[FieldLayer]);
-			entity.SortCode = CommonUtil.ConvertToInt(dataRow[FieldSortCode]);
-			entity.Description = CommonUtil.ConvertToString(dataRow[FieldDescription]);
-			entity.DeletionStateCode = CommonUtil.ConvertToInt(dataRow[FieldDeletionStateCode]);
+			entity.SysCategory = CommonUtil.ConvertToString(dataRow[FieldSysCategory]);
+			entity.ActionName = CommonUtil.ConvertToString(dataRow[FieldActionName]);
+			entity.ActionParameter = CommonUtil.ConvertToString(dataRow[FieldActionParameter]);
+			entity.AllowEdit = CommonUtil.ConvertToInt(dataRow[FieldAllowEdit]);
+			entity.AllowDelete = CommonUtil.ConvertToInt(dataRow[FieldAllowDelete]);
+			entity.IsVisible = CommonUtil.ConvertToInt(dataRow[FieldIsVisible]);
 			entity.IsEnable = CommonUtil.ConvertToInt(dataRow[FieldIsEnable]);
+			entity.IsPublic = CommonUtil.ConvertToInt(dataRow[FieldIsPublic]);
+			entity.Description = CommonUtil.ConvertToString(dataRow[FieldDescription]);
+			entity.SortCode = CommonUtil.ConvertToInt(dataRow[FieldSortCode]);
+			entity.DeletionStateCode = CommonUtil.ConvertToInt(dataRow[FieldDeletionStateCode]);
 			entity.CreateOn = CommonUtil.ConvertToDateTime(dataRow[FieldCreateOn]);
 			entity.CreateUserId = CommonUtil.ConvertToString(dataRow[FieldCreateUserId]);
 			entity.CreateBy = CommonUtil.ConvertToString(dataRow[FieldCreateBy]);
@@ -451,27 +407,24 @@ namespace JSNet.Model
 		}
 		
 		
-   		public OrganizeEntity GetFrom(System.Data.IDataReader dataReader)
+   		public PermissionItemEntity GetFrom(System.Data.IDataReader dataReader)
         {
-        	OrganizeEntity entity = new OrganizeEntity();
-	   		entity.ID = CommonUtil.ConvertToInt(dataReader[FieldID]);
-			entity.ParentID = CommonUtil.ConvertToInt(dataReader[FieldParentID]);
-			entity.OrganizeCategoryID = CommonUtil.ConvertToString(dataReader[FieldOrganizeCategoryID]);
+        	PermissionItemEntity entity = new PermissionItemEntity();
+	   		entity.ID = CommonUtil.ConvertToInt(dataReader[this.PrimaryKey]);
+				entity.ParentId = CommonUtil.ConvertToInt(dataReader[FieldParentId]);
 			entity.Code = CommonUtil.ConvertToString(dataReader[FieldCode]);
 			entity.FullName = CommonUtil.ConvertToString(dataReader[FieldFullName]);
-			entity.ShortName = CommonUtil.ConvertToString(dataReader[FieldShortName]);
-			entity.OuterPhone = CommonUtil.ConvertToString(dataReader[FieldOuterPhone]);
-			entity.InnerPhone = CommonUtil.ConvertToString(dataReader[FieldInnerPhone]);
-			entity.Fax = CommonUtil.ConvertToString(dataReader[FieldFax]);
-			entity.Email = CommonUtil.ConvertToString(dataReader[FieldEmail]);
-			entity.Postalcode = CommonUtil.ConvertToString(dataReader[FieldPostalcode]);
-			entity.Address = CommonUtil.ConvertToString(dataReader[FieldAddress]);
-			entity.Web = CommonUtil.ConvertToString(dataReader[FieldWeb]);
-			entity.Layer = CommonUtil.ConvertToInt(dataReader[FieldLayer]);
-			entity.SortCode = CommonUtil.ConvertToInt(dataReader[FieldSortCode]);
-			entity.Description = CommonUtil.ConvertToString(dataReader[FieldDescription]);
-			entity.DeletionStateCode = CommonUtil.ConvertToInt(dataReader[FieldDeletionStateCode]);
+			entity.SysCategory = CommonUtil.ConvertToString(dataReader[FieldSysCategory]);
+			entity.ActionName = CommonUtil.ConvertToString(dataReader[FieldActionName]);
+			entity.ActionParameter = CommonUtil.ConvertToString(dataReader[FieldActionParameter]);
+			entity.AllowEdit = CommonUtil.ConvertToInt(dataReader[FieldAllowEdit]);
+			entity.AllowDelete = CommonUtil.ConvertToInt(dataReader[FieldAllowDelete]);
+			entity.IsVisible = CommonUtil.ConvertToInt(dataReader[FieldIsVisible]);
 			entity.IsEnable = CommonUtil.ConvertToInt(dataReader[FieldIsEnable]);
+			entity.IsPublic = CommonUtil.ConvertToInt(dataReader[FieldIsPublic]);
+			entity.Description = CommonUtil.ConvertToString(dataReader[FieldDescription]);
+			entity.SortCode = CommonUtil.ConvertToInt(dataReader[FieldSortCode]);
+			entity.DeletionStateCode = CommonUtil.ConvertToInt(dataReader[FieldDeletionStateCode]);
 			entity.CreateOn = CommonUtil.ConvertToDateTime(dataReader[FieldCreateOn]);
 			entity.CreateUserId = CommonUtil.ConvertToString(dataReader[FieldCreateUserId]);
 			entity.CreateBy = CommonUtil.ConvertToString(dataReader[FieldCreateBy]);
@@ -481,26 +434,22 @@ namespace JSNet.Model
 						return this;
 		}
 		
-		public void SetEntity(NonQueryBuilder sqlBuilder, OrganizeEntity entity)
+		public void SetEntity(NonQueryBuilder sqlBuilder, PermissionItemEntity entity)
         {
-	   		sqlBuilder.SetValue(FieldID, entity.ID);
-			sqlBuilder.SetValue(FieldParentID, entity.ParentID);
-			sqlBuilder.SetValue(FieldOrganizeCategoryID, entity.OrganizeCategoryID);
+	   		sqlBuilder.SetValue(FieldParentId, entity.ParentId);
 			sqlBuilder.SetValue(FieldCode, entity.Code);
 			sqlBuilder.SetValue(FieldFullName, entity.FullName);
-			sqlBuilder.SetValue(FieldShortName, entity.ShortName);
-			sqlBuilder.SetValue(FieldOuterPhone, entity.OuterPhone);
-			sqlBuilder.SetValue(FieldInnerPhone, entity.InnerPhone);
-			sqlBuilder.SetValue(FieldFax, entity.Fax);
-			sqlBuilder.SetValue(FieldEmail, entity.Email);
-			sqlBuilder.SetValue(FieldPostalcode, entity.Postalcode);
-			sqlBuilder.SetValue(FieldAddress, entity.Address);
-			sqlBuilder.SetValue(FieldWeb, entity.Web);
-			sqlBuilder.SetValue(FieldLayer, entity.Layer);
-			sqlBuilder.SetValue(FieldSortCode, entity.SortCode);
-			sqlBuilder.SetValue(FieldDescription, entity.Description);
-			sqlBuilder.SetValue(FieldDeletionStateCode, entity.DeletionStateCode);
+			sqlBuilder.SetValue(FieldSysCategory, entity.SysCategory);
+			sqlBuilder.SetValue(FieldActionName, entity.ActionName);
+			sqlBuilder.SetValue(FieldActionParameter, entity.ActionParameter);
+			sqlBuilder.SetValue(FieldAllowEdit, entity.AllowEdit);
+			sqlBuilder.SetValue(FieldAllowDelete, entity.AllowDelete);
+			sqlBuilder.SetValue(FieldIsVisible, entity.IsVisible);
 			sqlBuilder.SetValue(FieldIsEnable, entity.IsEnable);
+			sqlBuilder.SetValue(FieldIsPublic, entity.IsPublic);
+			sqlBuilder.SetValue(FieldDescription, entity.Description);
+			sqlBuilder.SetValue(FieldSortCode, entity.SortCode);
+			sqlBuilder.SetValue(FieldDeletionStateCode, entity.DeletionStateCode);
 			sqlBuilder.SetValue(FieldCreateOn, entity.CreateOn);
 			sqlBuilder.SetValue(FieldCreateUserId, entity.CreateUserId);
 			sqlBuilder.SetValue(FieldCreateBy, entity.CreateBy);

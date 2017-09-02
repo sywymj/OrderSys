@@ -46,14 +46,21 @@
     <Compile Include="OrderFlowEntity.cs" />
     <Compile Include="OrderHandleDetailEntity.cs" />
     <Compile Include="OrderHandlerEntity.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ModuleEntity.cs" />
     <Compile Include="OrganizeEntity.cs" />
+    <Compile Include="OrganizeCategoryEntity.cs" />
+    <Compile Include="PermissionEntity.cs" />
+    <Compile Include="PermissionItemEntity.cs" />
+    <Compile Include="PermissionScopeEntity.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ResourceEntity.cs" />
     <Compile Include="RoleEntity.cs" />
-    <Compile Include="RoleModuleRelEntity.cs" />
+    <Compile Include="RolePermissionRelEntity.cs" />
+    <Compile Include="RolePermissionScopeRelEntity.cs" />
     <Compile Include="RoleUserRelEntity.cs" />
     <Compile Include="StaffEntity.cs" />
     <Compile Include="TabSNEntity.cs" />
+    <Compile Include="UserEntity.cs" />
+    <Compile Include="UserRoleRelEntity.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DbUtilities\6DbUtilities.csproj">

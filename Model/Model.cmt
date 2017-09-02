@@ -90,14 +90,15 @@ namespace JSNet.Model
    		
    		public <#= clsName #> GetFrom(System.Data.DataRow dataRow)
         {
+        	<#= clsName #> entity = new <#= clsName #>();
 	   		<# foreach (ColumnInfo c in host.Fieldlist)
 			{ 
 				string s =  CodeCommon.DbTypeToCS(c.TypeName).ToString();
 				string typeName = s.Substring(0,1).ToUpper()+s.Substring(1);
 				if(c.IsIdentity)
-				{ #>this.<#= c.ColumnName.ToString()#> = CommonUtil.ConvertTo<#=typeName #>(dataRow[this.PrimaryKey]);
+				{ #>entity.<#= c.ColumnName.ToString()#> = CommonUtil.ConvertTo<#=typeName #>(dataRow[this.PrimaryKey]);
 				<# continue;
-				}#>this.<#= c.ColumnName.ToString()#> = CommonUtil.ConvertTo<#= typeName #>(dataRow[Field<#= c.ColumnName.ToString()#>]);
+				}#>entity.<#= c.ColumnName.ToString()#> = CommonUtil.ConvertTo<#= typeName #>(dataRow[Field<#= c.ColumnName.ToString()#>]);
 			<# } #>
 			return this;
 		}
@@ -105,14 +106,15 @@ namespace JSNet.Model
 		
    		public <#= clsName #> GetFrom(System.Data.IDataReader dataReader)
         {
+        	<#= clsName #> entity = new <#= clsName #>();
 	   		<# foreach (ColumnInfo c in host.Fieldlist)
 			{ 
 				string s =  CodeCommon.DbTypeToCS(c.TypeName).ToString();
 				string typeName = s.Substring(0,1).ToUpper()+s.Substring(1);
 				if(c.IsIdentity)
-				{#>this.<#= c.ColumnName.ToString()#> = CommonUtil.ConvertTo<#=typeName #>(dataReader[this.PrimaryKey]);
+				{#>entity.<#= c.ColumnName.ToString()#> = CommonUtil.ConvertTo<#=typeName #>(dataReader[this.PrimaryKey]);
 				<# continue;
-				}#>this.<#= c.ColumnName.ToString()#> = CommonUtil.ConvertTo<#=typeName #>(dataReader[Field<#= c.ColumnName.ToString()#>]);
+				}#>entity.<#= c.ColumnName.ToString()#> = CommonUtil.ConvertTo<#=typeName #>(dataReader[Field<#= c.ColumnName.ToString()#>]);
 			<# } #>
 			return this;
 		}
