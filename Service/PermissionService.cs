@@ -165,6 +165,33 @@ namespace JSNet.Service
         {
 
         }
+
+        public void GetUserPermissionScope()
+        {
+
+        }
+
+        public void IsResourceAuthorizedByUser()
+        {
+
+        }
+
+        public void GetModuleIdsByUser()
+        {
+
+        }
+
+        public void GetPermissionDT()
+        { 
+        
+        }
+
+        public DataTable GetPermissionDTByUser()
+        {
+
+        }
+
+
         
     }
 }
