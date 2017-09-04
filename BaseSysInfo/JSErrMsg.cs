@@ -22,9 +22,11 @@ namespace JSNet.BaseSys
         public const string ERR_CODE_SESSIONKEY_MISSING = "51";
         public const string ERR_MSG_SESSIONKEY_MISSING = "server-error:Missing required session key:{0}";
 
-        //6开头的是业务问题
-        public const string ERR_CODE_DATA_MISSING = "61";
+        //9开头的是数据库问题
+        public const string ERR_CODE_DATA_MISSING = "91";
         public const string ERR_MSG_DATA_MISSING = "{0}数据不存在";
+
+        //6开头的是工单业务问题
         public const string ERR_CODE_NOLEADER = "62";
         public const string ERR_MSG_NOLEADER = "{0}工单没有领队";
 

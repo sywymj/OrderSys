@@ -302,13 +302,13 @@ namespace JSNet.Service
             
         }
 
-        public RoleEntity GetCurrentRole()
+        public RoleEntity GetCurrentRole(UserEntity user)
         {
             //1.0 先从cookie查，有没有相应的role，若没有，选择第一个role
+            // todo fix bug 其他用户登录会获取错误的roleid
             string roleID = JSRequest.GetCookieParm("RoleID").ToString();
             if (roleID == null)
             {
-                UserEntity user = GetCurrentUser();
                 ViewManager vmanager = new ViewManager("VP_UserRole");
 
                 WhereStatement where = new WhereStatement();
@@ -327,11 +327,23 @@ namespace JSNet.Service
             //2.0 根据roleID，获取role对象
             EntityManager<RoleEntity> manager = new EntityManager<RoleEntity>();
             RoleEntity role = manager.GetSingle(roleID);
+            if (role == null)
+            {
+                throw new JSException(JSErrMsg.ERR_CODE_DATA_MISSING, string.Format(JSErrMsg.ERR_MSG_DATA_MISSING,"该角色的"));
+            }
+
+            //3.0 将当前roleID 写进cookie
+            CommonUtil.WriteCookie("RoleID", role.ID.ToString());
             return role;
         }
 
-        public void GetUserPermissionScope()
+        public void GetRoleResource(RoleEntity role,string resouceCode)
         {
+            ViewManager vmanager = new ViewManager("VP_UserRole");
+            WhereStatement where = new WhereStatement();
+            where.Add(RolePermissionEntity.FieldRoleID, Comparison.Equals, role.ID);
+            where.Add("Resource_Code", Comparison.Equals, resouceCode);
+
 
         }
 
