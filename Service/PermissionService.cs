@@ -59,10 +59,25 @@ namespace JSNet.Service
             user = manager.GetSingle(openID, UserEntity.FieldOpenID);
             if (user == null)
             {
-                throw new JSException(JSErrMsg.ERR_CODE_DATA_MISSING, string.Format(JSErrMsg.ERR_MSG_DATA_MISSING, "员工"));
+                throw new JSException(JSErrMsg.ERR_CODE_DATA_MISSING, string.Format(JSErrMsg.ERR_MSG_DATA_MISSING, "用户"));
             }
 
             return user;
+        }
+
+        public StaffEntity GetCurrentStaff()
+        {
+            EntityManager<StaffEntity> manager = new EntityManager<StaffEntity>();
+
+            UserEntity user = GetCurrentUser();
+
+            StaffEntity staff = manager.GetSingle(user.ID, StaffEntity.FieldID);
+            if (staff == null)
+            {
+                throw new JSException(JSErrMsg.ERR_CODE_DATA_MISSING, string.Format(JSErrMsg.ERR_MSG_DATA_MISSING, "员工"));
+            }
+
+            return staff;
         }
 
         public List<StaffEntity> GetAllStaffs()
@@ -143,27 +158,176 @@ namespace JSNet.Service
 
         public void AddRole(RoleEntity entity)
         {
+            EntityManager<RoleEntity> manager = new EntityManager<RoleEntity>();
+            UserEntity user = GetCurrentUser();
 
+            entity.DeletionStateCode = (int)TrueFalse.True;
+            entity.CreateUserId = user.ID.ToString();
+            entity.CreateBy = user.UserName;
+            entity.CreateOn = DateTime.Now;
+            manager.Insert(entity);
         }
 
-        public void AddStaff(StaffEntity staff)
+        public void AddStaff(StaffEntity entity)
+        {
+            EntityManager<StaffEntity> manager = new EntityManager<StaffEntity>();
+            UserEntity user = GetCurrentUser();
+
+            entity.DeletionStateCode = (int)TrueFalse.True;
+            entity.CreateUserId = user.ID.ToString();
+            entity.CreateBy = user.UserName;
+            entity.CreateOn = DateTime.Now;
+            manager.Insert(entity);
+        }
+
+        public void GrantPermission(UserEntity user)
         {
 
         }
 
-        public void GrantPermission()
+        /// <summary>
+        /// 添加操作权限
+        /// </summary>
+        public void AddPermission(UserEntity user,int permissionItemID, int resourceID, string permissionConstraint)
         {
+            EntityManager<PermissionEntity> manager = new EntityManager<PermissionEntity>();
+            
+            PermissionEntity permission = new PermissionEntity();
+            permission.PermissionItemID = permissionItemID;
+            permission.ResourceID = resourceID;
+            permission.PermissionConstraint = permissionConstraint;
+            permission.DeletionStateCode = (int)TrueFalse.True;
+            permission.CreateUserId = user.ID.ToString();
+            permission.CreateBy = user.UserName;
+            permission.CreateOn = DateTime.Now;
+            manager.Insert(permission);
 
         }
 
-        public void GrantPermissionScope()
+        /// <summary>
+        /// 添加资源权限
+        /// </summary>
+        public void AddPermissionScope(UserEntity user, int resourceID, int targetID, string permissionConstraint)
         {
+            EntityManager<PermissionScopeEntity> manager = new EntityManager<PermissionScopeEntity>();
 
+            PermissionScopeEntity scope = new PermissionScopeEntity();
+            scope.PermissionItemID = 13;//资源访问权限，写死的，以后改成1
+            scope.ResourceID = resourceID;
+            scope.PermissionConstraint = permissionConstraint;
+            scope.DeletionStateCode = (int)TrueFalse.True;
+            scope.CreateUserId = user.ID.ToString();
+            scope.CreateBy = user.UserName;
+            scope.CreateOn = DateTime.Now;
+            manager.Insert(scope);
         }
 
-        public void GrantRole()
+        /// <summary>
+        /// 分配操作权限
+        /// </summary>
+        public void GrantPermission(UserEntity user,int roleID,int[] permissionIDs)
         {
+            //1.0 清空该角色原有的操作权限
+            EntityManager<RolePermissionEntity> manager = new EntityManager<RolePermissionEntity>();
+            WhereStatement where = new WhereStatement();
+            where.Add(RolePermissionEntity.FieldRoleID,Comparison.Equals,roleID);
+            manager.Delete(where);
 
+            //2.0 添加当前选中的操作权限
+            foreach (int id in permissionIDs)
+            {
+                RolePermissionEntity entity = new RolePermissionEntity();
+                entity.RoleID = roleID;
+                entity.PermissionID = id;
+                entity.DeletionStateCode = (int)TrueFalse.True;
+                entity.CreateUserId = user.ID.ToString();
+                entity.CreateBy = user.UserName;
+                entity.CreateOn = DateTime.Now;
+                manager.Insert(entity);
+            }
+        }
+
+        /// <summary>
+        /// 分配资源权限
+        /// </summary>
+        public void GrantPermissionScope(UserEntity user, int roleID, int[] permissionScopeIDs)
+        {
+            //1.0 清空该角色原有的操作权限
+            EntityManager<RolePermissionScopeEntity> manager = new EntityManager<RolePermissionScopeEntity>();
+            WhereStatement where = new WhereStatement();
+            where.Add(RolePermissionScopeEntity.FieldRoleID, Comparison.Equals, roleID);
+            manager.Delete(where);
+
+            //2.0 添加当前选中的操作权限
+            foreach (int id in permissionScopeIDs)
+            {
+                RolePermissionScopeEntity entity = new RolePermissionScopeEntity();
+                entity.RoleID = roleID;
+                entity.PermissionScopeID = id;
+                entity.DeletionStateCode = (int)TrueFalse.True;
+                entity.CreateUserId = user.ID.ToString();
+                entity.CreateBy = user.UserName;
+                entity.CreateOn = DateTime.Now;
+                manager.Insert(entity);
+            }
+        }
+
+        /// <summary>
+        /// 分配角色
+        /// </summary>
+        public void GrantRole(UserEntity user, int userID, int[] roleIDs)
+        {
+            //1.0 清空该用户原有的角色权限
+            EntityManager<UserRoleEntity> manager = new EntityManager<UserRoleEntity>();
+            WhereStatement where = new WhereStatement();
+            where.Add(UserRoleEntity.FieldUserID, Comparison.Equals, userID);
+            manager.Delete(where);
+
+            //2.0 添加当前选中的角色
+            foreach (int id in roleIDs)
+            {
+                UserRoleEntity entity = new UserRoleEntity();
+                entity.UserID = userID;
+                entity.RoleID = id;
+                entity.DeletionStateCode = (int)TrueFalse.True;
+                entity.CreateUserId = user.ID.ToString();
+                entity.CreateBy = user.UserName;
+                entity.CreateOn = DateTime.Now;
+                manager.Insert(entity);
+            }
+        }
+
+        public void GetOrganize()
+        {
+            
+        }
+
+        public RoleEntity GetCurrentRole()
+        {
+            //1.0 先从cookie查，有没有相应的role，若没有，选择第一个role
+            string roleID = JSRequest.GetCookieParm("RoleID").ToString();
+            if (roleID == null)
+            {
+                UserEntity user = GetCurrentUser();
+                ViewManager vmanager = new ViewManager("VP_UserRole");
+
+                WhereStatement where = new WhereStatement();
+                where.Add(UserRoleEntity.FieldUserID, Comparison.Equals, user.ID);
+
+                int count = 0;
+                DataTable dt = vmanager.GetDataTable(where, out count);
+
+                if (dt.Rows.Count == 0)
+                {
+                    throw new JSException(JSErrMsg.ERR_CODE_NotGrantRole, JSErrMsg.ERR_MSG_NotGrantRole);
+                }
+                roleID = dt.Rows[0][UserRoleEntity.FieldRoleID].ToString();
+            }
+
+            //2.0 根据roleID，获取role对象
+            EntityManager<RoleEntity> manager = new EntityManager<RoleEntity>();
+            RoleEntity role = manager.GetSingle(roleID);
+            return role;
         }
 
         public void GetUserPermissionScope()

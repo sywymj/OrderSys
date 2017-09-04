@@ -23,10 +23,14 @@ namespace JSNet.BaseSys
         public const string ERR_MSG_SESSIONKEY_MISSING = "server-error:Missing required session key:{0}";
 
         //6开头的是业务问题
-        public const string ERR_CODE_DATA_MISSING = "51";
+        public const string ERR_CODE_DATA_MISSING = "61";
         public const string ERR_MSG_DATA_MISSING = "{0}数据不存在";
-        public const string ERR_CODE_NOLEADER = "52";
+        public const string ERR_CODE_NOLEADER = "62";
         public const string ERR_MSG_NOLEADER = "{0}工单没有领队";
-        //7开头的是
+
+
+        //7开头的是权限业务问题
+        public const string ERR_CODE_NotGrantRole = "71";
+        public const string ERR_MSG_NotGrantRole = "当前用户没有分配角色。";
     }
 }

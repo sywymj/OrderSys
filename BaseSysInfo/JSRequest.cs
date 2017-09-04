@@ -70,6 +70,20 @@ namespace JSNet.BaseSys
             return HttpContext.Current.Session[key].ToString();
         }
 
+        /// <summary>
+        /// 获取Cookie参数
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        public static string GetCookieParm(string key)
+        {
+            if (!CheckCookieParms(key))
+            {
+                throw new JSException(JSErrMsg.ERR_CODE_COOKIEKEY_MISSING, string.Format(JSErrMsg.ERR_MSG_COOKIEKEY_MISSING, key));
+            }
+            return HttpContext.Current.Request.Cookies[key].ToString();
+        }
+
         //检查Request参数是否为null或为空
         private static bool CheckRequestUrlParms(string key)
         {
@@ -94,6 +108,15 @@ namespace JSNet.BaseSys
         private static bool CheckSessionParms(string key)
         {
             if (HttpContext.Current.Session[key] != null)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        private static bool CheckCookieParms(string key)
+        {
+            if (HttpContext.Current.Request.Cookies[key] != null)
             {
                 return true;
             }
