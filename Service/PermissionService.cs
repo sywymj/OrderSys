@@ -370,24 +370,85 @@ namespace JSNet.Service
         }
 
         /// <summary>
-        /// 获取整个树形menu
+        /// 获取 指定资源code 的整个树形menu
         /// </summary>
         /// <param name="role"></param>
-        /// <param name="systemCode"></param>
+        /// <param name="resourceCode">资源code</param>
         /// <returns></returns>
-        public DataTable GetMenu(RoleEntity role,string systemCode)
+        public DataTable GetMenu(RoleEntity role,string resourceCode)
         {
+            //1.0 获取已授权的树形menu
+            string[] ids = GetTreeMenuIds(role,resourceCode);
 
+            //2.0 根据id 获取详细信息
+            ViewManager vmanager = new ViewManager("VP_RolePermission");
+
+            WhereStatement where = new WhereStatement();
+            where.Add("ID", Comparison.In, ids);
+
+            OrderByStatement order = new OrderByStatement("Resource_SortCode", Sorting.Ascending);
+
+            int count = 0;
+            DataTable dt = vmanager.GetDataTable(where, out count, order);
+
+            return dt;
+            
+        }
+
+        public string[] GetTreeMenuIds(RoleEntity role,string resourceCode)
+        {
+            IDbHelper dbHelper = DbHelperFactory.GetHelper(BaseSystemInfo.CenterDbConnectionString);
+            IDbDataParameter[] dbParameters = new IDbDataParameter[] { dbHelper.MakeParameter("Resource_Code", resourceCode) };
+
+            string sqlQuery = @" WITH TreeMenu AS (SELECT ID 
+                                        FROM [VP_RolePermission] 
+                                        WHERE Resource_Code = " + dbHelper.GetParameter("Resource_Code") + @"
+                                        UNION ALL
+                                        SELECT ResourceTree.ID
+                                            FROM [VP_RolePermission] AS ResourceTree INNER JOIN
+                                                PermissionScopeTree AS A ON A.Id = ResourceTree.ParentID
+                                            WHERE ResourceType = '" + ResourceType.Menu.ToString() + @"'
+                                                AND IsVisible = " + (int)TrueFalse.True + @"
+                                                AND IsEnable = " + (int)TrueFalse.True + @"
+                                                AND RolePermission_RoleID = " + role.ID + @")
+                                SELECT ID
+                                    FROM TreeMenu ";
+            DataTable dt = dbHelper.Fill(sqlQuery, dbParameters);
+            return DataTableUtil.FieldToArray(dt, "ID");
         }
 
         /// <summary>
         /// 获取对应code下一层的button
         /// </summary>
         /// <param name="role"></param>
-        /// <param name="code"></param>
+        /// <param name="resourceCode"></param>
         /// <returns></returns>
-        public DataTable GetButton(RoleEntity role,string code)
+        public DataTable GetButton(RoleEntity role, string resourceCode)
         {
+            ViewManager vmanager = new ViewManager("VP_RolePermission");
+
+            WhereStatement where = new WhereStatement();
+            where.Add("Resource_SortCode",Comparison.Equals, resourceCode);
+
+            int count = 0;
+            DataTable dt = vmanager.GetDataTable(where, out count);
+
+            if (count == 0)
+            {
+                throw new JSException(JSErrMsg.ERR_CODE_DATA_MISSING, string.Format(JSErrMsg.ERR_MSG_DATA_MISSING, resourceCode));
+            }
+            if (count > 1)
+            {
+                throw new JSException(JSErrMsg.ERR_CODE_DATA_REPETITION, string.Format(JSErrMsg.ERR_MSG_DATA_REPETITION,"Resource表的"+ resourceCode));
+            }
+
+            WhereStatement where1 = new WhereStatement();
+            where1.Add("Resource_ParentID", Comparison.Equals, dt.Rows[0]["Resource_ParentID"].ToString());
+            where1.Add("RolePermission_RoleID", Comparison.Equals, role.ID);
+
+            int count1 = 0;
+            DataTable dt1 = vmanager.GetDataTable(where1, out count1);
+            return dt1;
 
         }
 
