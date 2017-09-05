@@ -337,37 +337,72 @@ namespace JSNet.Service
             return role;
         }
 
-        public void GetRoleResource(RoleEntity role,string resouceCode)
+        public Dictionary<string, List<string>> GetRolePermissionScope(RoleEntity role, string resouceCode)
         {
-            ViewManager vmanager = new ViewManager("VP_UserRole");
+            Dictionary<string, List<string>> dic = new Dictionary<string, List<string>>();
+            ViewManager vmanager = new ViewManager("VP_UserRolePermissionScope");
+
             WhereStatement where = new WhereStatement();
-            where.Add(RolePermissionEntity.FieldRoleID, Comparison.Equals, role.ID);
+            where.Add("Type", Comparison.Equals, ResourceType.Data.ToString());
+            where.Add("RoleID", Comparison.Equals, role.ID);
             where.Add("Resource_Code", Comparison.Equals, resouceCode);
 
+            int count = 0;
+            DataTable dt = vmanager.GetDataTable(where, out count);// TODO 这里会有性能问题
 
+            if (count == 0)
+            {
+                throw new JSException(JSErrMsg.ERR_CODE_NotGrantResource, JSErrMsg.ERR_MSG_NotGrantResource);
+            }
+
+            foreach(DataRow dr in dt.Rows)
+            {
+                if(!dic.ContainsKey(dr["OrganizeCategory_Code"].ToString()))
+                {
+                    List<string> list = new List<string>();
+                    list.Add(dr["Organize_Code"].ToString());
+                    dic.Add(dr["OrganizeCategory_Code"].ToString(),list);
+                    continue;
+                }
+                dic[dr["OrganizeCategory_Code"].ToString()].Add(dr["Organize_Code"].ToString());
+            }
+            return dic;
         }
 
-        public void IsResourceAuthorizedByUser()
+        /// <summary>
+        /// 获取整个树形menu
+        /// </summary>
+        /// <param name="role"></param>
+        /// <param name="systemCode"></param>
+        /// <returns></returns>
+        public DataTable GetMenu(RoleEntity role,string systemCode)
         {
 
         }
 
-        public void GetModuleIdsByUser()
+        /// <summary>
+        /// 获取对应code下一层的button
+        /// </summary>
+        /// <param name="role"></param>
+        /// <param name="code"></param>
+        /// <returns></returns>
+        public DataTable GetButton(RoleEntity role,string code)
         {
 
         }
 
-        public void GetPermissionDT()
-        { 
-        
-        }
 
-        public DataTable GetPermissionDTByUser()
+
+        public void IsPermissionAuthorizedByRole(RoleEntity role,string controllerName,string actionName,string actionParm = null)
         {
 
         }
 
 
+        public DataTable GetAllPermissions()
+        {
+            //先从缓存里面拿，如果没有再从数据库拿
+        }
         
     }
 }

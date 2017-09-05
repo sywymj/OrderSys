@@ -34,5 +34,7 @@ namespace JSNet.BaseSys
         //7开头的是权限业务问题
         public const string ERR_CODE_NotGrantRole = "71";
         public const string ERR_MSG_NotGrantRole = "当前用户没有分配角色。";
+        public const string ERR_CODE_NotGrantResource = "72";
+        public const string ERR_MSG_NotGrantResource = "没有查看该资源的权限。";
     }
 }
