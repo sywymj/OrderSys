@@ -220,6 +220,7 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Content\fonts\" />
+    <Folder Include="ControllersPC\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BaseSysInfo\5BaseSys.csproj">

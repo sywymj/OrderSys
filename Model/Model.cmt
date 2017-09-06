@@ -100,7 +100,7 @@ namespace JSNet.Model
 				<# continue;
 				}#>entity.<#= c.ColumnName.ToString()#> = CommonUtil.ConvertTo<#= typeName #>(dataRow[Field<#= c.ColumnName.ToString()#>]);
 			<# } #>
-			return this;
+			return entity;
 		}
 		
 		
@@ -116,7 +116,7 @@ namespace JSNet.Model
 				<# continue;
 				}#>entity.<#= c.ColumnName.ToString()#> = CommonUtil.ConvertTo<#=typeName #>(dataReader[Field<#= c.ColumnName.ToString()#>]);
 			<# } #>
-			return this;
+			return entity;
 		}
 		
 		public void SetEntity(NonQueryBuilder sqlBuilder, <#= clsName #> entity)

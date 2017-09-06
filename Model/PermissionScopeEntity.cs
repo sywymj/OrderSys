@@ -270,7 +270,7 @@ namespace JSNet.Model
             entity.ModifiedOn = CommonUtil.ConvertToDateTime(dataRow[FieldModifiedOn]);
             entity.ModifiedUserId = CommonUtil.ConvertToString(dataRow[FieldModifiedUserId]);
             entity.ModifiedBy = CommonUtil.ConvertToString(dataRow[FieldModifiedBy]);
-            return this;
+            return entity;
         }
 
 
@@ -291,7 +291,7 @@ namespace JSNet.Model
             entity.ModifiedOn = CommonUtil.ConvertToDateTime(dataReader[FieldModifiedOn]);
             entity.ModifiedUserId = CommonUtil.ConvertToString(dataReader[FieldModifiedUserId]);
             entity.ModifiedBy = CommonUtil.ConvertToString(dataReader[FieldModifiedBy]);
-            return this;
+            return entity;
         }
 
         public void SetEntity(NonQueryBuilder sqlBuilder, PermissionScopeEntity entity)

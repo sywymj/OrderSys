@@ -99,7 +99,7 @@ namespace JSNet.Service
             WhereStatement where = new WhereStatement();
             List<RoleEntity> list = roleManager.GetList(where, out count);
 
-            JSDictionary re = list.ToJSDictionary(Key => Key.ID, Value => Value.Title);
+            JSDictionary re = list.ToJSDictionary(Key => Key.ID, Value => Value.FullName);
             return re;
         }
 
@@ -178,11 +178,6 @@ namespace JSNet.Service
             entity.CreateBy = user.UserName;
             entity.CreateOn = DateTime.Now;
             manager.Insert(entity);
-        }
-
-        public void GrantPermission(UserEntity user)
-        {
-
         }
 
         /// <summary>
@@ -454,15 +449,34 @@ namespace JSNet.Service
 
 
 
-        public void IsPermissionAuthorizedByRole(RoleEntity role,string controllerName,string actionName,string actionParm = null)
+        public bool IsPermissionAuthorizedByRole(RoleEntity role,string controllerName,string actionName)
         {
+            DataTable dt = GetAllPermissions();
+
+            foreach (DataRow dr in dt.Rows)
+            {
+                if(dr["RolePermission_RoleID"].ToString() == role.ID.ToString()
+                    &&dr["PermissionItem_Controller"].ToString() == controllerName 
+                    && dr["PermissionItem_ActionName"].ToString() == actionName )
+                {
+                    return true;
+                }
+            }
+            return false;
 
         }
 
 
         public DataTable GetAllPermissions()
         {
-            //先从缓存里面拿，如果没有再从数据库拿
+            // TODO 先从缓存里面拿，如果没有再从数据库拿
+            ViewManager vmanager = new ViewManager("VP_RolePermission");
+            WhereStatement where = new WhereStatement();
+            where.Add("PermissionItem_IsEnable", Comparison.Equals, (int)TrueFalse.True);
+
+            int count = 0;
+            DataTable dt = vmanager.GetDataTable(where, out count);
+            return dt;
         }
         
     }
