@@ -1,0 +1,112 @@
+﻿@using OrderSys.Model;
+@{
+    ViewBag.Title = "MyStartIndex";
+    Layout = "~/Areas/Weixin/Views/Shared/_Layout.cshtml";
+}
+<div class="weui_tab">
+    <div class="weui_navbar" id="tab1">
+        <li class="weui_navbar_item" id="startmyorder_btn" onclick="setTab(1,0)">
+            新发起
+        </li>
+        <li class="weui_navbar_item weui_bar_item_on" id="query_mystarted_btn" onclick="setTab(1, 1)">
+            已发起
+        </li>
+    </div>
+    <div class="weui_tab_bd" id="tablist1">
+        <div class="tablist">
+            <div id="startorder">@Html.Partial("~/Areas/Weixin/Views/Order/StartOrder.cshtml") </div>
+        </div>
+        <div class="tablist block">
+            <div id="mystarted_list"></div>
+            @Html.Partial("~/Areas/Weixin/Views/Shared/_Fresh.cshtml", "querymystarted()")
+        </div>
+    </div>
+</div>
+
+<script>
+    var startedQuery;
+
+    $(function () {
+        startedQuery = new Query('#mystarted_list');
+        querymystarted();
+    })
+
+    //每个页面必重载的方法
+    refresh = function () {
+        //定义刷新按钮的调用的方法
+        var tabID = $(".weui_bar_item_on").attr("id");
+        if (tabID == "query_mystarted_btn") {
+            startedQuery.pageIndex = 1;
+            querymystarted();
+        } else if (tabID == 'startmyorder_btn') {
+            doClearStartForm();
+        }
+    }
+
+    querymystarted = function () {
+        var url = '@Url.Action("MyStartedOrders", "Order", new { area = "Weixin" })';
+        var parms = {
+            PageIndex: startedQuery.pageIndex,
+            PageSize: startedQuery.pageSize,
+        };
+        doQuery1(startedQuery, url, parms);
+    }
+
+    checkOrder = function (orderID) {
+        $.modal({
+            title: "",
+            text: "请选择验收操作。",
+            buttons: [
+            { text: "通过", onClick: function () { doCheckOrder(orderID); } },
+            { text: "驳回", onClick: function () { doRejectOrder(orderID); } },
+            { text: "取消", className: "default" },
+            ]
+        });
+    }
+
+    doCancelOrder = function (orderID) {
+        $.confirm("您确定要撤销这条工单吗?", "确认撤销?", function () {
+            var url = '@Url.Action("CancelOrder", "Order", new { area = "Weixin" })';
+            var urlParm = { OrderID: orderID };
+            doGet(url, urlParm, function (jdata) {
+                if (jdata.Code == "200") {
+                    //看看要怎么做（若筛选后直接刷新页面就好）
+                    $('#startedorder_' + orderID).slideUp("normal");
+                }
+            });
+        }, function () {
+            //取消操作
+        });
+    }
+
+    doCheckOrder = function (orderID) {
+        var url = '@Url.Action("FinishOrder", "Order", new { area = "Weixin" })';
+        var urlParm = { OrderID: orderID };
+        doGet(url, urlParm, function (jdata) {
+            if (jdata.Code == "200") {
+                //看看要怎么做（若筛选后直接刷新页面就好）
+                $('#startedorder_' + orderID).hide("normal");
+            }
+        });
+    }
+
+    doRejectOrder = function (orderID) {
+        $.prompt({
+            text: "请输入驳回的原因。",
+            title: "",
+            onOK: function (text) {
+                var url = '@Url.Action("RejectOrder", "Order", new { area = "Weixin" })';
+                var urlParm = { OrderID: orderID, Remark: text };
+                doGet(url, urlParm, function (jdata) {
+                    if (jdata.Code == "200") {
+                        //看看要怎么做（若筛选后直接刷新页面就好）
+                        $('#startedorder_' + orderID).hide("normal");
+                    }
+                });
+            },
+            onCancel: function () {
+            },
+        });
+    }
+
+</script>

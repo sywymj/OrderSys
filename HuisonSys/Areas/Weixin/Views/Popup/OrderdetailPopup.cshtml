@@ -1,0 +1,26 @@
+﻿@using OrderSys.Model;
+
+<!--popup工单内容-->
+<div id="orderdetail_popup" class='weui-popup-container'>
+    <div class="weui-popup-overlay"></div>
+    <div class="weui-popup-modal">
+        <header class='demos-header'>
+            @Html.Partial("~/Areas/Weixin/Views/Shared/_Back.cshtml", new BackViewModel() { Title = "工单内容", Popup = "#orderdetail_popup" })
+        </header>
+        <article class="weui-article"></article>
+    </div>
+</div>
+
+<script>
+    openOrderdetailPopup = function (orderID) {
+        //打开popup
+        var popup = '#orderdetail_popup';
+        var container = '#orderdetail_popup > .weui-popup-modal > .weui-article';
+        var url = '@Url.Action("OrderDetail", "Order", new { area = "Weixin" })';
+        var parms = { ID: orderID };
+        $.openMyPopup(popup);
+
+        var article = new Article(container);
+        doGetPartial1(article, url, parms);
+    }
+</script>

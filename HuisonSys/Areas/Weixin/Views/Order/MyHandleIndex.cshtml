@@ -1,0 +1,94 @@
+﻿@using OrderSys.Model;
+@{
+    ViewBag.Title = "MyStartIndex";
+    Layout = "~/Areas/Weixin/Views/Shared/_Layout.cshtml";
+}
+<div class="weui_tab">
+    <div class="weui_navbar" id="tab1">
+        <li class="weui_navbar_item weui_bar_item_on" id="query_myreciving_btn" onclick="setTab(1,0)">
+            未接单
+        </li>
+        <li class="weui_navbar_item" id="query_myhandling_btn" onclick="setTab(1, 1)">
+            处理中
+        </li>
+        <li class="weui_navbar_item" id="query_myhandled_btn" onclick="setTab(1, 2)">
+            已处理
+        </li>
+    </div>
+    <div class="weui_tab_bd" id="tablist1">
+        <div class="tablist block">
+            <div id="myreceiving_list"></div>
+            @Html.Partial("~/Areas/Weixin/Views/Shared/_Fresh.cshtml", "querymyreciving()")
+        </div>
+        <div class="tablist">
+            <div id="myhandling_list"></div>
+            @Html.Partial("~/Areas/Weixin/Views/Shared/_Fresh.cshtml", "querymyhandling()")
+        </div>
+        <div class="tablist">
+            <div id="myhandled_list"></div>
+            @Html.Partial("~/Areas/Weixin/Views/Shared/_Fresh.cshtml", "querymyhandled()")
+        </div>
+    </div>
+</div>
+
+@Html.Partial("~/Areas/Weixin/Views/Popup/AddhandledetailPopup.cshtml")
+@Html.Partial("~/Areas/Weixin/Views/Popup/WorkflowsPopup.cshtml")
+
+<script>
+    var handledQuery, handlingQuery, receivingQuery;
+
+    $(function () {
+        handledQuery = new Query('#myhandled_list');
+        handlingQuery = new Query('#myhandling_list');
+        receivingQuery = new Query('#myreceiving_list');
+        querymyhandled();
+        querymyhandling();
+        querymyreciving();
+    })
+
+    //每个页面必重载的方法
+    refresh = function () {
+        //debugger;
+        var tabID = $(".weui_bar_item_on").attr("id");
+        if (tabID == "query_myreciving_btn") {
+            receivingQuery.pageIndex = 1;
+            querymyreciving();
+        } 
+        else if (tabID == "query_myhandling_btn") {
+            handlingQuery.pageIndex = 1;
+            querymyhandling();
+        } else if (tabID == "query_myhandled_btn") {
+            handledQuery.pageIndex = 1;
+            querymyhandled();
+        }
+    }
+
+    querymyreciving = function () {
+        var url = '@Url.Action("MyReceivingOrders", "Order", new { area = "Weixin" })';
+        var parms = {
+            PageIndex: receivingQuery.pageIndex,
+            PageSize: receivingQuery.pageSize,
+        };
+        doQuery1(receivingQuery, url, parms);
+    }
+
+    querymyhandling = function () {
+        var url = '@Url.Action("MyHandlingOrders", "Order", new { area = "Weixin" })';
+        var parms = {
+            PageIndex: handlingQuery.pageIndex,
+            PageSize: handlingQuery.pageSize,
+        };
+        doQuery1(handlingQuery, url, parms);
+    }
+
+    querymyhandled = function () {
+        var url = '@Url.Action("MyHandledOrders", "Order", new { area = "Weixin" })';
+        var parms = {
+            PageIndex: handledQuery.pageIndex,
+            PageSize: handledQuery.pageSize,
+        };
+        doQuery1(handledQuery, url, parms);
+    }
+
+
+</script>

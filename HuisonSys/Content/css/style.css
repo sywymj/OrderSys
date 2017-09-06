@@ -1,0 +1,50 @@
+body{font-family:"Microsoft YaHei",Arial,Helvetica,sans-serif,"宋体"; background:#f6f6f6;}
+
+dl,dt,dd,table,tr,td,th{
+	margin:0;padding:0;border:0px;
+}
+
+img{
+	border:none;
+}
+
+ul{
+	list-style-type:none;
+}
+
+ul,li{
+  margin:0;padding:0;
+}
+
+.clear{
+	clear:both;
+}
+
+.circle {
+	-webkit-border-radius: 50em;
+	-moz-border-radius: 50em;
+	border-radius: 50em;
+	position:relative;
+	behavior: url(ie-css3.htc);
+	z-index:99999;
+	overflow:hidden;
+}
+
+table{
+     border-collapse: collapse;/* 边框合并属性  */
+}
+th{
+     border: 1px solid #e1e1e1;
+}
+td{
+     border: 1px solid #e1e1e1;
+}
+
+.verticalAlign{vertical-align:middle; display:inline-block; height:100%; width:1px; margin-left:-1px;}
+
+*{
+  text-decoration:none; 
+  -webkit-transition: all 0.2s;
+  -moz-transition: all 0.2s;
+  transition: all 0.2s;
+}

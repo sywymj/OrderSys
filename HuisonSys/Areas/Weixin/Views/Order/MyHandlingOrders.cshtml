@@ -1,0 +1,66 @@
+﻿@model System.Data.DataTable
+@using JSNet.Utilities;
+@using JSNet.BaseSys;
+
+
+@foreach (System.Data.DataRow dr in Model.Rows)
+{
+    <div class="list_sym" id="handlingorder_@dr["ID"]">
+        <div class="list_sym_cc circle rotate90deg">@EnumExtensions.ToDescription((OrderStatus)dr["Status"])</div>
+        <div class="list_sym_l">
+            <div class="list_sym_l_in">
+                <div class="list_sym_l_in_t">报障单号：@dr["OrderNo"]</div>
+                <div class="list_sym_l_in_m">
+                    <ul>
+                        <li>紧急程度：<font color="@EnumExtensions.ToColorStyle((OrderPriority)dr["Priority"])" size="2">@EnumExtensions.ToDescription((OrderPriority)dr["Priority"])</font></li>
+                        <div class="clear"></div>
+                        <li>截止日期：@Convert.ToDateTime(dr["BookingTime"]).ToString(BaseSystemInfo.DateFormat)</li>
+                        <div class="clear"></div>
+                        @{if ((int)dr["Status"] == (int)OrderStatus.Rejected)
+                        {
+                            <li>驳回人：@dr["OperaterName"]</li>
+                            <li>电话：<a href="tel:@dr["OperaterTel"]">@dr["OperaterTel"]</a></li>
+                            <div class="clear"></div>
+                        }
+                        }
+                        <li>联系人：@dr["Attn"]</li><li>电话：<a href="tel:@dr["AttnTel"]">@dr["AttnTel"]</a></li>
+                        <div class="clear"></div>
+                    </ul>
+                </div>
+                <div class="list_sym_l_in_b">
+                    @dr["Content"]
+                </div>
+            </div>
+        </div>
+        <div class="list_sym_r">
+            @*<a class="orders" onclick="doHandled('@dr["ID"]')">完成</a>*@
+            <a class="orders" href="@Url.Action("AddHandleDetail", "Order", new { area = "Weixin",OrderID = dr["ID"] })">增加进度</a>
+            <a class="details" href="@Url.Action("OrderFlows", "Order", new { area = "Weixin",OrderID = dr["ID"] })">详情</a>
+        </div>
+        <div class="clear"></div>
+    </div>
+}
+
+<script>
+
+    doHandled = function(orderID){
+        $.confirm("您确定完成了这条工单?", "确认?", function () {
+            var url = '@Url.Action("HandledOrder", "Order", new { area = "Weixin" })';
+            var urlParm = { OrderID: orderID };
+            doGet(url, urlParm, function (jdata) {
+                if (jdata.Code == "200") {
+                    //刷新已完成
+                    handledQuery.pageIndex = 1;
+                    querymyhandled();
+                    $('#handlingorder_' + orderID).remove();
+                }
+            });
+        }, function () {
+            //取消操作
+        });
+    }
+</script>
+
+
+
+

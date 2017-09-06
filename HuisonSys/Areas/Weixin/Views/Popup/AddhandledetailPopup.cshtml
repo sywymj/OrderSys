@@ -1,0 +1,25 @@
+﻿@using OrderSys.Model;
+
+<div id="addhandledetail_popup" class='weui-popup-container'>
+    <div class="weui-popup-overlay"></div>
+    <div class="weui-popup-modal">
+        <header class='demos-header'>
+            @Html.Partial("~/Areas/Weixin/Views/Shared/_Back.cshtml", new BackViewModel() { Title = "添加进度", Popup = "#addhandledetail_popup" })
+        </header>
+        <article class="weui-article"></article>
+    </div>
+</div>
+
+<script>
+    openAddhandledetailPopup = function (orderID) {
+        //打开popup
+        var popup = '#addhandledetail_popup';
+        var container = '#addhandledetail_popup > .weui-popup-modal > .weui-article';
+        var url = '@Url.Action("AddHandleDetail", "Order", new { area = "Weixin" })';
+        var parms = { orderID: orderID };
+        $.openMyPopup(popup);
+
+        var article = new Article(container);
+        doGetPartial1(article, url, parms);
+    }
+</script>

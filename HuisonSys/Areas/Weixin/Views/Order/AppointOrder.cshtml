@@ -1,0 +1,130 @@
+﻿@using OrderSys.Model;
+
+@{
+    Layout = "~/Areas/Weixin/Views/Shared/_InnerLayout.cshtml";
+}
+<div class="weui_cells weui_cells_access">
+    <a class="weui_cell" href="javascript:openStaffsPopup();">
+        <div class="weui_cell_bd weui_cell_primary">
+            <p><span class="p_m iconfont">&#xe722;</span> 添加处理者</p>
+        </div>
+        <div class="weui_cell_ft">
+        </div>
+    </a>
+</div>
+
+<div class="weui_cells weui_cells_form">
+    <!--展示选中的员工-->
+</div>
+
+<div class="weui_btn_area">
+    <a class="weui_btn weui_btn_primary" href="javascript:doAppoint('@ViewBag.OrderID');">确定</a>
+</div>
+
+<!--已选员工模板-->
+<div id="staffModal">
+    <div class="weui_cell handler" style="display:none">
+        <div class="weui_cell_hd p_name">
+            <div class="p_name_btn"></div>
+            <label class="weui_label"><span class="p_m iconfont">&#xe71f;</span><span class="p_m2 staffName"></span><div class="clear"></div></label>
+        </div>
+        <div class="weui_cell_bd weui_cell_primary">
+            <input class="weui_input staffID" type="hidden" />
+            <input class="weui_input workload" type="" placeholder="请输入工作量">
+        </div>
+    </div>
+</div>
+
+@Html.Partial("~/Areas/Weixin/Views/Popup/StaffsPopup.cshtml")
+
+<script>
+
+    var exChoosedID = 'choosedStaff_';//选中的员工dom-id前缀
+
+    //remove dom
+    removeHandlerDom = function (id) {
+        Staff.remove(id, function () {
+            $('#' + exChoosedID + id).remove();
+        })
+    }
+
+
+
+    addHandlerDom = function () {
+        $('.weui_cells_form').empty();
+        var staffs = Staff.get();
+        //debugger;
+        $.each(staffs, function (index, handler) {
+            //复制模板
+            var handlerDom = $('#staffModal > .handler').clone(true).appendTo($('.weui_cells_form'));
+
+            //删除用户 事件
+            handlerDom.find('.p_name_btn').on('click', function () {
+                removeHandlerDom(handler.ID);
+            });
+            //设置 领队 事件
+            handlerDom.find(".weui_label").on('click', function () {
+                setLeader(handler.ID);
+            });
+            
+            handlerDom.attr('id', exChoosedID + handler.ID);
+            handlerDom.find(".staffID").val(handler.ID);
+            handlerDom.find(".staffName").text(handler.Name);
+
+            //默认选中第一个为领队，需要放在初始化id后
+            if (index == 0) {
+                debugger;
+                setLeader(handler.ID);
+            }
+            
+            handlerDom.show();
+        });
+    }
+
+    setLeader = function (id) {
+        $('#' + exChoosedID + id).siblings().removeClass("leader");
+        $('#' + exChoosedID + id).addClass("leader");
+    }
+
+    doAppoint = function (orderID) {
+        //多个处理者情况下，必须有领队
+        var handlers = new Array();
+        $('.weui_cells_form > .handler').each(function () {
+            var handler = new Object();
+            handler.OrderID = orderID;
+            handler.HandlerID = parseInt($(this).find(".staffID").val());
+            handler.Workload = parseInt($(this).find(".workload").val() || 1);
+
+            if ($(this).hasClass("leader")) {
+                handler.IsLeader = 1;
+            } else {
+                handler.IsLeader = 0;
+            }
+            handlers.push(handler);
+        })
+        var json = JSON.stringify(handlers);
+        debugger;
+
+        $.confirm("请核对委派的资料是否正确?", "确认委派?", function () {
+            var url = '@Url.Action("DoAppointOrder", "Order", new { area = "Weixin" })';
+            doPost(url, { jsonHandlers: json, orderID: orderID }, function (jdata) {
+                if (jdata.Code == "200") {
+                    //返回并刷新
+                    self.location = document.referrer;
+                    //history.back(-1);
+                    //$('#appointingorder_' + orderID).remove();
+                    //需要刷新已委派
+                    //appointingQuery.pageIndex = 1;
+                    //querymyappointed();
+                    ////委派完成，关闭本div
+                    //closePopup('#appointorder_popup');
+                }
+            });
+        }, function () {
+            //取消操作
+        });
+    }
+
+
+</script>
+

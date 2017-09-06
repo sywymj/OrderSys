@@ -1,0 +1,87 @@
+﻿@model System.Data.DataTable
+@using JSNet.Utilities;
+@using JSNet.BaseSys;
+
+@foreach (System.Data.DataRow dr in Model.Rows)
+{
+    <div class="list_sym" id="startedorder_@dr["ID"]">
+        <div class="list_sym_cc circle rotate90deg">@EnumExtensions.ToDescription((OrderStatus)dr["Status"])</div>
+        <div class="list_sym_l">
+            <div class="list_sym_l_in">
+                <div class="list_sym_l_in_t">报障单号：@dr["OrderNo"]</div>
+                <div class="list_sym_l_in_m">
+                    <ul>
+                        <li class="mypriority">紧急程度：<font color="@EnumExtensions.ToColorStyle((OrderPriority)dr["Priority"])" size="2">@EnumExtensions.ToDescription((OrderPriority)dr["Priority"])</font></li>
+                        <div class="clear"></div>
+                        <li>截止日期：@Convert.ToDateTime(dr["BookingTime"]).ToString(BaseSystemInfo.DateFormat)</li>
+                        <div class="clear"></div>
+                        @{if ((int)dr["Status"] == (int)OrderStatus.Finish)
+                        {
+                            //已完成，显示完成时间
+                            <li>完成时间：@Convert.ToDateTime(dr["FinishTime"]).ToString(BaseSystemInfo.DateTimeFormat)</li>
+                            <div class="clear"></div>
+                        }
+                        }
+                        @{if ((int)dr["Status"] == (int)OrderStatus.Appointing)
+                        {
+                            //待委派，显示发起时间
+                            <li>发起时间：@Convert.ToDateTime(dr["StartTime"]).ToString(BaseSystemInfo.DateTimeFormat)</li>
+                            <div class="clear"></div>
+                        }
+                        }
+                        @{if ((int)dr["Status"] == (int)OrderStatus.Checking)
+                        {
+                            //待验收，显示处理者
+                            <li>处理者：@dr["HandlerName"]</li>
+                            <li>电话：<a href="tel:@dr["HandlerTel"]">@dr["HandlerTel"]</a></li>
+                            <li>送检时间：@Convert.ToDateTime(dr["OperateTime"]).ToString(BaseSystemInfo.DateTimeFormat)</li>
+                            <div class="clear"></div>
+                            <div class="clear"></div>
+                        }
+                        }
+                        @{if ((int)dr["Status"] == (int)OrderStatus.Rejected)
+                        {
+                            //被驳回，显示处理者
+                            <li>处理者：@dr["HandlerName"]</li>
+                            <li>电话：<a href="tel:@dr["HandlerTel"]">@dr["HandlerTel"]</a></li>
+                            <div class="clear"></div>
+                        }
+                        }
+                        @{if ((int)dr["Status"] == (int)OrderStatus.Receving
+                              || (int)dr["Status"] == (int)OrderStatus.Handling)
+                        {
+                            //[待接收][处理中]，显示待办人
+                            <li>待办人：@dr["NextOperaterName"]</li>
+                            <li>电话：<a href="tel:@dr["NextOperaterTel"]">@dr["NextOperaterTel"]</a></li>
+                            <div class="clear"></div>
+                        } 
+                        }
+                        
+                    </ul>
+                </div>
+                <div class="list_sym_l_in_b">
+                    @dr["Content"]
+                </div>
+            </div>
+        </div>
+        <div class="list_sym_r">
+                @{if (Math.Abs((int)dr["Status"]) < (int)OrderStatus.Handling && Math.Abs((int)dr["Status"]) != (int)OrderStatus.Canceled)
+                {
+                    <a href="javascript:doCancelOrder('@dr["ID"]');" class="orders">撤销</a>
+                }
+                }
+                @{if ((OrderStatus)dr["Status"] == OrderStatus.Checking)
+                {
+                    <a href="javascript:checkOrder('@dr["ID"]');" class="orders">验收</a>
+                }
+                }
+            <a href="@Url.Action("OrderFlows", "Order", new { area = "Weixin", OrderID = dr["ID"] })" class="details">详情</a>
+        </div>
+        <div class="clear"></div>
+    </div>
+}
+
+
+
+
+

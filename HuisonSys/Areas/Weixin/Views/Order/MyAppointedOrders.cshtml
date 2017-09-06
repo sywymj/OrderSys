@@ -1,0 +1,64 @@
+﻿@model System.Data.DataTable
+@using JSNet.Utilities;
+@using JSNet.BaseSys;
+
+
+@foreach (System.Data.DataRow dr in Model.Rows)
+{
+    <div class="list_sym" id="appointedorder_@dr["ID"]">
+        <div class="list_sym_cc circle rotate90deg">@EnumExtensions.ToDescription((OrderStatus)dr["Status"])</div>
+        <div class="list_sym_l">
+            <div class="list_sym_l_in">
+                <div class="list_sym_l_in_t">报障单号：@dr["OrderNo"]</div>
+                <div class="list_sym_l_in_m">
+                    <ul>
+                        <li>紧急程度：<font color="@EnumExtensions.ToColorStyle((OrderPriority)dr["Priority"])" size="2">@EnumExtensions.ToDescription((OrderPriority)dr["Priority"])</font></li>
+                        <div class="clear"></div>
+                        <li>截止日期：@Convert.ToDateTime(dr["BookingTime"]).ToString(BaseSystemInfo.DateFormat)</li>
+                        <div class="clear"></div>
+                        @{if (Math.Abs((int)dr["Status"]) == (int)OrderStatus.Receving)
+                          {
+                              //待受理，显示委派时间
+                              <li>委派时间：@Convert.ToDateTime(dr["OperateTime"]).ToString(BaseSystemInfo.DateTimeFormat)</li>
+                              <div class="clear"></div>
+                              <li>待办人：@dr["NextOperaterName"]</li>
+                              <li>电话：<a href="tel:@dr["NextOperaterTel"]">@dr["NextOperaterTel"]</a></li>
+                              <div class="clear"></div>
+                            }
+                        }
+                        @{if (Math.Abs((int)dr["Status"]) == (int)OrderStatus.Handling)
+                          {
+                              //处理中，显示联系人
+                              <li>联系人：@dr["Attn"]</li>
+                              <li>电话：<a href="tel:@dr["AttnTel"]">@dr["AttnTel"]</a></li>
+                              <div class="clear"></div>
+                              //处理中，显示处理人
+                              <li>处理人：@dr["HandlerName"].ToString()</li>
+                              <li>电话：<a href="tel:@dr["HandlerTel"]">@dr["HandlerTel"]</a></li>
+                              <div class="clear"></div>
+                          }
+                          }
+                        @{if (Math.Abs((int)dr["Status"]) == (int)OrderStatus.Checking)
+                        {
+                            <li>待办人：@dr["NextOperaterName"]</li>
+                            <li>电话：<a href="tel:@dr["NextOperaterTel"]">@dr["NextOperaterTel"]</a></li>
+                            <div class="clear"></div>
+                        }
+                        }
+                    </ul>
+                </div>
+                <div class="list_sym_l_in_b">
+                    @dr["Content"]
+                </div>
+            </div>
+        </div>
+        <div class="list_sym_r">
+            <a href="@Url.Action("OrderFlows", "Order", new { area = "Weixin",OrderID = dr["ID"] })" class="details">详情</a>
+        </div>
+        <div class="clear"></div>
+    </div>
+}
+
+
+
+

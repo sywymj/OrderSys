@@ -1,0 +1,71 @@
+﻿@using OrderSys.Model;
+@{
+    Layout = "~/Areas/Weixin/Views/Shared/_Layout.cshtml";
+}
+
+<div class="weui_tab">
+    <div class="weui_navbar" id="tab1">
+        <li class="weui_navbar_item weui_bar_item_on" id="query_myappointing_btn" onclick="setTab(1, 0)">
+            未委派
+        </li>
+        <li class="weui_navbar_item" id="query_myappointed_btn" onclick="setTab(1, 1)">
+            已委派
+        </li>
+    </div>
+    <div class="weui_tab_bd" id="tablist1">
+        <div class="tablist">
+            <div id="myappointing_list"></div>
+            @Html.Partial("~/Areas/Weixin/Views/Shared/_Fresh.cshtml", "querymyappointing()")
+        </div>
+        <div class="tablist block">
+            <div id="myappointed_list"></div>
+            @Html.Partial("~/Areas/Weixin/Views/Shared/_Fresh.cshtml", "querymyappointed()")
+        </div>
+    </div>
+</div>
+
+@Html.Partial("~/Areas/Weixin/Views/Popup/WorkflowsPopup.cshtml")
+@Html.Partial("~/Areas/Weixin/Views/Popup/AppointPopup.cshtml")
+
+<script>
+    var myappointedQuery, myappointingQuery;
+
+    $(function () {
+        appointingQuery = new Query('#myappointing_list');
+        appointedQuery = new Query('#myappointed_list');
+        querymyappointed();
+        querymyappointing();
+    })
+
+    //每个页面必重载的方法
+    refresh = function () {
+        debugger;
+        var tabID = $(".weui_bar_item_on").attr("id");
+        if (tabID == "query_myappointing_btn") {
+            appointingQuery.pageIndex = 1;
+            querymyappointing();
+        } else if (tabID == "query_myappointed_btn") {
+            appointedQuery.pageIndex = 1;
+            querymyappointed();
+        }
+    }
+
+    querymyappointing = function () {
+        var url = '@Url.Action("MyAppointingOrders", "Order", new { area = "Weixin" })';
+        var parms = {
+            PageIndex:appointingQuery.pageIndex,
+            PageSize: appointingQuery.pageSize,
+        };
+        doQuery1(appointingQuery, url, parms);
+    }
+
+    querymyappointed = function () {
+        var url = '@Url.Action("MyAppointedOrders", "Order", new { area = "Weixin" })';
+        var parms = {
+            PageIndex:  appointedQuery.pageIndex,
+            PageSize: appointedQuery.pageSize,
+        };
+        doQuery1(appointedQuery, url, parms);
+    }
+
+</script>

@@ -1,0 +1,25 @@
+﻿@using OrderSys.Model;
+
+<div id="{Popup的名字}_popup" class='weui-popup-container'>
+    <div class="weui-popup-overlay"></div>
+    <div class="weui-popup-modal">
+        <header class='demos-header'>
+            @Html.Partial("~/Areas/Weixin/Views/Shared/_Back.cshtml", new BackViewModel() { Title = "{Popup标题}", Popup = "#{Popup的名字}_popup" })
+        </header>
+        <article class="weui-article"></article>
+    </div>
+</div>
+
+<script>
+    open{Popup的名字}Popup = function () {
+        //打开popup
+        var popup = '#{Popup的名字}_popup';
+        var url = '{填URL地址}';
+        var parms = { };
+
+        var container = popup + '> .weui-popup-modal > .weui-article';
+        $.openMyPopup(popup);
+        var article = new Article(container);
+        doGetPartial1(article, url, parms);
+    }
+</script>

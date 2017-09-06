@@ -1,0 +1,29 @@
+﻿@using OrderSys.Model;
+<!--工作流程-->
+<div id="orderflows_popup" class='weui-popup-container'>
+    <div class="weui-popup-overlay"></div>
+    <div class="weui-popup-modal">
+        <header class='demos-header'>
+            @Html.Partial("~/Areas/Weixin/Views/Shared/_Back.cshtml", new BackViewModel() { Title = "工单流程", Popup = "#orderflows_popup" })
+        </header>
+        <article class="weui-article"></article>
+    </div>
+</div>
+
+<script>
+    openWorkflowsPopup = function (orderID) {
+        //打开下面的按钮组
+        $('.bottom_btn').show();
+
+        //打开popup
+        var popup = '#orderflows_popup';
+        var container = '#orderflows_popup > .weui-popup-modal > .weui-article';
+        var url = '@Url.Action("OrderFlows", "Order", new { area = "Weixin" })';
+        var parms = { ID: orderID };
+        $.openMyPopup(popup);
+
+        var article = new Article(container);
+        doGetPartial1(article, url, parms);
+        //setOrderStatus();
+    }
+</script>

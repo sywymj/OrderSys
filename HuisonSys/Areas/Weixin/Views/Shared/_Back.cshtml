@@ -1,0 +1,15 @@
+﻿@model OrderSys.Model.BackViewModel
+
+<div class="top" onclick="closePopup('@Model.Popup')">
+    <em class="iconfont top_nav">
+        <i>&#xe620;</i>返回
+    </em>
+    @Model.Title
+    <label class="iconfont"></label>
+</div>
+
+<script>
+    closePopup = function (container) {
+        $.closeMyPopup(container)
+    }
+</script>

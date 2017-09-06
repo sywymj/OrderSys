@@ -1,0 +1,25 @@
+﻿@model System.Data.DataTable
+@using JSNet.BaseSys;
+@using JSNet.Utilities;
+@{
+    Layout = "~/Areas/Weixin/Views/Shared/_InnerLayout.cshtml";
+}
+
+<div class="weui_cells weui_cells_form">
+    <div class="weui_cell">
+        <div class="process">
+            <ul>
+                @foreach (System.Data.DataRow dr in Model.Rows)
+                {
+                    <li>
+                        <label>
+                            @Convert.ToDateTime(dr["HandleTime"]).ToString(BaseSystemInfo.DateFormat)<br />
+                            @Convert.ToDateTime(dr["HandleTime"]).ToString(BaseSystemInfo.TimeFormat)
+                        </label>
+                        <span class="circle"></span>【@dr["HandleDetail"]】@dr["Remark"]
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+</div>
