@@ -1,0 +1,133 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>报障系统</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <link href="~/Areas/Admin/Content/css/demo.css" rel="stylesheet" />
+
+    <script src="~/Content/js/jquery-1.8.3.min.js"></script>
+    <script src="~/Areas/Admin/Script/miniui/boot.js"></script>
+    <script src="~/Areas/Admin/Content/js/public.js"></script>
+
+    <style type="text/css">
+        body {
+            margin: 0;
+            padding: 0;
+            border: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .header {
+            background: url(Areas/Admin/Content/images/header.gif) repeat-x 0 -1px;
+        }
+    </style>
+</head>
+<body>
+
+    <!--Layout-->
+    <div id="layout1" class="mini-layout" style="width:100%;height:100%;">
+        <div class="header" region="north" height="70" showsplit="false" showheader="false">
+            <h1 style="margin:0;padding:15px;cursor:default;font-family:微软雅黑,黑体,宋体;">报障系统 V1.0</h1>
+            <div style="position:absolute;top:18px;right:10px;">
+                <a class="mini-button mini-button-iconTop" iconcls="icon-add" onclick="onQuickClick" plain="true">快捷</a>
+                <a class="mini-button mini-button-iconTop" iconcls="icon-edit" onclick="onClick" plain="true">首页</a>
+                <a class="mini-button mini-button-iconTop" iconcls="icon-date" onclick="onClick" plain="true">消息</a>
+                <a class="mini-button mini-button-iconTop" iconcls="icon-edit" onclick="onClick" plain="true">设置</a>
+                <a class="mini-button mini-button-iconTop" iconcls="icon-close" onclick="onClick" plain="true">关闭</a>
+            </div>
+
+        </div>
+        @*<div title="south" region="south" showsplit="false" showheader="false" height="30">
+                <div style="line-height:28px;text-align:center;cursor:default">Copyright © 佛山市宏达技术科技有限公司所有 </div>
+            </div>*@
+        <div title="center" region="center" style="border:0;" bodystyle="overflow:hidden;">
+            <!--Splitter-->
+            <div class="mini-splitter" style="width:100%;height:100%;" borderstyle="border:0;">
+                <div size="180" maxsize="250" minsize="100" showcollapsebutton="true" style="border:0;">
+                    <!--OutlookTree-->
+                    <div id="leftTree" class="mini-outlooktree" onnodeclick="onNodeSelect"
+                         idfield="ID" parentfield="ParentID" textfield="Title" iconfield="ImagUrl">
+                    </div>
+
+                </div>
+                <div showcollapsebutton="false" style="border:0;">
+                    <!--Tabs-->
+                    <div id="mainTabs" class="mini-tabs" activeindex="0" style="width:100%;height:100%;"
+                         plain="false" onactivechanged="onTabsActiveChanged">
+                        <div title="首页" url="@Url.Action("123","234")">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+            mini.parse();
+            var tree = mini.get("leftTree");
+
+            $(function () {
+                loadNav();
+            })
+
+            function loadNav() {
+                var url = '@Url.Action("GetLeftTree", "Home", new { area = "Admin"})';
+
+                doGet(url, null, function (jdata) {
+                    if (jdata.Code == '200') {
+                        tree.loadList(jdata.data);
+                    }
+                })
+            }
+
+            function showTab(node) {
+                var tabs = mini.get("mainTabs");
+
+                var id = "tab$" + node.ID;
+                var tab = tabs.getTab(id);
+                if (!tab) {
+                    tab = {};
+                    tab._nodeid = node.ID;
+                    tab.name = id;
+                    tab.title = node.Title;
+                    tab.url = node.Url;
+                    tab.showCloseButton = true;
+
+                    tabs.addTab(tab);
+                }
+                tabs.activeTab(tab);
+            }
+
+            function onNodeSelect(e) {
+                var node = e.node;
+                var isLeaf = e.isLeaf;
+
+                var item = e.item;
+                iframe.src = item.Url;
+
+                if (isLeaf) {
+                    showTab(node);
+                }
+            }
+
+            function onTabsActiveChanged(e) {
+                var tabs = e.sender;
+                var tab = tabs.getActiveTab();
+                if (tab && tab._nodeid) {
+
+                    var node = tree.getNode("'" + tab._nodeid + "'");
+                    if (node && !tree.isSelectedNode(node)) {
+                        tree.selectNode(node);
+                    }
+                }
+            }
+        </script>
+
+</body>
+</html>

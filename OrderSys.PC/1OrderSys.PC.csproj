@@ -127,11 +127,34 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AdminAreaRegistration.cs" />
-    <Compile Include="Controllers\Default1Controller.cs" />
+    <Compile Include="Controllers\AdminBaseController.cs" />
+    <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\PermissionController.cs" />
+    <Compile Include="Controllers\RoleController.cs" />
+    <Compile Include="Controllers\StaffController.cs" />
+    <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BaseSysInfo\5BaseSys.csproj">
+      <Project>{0232092c-910d-4149-a784-0df3fbe2a7e8}</Project>
+      <Name>5BaseSys</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Model\4Model.csproj">
+      <Project>{0ea99387-bfaf-4aa7-bf3d-43e65a39c0c3}</Project>
+      <Name>4Model</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Service\2Service.csproj">
+      <Project>{66ec6afa-4c62-4a74-8ad9-ec129899da79}</Project>
+      <Name>2Service</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Utilities\7Utilities.csproj">
+      <Project>{9c16e557-1f7a-4111-bf98-229a95879a71}</Project>
+      <Name>7Utilities</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

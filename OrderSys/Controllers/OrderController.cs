@@ -12,7 +12,7 @@ using System.Web.Mvc;
 
 namespace OrderSys.Controllers
 {
-    public class OrderController : BaseController
+    public class OrderController : WeixinBaseController
     {
         private OrderService orderService = new OrderService();
 

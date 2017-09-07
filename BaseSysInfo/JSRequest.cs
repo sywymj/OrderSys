@@ -61,10 +61,14 @@ namespace JSNet.BaseSys
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
-        public static string GetSessionParm(string key)
+        public static string GetSessionParm(string key,bool returnDefatult = false)
         {
             if(!CheckSessionParms(key))
             {
+                if (returnDefatult)
+                {
+                    return "";
+                }
                 throw new JSException(JSErrMsg.ERR_CODE_SESSIONKEY_MISSING, string.Format(JSErrMsg.ERR_MSG_SESSIONKEY_MISSING, key));
             }
             return HttpContext.Current.Session[key].ToString();
@@ -75,10 +79,14 @@ namespace JSNet.BaseSys
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
-        public static string GetCookieParm(string key)
+        public static string GetCookieParm(string key, bool returnDefatult = false)
         {
             if (!CheckCookieParms(key))
             {
+                if (returnDefatult)
+                {
+                    return "";
+                }
                 throw new JSException(JSErrMsg.ERR_CODE_COOKIEKEY_MISSING, string.Format(JSErrMsg.ERR_MSG_COOKIEKEY_MISSING, key));
             }
             return HttpContext.Current.Request.Cookies[key].ToString();

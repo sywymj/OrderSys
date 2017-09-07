@@ -9,7 +9,7 @@ using System.Web.Mvc;
 
 namespace OrderSys.Controllers
 {
-    public class PermissionController : BaseController
+    public class PermissionController : WeixinBaseController
     {
         //
         // GET: /Permission/
@@ -21,7 +21,6 @@ namespace OrderSys.Controllers
 
             JsonResult js = new JsonResult();
             js.Data = new JSResponse("成功删除");
-            string s = "";
             return js;
         }
 

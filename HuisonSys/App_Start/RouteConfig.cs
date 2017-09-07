@@ -9,6 +9,8 @@ namespace HuisonSys
 {
     public class RouteConfig
     {
+
+        // 需要主要添加路由的时候，必须添加 namespaces规则
         public static void RegisterRoutes(RouteCollection routes)
         {
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
@@ -16,12 +18,15 @@ namespace HuisonSys
             routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{id}",
-                defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional }
+                defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional },
+                namespaces: new string[] { "HuisonSys.Controllers" }
             );
+
             routes.MapRoute(
                 name: "Default_area",
                 url: "{area}/{controller}/{action}/{id}",
-                defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional }
+                //defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional },
+                namespaces: new string[] { "HuisonSys.Controllers" }
             );
         }
     }

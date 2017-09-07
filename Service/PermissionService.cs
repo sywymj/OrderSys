@@ -297,20 +297,30 @@ namespace JSNet.Service
             
         }
 
+        public RoleEntity GetCurrentRole()
+        {
+            UserEntity user = GetCurrentUser();
+            RoleEntity role = GetCurrentRole(user);
+            return role;
+        }
+
         public RoleEntity GetCurrentRole(UserEntity user)
         {
             //1.0 先从cookie查，有没有相应的role，若没有，选择第一个role
             // todo fix bug 其他用户登录会获取错误的roleid
-            string roleID = JSRequest.GetCookieParm("RoleID").ToString();
-            if (roleID == null)
+            string roleID = JSRequest.GetCookieParm("RoleID",true).ToString();
+            if (string.IsNullOrEmpty(roleID))
             {
-                ViewManager vmanager = new ViewManager("VP_UserRole");
+                ViewManager vmanager = new ViewManager("[VP_UserRole]");
 
                 WhereStatement where = new WhereStatement();
-                where.Add(UserRoleEntity.FieldUserID, Comparison.Equals, user.ID);
+                where.Add("UserID", Comparison.Equals, user.ID);
+
+                OrderByStatement order = new OrderByStatement();
+                order.Add("UserID", Sorting.Ascending);
 
                 int count = 0;
-                DataTable dt = vmanager.GetDataTable(where, out count);
+                DataTable dt = vmanager.GetDataTable(where, out count, order);
 
                 if (dt.Rows.Count == 0)
                 {
