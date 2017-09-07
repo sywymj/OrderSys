@@ -1,4 +1,5 @@
-﻿using System;
+﻿using JSNet.Utilities;
+using System;
 using System.Xml.Serialization;
 
 namespace JSNet.BaseSys
@@ -149,6 +150,17 @@ namespace JSNet.BaseSys
             {
                 return !string.IsNullOrEmpty(this.ErrCode);
             }
+        }
+
+
+        public static void WriteCookie(string key, string strValue)
+        {
+            CommonUtil.WriteCookie(BaseSystemInfo.SoftName, key, strValue);
+        }
+
+        public static void WriteCookie(string key, string strValue, int expires)
+        {
+            CommonUtil.WriteCookie(BaseSystemInfo.SoftName, key, strValue,expires);
         }
     }
 

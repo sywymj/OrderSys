@@ -56,7 +56,6 @@
     <Compile Include="RoleEntity.cs" />
     <Compile Include="RolePermissionRelEntity.cs" />
     <Compile Include="RolePermissionScopeRelEntity.cs" />
-    <Compile Include="RoleUserRelEntity.cs" />
     <Compile Include="StaffEntity.cs" />
     <Compile Include="TabSNEntity.cs" />
     <Compile Include="UserEntity.cs" />

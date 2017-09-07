@@ -84,6 +84,15 @@ namespace JSNet.Model
             set{ _syscategory = value; }
         }        
 		/// <summary>
+		/// Controller
+        /// </summary>		
+		private string _controller;
+        public string Controller
+        {
+            get{ return _controller; }
+            set{ _controller = value; }
+        }        
+		/// <summary>
 		/// ActionName
         /// </summary>		
 		private string _actionname;
@@ -118,15 +127,6 @@ namespace JSNet.Model
         {
             get{ return _allowdelete; }
             set{ _allowdelete = value; }
-        }        
-		/// <summary>
-		/// IsVisible
-        /// </summary>		
-		private int? _isvisible;
-        public int? IsVisible
-        {
-            get{ return _isvisible; }
-            set{ _isvisible = value; }
         }        
 		/// <summary>
 		/// IsEnable
@@ -266,6 +266,13 @@ namespace JSNet.Model
             get{ return "SysCategory"; }
         }        
 		/// <summary>
+		/// FiledName:Controller
+        /// </summary>		
+        public static string FieldController
+        {
+            get{ return "Controller"; }
+        }        
+		/// <summary>
 		/// FiledName:ActionName
         /// </summary>		
         public static string FieldActionName
@@ -292,13 +299,6 @@ namespace JSNet.Model
         public static string FieldAllowDelete
         {
             get{ return "AllowDelete"; }
-        }        
-		/// <summary>
-		/// FiledName:IsVisible
-        /// </summary>		
-        public static string FieldIsVisible
-        {
-            get{ return "IsVisible"; }
         }        
 		/// <summary>
 		/// FiledName:IsEnable
@@ -387,11 +387,11 @@ namespace JSNet.Model
 			entity.Code = CommonUtil.ConvertToString(dataRow[FieldCode]);
 			entity.FullName = CommonUtil.ConvertToString(dataRow[FieldFullName]);
 			entity.SysCategory = CommonUtil.ConvertToString(dataRow[FieldSysCategory]);
+			entity.Controller = CommonUtil.ConvertToString(dataRow[FieldController]);
 			entity.ActionName = CommonUtil.ConvertToString(dataRow[FieldActionName]);
 			entity.ActionParameter = CommonUtil.ConvertToString(dataRow[FieldActionParameter]);
 			entity.AllowEdit = CommonUtil.ConvertToInt(dataRow[FieldAllowEdit]);
 			entity.AllowDelete = CommonUtil.ConvertToInt(dataRow[FieldAllowDelete]);
-			entity.IsVisible = CommonUtil.ConvertToInt(dataRow[FieldIsVisible]);
 			entity.IsEnable = CommonUtil.ConvertToInt(dataRow[FieldIsEnable]);
 			entity.IsPublic = CommonUtil.ConvertToInt(dataRow[FieldIsPublic]);
 			entity.Description = CommonUtil.ConvertToString(dataRow[FieldDescription]);
@@ -403,7 +403,7 @@ namespace JSNet.Model
 			entity.ModifiedOn = CommonUtil.ConvertToDateTime(dataRow[FieldModifiedOn]);
 			entity.ModifiedUserId = CommonUtil.ConvertToString(dataRow[FieldModifiedUserId]);
 			entity.ModifiedBy = CommonUtil.ConvertToString(dataRow[FieldModifiedBy]);
-            return entity;
+						return entity;
 		}
 		
 		
@@ -415,11 +415,11 @@ namespace JSNet.Model
 			entity.Code = CommonUtil.ConvertToString(dataReader[FieldCode]);
 			entity.FullName = CommonUtil.ConvertToString(dataReader[FieldFullName]);
 			entity.SysCategory = CommonUtil.ConvertToString(dataReader[FieldSysCategory]);
+			entity.Controller = CommonUtil.ConvertToString(dataReader[FieldController]);
 			entity.ActionName = CommonUtil.ConvertToString(dataReader[FieldActionName]);
 			entity.ActionParameter = CommonUtil.ConvertToString(dataReader[FieldActionParameter]);
 			entity.AllowEdit = CommonUtil.ConvertToInt(dataReader[FieldAllowEdit]);
 			entity.AllowDelete = CommonUtil.ConvertToInt(dataReader[FieldAllowDelete]);
-			entity.IsVisible = CommonUtil.ConvertToInt(dataReader[FieldIsVisible]);
 			entity.IsEnable = CommonUtil.ConvertToInt(dataReader[FieldIsEnable]);
 			entity.IsPublic = CommonUtil.ConvertToInt(dataReader[FieldIsPublic]);
 			entity.Description = CommonUtil.ConvertToString(dataReader[FieldDescription]);
@@ -431,7 +431,7 @@ namespace JSNet.Model
 			entity.ModifiedOn = CommonUtil.ConvertToDateTime(dataReader[FieldModifiedOn]);
 			entity.ModifiedUserId = CommonUtil.ConvertToString(dataReader[FieldModifiedUserId]);
 			entity.ModifiedBy = CommonUtil.ConvertToString(dataReader[FieldModifiedBy]);
-            return entity;
+						return entity;
 		}
 		
 		public void SetEntity(NonQueryBuilder sqlBuilder, PermissionItemEntity entity)
@@ -440,11 +440,11 @@ namespace JSNet.Model
 			sqlBuilder.SetValue(FieldCode, entity.Code);
 			sqlBuilder.SetValue(FieldFullName, entity.FullName);
 			sqlBuilder.SetValue(FieldSysCategory, entity.SysCategory);
+			sqlBuilder.SetValue(FieldController, entity.Controller);
 			sqlBuilder.SetValue(FieldActionName, entity.ActionName);
 			sqlBuilder.SetValue(FieldActionParameter, entity.ActionParameter);
 			sqlBuilder.SetValue(FieldAllowEdit, entity.AllowEdit);
 			sqlBuilder.SetValue(FieldAllowDelete, entity.AllowDelete);
-			sqlBuilder.SetValue(FieldIsVisible, entity.IsVisible);
 			sqlBuilder.SetValue(FieldIsEnable, entity.IsEnable);
 			sqlBuilder.SetValue(FieldIsPublic, entity.IsPublic);
 			sqlBuilder.SetValue(FieldDescription, entity.Description);

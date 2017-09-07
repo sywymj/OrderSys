@@ -75,31 +75,13 @@ namespace JSNet.Model
             set{ _fullname = value; }
         }        
 		/// <summary>
-		/// SysCategory
+		/// ResourceType
         /// </summary>		
-		private string _syscategory;
-        public string SysCategory
+		private string _resourcetype;
+        public string ResourceType
         {
-            get{ return _syscategory; }
-            set{ _syscategory = value; }
-        }        
-		/// <summary>
-		/// ResourceCategory
-        /// </summary>		
-		private string _resourcecategory;
-        public string ResourceCategory
-        {
-            get{ return _resourcecategory; }
-            set{ _resourcecategory = value; }
-        }        
-		/// <summary>
-		/// Type
-        /// </summary>		
-		private string _type;
-        public string Type
-        {
-            get{ return _type; }
-            set{ _type = value; }
+            get{ return _resourcetype; }
+            set{ _resourcetype = value; }
         }        
 		/// <summary>
 		/// Groups
@@ -118,6 +100,15 @@ namespace JSNet.Model
         {
             get{ return _target; }
             set{ _target = value; }
+        }        
+		/// <summary>
+		/// TargetConstraint
+        /// </summary>		
+		private string _targetconstraint;
+        public string TargetConstraint
+        {
+            get{ return _targetconstraint; }
+            set{ _targetconstraint = value; }
         }        
 		/// <summary>
 		/// NavigateUrl
@@ -277,25 +268,11 @@ namespace JSNet.Model
             get{ return "FullName"; }
         }        
 		/// <summary>
-		/// FiledName:SysCategory
+		/// FiledName:ResourceType
         /// </summary>		
-        public static string FieldSysCategory
+        public static string FieldResourceType
         {
-            get{ return "SysCategory"; }
-        }        
-		/// <summary>
-		/// FiledName:ResourceCategory
-        /// </summary>		
-        public static string FieldResourceCategory
-        {
-            get{ return "ResourceCategory"; }
-        }        
-		/// <summary>
-		/// FiledName:Type
-        /// </summary>		
-        public static string FieldType
-        {
-            get{ return "Type"; }
+            get{ return "ResourceType"; }
         }        
 		/// <summary>
 		/// FiledName:Groups
@@ -310,6 +287,13 @@ namespace JSNet.Model
         public static string FieldTarget
         {
             get{ return "Target"; }
+        }        
+		/// <summary>
+		/// FiledName:TargetConstraint
+        /// </summary>		
+        public static string FieldTargetConstraint
+        {
+            get{ return "TargetConstraint"; }
         }        
 		/// <summary>
 		/// FiledName:NavigateUrl
@@ -418,11 +402,10 @@ namespace JSNet.Model
 				entity.ParentID = CommonUtil.ConvertToInt(dataRow[FieldParentID]);
 			entity.Code = CommonUtil.ConvertToString(dataRow[FieldCode]);
 			entity.FullName = CommonUtil.ConvertToString(dataRow[FieldFullName]);
-			entity.SysCategory = CommonUtil.ConvertToString(dataRow[FieldSysCategory]);
-			entity.ResourceCategory = CommonUtil.ConvertToString(dataRow[FieldResourceCategory]);
-			entity.Type = CommonUtil.ConvertToString(dataRow[FieldType]);
+			entity.ResourceType = CommonUtil.ConvertToString(dataRow[FieldResourceType]);
 			entity.Groups = CommonUtil.ConvertToString(dataRow[FieldGroups]);
 			entity.Target = CommonUtil.ConvertToString(dataRow[FieldTarget]);
+			entity.TargetConstraint = CommonUtil.ConvertToString(dataRow[FieldTargetConstraint]);
 			entity.NavigateUrl = CommonUtil.ConvertToString(dataRow[FieldNavigateUrl]);
 			entity.ImagUrl = CommonUtil.ConvertToString(dataRow[FieldImagUrl]);
 			entity.IsVisible = CommonUtil.ConvertToInt(dataRow[FieldIsVisible]);
@@ -437,7 +420,7 @@ namespace JSNet.Model
 			entity.ModifiedOn = CommonUtil.ConvertToDateTime(dataRow[FieldModifiedOn]);
 			entity.ModifiedUserId = CommonUtil.ConvertToString(dataRow[FieldModifiedUserId]);
 			entity.ModifiedBy = CommonUtil.ConvertToString(dataRow[FieldModifiedBy]);
-            return entity;
+						return entity;
 		}
 		
 		
@@ -448,11 +431,10 @@ namespace JSNet.Model
 				entity.ParentID = CommonUtil.ConvertToInt(dataReader[FieldParentID]);
 			entity.Code = CommonUtil.ConvertToString(dataReader[FieldCode]);
 			entity.FullName = CommonUtil.ConvertToString(dataReader[FieldFullName]);
-			entity.SysCategory = CommonUtil.ConvertToString(dataReader[FieldSysCategory]);
-			entity.ResourceCategory = CommonUtil.ConvertToString(dataReader[FieldResourceCategory]);
-			entity.Type = CommonUtil.ConvertToString(dataReader[FieldType]);
+			entity.ResourceType = CommonUtil.ConvertToString(dataReader[FieldResourceType]);
 			entity.Groups = CommonUtil.ConvertToString(dataReader[FieldGroups]);
 			entity.Target = CommonUtil.ConvertToString(dataReader[FieldTarget]);
+			entity.TargetConstraint = CommonUtil.ConvertToString(dataReader[FieldTargetConstraint]);
 			entity.NavigateUrl = CommonUtil.ConvertToString(dataReader[FieldNavigateUrl]);
 			entity.ImagUrl = CommonUtil.ConvertToString(dataReader[FieldImagUrl]);
 			entity.IsVisible = CommonUtil.ConvertToInt(dataReader[FieldIsVisible]);
@@ -467,7 +449,7 @@ namespace JSNet.Model
 			entity.ModifiedOn = CommonUtil.ConvertToDateTime(dataReader[FieldModifiedOn]);
 			entity.ModifiedUserId = CommonUtil.ConvertToString(dataReader[FieldModifiedUserId]);
 			entity.ModifiedBy = CommonUtil.ConvertToString(dataReader[FieldModifiedBy]);
-            return entity;
+						return entity;
 		}
 		
 		public void SetEntity(NonQueryBuilder sqlBuilder, ResourceEntity entity)
@@ -475,11 +457,10 @@ namespace JSNet.Model
 	   		sqlBuilder.SetValue(FieldParentID, entity.ParentID);
 			sqlBuilder.SetValue(FieldCode, entity.Code);
 			sqlBuilder.SetValue(FieldFullName, entity.FullName);
-			sqlBuilder.SetValue(FieldSysCategory, entity.SysCategory);
-			sqlBuilder.SetValue(FieldResourceCategory, entity.ResourceCategory);
-			sqlBuilder.SetValue(FieldType, entity.Type);
+			sqlBuilder.SetValue(FieldResourceType, entity.ResourceType);
 			sqlBuilder.SetValue(FieldGroups, entity.Groups);
 			sqlBuilder.SetValue(FieldTarget, entity.Target);
+			sqlBuilder.SetValue(FieldTargetConstraint, entity.TargetConstraint);
 			sqlBuilder.SetValue(FieldNavigateUrl, entity.NavigateUrl);
 			sqlBuilder.SetValue(FieldImagUrl, entity.ImagUrl);
 			sqlBuilder.SetValue(FieldIsVisible, entity.IsVisible);

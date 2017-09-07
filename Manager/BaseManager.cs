@@ -147,9 +147,9 @@ namespace JSNet.Manager
             sqlBuilder.SetFromTable(this.CurrentTableName);
             sqlBuilder.AddWhere(whereStatement);
 
-            if (orderByStatement == null)
-                orderByStatement = new OrderByStatement("ID", Sorting.Ascending);
-            sqlBuilder.AddOrderBy(orderByStatement);
+            if (orderByStatement != null)
+                sqlBuilder.AddOrderBy(orderByStatement);
+            
 
             DbParameter[] parameters = null;
             string sql = sqlBuilder.BuildSQL(out parameters);

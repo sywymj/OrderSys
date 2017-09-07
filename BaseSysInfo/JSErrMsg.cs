@@ -24,7 +24,7 @@ namespace JSNet.BaseSys
 
         //9开头的是数据库问题
         public const string ERR_CODE_DATA_MISSING = "91";
-        public const string ERR_MSG_DATA_MISSING = "数据库{0}数据丢失。";
+        public const string ERR_MSG_DATA_MISSING = "{0}数据库数据丢失。";
         public const string ERR_CODE_DATA_REPETITION = "92";
         public const string ERR_MSG_DATA_REPETITION = "数据库{0}数据重复。";
 
@@ -35,9 +35,11 @@ namespace JSNet.BaseSys
 
         //7开头的是权限业务问题
         public const string ERR_CODE_NotGrantRole = "71";
-        public const string ERR_MSG_NotGrantRole = "当前用户没有分配角色。";
-        public const string ERR_CODE_NotGrantResource = "73";
-        public const string ERR_MSG_NotGrantResource = "没有查看该资源的权限。";
+        public const string ERR_MSG_NotGrantRole = "没有分配角色。";
+        public const string ERR_CODE_NotGrantPermissionScope = "73";
+        public const string ERR_MSG_NotGrantPermissionScope = "没有分配资源权限";
+        public const string ERR_CODE_NotGrantMenuResource = "74";
+        public const string ERR_MSG_NotGrantMenuResource = "没有分配菜单权限。";
 
     }
 }

@@ -362,7 +362,10 @@ namespace CodeEngine.Framework.QueryBuilder
             }
 
             // Output OrderBy statement
-            Query += _orderByStatement.BuildOrderByStatement();
+            if (_orderByStatement.Count > 0)
+            {
+                Query += _orderByStatement.BuildOrderByStatement();
+            }
             
             // Return the build command
             dbParameters = this._parameters;

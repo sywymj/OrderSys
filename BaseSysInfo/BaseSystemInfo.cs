@@ -4,8 +4,6 @@ namespace JSNet.BaseSys
 {
     public partial class BaseSystemInfo
     {
-        
-
         /// <summary>
         /// 时间格式
         /// </summary>

@@ -24,8 +24,8 @@ namespace JSNet.Service
             EntityManager<UserEntity> userManager = new EntityManager<UserEntity>();
             string userID = userManager.Insert(entity);
 
-            EntityManager<RoleUserEntity> roleUserManager = new EntityManager<RoleUserEntity>();
-            roleUserManager.Insert(new RoleUserEntity()
+            EntityManager<UserRoleEntity> roleUserManager = new EntityManager<UserRoleEntity>();
+            roleUserManager.Insert(new UserRoleEntity()
             {
                 RoleID = roleID,
                 UserID = Convert.ToInt32(userID),
@@ -308,7 +308,7 @@ namespace JSNet.Service
         {
             //1.0 先从cookie查，有没有相应的role，若没有，选择第一个role
             // todo fix bug 其他用户登录会获取错误的roleid
-            string roleID = JSRequest.GetCookieParm("RoleID",true).ToString();
+            string roleID = JSRequest.GetCookie("RoleID",true);
             if (string.IsNullOrEmpty(roleID))
             {
                 ViewManager vmanager = new ViewManager("[VP_UserRole]");
@@ -316,17 +316,18 @@ namespace JSNet.Service
                 WhereStatement where = new WhereStatement();
                 where.Add("UserID", Comparison.Equals, user.ID);
 
-                OrderByStatement order = new OrderByStatement();
-                order.Add("UserID", Sorting.Ascending);
+                //OrderByStatement order = new OrderByStatement();
+                //order.Add("UserID", Sorting.Ascending);
 
                 int count = 0;
-                DataTable dt = vmanager.GetDataTable(where, out count, order);
+                DataTable dt = vmanager.GetDataTable(where, out count);
 
                 if (dt.Rows.Count == 0)
                 {
                     throw new JSException(JSErrMsg.ERR_CODE_NotGrantRole, JSErrMsg.ERR_MSG_NotGrantRole);
                 }
                 roleID = dt.Rows[0][UserRoleEntity.FieldRoleID].ToString();
+                
             }
 
             //2.0 根据roleID，获取role对象
@@ -338,7 +339,7 @@ namespace JSNet.Service
             }
 
             //3.0 将当前roleID 写进cookie
-            CommonUtil.WriteCookie("RoleID", role.ID.ToString());
+            JSResponse.WriteCookie("RoleID", role.ID.ToString());
             return role;
         }
 
@@ -357,7 +358,7 @@ namespace JSNet.Service
 
             if (count == 0)
             {
-                throw new JSException(JSErrMsg.ERR_CODE_NotGrantResource, JSErrMsg.ERR_MSG_NotGrantResource);
+                throw new JSException(JSErrMsg.ERR_CODE_NotGrantPermissionScope, JSErrMsg.ERR_MSG_NotGrantPermissionScope);
             }
 
             foreach(DataRow dr in dt.Rows)
@@ -384,6 +385,10 @@ namespace JSNet.Service
         {
             //1.0 获取已授权的树形menu
             string[] ids = GetTreeMenuIds(role,resourceCode);
+            if (ids.Length == 0)
+            {
+                throw new JSException(JSErrMsg.ERR_CODE_NotGrantMenuResource, JSErrMsg.ERR_MSG_NotGrantMenuResource);
+            }
 
             //2.0 根据id 获取详细信息
             ViewManager vmanager = new ViewManager("VP_RolePermission");
@@ -405,17 +410,17 @@ namespace JSNet.Service
             IDbHelper dbHelper = DbHelperFactory.GetHelper(BaseSystemInfo.CenterDbConnectionString);
             IDbDataParameter[] dbParameters = new IDbDataParameter[] { dbHelper.MakeParameter("Resource_Code", resourceCode) };
 
-            string sqlQuery = @" WITH TreeMenu AS (SELECT ID 
+            string sqlQuery = @" WITH TreeMenu AS (SELECT Resource_ID AS ID
                                         FROM [VP_RolePermission] 
                                         WHERE Resource_Code = " + dbHelper.GetParameter("Resource_Code") + @"
                                         UNION ALL
-                                        SELECT ResourceTree.ID
+                                        SELECT ResourceTree.Resource_ID
                                             FROM [VP_RolePermission] AS ResourceTree INNER JOIN
-                                                PermissionScopeTree AS A ON A.Id = ResourceTree.ParentID
-                                            WHERE ResourceType = '" + ResourceType.Menu.ToString() + @"'
-                                                AND IsVisible = " + (int)TrueFalse.True + @"
-                                                AND IsEnable = " + (int)TrueFalse.True + @"
-                                                AND RolePermission_RoleID = " + role.ID + @")
+                                                TreeMenu AS A ON A.ID = ResourceTree.PermissionItem_ParentId
+                                            WHERE Resource_ResourceType = '" + ResourceType.Menu.ToString() + @"'
+                                                AND Resource_IsVisible = " + (int)TrueFalse.True + @"
+                                                AND Resource_IsEnable = " + (int)TrueFalse.True + @"
+                                                AND Role_ID = " + role.ID + @")
                                 SELECT ID
                                     FROM TreeMenu ";
             DataTable dt = dbHelper.Fill(sqlQuery, dbParameters);

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using JSNet.Utilities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -61,7 +62,7 @@ namespace JSNet.BaseSys
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
-        public static string GetSessionParm(string key,bool returnDefatult = false)
+        public static string GetSession(string key,bool returnDefatult = false)
         {
             if(!CheckSessionParms(key))
             {
@@ -79,9 +80,10 @@ namespace JSNet.BaseSys
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
-        public static string GetCookieParm(string key, bool returnDefatult = false)
+        public static string GetCookie(string key, bool returnDefatult = false)
         {
-            if (!CheckCookieParms(key))
+            string s = CommonUtil.GetCookie(BaseSystemInfo.SoftName, key);
+            if (string.IsNullOrEmpty(s))
             {
                 if (returnDefatult)
                 {
@@ -89,7 +91,8 @@ namespace JSNet.BaseSys
                 }
                 throw new JSException(JSErrMsg.ERR_CODE_COOKIEKEY_MISSING, string.Format(JSErrMsg.ERR_MSG_COOKIEKEY_MISSING, key));
             }
-            return HttpContext.Current.Request.Cookies[key].ToString();
+            return s;
+
         }
 
         //检查Request参数是否为null或为空

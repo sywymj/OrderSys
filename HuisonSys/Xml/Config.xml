@@ -8,9 +8,9 @@
 
     <add key="CustomerCompanyName" value="JsonL" />
 
-		<add key="SoftName" value="JsonL" />
+		<add key="SoftName" value="OrderSys" />
 
-		<add key="SoftFullName" value="JsonL_Framework" />
+		<add key="SoftFullName" value="OrderSys" />
 
 		<add key="SystemCode" value="" />
 

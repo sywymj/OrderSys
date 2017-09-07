@@ -8,190 +8,190 @@ using JSNet.Model;
 using JSNet.DbUtilities;
 namespace JSNet.Model
 {
-    //O_OrderFlow
-    public class OrderFlowEntity : BaseEntity, IEntity<OrderFlowEntity>
-    {
-        /// <summary>
-        /// TableName
-        /// </summary>
-        public string TableName
+	//O_OrderFlow
+	public class OrderFlowEntity:BaseEntity,IEntity<OrderFlowEntity>
+	{
+		/// <summary>
+		/// TableName
+		/// </summary>
+		public string TableName
         {
             get { return "[O_OrderFlow]"; }
         }
-
-        /// <summary>
+	
+		/// <summary>
         /// 主键
         /// </summary>
-        public override string PrimaryKey
+		public override string PrimaryKey
         {
-            get { return "ID"; }
+            get {  return "ID"; }
         }
-
-
-        /// <summary>
+				
+	
+		/// <summary>
         /// 主键自动递增
         /// </summary>
         public override bool IsIdenty
         {
-            get { return true; }
+        	get { return true; }
         }
-
-
-        #region 字段、属性
-        /// <summary>
-        /// ID
+		
+	
+   		#region 字段、属性
+      	/// <summary>
+		/// ID
         /// </summary>		
-        private int? _id;
+		private int? _id;
         public int? ID
         {
-            get { return _id; }
-            set { _id = value; }
-        }
-        /// <summary>
-        /// OrderID
+            get{ return _id; }
+            set{ _id = value; }
+        }        
+		/// <summary>
+		/// OrderID
         /// </summary>		
-        private Guid? _orderid;
+		private Guid? _orderid;
         public Guid? OrderID
         {
-            get { return _orderid; }
-            set { _orderid = value; }
-        }
-        /// <summary>
-        /// OperatorID
+            get{ return _orderid; }
+            set{ _orderid = value; }
+        }        
+		/// <summary>
+		/// OperatorID
         /// </summary>		
-        private int? _operatorid;
+		private int? _operatorid;
         public int? OperatorID
         {
-            get { return _operatorid; }
-            set { _operatorid = value; }
-        }
-        /// <summary>
-        /// NextOperatorID
+            get{ return _operatorid; }
+            set{ _operatorid = value; }
+        }        
+		/// <summary>
+		/// NextOperatorID
         /// </summary>		
-        private int? _nextoperatorid;
+		private int? _nextoperatorid;
         public int? NextOperatorID
         {
-            get { return _nextoperatorid; }
-            set { _nextoperatorid = value; }
-        }
-        /// <summary>
-        /// Operation
+            get{ return _nextoperatorid; }
+            set{ _nextoperatorid = value; }
+        }        
+		/// <summary>
+		/// Operation
         /// </summary>		
-        private int? _operation;
+		private int? _operation;
         public int? Operation
         {
-            get { return _operation; }
-            set { _operation = value; }
-        }
-        /// <summary>
-        /// OperateTime
+            get{ return _operation; }
+            set{ _operation = value; }
+        }        
+		/// <summary>
+		/// OperateTime
         /// </summary>		
-        private DateTime? _operatetime;
+		private DateTime? _operatetime;
         public DateTime? OperateTime
         {
-            get { return _operatetime; }
-            set { _operatetime = value; }
-        }
-        /// <summary>
-        /// Remark
+            get{ return _operatetime; }
+            set{ _operatetime = value; }
+        }        
+		/// <summary>
+		/// Remark
         /// </summary>		
-        private string _remark;
+		private string _remark;
         public string Remark
         {
-            get { return _remark; }
-            set { _remark = value; }
-        }
-        #endregion
+            get{ return _remark; }
+            set{ _remark = value; }
+        }        
+				#endregion
 
-        #region  数据库字段名称
-        /// <summary>
-        /// FiledName:ID
+		#region  数据库字段名称
+      	/// <summary>
+		/// FiledName:ID
         /// </summary>		
         public static string FieldID
         {
-            get { return "ID"; }
-        }
-        /// <summary>
-        /// FiledName:OrderID
+            get{ return "ID"; }
+        }        
+		/// <summary>
+		/// FiledName:OrderID
         /// </summary>		
         public static string FieldOrderID
         {
-            get { return "OrderID"; }
-        }
-        /// <summary>
-        /// FiledName:OperatorID
+            get{ return "OrderID"; }
+        }        
+		/// <summary>
+		/// FiledName:OperatorID
         /// </summary>		
         public static string FieldOperatorID
         {
-            get { return "OperatorID"; }
-        }
-        /// <summary>
-        /// FiledName:NextOperatorID
+            get{ return "OperatorID"; }
+        }        
+		/// <summary>
+		/// FiledName:NextOperatorID
         /// </summary>		
         public static string FieldNextOperatorID
         {
-            get { return "NextOperatorID"; }
-        }
-        /// <summary>
-        /// FiledName:Operation
+            get{ return "NextOperatorID"; }
+        }        
+		/// <summary>
+		/// FiledName:Operation
         /// </summary>		
         public static string FieldOperation
         {
-            get { return "Operation"; }
-        }
-        /// <summary>
-        /// FiledName:OperateTime
+            get{ return "Operation"; }
+        }        
+		/// <summary>
+		/// FiledName:OperateTime
         /// </summary>		
         public static string FieldOperateTime
         {
-            get { return "OperateTime"; }
-        }
-        /// <summary>
-        /// FiledName:Remark
+            get{ return "OperateTime"; }
+        }        
+		/// <summary>
+		/// FiledName:Remark
         /// </summary>		
         public static string FieldRemark
         {
-            get { return "Remark"; }
-        }
-        #endregion
-
-        public OrderFlowEntity GetFrom(System.Data.DataRow dataRow)
+            get{ return "Remark"; }
+        }        
+		   		#endregion
+   		
+   		public OrderFlowEntity GetFrom(System.Data.DataRow dataRow)
         {
-            OrderFlowEntity entity = new OrderFlowEntity();
-            entity.ID = CommonUtil.ConvertToInt(dataRow[this.PrimaryKey]);
-            entity.OrderID = CommonUtil.ConvertToGuid(dataRow[FieldOrderID]);
-            entity.OperatorID = CommonUtil.ConvertToInt(dataRow[FieldOperatorID]);
-            entity.NextOperatorID = CommonUtil.ConvertToInt(dataRow[FieldNextOperatorID]);
-            entity.Operation = CommonUtil.ConvertToInt(dataRow[FieldOperation]);
-            entity.OperateTime = CommonUtil.ConvertToDateTime(dataRow[FieldOperateTime]);
-            entity.Remark = CommonUtil.ConvertToString(dataRow[FieldRemark]);
-            return entity;
-        }
-
-
-        public OrderFlowEntity GetFrom(System.Data.IDataReader dataReader)
+        	OrderFlowEntity entity = new OrderFlowEntity();
+	   		entity.ID = CommonUtil.ConvertToInt(dataRow[this.PrimaryKey]);
+				entity.OrderID = CommonUtil.ConvertToGuid(dataRow[FieldOrderID]);
+			entity.OperatorID = CommonUtil.ConvertToInt(dataRow[FieldOperatorID]);
+			entity.NextOperatorID = CommonUtil.ConvertToInt(dataRow[FieldNextOperatorID]);
+			entity.Operation = CommonUtil.ConvertToInt(dataRow[FieldOperation]);
+			entity.OperateTime = CommonUtil.ConvertToDateTime(dataRow[FieldOperateTime]);
+			entity.Remark = CommonUtil.ConvertToString(dataRow[FieldRemark]);
+						return entity;
+		}
+		
+		
+   		public OrderFlowEntity GetFrom(System.Data.IDataReader dataReader)
         {
-            OrderFlowEntity entity = new OrderFlowEntity();
-            entity.ID = CommonUtil.ConvertToInt(dataReader[this.PrimaryKey]);
-            entity.OrderID = CommonUtil.ConvertToGuid(dataReader[FieldOrderID]);
-            entity.OperatorID = CommonUtil.ConvertToInt(dataReader[FieldOperatorID]);
-            entity.NextOperatorID = CommonUtil.ConvertToInt(dataReader[FieldNextOperatorID]);
-            entity.Operation = CommonUtil.ConvertToInt(dataReader[FieldOperation]);
-            entity.OperateTime = CommonUtil.ConvertToDateTime(dataReader[FieldOperateTime]);
-            entity.Remark = CommonUtil.ConvertToString(dataReader[FieldRemark]);
-            return entity;
-        }
-
-        public void SetEntity(NonQueryBuilder sqlBuilder, OrderFlowEntity entity)
+        	OrderFlowEntity entity = new OrderFlowEntity();
+	   		entity.ID = CommonUtil.ConvertToInt(dataReader[this.PrimaryKey]);
+				entity.OrderID = CommonUtil.ConvertToGuid(dataReader[FieldOrderID]);
+			entity.OperatorID = CommonUtil.ConvertToInt(dataReader[FieldOperatorID]);
+			entity.NextOperatorID = CommonUtil.ConvertToInt(dataReader[FieldNextOperatorID]);
+			entity.Operation = CommonUtil.ConvertToInt(dataReader[FieldOperation]);
+			entity.OperateTime = CommonUtil.ConvertToDateTime(dataReader[FieldOperateTime]);
+			entity.Remark = CommonUtil.ConvertToString(dataReader[FieldRemark]);
+						return entity;
+		}
+		
+		public void SetEntity(NonQueryBuilder sqlBuilder, OrderFlowEntity entity)
         {
-            sqlBuilder.SetValue(FieldOrderID, entity.OrderID);
-            sqlBuilder.SetValue(FieldOperatorID, entity.OperatorID);
-            sqlBuilder.SetValue(FieldNextOperatorID, entity.NextOperatorID);
-            sqlBuilder.SetValue(FieldOperation, entity.Operation);
-            sqlBuilder.SetValue(FieldOperateTime, entity.OperateTime);
-            sqlBuilder.SetValue(FieldRemark, entity.Remark);
-        }
-
+	   		sqlBuilder.SetValue(FieldOrderID, entity.OrderID);
+			sqlBuilder.SetValue(FieldOperatorID, entity.OperatorID);
+			sqlBuilder.SetValue(FieldNextOperatorID, entity.NextOperatorID);
+			sqlBuilder.SetValue(FieldOperation, entity.Operation);
+			sqlBuilder.SetValue(FieldOperateTime, entity.OperateTime);
+			sqlBuilder.SetValue(FieldRemark, entity.Remark);
+					}
+		
         public void GetFromExpand(System.Data.DataRow dataRow)
         {
             throw new NotImplementedException();
@@ -201,5 +201,5 @@ namespace JSNet.Model
         {
             throw new NotImplementedException();
         }
-    }
+	}
 }

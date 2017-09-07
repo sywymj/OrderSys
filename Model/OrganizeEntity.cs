@@ -185,15 +185,6 @@ namespace JSNet.Model
             set{ _deletionstatecode = value; }
         }        
 		/// <summary>
-		/// IsEnable
-        /// </summary>		
-		private int? _isenable;
-        public int? IsEnable
-        {
-            get{ return _isenable; }
-            set{ _isenable = value; }
-        }        
-		/// <summary>
 		/// CreateOn
         /// </summary>		
 		private DateTime? _createon;
@@ -370,13 +361,6 @@ namespace JSNet.Model
             get{ return "DeletionStateCode"; }
         }        
 		/// <summary>
-		/// FiledName:IsEnable
-        /// </summary>		
-        public static string FieldIsEnable
-        {
-            get{ return "IsEnable"; }
-        }        
-		/// <summary>
 		/// FiledName:CreateOn
         /// </summary>		
         public static string FieldCreateOn
@@ -440,14 +424,13 @@ namespace JSNet.Model
 			entity.SortCode = CommonUtil.ConvertToInt(dataRow[FieldSortCode]);
 			entity.Description = CommonUtil.ConvertToString(dataRow[FieldDescription]);
 			entity.DeletionStateCode = CommonUtil.ConvertToInt(dataRow[FieldDeletionStateCode]);
-			entity.IsEnable = CommonUtil.ConvertToInt(dataRow[FieldIsEnable]);
 			entity.CreateOn = CommonUtil.ConvertToDateTime(dataRow[FieldCreateOn]);
 			entity.CreateUserId = CommonUtil.ConvertToString(dataRow[FieldCreateUserId]);
 			entity.CreateBy = CommonUtil.ConvertToString(dataRow[FieldCreateBy]);
 			entity.ModifiedOn = CommonUtil.ConvertToDateTime(dataRow[FieldModifiedOn]);
 			entity.ModifiedUserId = CommonUtil.ConvertToString(dataRow[FieldModifiedUserId]);
 			entity.ModifiedBy = CommonUtil.ConvertToString(dataRow[FieldModifiedBy]);
-						return this;
+						return entity;
 		}
 		
 		
@@ -471,14 +454,13 @@ namespace JSNet.Model
 			entity.SortCode = CommonUtil.ConvertToInt(dataReader[FieldSortCode]);
 			entity.Description = CommonUtil.ConvertToString(dataReader[FieldDescription]);
 			entity.DeletionStateCode = CommonUtil.ConvertToInt(dataReader[FieldDeletionStateCode]);
-			entity.IsEnable = CommonUtil.ConvertToInt(dataReader[FieldIsEnable]);
 			entity.CreateOn = CommonUtil.ConvertToDateTime(dataReader[FieldCreateOn]);
 			entity.CreateUserId = CommonUtil.ConvertToString(dataReader[FieldCreateUserId]);
 			entity.CreateBy = CommonUtil.ConvertToString(dataReader[FieldCreateBy]);
 			entity.ModifiedOn = CommonUtil.ConvertToDateTime(dataReader[FieldModifiedOn]);
 			entity.ModifiedUserId = CommonUtil.ConvertToString(dataReader[FieldModifiedUserId]);
 			entity.ModifiedBy = CommonUtil.ConvertToString(dataReader[FieldModifiedBy]);
-						return this;
+						return entity;
 		}
 		
 		public void SetEntity(NonQueryBuilder sqlBuilder, OrganizeEntity entity)
@@ -500,7 +482,6 @@ namespace JSNet.Model
 			sqlBuilder.SetValue(FieldSortCode, entity.SortCode);
 			sqlBuilder.SetValue(FieldDescription, entity.Description);
 			sqlBuilder.SetValue(FieldDeletionStateCode, entity.DeletionStateCode);
-			sqlBuilder.SetValue(FieldIsEnable, entity.IsEnable);
 			sqlBuilder.SetValue(FieldCreateOn, entity.CreateOn);
 			sqlBuilder.SetValue(FieldCreateUserId, entity.CreateUserId);
 			sqlBuilder.SetValue(FieldCreateBy, entity.CreateBy);
