@@ -80,15 +80,30 @@ namespace JSNet.Service
             return staff;
         }
 
+        public DataTable GetAllStaffs(Paging paging, out int count)
+        {
+            ViewManager vmanager = new ViewManager("VS_Staff_Show");
+
+            WhereStatement where = new WhereStatement();
+            where.Add("Staff_IsEnable", Comparison.Equals, (int)TrueFalse.True);
+            where.Add("Staff_IsOnJob", Comparison.Equals, (int)TrueFalse.True);
+
+            OrderByStatement orderby = new OrderByStatement();
+            orderby.Add(paging.SortField, Sorting.Ascending);
+
+            DataTable dt = vmanager.GetDataTableByPage(where, out count, paging.PageIndex, paging.PageSize, orderby);
+            return dt;
+        }
+
         public List<StaffEntity> GetAllStaffs()
         {
             EntityManager<StaffEntity> manager = new EntityManager<StaffEntity>();
 
             WhereStatement where = new WhereStatement();
-            where.Add(StaffEntity.FieldIsEnable, Comparison.Equals,(int)TrueFalse.True);
-            where.Add(StaffEntity.FieldIsOnJob, Comparison.Equals,(int)TrueFalse.True);
+            where.Add(StaffEntity.FieldIsEnable, Comparison.Equals, (int)TrueFalse.True);
+            where.Add(StaffEntity.FieldIsOnJob, Comparison.Equals, (int)TrueFalse.True);
 
-            int count =0;
+            int count = 0;
             List<StaffEntity> list = manager.GetList(where, out count);
             return list;
         }
@@ -394,7 +409,7 @@ namespace JSNet.Service
             ViewManager vmanager = new ViewManager("VP_RolePermission");
 
             WhereStatement where = new WhereStatement();
-            where.Add("ID", Comparison.In, ids);
+            where.Add("Resource_ID", Comparison.In, ids);
 
             OrderByStatement order = new OrderByStatement("Resource_SortCode", Sorting.Ascending);
 
@@ -416,7 +431,7 @@ namespace JSNet.Service
                                         UNION ALL
                                         SELECT ResourceTree.Resource_ID
                                             FROM [VP_RolePermission] AS ResourceTree INNER JOIN
-                                                TreeMenu AS A ON A.ID = ResourceTree.PermissionItem_ParentId
+                                                TreeMenu AS A ON A.ID = ResourceTree.Resource_ParentId
                                             WHERE Resource_ResourceType = '" + ResourceType.Menu.ToString() + @"'
                                                 AND Resource_IsVisible = " + (int)TrueFalse.True + @"
                                                 AND Resource_IsEnable = " + (int)TrueFalse.True + @"

@@ -36,11 +36,40 @@ namespace JSNet.Utilities
             AllowPaging = allowPaging;
         }
 
+        public Paging(int pageIndex, int pageSize, string orderby)
+            :this(pageIndex,pageSize)
+        {
+            orderby = orderby.Trim();
+            if (orderby.Split(' ').Length > 0)
+            {
+                this.SortField = orderby.Split(' ')[0];
+                this.SortOrder = orderby.Split(' ')[1];
+                this.OrderBy = orderby;
+            }
+        }
+
+        public Paging(int pageIndex, int pageSize, string sortField, string sortOrder)
+            : this(pageIndex, pageSize)
+        {
+            this.SortField = sortField;
+            this.SortOrder = sortOrder;
+
+            if (string.IsNullOrEmpty(this.SortField) || string.IsNullOrEmpty(this.SortOrder))
+            {
+                this.SortField = this.SortOrder = "";
+            }
+            string orderby = this.SortField + " " + this.SortOrder;
+            this.OrderBy = orderby.Trim();
+        }
+
         /// <summary>  
         /// 是否允许分页  
         /// </summary>  
         public bool AllowPaging { get; set; }
 
+        public string SortField { get; set; }
+
+        public string SortOrder { get; set; }
         /// <summary>  
         /// 排序  
         /// </summary>  

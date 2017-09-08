@@ -1,0 +1,38 @@
+﻿@{
+    ViewBag.Title = "员工管理";
+    Layout = "~/Areas/Admin/Views/Shared/_InnerLayout.cshtml";
+}
+
+@*@RenderPage("~/Areas/Admin/Views/Shared/_Header.cshtml")*@
+<div class="mini-fit">
+    <div id="staff-datagrid" class="mini-datagrid" idfield="Staff_ID" ajaxoptions="{type : 'get'}" style="width:100%;height:100%"
+         url="@Url.Action("GetList", "Staff", new { area = "Admin" })" data="Data.JSNet">
+        <div property="columns">
+            <div type="indexcolumn">序号</div>
+            <div field="Role_ID" width="120" headeralign="center" allowsort="true" visible="false">Role_ID</div>
+            <div field="Staff_ID" width="120" headeralign="center" allowsort="true" visible="false">Staff_ID</div>
+            <div field="Organize_ID" width="120" headeralign="center" allowsort="true" visible="false">Organize_ID</div>
+            <div field="User_ID" width="120" headeralign="center" align="center" allowsort="true">User_ID</div>
+            <div field="Staff_Name" width="120" headeralign="center" align="center" allowsort="true">姓名</div>
+            <div field="Staff_Tel" width="120" headeralign="center" align="center" allowsort="true">电话</div>
+            <div field="Organize_FullName" width="120" headeralign="center" align="center" allowsort="true">部门</div>
+            <div field="Role_FullName" width="120" headeralign="center" align="center" allowsort="true">已分配的角色</div>
+        </div>
+    </div>
+</div>
+
+<script>
+    mini.parse()
+    var staff_grid = mini.get("staff-datagrid");
+
+    staff_grid.load({
+        pageIndex: 0,
+        pageSize: 50,
+        sortField: "Role_ID",
+        sortOrder: "ASC"
+    }, function (data) {
+        ajaxTips(data.text);
+    }, function (data) {
+    })
+
+</script>

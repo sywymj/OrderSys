@@ -1,0 +1,49 @@
+﻿@{
+    Layout = null;
+}
+<div style="width:100%;">
+    <div class="mini-toolbar" id="toobar" style="border-bottom:0;padding:0px;">
+        <table style="width:100%;">
+            <tr>
+                <td id="Header" style="width:100%;">
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+@*<script>
+    $(function () {
+        //不能使用ajax，若使用ajax会导致后台获取的controller,action是ajax请求的，这里需要的是页面请求的。
+        var data = '@Html.Action("_Header", "Shared")';
+        var objJson = eval('(' + data + ')');
+        var tdLeftHeader = $("#leftHeader");
+        if (objJson.data == "undefined") { return false; }
+        $.each(objJson.data, function (i, n) {
+            var topButton = $('<a>' + n.Title + '</a>').appendTo(tdLeftHeader); //顶部按钮
+            topButton.prop("id", "btn_" + n.ID);
+            topButton.attr("plain", false);
+            topButton.addClass("mini-button mini-button-info");
+            mini.parse();//一定需要才能初始化按钮成为mini ui对象
+            var btn = mini.get("btn_" + n.ID);
+            btn.on("click", n.Fun);
+        })
+    })
+
+    //备用
+    function addEvent(obj, type, handle) {
+        try {  // Chrome、FireFox、Opera、Safari、IE9.0及其以上版本
+            obj.addEventListener(type, handle, false);
+        } catch (e) {
+            try {  // IE8.0及其以下版本
+                obj.attachEvent('on' + type, handle);
+            } catch (e) {  // 早期浏览器
+                obj['on' + type] = handle;
+            }
+        }
+    }
+
+
+</script>*@
+
+

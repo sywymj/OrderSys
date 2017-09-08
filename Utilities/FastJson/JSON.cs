@@ -97,6 +97,10 @@ namespace FastJSON
         /// </summary>
         public bool UseApiNamingStyle = false;
 
+        /// <summary>
+        /// 转换DataTable时使用 "列名：值" 格式 
+        /// </summary>
+        public bool ColnameValueStyleStringDT = true;
         public void FixValues()
         {
             if (UseExtensions == false) // disable conflicting params

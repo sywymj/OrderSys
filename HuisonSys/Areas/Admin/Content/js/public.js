@@ -24,7 +24,7 @@ ajaxTips = function (json, container, callback) {
         callback = container;
         container = 'undefined';
     }
-    //debugger;
+    debugger;
     //通过这种方法可将字符串转换为对象
     var jdata = eval('(' + json + ')');
     if (jdata.RspTypeCode == -1) {

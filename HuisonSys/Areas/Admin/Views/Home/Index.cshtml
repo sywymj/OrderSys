@@ -69,65 +69,65 @@
     </div>
 
     <script type="text/javascript">
-            mini.parse();
-            var tree = mini.get("leftTree");
+        mini.parse();
+        //init iframe src
+        var iframe = document.getElementById("mainframe");
 
-            $(function () {
-                loadNav();
+        var tree = mini.get("leftTree");
+
+        $(function () {
+            loadNav();
+        })
+
+        function loadNav() {
+            var url = '@Url.Action("GetLeftTree", "Home", new { area = "Admin" })';
+
+            doGet(url, null, function (jdata) {
+                if (jdata.Code == '200') {
+                    tree.loadList(jdata.Data.JSNet);
+                }
             })
+        }
 
-            function loadNav() {
-                var url = '@Url.Action("GetLeftTree", "Home", new { area = "Admin"})';
+        function showTab(node) {
+            var tabs = mini.get("mainTabs");
 
-                doGet(url, null, function (jdata) {
-                    if (jdata.Code == '200') {
-                        tree.loadList(jdata.data);
-                    }
-                })
+            var id = "tab$" + node.ID;
+            var tab = tabs.getTab(id);
+            if (!tab) {
+                tab = {};
+                tab._nodeid = node.ID;
+                tab.name = id;
+                tab.title = node.Title;
+                tab.url = node.Url;
+                tab.showCloseButton = true;
+
+                tabs.addTab(tab);
             }
+            tabs.activeTab(tab);
+        }
 
-            function showTab(node) {
-                var tabs = mini.get("mainTabs");
+        function onNodeSelect(e) {
+            var node = e.node;
+            var isLeaf = e.isLeaf;
 
-                var id = "tab$" + node.ID;
-                var tab = tabs.getTab(id);
-                if (!tab) {
-                    tab = {};
-                    tab._nodeid = node.ID;
-                    tab.name = id;
-                    tab.title = node.Title;
-                    tab.url = node.Url;
-                    tab.showCloseButton = true;
-
-                    tabs.addTab(tab);
-                }
-                tabs.activeTab(tab);
+            if (isLeaf) {
+                showTab(node);
             }
+        }
 
-            function onNodeSelect(e) {
-                var node = e.node;
-                var isLeaf = e.isLeaf;
+        function onTabsActiveChanged(e) {
+            var tabs = e.sender;
+            var tab = tabs.getActiveTab();
+            if (tab && tab._nodeid) {
 
-                var item = e.item;
-                iframe.src = item.Url;
-
-                if (isLeaf) {
-                    showTab(node);
-                }
-            }
-
-            function onTabsActiveChanged(e) {
-                var tabs = e.sender;
-                var tab = tabs.getActiveTab();
-                if (tab && tab._nodeid) {
-
-                    var node = tree.getNode("'" + tab._nodeid + "'");
-                    if (node && !tree.isSelectedNode(node)) {
-                        tree.selectNode(node);
-                    }
+                var node = tree.getNode("'" + tab._nodeid + "'");
+                if (node && !tree.isSelectedNode(node)) {
+                    tree.selectNode(node);
                 }
             }
-        </script>
+        }
+    </script>
 
 </body>
 </html>

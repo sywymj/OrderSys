@@ -29,17 +29,18 @@ namespace OrderSys.Admin.Controllers
             dt.Columns["Resource_ID"].ColumnName = "ID";
             dt.Columns["Resource_ParentID"].ColumnName = "ParentID";
             dt.Columns["Resource_FullName"].ColumnName = "Title";
-            dt.Columns["NavigateUrl"].ColumnName = "Url";
+            dt.Columns["Resource_NavigateUrl"].ColumnName = "Url";
+            dt.Columns["Resource_ImagUrl"].ColumnName = "ImagUrl";
 
             DataTable re = dt.DefaultView.ToTable(false, new string[] { "ID", "ParentID", "Title", "Url", "ImagUrl" });
-            return JSON.ToJSON(new JSResponse(re));
+            return JSON.ToJSON(new JSResponse(re),jsonParams);
         }
 
         public string GetButton(string resourceCode)
         {
             RoleEntity role = new PermissionService().GetCurrentRole();
             DataTable dt  = permissionService.GetButton(role, resourceCode);
-            return JSON.ToJSON(new JSResponse(dt));
+            return JSON.ToJSON(new JSResponse(dt), jsonParams);
         }
 
         

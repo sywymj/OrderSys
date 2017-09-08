@@ -319,16 +319,33 @@ namespace FastJSON
             {
                 if (rowseparator) _output.Append(',');
                 rowseparator = true;
-                _output.Append('[');
+                
+                //_output.Append('[');
+                // editby JS 170908
+                _output.Append(_params.ColnameValueStyleStringDT ? '{' : '[');
 
                 bool pendingSeperator = false;
                 foreach (DataColumn column in cols)
                 {
+                    //if (pendingSeperator) _output.Append(',');
+                    //WriteValue(row[column]);
+                    //pendingSeperator = true;
+
+                    // editby JS 170908
                     if (pendingSeperator) _output.Append(',');
-                    WriteValue(row[column]);
+                    if (_params.ColnameValueStyleStringDT)
+                    {
+                        WritePair(column.ColumnName, row[column]);
+                    }
+                    else
+                    {
+                        WriteValue(row[column]);
+                    }
                     pendingSeperator = true;
                 }
-                _output.Append(']');
+                //_output.Append(']');
+                // editby JS 170908
+                _output.Append(_params.ColnameValueStyleStringDT ? '}' : ']');
             }
 
             _output.Append(']');
