@@ -30,9 +30,17 @@ namespace OrderSys.Admin.Controllers
             Paging paging = new Paging(pageIndex, pageSize, sortField, sortOrder);
             DataTable re = permissionService.GetAllStaffs(paging,out count);
 
-            return JSON.ToJSON(new JSResponse(re),jsonParams);
+            string s = JSON.ToJSON(new JSResponse(new DataTableData(re, count)), jsonParams);
+            return s;
 
         }
+
+        [HttpGet]
+        public ActionResult InsertIndex()
+        {
+            return View("~/Areas/Admin/Views/Staff/InsertIndex.cshtml");
+        }
+
 
     }
 }

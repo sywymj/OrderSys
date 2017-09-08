@@ -1,0 +1,102 @@
+﻿
+<form id="form1" method="post">
+    <input name="id" class="mini-hidden" />
+    <div style="padding-left:11px;padding-bottom:5px;">
+        <table style="table-layout:fixed;">
+            <tr>
+                <td style="width:70px;">员工帐号：</td>
+                <td style="width:150px;">
+                    <input name="loginname" class="mini-textbox" required="true" emptytext="请输入帐号" />
+                </td>
+                <td style="width:70px;">所属部门：</td>
+                <td style="width:150px;">
+                    <input name="dept_id" class="mini-combobox" valuefield="id" textfield="name"
+                           url="../data/AjaxService.aspx?method=GetDepartments"
+                           onvaluechanged="onDeptChanged" required="true"
+                           emptytext="请选择部门" />
+                </td>
+            </tr>
+            <tr>
+                <td>薪资待遇：</td>
+                <td>
+                    <input name="salary" class="mini-textbox" required="true" />
+                </td>
+                <td>职位：</td>
+                <td>
+                    <input name="position" class="mini-combobox" valuefield="id" textfield="name" />
+                </td>
+            </tr>
+
+            <tr>
+                <td>学历：</td>
+                <td>
+                    <input name="educational" class="mini-combobox" valuefield="id" textfield="name" url="../data/AjaxService.aspx?method=GetEducationals" />
+                </td>
+                <td>毕业院校：</td>
+                <td>
+                    <input name="school" class="mini-textbox" />
+                </td>
+            </tr>
+        </table>
+    </div>
+    <fieldset style="border:solid 1px #aaa;padding:3px;">
+        <legend>基本信息</legend>
+        <div style="padding:5px;">
+            <table>
+                <tr>
+                    <td style="width:70px;">姓名</td>
+                    <td style="width:150px;">
+                        <input name="name" class="mini-textbox" required="true" />
+                    </td>
+                    <td style="width:70px;">性别：</td>
+                    <td>
+                        <select name="gender" class="mini-radiobuttonlist">
+                            <option value="1">男</option>
+                            <option value="2">女</option>
+                        </select>
+                    </td>
+
+                </tr>
+                <tr>
+                    <td>年龄：</td>
+                    <td>
+                        <input name="age" class="mini-spinner" value="25" minvalue="1" maxvalue="200" />
+                    </td>
+                    <td>出生日期：</td>
+                    <td>
+                        <input name="birthday" class="mini-datepicker" required="true" emptytext="请选择日期" alwaysview="true" />
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>
+                        <input name="married" class="mini-checkbox" text="已婚？" truevalue="1" falsevalue="0" />
+                    </td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>国家：</td>
+                    <td>
+                        <input name="country" class="mini-combobox" url="../data/countrys.txt" />
+                    </td>
+                    <td>城市：</td>
+                    <td>
+                        <input name="city" class="mini-combobox" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>备注：</td>
+                    <td colspan="3">
+                        <input name="remarks" class="mini-textarea" style="width:378px;" />
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </fieldset>
+    <div style="text-align:center;padding:10px;">
+        <a class="mini-button" onclick="onOk" style="width:60px;margin-right:20px;">确定</a>
+        <a class="mini-button" onclick="onCancel" style="width:60px;">取消</a>
+    </div>
+</form>
+

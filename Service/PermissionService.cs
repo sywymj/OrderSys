@@ -13,7 +13,7 @@ using System.Text;
 
 namespace JSNet.Service
 {
-    public class PermissionService
+    public class PermissionService:BaseService
     {
         public void AddUser(UserEntity entity, int roleID)
         {
@@ -89,7 +89,7 @@ namespace JSNet.Service
             where.Add("Staff_IsOnJob", Comparison.Equals, (int)TrueFalse.True);
 
             OrderByStatement orderby = new OrderByStatement();
-            orderby.Add(paging.SortField, Sorting.Ascending);
+            orderby.Add(paging.SortField, ConvertToSort(paging.SortOrder));
 
             DataTable dt = vmanager.GetDataTableByPage(where, out count, paging.PageIndex, paging.PageSize, orderby);
             return dt;
