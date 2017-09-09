@@ -27,8 +27,9 @@ namespace OrderSys.Controllers
         [HttpGet]
         public ActionResult AllStaffs()
         {
-            var list = permissionService.GetAllStaffs();
+            UserService userService = new UserService();
 
+            var list = userService.GetAllStaffs();
             if (list.Count > 0)
             {
                 return View("Staffs", list);

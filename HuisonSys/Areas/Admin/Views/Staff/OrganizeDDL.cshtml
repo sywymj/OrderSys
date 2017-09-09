@@ -1,0 +1,8 @@
+﻿@{
+    Layout = null;
+}
+
+<input id="OrganizeDDL" name="OrganizeID" class="mini-treeselect" url="@Url.Action("GetOrganizeDDL", "Organize", new { area = "Admin" })"
+       valuefield="Data.List.ID" parentfield="Data.List.ParentID" textfield="Data.List.Title"
+       valuefromselect="true" allowinput="true" allowinput="ture" required="true" showtreeicon="false" /> 
+

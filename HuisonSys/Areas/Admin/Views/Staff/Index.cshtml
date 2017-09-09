@@ -40,12 +40,12 @@
             url: "@Url.Action("InsertIndex", "Staff", new { area = "Admin" })",
             title: "新增员工", width: 600, height: 400,
             onload: function () {
+                debugger;
                 var iframe = this.getIFrameEl();
                 var data = { action: "new" };
                 iframe.contentWindow.SetData(data);
             },
             ondestroy: function (action) {
-
                 staff_grid.reload();
             }
         });

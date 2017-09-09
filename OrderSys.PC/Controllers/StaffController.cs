@@ -15,12 +15,20 @@ namespace OrderSys.Admin.Controllers
     {
         //
         // GET: /Staff/
-        PermissionService permissionService = new PermissionService();
+        UserService userService = new UserService();
 
+        #region Index
         public ActionResult Index()
         {
             return View("~/Areas/Admin/Views/Staff/Index.cshtml");
         }
+
+        [HttpGet]
+        public ActionResult InsertIndex()
+        {
+            return View("~/Areas/Admin/Views/Staff/InsertIndex.cshtml");
+        } 
+        #endregion
 
         [HttpGet]
         public string GetList(int pageIndex, int pageSize, string sortField, string sortOrder)
@@ -28,18 +36,14 @@ namespace OrderSys.Admin.Controllers
             int count = 0;
 
             Paging paging = new Paging(pageIndex, pageSize, sortField, sortOrder);
-            DataTable re = permissionService.GetAllStaffs(paging,out count);
+            DataTable re = userService.GetAllStaffs(paging, out count);
 
             string s = JSON.ToJSON(new JSResponse(new DataTableData(re, count)), jsonParams);
             return s;
 
         }
 
-        [HttpGet]
-        public ActionResult InsertIndex()
-        {
-            return View("~/Areas/Admin/Views/Staff/InsertIndex.cshtml");
-        }
+
 
 
     }

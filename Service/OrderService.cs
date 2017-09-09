@@ -19,12 +19,12 @@ namespace JSNet.Service
         //发起报障单
         public void StartOrder(OrderEntity order)
         {
-            PermissionService permissionService = new PermissionService();
+            UserService userService = new UserService();
             EntityManager<OrderEntity> orderManager = new EntityManager<OrderEntity>();
             EntityManager<OrderFlowEntity> orderflowManager = new EntityManager<OrderFlowEntity>();
 
             //1.0 获取当前员工数据
-            StaffEntity staff = permissionService.GetCurrentStaff();
+            StaffEntity staff = userService.GetCurrentStaff();
 
             //2.0 添加工单实体
             order.ID = Guid.NewGuid();
@@ -56,12 +56,12 @@ namespace JSNet.Service
         public void AppointOrder(Guid orderID, List<OrderHandlerEntity> handlers)
         {
             //1.0 获取当前员工数据
-            PermissionService permissionService = new PermissionService();
+            UserService userService = new UserService();
             EntityManager<OrderFlowEntity> orderflowManager = new EntityManager<OrderFlowEntity>();
             EntityManager<OrderEntity> orderManager = new EntityManager<OrderEntity>();
             EntityManager<OrderHandlerEntity> handlerManager = new EntityManager<OrderHandlerEntity>();
 
-            StaffEntity staff = permissionService.GetCurrentStaff();
+            StaffEntity staff = userService.GetCurrentStaff();
 
             //2.0 修改工单实体
            
@@ -95,10 +95,10 @@ namespace JSNet.Service
         public void ReceiveOrder(Guid orderID)
         {
             //1.0 获取当前员工数据
-            PermissionService permissionService = new PermissionService();
+            UserService userService = new UserService();
             EntityManager<OrderEntity> orderManager = new EntityManager<OrderEntity>();
             EntityManager<OrderFlowEntity> orderflowManager = new EntityManager<OrderFlowEntity>();
-            StaffEntity staff = permissionService.GetCurrentStaff();
+            StaffEntity staff = userService.GetCurrentStaff();
 
             //2.0 修改工单实体
             List<KeyValuePair<string, object>> kvps = new List<KeyValuePair<string, object>>();
@@ -135,8 +135,8 @@ namespace JSNet.Service
         public void AddHandleDetail(OrderHandleDetailEntity orderHandleDetail)
         {
             //1.0 获取当前员工数据
-            PermissionService permissionService = new PermissionService();
-            StaffEntity currentStaff = permissionService.GetCurrentStaff();
+            UserService userService = new UserService();
+            StaffEntity currentStaff = userService.GetCurrentStaff();
 
             //2.0 添加工作处理明细实体
             orderHandleDetail.HandlerID = currentStaff.ID;
@@ -153,12 +153,12 @@ namespace JSNet.Service
         //报障处理完毕
         public void HandledOrder(Guid orderID)
         {
-            PermissionService permissionService = new PermissionService();
+            UserService userService = new UserService();
             EntityManager<OrderEntity> orderManager = new EntityManager<OrderEntity>();
             EntityManager<OrderFlowEntity> orderflowManager = new EntityManager<OrderFlowEntity>();
 
             //1.0 获取当前员工数据
-            StaffEntity staff = permissionService.GetCurrentStaff();
+            StaffEntity staff = userService.GetCurrentStaff();
 
             //1.1 获取工单实体，以备获取发起人信息
             OrderEntity order = orderManager.GetSingle(orderID);
@@ -200,13 +200,13 @@ namespace JSNet.Service
         //驳回报障，需继续处理
         public void RejectOrder(Guid orderID,string remark)
         {
-            PermissionService permissionService = new PermissionService();
+            UserService userService = new UserService();
             EntityManager<OrderEntity> orderManager = new EntityManager<OrderEntity>();
             EntityManager<OrderHandlerEntity> orderHandlerManager = new EntityManager<OrderHandlerEntity>();
             EntityManager<OrderFlowEntity> orderflowManager = new EntityManager<OrderFlowEntity>();
 
             //1.0 获取当前员工数据
-            StaffEntity staff = permissionService.GetCurrentStaff();
+            StaffEntity staff = userService.GetCurrentStaff();
 
             //1.1 获取工单处理者列表，必备获取领队人的信息
             int count = 0;
@@ -247,12 +247,12 @@ namespace JSNet.Service
         //报障验收完成
         public void FinishOrder(Guid orderID)
         {
-            PermissionService permissionService = new PermissionService();
+            UserService userService = new UserService();
             EntityManager<OrderEntity> orderManager = new EntityManager<OrderEntity>();
             EntityManager<OrderFlowEntity> orderflowManager = new EntityManager<OrderFlowEntity>();
 
             //1.0 获取当前员工数据
-            StaffEntity staff = permissionService.GetCurrentStaff();
+            StaffEntity staff = userService.GetCurrentStaff();
 
             //2.0 修改工单实体
             List<KeyValuePair<string, object>> kvps = new List<KeyValuePair<string, object>>();
@@ -290,12 +290,12 @@ namespace JSNet.Service
         public void CancelOrder(Guid orderID)
         {
             // TODO 增加判断，只能取消未处理完的工单
-            PermissionService permissionService = new PermissionService();
+            UserService userService = new UserService();
             EntityManager<OrderEntity> orderManager = new EntityManager<OrderEntity>();
             EntityManager<OrderFlowEntity> orderflowManager = new EntityManager<OrderFlowEntity>();
 
             //1.0 获取当前员工数据
-            StaffEntity staff = permissionService.GetCurrentStaff();
+            StaffEntity staff = userService.GetCurrentStaff();
 
             //2.0 修改工单实体
             List<KeyValuePair<string, object>> kvps = new List<KeyValuePair<string, object>>();
@@ -337,11 +337,11 @@ namespace JSNet.Service
             //if (status != null) { where.Add(OrderEntity.FieldStatus, Comparison.Equals, status); }
 
 
-            PermissionService permissionService = new PermissionService();
+            UserService userService = new UserService();
             ViewManager manager = new ViewManager("VO_Order");
                         
             //1.0 获取当前员工数据
-            StaffEntity staff = permissionService.GetCurrentStaff();
+            StaffEntity staff = userService.GetCurrentStaff();
 
             //2.0 构建where从句
             where.Add(OrderEntity.FieldStarterID, Comparison.Equals, staff.ID);
@@ -362,11 +362,11 @@ namespace JSNet.Service
         /// <returns></returns>
         public DataTable GetMyAppointingOrders(int pageIndex, int pageSize, out int count)
         {
-            PermissionService permissionService = new PermissionService();
+            UserService userService = new UserService();
             ViewManager manager = new ViewManager("VO_Order");
 
             //1.0 获取当前员工数据
-            StaffEntity staff = permissionService.GetCurrentStaff();
+            StaffEntity staff = userService.GetCurrentStaff();
 
             //2.0 构建where从句
             WhereStatement where = new WhereStatement();
@@ -388,11 +388,11 @@ namespace JSNet.Service
         /// <returns></returns>
         public DataTable GetMyAppointedOrders(int pageIndex, int pageSize, out int count)
         {
-            PermissionService permissionService = new PermissionService();
+            UserService userService = new UserService();
             ViewManager manager = new ViewManager("VO_Order");
 
             //1.0 获取当前员工数据
-            StaffEntity staff = permissionService.GetCurrentStaff();
+            StaffEntity staff = userService.GetCurrentStaff();
 
             //2.0 构建where从句
             WhereStatement where = new WhereStatement();
@@ -415,11 +415,11 @@ namespace JSNet.Service
         /// <returns></returns>
         public DataTable GetMyReceivingOrders(int pageIndex, int pageSize, out int count)
         {
-            PermissionService permissionService = new PermissionService();
+            UserService userService = new UserService();
             ViewManager manager = new ViewManager("VO_Order");
 
             //1.0 获取当前员工数据
-            StaffEntity staff = permissionService.GetCurrentStaff();
+            StaffEntity staff = userService.GetCurrentStaff();
 
             //2.0 构建where从句
             WhereStatement where = new WhereStatement();
@@ -442,11 +442,11 @@ namespace JSNet.Service
         /// <returns></returns>
         public DataTable GetMyHandlingOrders(int pageIndex, int pageSize, out int count)
         {
-            PermissionService permissionService = new PermissionService();
+            UserService userService = new UserService();
             ViewManager manager = new ViewManager("VO_Order");
 
             //1.0 获取当前员工数据
-            StaffEntity staff = permissionService.GetCurrentStaff();
+            StaffEntity staff = userService.GetCurrentStaff();
 
             //2.0 构建where从句
             WhereStatement where = new WhereStatement();
@@ -471,11 +471,11 @@ namespace JSNet.Service
         /// <returns></returns>
         public DataTable GetMyHandledOrders(int pageIndex, int pageSize, out int count)
         {
-            PermissionService permissionService = new PermissionService();
+            UserService userService = new UserService();
             ViewManager manager = new ViewManager("VO_Order");
 
             //1.0 获取当前员工数据
-            StaffEntity staff = permissionService.GetCurrentStaff();
+            StaffEntity staff = userService.GetCurrentStaff();
 
             //2.0 构建where从句
             WhereStatement where = new WhereStatement();

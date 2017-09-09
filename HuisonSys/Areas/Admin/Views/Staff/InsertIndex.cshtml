@@ -1,5 +1,5 @@
 ﻿
-<form id="form1" method="post">
+<form id="staff-form" method="post">
     <input name="id" class="mini-hidden" />
     <div style="padding-left:11px;padding-bottom:5px;">
         <table style="table-layout:fixed;">
@@ -10,10 +10,7 @@
                 </td>
                 <td style="width:70px;">所属部门：</td>
                 <td style="width:150px;">
-                    <input name="dept_id" class="mini-combobox" valuefield="id" textfield="name"
-                           url="../data/AjaxService.aspx?method=GetDepartments"
-                           onvaluechanged="onDeptChanged" required="true"
-                           emptytext="请选择部门" />
+                    @Html.Partial("~/Areas/Admin/Views/Staff/OrganizeDDL.cshtml")
                 </td>
             </tr>
             <tr>
@@ -30,7 +27,7 @@
             <tr>
                 <td>学历：</td>
                 <td>
-                    <input name="educational" class="mini-combobox" valuefield="id" textfield="name" url="../data/AjaxService.aspx?method=GetEducationals" />
+                   
                 </td>
                 <td>毕业院校：</td>
                 <td>
@@ -78,7 +75,7 @@
                 <tr>
                     <td>国家：</td>
                     <td>
-                        <input name="country" class="mini-combobox" url="../data/countrys.txt" />
+                        
                     </td>
                     <td>城市：</td>
                     <td>
@@ -99,4 +96,28 @@
         <a class="mini-button" onclick="onCancel" style="width:60px;">取消</a>
     </div>
 </form>
+
+<script>
+    ////////////////////
+    //标准方法接口定义
+    function SetData(data) {
+        if (data.action == "edit") {
+            //跨页面传递的数据对象，克隆后才可以安全使用
+            data = mini.clone(data);
+
+            $.ajax({
+                url: "../data/AjaxService.aspx?method=GetEmployee&id=" + data.id,
+                cache: false,
+                success: function (text) {
+                    var o = mini.decode(text);
+                    form.setData(o);
+                    form.setChanged(false);
+
+                    onDeptChanged();
+                    mini.getbyName("position").setValue(o.position);
+                }
+            });
+        }
+    }
+</script>
 

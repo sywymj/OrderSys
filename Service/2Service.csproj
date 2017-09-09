@@ -43,8 +43,10 @@
     <Compile Include="BaseService.cs" />
     <Compile Include="LogService.cs" />
     <Compile Include="OrderService.cs" />
+    <Compile Include="OrganizeService.cs" />
     <Compile Include="PermissionService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UserService.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BaseSysInfo\5BaseSys.csproj">
