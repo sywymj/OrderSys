@@ -2,7 +2,26 @@
     Layout = null;
 }
 
-<input id="OrganizeDDL" name="OrganizeID" class="mini-treeselect" url="@Url.Action("GetOrganizeDDL", "Organize", new { area = "Admin" })"
-       valuefield="Data.List.ID" parentfield="Data.List.ParentID" textfield="Data.List.Title"
-       valuefromselect="true" allowinput="true" allowinput="ture" required="true" showtreeicon="false" /> 
+<input id="OrganizeDDL" class="mini-treeselect"
+       valuefield="ID" parentfield="ParentID" textfield="Title"
+       valuefromselect="true" allowinput="true" allowinput="ture" required="true" showtreeicon="false" expandonload ="0" /> 
+
+<script>
+    mini.parse();
+
+    var organizeDDL = mini.get("OrganizeDDL");
+    load_organizeDDL();
+
+    function load_organizeDDL() {
+
+        var url = '@Url.Action("GetOrganizeDDL", "Organize", new { area = "Admin" })';
+        doGet(url, null, function (jdata) {
+            if (jdata.Code == '200') {
+                debugger;
+                organizeDDL.loadList(jdata.Data);
+            }
+        })
+    }
+
+</script>
 

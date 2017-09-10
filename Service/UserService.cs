@@ -117,5 +117,16 @@ namespace JSNet.Service
             DataTable dt = vmanager.GetDataTableByPage(where, out count, paging.PageIndex, paging.PageSize, orderby);
             return dt;
         }
+
+        public bool ChkUserNameExist(string userName)
+        {
+            EntityManager<UserEntity> manager = new EntityManager<UserEntity>();
+
+            WhereStatement where = new WhereStatement();
+            where.Add(UserEntity.FieldUserName, Comparison.Equals, userName);
+
+            bool b = manager.Exists(where);
+            return b;
+        }
     }
 }

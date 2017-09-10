@@ -27,16 +27,19 @@ namespace OrderSys.Admin.Controllers
 
             List<OrganizeEntity> list = service.GetTreeOrganizeList("FSWGY");
 
-            list.Select(l => new
-            {
-                ID = l.ID,
-                ParentID = l.ParentID,
-                Title = l.FullName
-            });
+            var re = list.Select(l => 
+                new ViewOrganizeDDL(){
+                    ID = l.ID.ToString(),
+                    ParentID = l.ParentID.ToString(),
+                    Title = l.FullName
+            }).ToList();
 
-            string s = JSON.ToJSON(new JSResponse(new ListData<OrganizeEntity>(list)), jsonParams);
+            string s = JSON.ToJSON(new JSResponse(re), jsonParams);
+
             return s;
         }
 
     }
+
+  
 }

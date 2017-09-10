@@ -23,5 +23,6 @@ namespace OrderSys.Admin.Controllers
             UsingGlobalTypes = false,
             UseExtensions = false,
         };
+
     }
 }

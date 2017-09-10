@@ -1,0 +1,16 @@
+﻿{
+	"Code":"200",
+	"Msg":"数据加载成功",
+	"ErrCode":"",
+	"ErrMsg":"",
+	"Data":
+		[
+		{"ID":"2","ParentID":"1","Title":"佛山外国语"},
+		{"ID":"3","ParentID":"2","Title":"工程部"},
+		{"ID":"5","ParentID":"2","Title":"教师部"},
+		{"ID":"8","ParentID":"2","Title":"系统管理部"}
+		],
+	"RspType":"None",
+	"RspTypeCode":0
+}
+

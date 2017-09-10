@@ -42,9 +42,5 @@ namespace OrderSys.Admin.Controllers
             return s;
 
         }
-
-
-
-
     }
 }
