@@ -25,7 +25,7 @@ namespace OrderSys.Admin.Controllers
         public string GetXXXDDL()
         {
             OrganizeService service = new OrganizeService();
-            RoleEntity role = new PermissionService().GetCurrentRole();
+            RoleEntity role = new MyRoleService().GetCurrentRole();
 
             List<OrganizeEntity> list = service.GetTreeOrganizeList("XXX");
 

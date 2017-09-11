@@ -46,37 +46,5 @@ namespace JSNet.Manager
             return rows;
         }
 
-        public int SetDeleted(object idValue, string idField = null)
-        {
-            WhereClause whereClause;
-            if (idField == null)
-                whereClause = new WhereClause(this._iEntity.PrimaryKey, Comparison.Equals, idValue);
-            else
-                whereClause = new WhereClause(idField, Comparison.Equals, idValue);
-
-            int rows = this.SetDeleted(whereClause);
-            return rows;
-        }
-
-        public int SetDeleted(WhereClause whereClause)
-        {
-            WhereStatement statement = new WhereStatement(this.DbHelper);
-            statement.Add(whereClause);
-            int rows = this.SetDeleted(statement);
-            return rows;
-        }
-
-        /// <summary>
-        /// 假删除
-        /// </summary>
-        /// <returns></returns>
-        public int SetDeleted(WhereStatement whereStatement)
-        {
-            if (this._iEntity.DeletionStateCode == null) { throw new ArgumentNullException("DeletionStateCode"); }
-
-            KeyValuePair<string, object> kvp = new KeyValuePair<string, object>(this._iEntity.DeletionStateCode, 1);
-            int rows = this.Update(kvp, whereStatement);
-            return rows;
-        }
     }
 }

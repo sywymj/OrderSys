@@ -39,4 +39,10 @@ namespace JSNet.BaseSys
         Button=5,
 
     }
+
+    public enum SexType
+    {
+        Male = 1,
+        Female = 2,
+    }
 }

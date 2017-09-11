@@ -12,8 +12,6 @@ namespace JSNet.Model
 
         string PrimaryKey { get; }
 
-        string DeletionStateCode { get; }
-
         bool IsIdenty { get; } 
 
         void GetFromExpand(DataRow dataRow);

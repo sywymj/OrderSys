@@ -42,6 +42,7 @@
   <ItemGroup>
     <Compile Include="BaseService.cs" />
     <Compile Include="LogService.cs" />
+    <Compile Include="MyRoleService.cs" />
     <Compile Include="OrderService.cs" />
     <Compile Include="OrganizeService.cs" />
     <Compile Include="PermissionService.cs" />

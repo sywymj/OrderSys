@@ -284,6 +284,7 @@ namespace OrderSys.Controllers
         [HttpPost]
         public ActionResult DoAppointOrder(string jsonHandlers, Guid orderID)
         {
+            //json demo = "[{\"OrderID\":\"e8026b86-c3bf-4a8c-8566-6b053d4d80e4\",\"HandlerID\":11,\"Workload\":1,\"IsLeader\":0},{\"OrderID\":\"e8026b86-c3bf-4a8c-8566-6b053d4d80e4\",\"HandlerID\":7,\"Workload\":1,\"IsLeader\":0},{\"OrderID\":\"e8026b86-c3bf-4a8c-8566-6b053d4d80e4\",\"HandlerID\":1,\"Workload\":1,\"IsLeader\":1}]"
             List<OrderHandlerEntity> handlers = FastJSON.JSON.ToObject<List<OrderHandlerEntity>>(jsonHandlers);
 
             orderService.AppointOrder(orderID, handlers);

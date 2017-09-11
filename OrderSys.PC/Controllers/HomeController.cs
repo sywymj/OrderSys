@@ -24,7 +24,7 @@ namespace OrderSys.Admin.Controllers
 
         public string GetLeftTree()
         {
-            RoleEntity role = new PermissionService().GetCurrentRole();
+            RoleEntity role = new MyRoleService().GetCurrentRole();
             DataTable dt = permissionService.GetMenu(role, "OrderSys_PC");
             dt.Columns["Resource_ID"].ColumnName = "ID";
             dt.Columns["Resource_ParentID"].ColumnName = "ParentID";
@@ -38,7 +38,7 @@ namespace OrderSys.Admin.Controllers
 
         public string GetButton(string resourceCode)
         {
-            RoleEntity role = new PermissionService().GetCurrentRole();
+            RoleEntity role = new MyRoleService().GetCurrentRole();
             DataTable dt  = permissionService.GetButton(role, resourceCode);
             return JSON.ToJSON(new JSResponse(dt), jsonParams);
         }

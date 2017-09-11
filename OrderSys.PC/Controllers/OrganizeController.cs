@@ -23,7 +23,7 @@ namespace OrderSys.Admin.Controllers
 
         public string GetOrganizeDDL()
         {
-            RoleEntity role = new PermissionService().GetCurrentRole();
+            RoleEntity role = new MyRoleService().GetCurrentRole();
 
             List<OrganizeEntity> list = service.GetTreeOrganizeList("FSWGY");
 

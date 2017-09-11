@@ -614,10 +614,16 @@ namespace FastJSON
 
                         switch (pi.Type)
                         {
-                            case myPropInfoType.Int: oset = (int)((long)v); break;
-                            case myPropInfoType.Long: oset = (long)v; break;
-                            case myPropInfoType.String: oset = (string)v; break;
-                            case myPropInfoType.Bool: oset = (bool)v; break;
+                            //↓editby Json 170911↓
+                            //case myPropInfoType.Int: oset = (int)((long)v); break;
+                            //case myPropInfoType.Long: oset = (long)v; break;
+                            //case myPropInfoType.String: oset = (string)v; break;
+                            //case myPropInfoType.Bool: oset = Convert.ToBoolean(v); break;
+                            case myPropInfoType.Int: oset = Convert.ToInt32(v); break;
+                            case myPropInfoType.Long: oset = Convert.ToDouble(v); break;
+                            case myPropInfoType.String: oset = v.ToString(); break;
+                            case myPropInfoType.Bool: oset = Convert.ToBoolean(v); break;
+                            //↑editby Json 170911↑
                             case myPropInfoType.DateTime: oset = CreateDateTime((string)v); break;
                             case myPropInfoType.Enum: oset = CreateEnum(pi.pt, v); break;
                             case myPropInfoType.Guid: oset = CreateGuid((string)v); break;

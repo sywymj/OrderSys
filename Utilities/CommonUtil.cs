@@ -11,7 +11,7 @@ using System.Web;
 
 namespace JSNet.Utilities
 {
-    public partial class CommonUtil
+    public static class CommonUtil
     {
         #region public static string NewGuid() 获得 Guid
         /// <summary>
@@ -490,5 +490,64 @@ namespace JSNet.Utilities
             return str;
         }
         #endregion
+
+        //public static T CopyTo<T>(this object source) where T : class, new()
+        //{
+        //    var result = new T();
+        //    source.CopyTo(result);
+        //    return result;
+        //}
+
+        public static void CopyTo<T>(this object source, T target)
+            where T : class,new()
+        {
+            if (source == null)
+                return;
+
+            if (target == null)
+            {
+                throw new Exception("target 对象为空");
+                //target = new T();
+            }
+
+            foreach (var property in target.GetType().GetProperties())
+            {
+                PropertyInfo pInfo  = source.GetType().GetProperty(property.Name);
+                //↓editby Json 170911↓
+                //var propertyValue = pInfo.GetValue(source, null);
+                //过滤source没有的属性
+                if (pInfo == null)
+                {
+                    continue;
+                }
+                //↑editby Json 170911↑
+                var propertyValue = pInfo.GetValue(source, null);
+                if (propertyValue != null)
+                {
+                    if (propertyValue.GetType().IsClass)
+                    {
+
+                    }
+                    //↓editby Json 170911↓
+                    if (!pInfo.CanWrite)
+                    {
+                        //过滤只读属性
+                        continue;
+                    }
+                    //↑editby Json 170911↑
+                    target.GetType().InvokeMember(property.Name, BindingFlags.SetProperty, null, target, new object[] { propertyValue });
+                }
+
+            }
+
+            foreach (var field in target.GetType().GetFields())
+            {
+                var fieldValue = source.GetType().GetField(field.Name).GetValue(source);
+                if (fieldValue != null)
+                {
+                    target.GetType().InvokeMember(field.Name, BindingFlags.SetField, null, target, new object[] { fieldValue });
+                }
+            }
+        }
     }
 }

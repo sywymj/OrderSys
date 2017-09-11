@@ -14,21 +14,49 @@ namespace JSNet.Service
 {
     public class UserService:BaseService
     {
-        public void AddUser(UserEntity entity, int roleID)
+        public void AddUser(UserEntity entity,StaffEntity staff, int[] roleIDs)
         {
-            entity.IsEnable = 1;
-            entity.IsEnable = 1;
-            entity.OpenID = null;
+            UserEntity currentUser = GetCurrentUser();
 
+            //添加user
+            if (string.IsNullOrEmpty(entity.Password))
+            {
+                entity.Password = "123456";
+            }
+            entity.OpenID = null;
+            entity.IsLogin = (int)TrueFalse.True;
+            entity.IsEnable = (int)TrueFalse.True;
+            entity.DeletionStateCode = (int)TrueFalse.False;
+            entity.CreateUserId = currentUser.ID.ToString();
+            entity.CreateBy = currentUser.UserName;
+            entity.CreateOn = DateTime.Now;
             EntityManager<UserEntity> userManager = new EntityManager<UserEntity>();
             string userID = userManager.Insert(entity);
 
+            //添加staff
+            staff.UserID = Convert.ToInt32(userID);
+            staff.IsEnable = (int)TrueFalse.True; ;
+            staff.IsOnJob = (int)TrueFalse.True;
+            staff.DeletionStateCode = (int)TrueFalse.False;
+            staff.CreateUserId = currentUser.ID.ToString();
+            staff.CreateBy = currentUser.UserName;
+            staff.CreateOn = DateTime.Now;
+            EntityManager<StaffEntity> staffManager = new EntityManager<StaffEntity>();
+            string staffID = staffManager.Insert(staff);
+
+            //添加role-user-rel
             EntityManager<UserRoleEntity> roleUserManager = new EntityManager<UserRoleEntity>();
-            roleUserManager.Insert(new UserRoleEntity()
+            foreach (int roleID in roleIDs)
             {
-                RoleID = roleID,
-                UserID = Convert.ToInt32(userID),
-            });
+                roleUserManager.Insert(new UserRoleEntity()
+                {
+                    RoleID = roleID,
+                    UserID = Convert.ToInt32(userID),
+                    CreateUserId = currentUser.ID.ToString(),
+                    CreateBy = currentUser.UserName,
+                    CreateOn = DateTime.Now,
+                });
+            }
         }
 
         public void EditUser(UserEntity entity)

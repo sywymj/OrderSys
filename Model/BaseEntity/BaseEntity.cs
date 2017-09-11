@@ -23,13 +23,5 @@ namespace JSNet.Model
         {
             get { return false; }
         }
-
-        /// <summary>
-        /// 删除标志 字段
-        /// </summary>
-        public virtual string DeletionStateCode
-        {
-            get { return null; }
-        }
     }
 }
