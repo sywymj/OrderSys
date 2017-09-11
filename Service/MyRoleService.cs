@@ -3,6 +3,7 @@ using CodeEngine.Framework.QueryBuilder.Enums;
 using JSNet.BaseSys;
 using JSNet.Manager;
 using JSNet.Model;
+using JSNet.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -37,7 +38,6 @@ namespace JSNet.Service
                 manager.Insert(entity);
             }
         }
-
         public RoleEntity GetCurrentRole()
         {
             UserService userService = new UserService();
@@ -86,6 +86,16 @@ namespace JSNet.Service
             return role;
         }
 
+        public int[] GetRoleIDs(int userID)
+        {
+            EntityManager<UserRoleEntity> manager = new EntityManager<UserRoleEntity>();
+            WhereStatement where = new WhereStatement();
+            where.Add(UserRoleEntity.FieldUserID,Comparison.Equals,userID);
+            string[] sRoleIDs = manager.GetIds(where);
+
+            int[] roleIDs = CommonUtil.ConvertToIntArry(sRoleIDs);
+            return roleIDs;
+        }
         public List<RoleEntity> GetRoleList()
         {
             EntityManager<RoleEntity> manager = new EntityManager<RoleEntity>();

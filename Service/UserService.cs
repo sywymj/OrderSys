@@ -14,6 +14,24 @@ namespace JSNet.Service
 {
     public class UserService:BaseService
     {
+        public UserEntity GetCurrentUser()
+        {
+
+            //string openID = JSRequest.GetSessionParm("OpenID").ToString();
+
+            string openID = "1";//调试用
+
+            UserEntity user = new UserEntity();
+            EntityManager<UserEntity> manager = new EntityManager<UserEntity>();
+
+            user = manager.GetSingle(openID, UserEntity.FieldOpenID);
+            if (user == null)
+            {
+                throw new JSException(JSErrMsg.ERR_CODE_DATA_MISSING, string.Format(JSErrMsg.ERR_MSG_DATA_MISSING, "用户"));
+            }
+
+            return user;
+        }
         public void AddUser(UserEntity entity,StaffEntity staff, int[] roleIDs)
         {
             UserEntity currentUser = GetCurrentUser();
@@ -21,10 +39,9 @@ namespace JSNet.Service
             //添加user
             if (string.IsNullOrEmpty(entity.Password))
             {
-                entity.Password = "123456";
+                entity.Password = "123456";// TODO 加盐转MD5加密保存
             }
             entity.OpenID = null;
-            entity.IsLogin = (int)TrueFalse.True;
             entity.IsEnable = (int)TrueFalse.True;
             entity.DeletionStateCode = (int)TrueFalse.False;
             entity.CreateUserId = currentUser.ID.ToString();
@@ -36,7 +53,6 @@ namespace JSNet.Service
             //添加staff
             staff.UserID = Convert.ToInt32(userID);
             staff.IsEnable = (int)TrueFalse.True; ;
-            staff.IsOnJob = (int)TrueFalse.True;
             staff.DeletionStateCode = (int)TrueFalse.False;
             staff.CreateUserId = currentUser.ID.ToString();
             staff.CreateBy = currentUser.UserName;
@@ -59,27 +75,52 @@ namespace JSNet.Service
             }
         }
 
-        public void EditUser(UserEntity entity)
+        public void EditUser(UserEntity entity, StaffEntity staff, int[] roleIDs)
         {
+            UserEntity currentUser = GetCurrentUser();
 
-        }
-        public UserEntity GetCurrentUser()
-        {
+            //1.0 修改用户信息
+            EntityManager<UserEntity> userManager = new EntityManager<UserEntity>();
+            entity.ModifiedUserId = currentUser.ID.ToString();
+            entity.ModifiedBy = currentUser.UserName;
+            entity.ModifiedOn = DateTime.Now;
+            userManager.Update(entity, entity.ID);
 
-            //string openID = JSRequest.GetSessionParm("OpenID").ToString();
+            //2.0 修改员工信息
+            EntityManager<StaffEntity> staffManager = new EntityManager<StaffEntity>();
+            StaffEntity staff1 = staffManager.GetSingle(entity.ID, StaffEntity.FieldUserID);
+            staff.ModifiedUserId = currentUser.ID.ToString();
+            staff.ModifiedBy = currentUser.UserName;
+            staff.ModifiedOn = DateTime.Now;
+            staffManager.Update(staff, staff1.ID);
 
-            string openID = "1";//调试用
+            //3.0 删除role-user-rel关系
+            EntityManager<UserRoleEntity> roleUserManager = new EntityManager<UserRoleEntity>();
+            WhereStatement where = new WhereStatement();
+            where.Add(UserRoleEntity.FieldUserID,Comparison.Equals,entity.ID);
+            roleUserManager.Delete(where);
 
-            UserEntity user = new UserEntity();
-            EntityManager<UserEntity> manager = new EntityManager<UserEntity>();
-
-            user = manager.GetSingle(openID, UserEntity.FieldOpenID);
-            if (user == null)
+            //3.1 增加role-user-rel关系
+            foreach (int roleID in roleIDs)
             {
-                throw new JSException(JSErrMsg.ERR_CODE_DATA_MISSING, string.Format(JSErrMsg.ERR_MSG_DATA_MISSING, "用户"));
+                roleUserManager.Insert(new UserRoleEntity()
+                {
+                    RoleID = roleID,
+                    UserID = entity.ID,
+                    CreateUserId = currentUser.ID.ToString(),
+                    CreateBy = currentUser.UserName,
+                    CreateOn = DateTime.Now,
+                });
             }
 
-            return user;
+
+        }
+
+        public UserEntity GetUser(int userID)
+        {
+            EntityManager<UserEntity> manager = new EntityManager<UserEntity>();
+            UserEntity entity = manager.GetSingle(userID);
+            return entity;
         }
 
         public void AddStaff(StaffEntity entity)
@@ -96,11 +137,17 @@ namespace JSNet.Service
 
         public void DeleteStaff(int id)
         {
-
             EntityManager<UserEntity> manamger = new EntityManager<UserEntity>();
             List<KeyValuePair<string, object>> kvps = new List<KeyValuePair<string, object>>();
-            kvps.Add(new KeyValuePair<string, object>(StaffEntity.FieldIsOnJob, 0));
+            kvps.Add(new KeyValuePair<string, object>(StaffEntity.FieldDeletionStateCode, (int)TrueFalse.True));
             manamger.Update(kvps, id);
+        }
+
+        public StaffEntity GetStaff(int userID)
+        {
+            EntityManager<StaffEntity> manager = new EntityManager<StaffEntity>();
+            StaffEntity entity = manager.GetSingle(userID, StaffEntity.FieldUserID);
+            return entity;
         }
 
         public StaffEntity GetCurrentStaff()

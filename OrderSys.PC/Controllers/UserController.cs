@@ -44,6 +44,45 @@ namespace OrderSys.Admin.Controllers
             return JSON.ToJSON(new JSResponse(ResponseType.Remind, "添加成功！"), jsonParams);
         }
 
+        [HttpPost]
+        public string Edit()
+        {
+            string sRoleIDs = JSRequest.GetRequestFormParm("roleIDs");
+            string s = JSRequest.GetRequestFormParm("viewModel");
+            ViewUser viewModel = FastJSON.JSON.ToObject<ViewUser>(s);
+
+            //TODO 数据验证。
+            int[] roleIDs = JSValidator.ValidateStrings("角色ID", sRoleIDs, true);
+
+
+            UserEntity user = new UserEntity();
+            StaffEntity staff = new StaffEntity();
+            List<RoleEntity> roles = new List<RoleEntity>();
+
+            viewModel.CopyTo(user);
+            viewModel.Staff.CopyTo(staff);
+
+            service.EditUser(user, staff, roleIDs);
+            return JSON.ToJSON(new JSResponse(ResponseType.Remind, "修改成功！"), jsonParams);
+        }
+
+        [HttpGet]
+        public string GetSingle(int userID)
+        {
+            ViewUser viewModel = new ViewUser();
+            MyRoleService roleService = new MyRoleService();
+
+            UserEntity user = service.GetUser(userID);
+            StaffEntity staff = service.GetStaff((int)user.ID);
+            int[] roleIDs = roleService.GetRoleIDs((int)user.ID);
+
+            user.CopyTo(viewModel);
+            viewModel.Staff = staff;
+            viewModel.RoleIDs = roleIDs;
+
+            return JSON.ToJSON(new JSResponse(viewModel), jsonParams);
+        }
+
         [HttpGet]
         public string VerifyUserName(string userName)
         {

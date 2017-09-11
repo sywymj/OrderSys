@@ -24,6 +24,7 @@ namespace OrderSys.Admin
     public class ViewUser:UserEntity
     {
         public StaffEntity Staff { get; set; }
- 
+
+        public int[] RoleIDs { get; set; }
     }
 }

@@ -14,6 +14,17 @@
                 </td>
             </tr>
             <tr>
+                <td style="width:70px;">允许登录：</td>
+                <td>
+                    <select name="IsLogin" class="mini-radiobuttonlist">
+                        <option value="1">允许</option>
+                        <option value="0">禁止</option>
+                    </select>
+                </td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
                 <td style="width:70px;">分配角色：</td>
                 <td style="width:150px;">
                     @Html.Partial("~/Areas/Admin/Views/Role/RoleDDL.cshtml")
@@ -64,6 +75,17 @@
                     <td></td>
                     <td></td>
                 </tr>
+                <tr>
+                    <td style="width:70px;">是否在职：</td>
+                    <td>
+                        <select name="Staff.IsOnJob" class="mini-radiobuttonlist">
+                            <option value="1">是</option>
+                            <option value="0">否</option>
+                        </select>
+                    </td>
+                    <td></td>
+                    <td></td>
+                </tr>
             </table>
         </div>
     </fieldset>
@@ -83,19 +105,35 @@
         if (data.action == "edit") {
             //跨页面传递的数据对象，克隆后才可以安全使用
             data = mini.clone(data);
-            
-            $.ajax({
-                url: "../data/AjaxService.aspx?method=GetEmployee&id=" + data.id,
-                cache: false,
-                success: function (text) {
-                    var o = mini.decode(text);
-                    form.setData(o);
-                    form.setChanged(false);
+            var url = '@Url.Action("GetSingle", "User", new { area = "Admin" })';
+            var parms = { userID: data.ID };
 
-                    onDeptChanged();
-                    mini.getbyName("position").setValue(o.position);
-                }
-            });
+            doGet(url, parms, function (jdata) {
+                var o = jdata.Data
+                debugger;
+                form.setData(o);
+                form.setChanged(false);
+
+                // TODO 170912 赋值不成功
+                mini.get("RoleDDL").setValue(o.RoleIDs);
+                mini.get("OrganizeDDL").setValue(o.Staff.OrganizeID);
+
+                //onDeptChanged();
+                //mini.getbyName("position").setValue(o.position);
+            })
+
+            //$.ajax({
+            //    url: "../data/AjaxService.aspx?method=GetEmployee&id=" + data.id,
+            //    cache: false,
+            //    success: function (text) {
+            //        var o = mini.decode(text);
+            //        form.setData(o);
+            //        form.setChanged(false);
+
+            //        onDeptChanged();
+            //        mini.getbyName("position").setValue(o.position);
+            //    }
+            //});
         }
     }
 
@@ -125,7 +163,6 @@
         var roleIDs = mini.get("RoleDDL").getValue();
         var o = form.getData();
         o.Staff.OrganizeID = mini.get("OrganizeDDL").getValue();
-
         //将空的属性转为null
         if (o.ID == "") {
             o.ID = null;
@@ -134,20 +171,17 @@
         form.validate();
         if (form.isValid() == false) return;
 
+        var url;
+        if (o.ID == null) {
+            url = '@Url.Action("Add", "User", new { area = "Admin"})';
+        } else {
+            url = '@Url.Action("Edit", "User", new { area = "Admin"})';
+        }
         var json = mini.encode(o);
-        $.ajax({
-            url: '@Url.Action("Add", "User", new { area = "Admin"})',
-            type: 'post',
-            data: { viewModel: json, roleIDs: roleIDs },
-            cache: false,
-            success: function (text) {
-                CloseWindow("save");
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-                alert(jqXHR.responseText);
-                CloseWindow();
-            }
-        });
+        var data = { viewModel: json, roleIDs: roleIDs };
+        doPost(url, data, function (jdata) {
+            CloseWindow("save");
+        })
     }
 
     /////////////////
@@ -155,8 +189,19 @@
     function onOk(e) {
         SaveData();
     }
+    function onCancel(e) {
+        CloseWindow("cancel");
+    }
 
-
+    function CloseWindow(action) {
+        if (action == "close" && form.isChanged()) {
+            if (confirm("数据被修改了，是否先保存？")) {
+                return false;
+            }
+        }
+        if (window.CloseOwnerWindow) return window.CloseOwnerWindow(action);
+        else window.close();
+    }
 
 </script>
 

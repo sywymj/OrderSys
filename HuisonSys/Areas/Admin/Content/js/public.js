@@ -40,6 +40,26 @@ doGetSync = function (url, urlParmsObj, callback) {
     });
 }
 
+doPost = function (url, urlParmsObj, callback) {
+    showLoading();
+    $.ajax({
+        type: "Post", //GET或POST,
+        async: true, //默认设置为true，所有请求均为异步请求。
+        url: url,
+        data: urlParmsObj,
+        dataType: "text", //xml、html、script、jsonp、text
+        beforeSend: function () { },
+        success: function (data) {
+            //我这里跳转之后，怎么返回我想要回的页面
+            var jdata = ajaxTips(data, callback);
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+        },
+        complete: function () {
+            hideLoading();
+        }
+    });
+}
 
 ajaxTips = function (json, container, callback) {
     if (typeof container === "function") {
