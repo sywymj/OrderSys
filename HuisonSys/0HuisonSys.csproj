@@ -2780,6 +2780,7 @@
     <Content Include="Content\tinyselect\js\tinyselect.js" />
     <Content Include="Global.asax" />
     <Content Include="test.txt" />
+    <Content Include="tree_grid_demo.txt" />
     <Content Include="Xml\Config.xml" />
     <Content Include="Xml\Log4Net.xml" />
     <Content Include="Areas\Weixin\Views\_ViewStart.cshtml" />
@@ -2895,19 +2896,22 @@
     <Content Include="Areas\Admin\Views\Home\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Areas\Admin\Views\Staff\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\User\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\Admin\Views\Shared\_Header.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Areas\Admin\Views\Staff\InsertIndex.cshtml" />
+    <Content Include="Areas\Admin\Views\User\InsertIndex.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Areas\Admin\Views\Staff\OrganizeDDL.cshtml" />
+    <Content Include="Areas\Admin\Views\Organize\OrganizeDDL.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\Admin\Views\Role\RoleDDL.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\Admin\Views\Permission\ResourceIndex.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

@@ -48,7 +48,7 @@ namespace OrderSys.Admin.Controllers
 
             int count = 0;
             Paging paging = new Paging(pageIndex, pageSize, sortField, sortOrder);
-            DataTable re = userService.GetAllStaffs(paging, out count);
+            DataTable re = userService.GetAllUser(paging, out count);
 
             string s = JSON.ToJSON(new JSResponse(new DataTableData(re, count)), jsonParams);
             return s;

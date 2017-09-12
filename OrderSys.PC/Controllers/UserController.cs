@@ -5,6 +5,7 @@ using JSNet.Service;
 using JSNet.Utilities;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -17,10 +18,18 @@ namespace OrderSys.Admin.Controllers
         // GET: /User/
         UserService service = new UserService();
 
+        #region Index
         public ActionResult Index()
         {
-            return View();
+            return View("~/Areas/Admin/Views/User/Index.cshtml");
         }
+
+        [HttpGet]
+        public ActionResult InsertIndex()
+        {
+            return View("~/Areas/Admin/Views/User/InsertIndex.cshtml");
+        }
+        #endregion
 
         [HttpPost]
         public string Add()
@@ -31,12 +40,9 @@ namespace OrderSys.Admin.Controllers
 
             //TODO 数据验证。
             int[] roleIDs = JSValidator.ValidateStrings("角色ID", sRoleIDs, true);
-            
 
             UserEntity user = new UserEntity();
             StaffEntity staff = new StaffEntity();
-            List<RoleEntity> roles = new List<RoleEntity>();
-
             viewModel.CopyTo(user);
             viewModel.Staff.CopyTo(staff);
 
@@ -54,11 +60,8 @@ namespace OrderSys.Admin.Controllers
             //TODO 数据验证。
             int[] roleIDs = JSValidator.ValidateStrings("角色ID", sRoleIDs, true);
 
-
             UserEntity user = new UserEntity();
             StaffEntity staff = new StaffEntity();
-            List<RoleEntity> roles = new List<RoleEntity>();
-
             viewModel.CopyTo(user);
             viewModel.Staff.CopyTo(staff);
 
@@ -78,17 +81,30 @@ namespace OrderSys.Admin.Controllers
 
             user.CopyTo(viewModel);
             viewModel.Staff = staff;
-            viewModel.RoleIDs = roleIDs;
+            viewModel.RoleIDs = string.Join(",", Array.ConvertAll<int, string>(roleIDs, s => s.ToString()));
 
             return JSON.ToJSON(new JSResponse(viewModel), jsonParams);
         }
 
         [HttpGet]
-        public string VerifyUserName(string userName)
+        public string GetList(int pageIndex, int pageSize, string sortField, string sortOrder)
+        {
+            int count = 0;
+
+            Paging paging = new Paging(pageIndex, pageSize, sortField, sortOrder);
+            DataTable re = service.GetAllUser(paging, out count);
+
+            string s = JSON.ToJSON(new JSResponse(new DataTableData(re, count)), jsonParams);
+            return s;
+
+        }
+
+        [HttpGet]
+        public string VerifyUserName(string userName,string userID)
         {
             bool re = false;
             
-            if (service.ChkUserNameExist(userName))
+            if (service.ChkUserNameExist(userName,userID))
             {
                 return JSON.ToJSON(new JSResponse(re), jsonParams);
             }

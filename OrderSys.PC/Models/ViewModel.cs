@@ -25,6 +25,6 @@ namespace OrderSys.Admin
     {
         public StaffEntity Staff { get; set; }
 
-        public int[] RoleIDs { get; set; }
+        public string RoleIDs { get; set; }
     }
 }

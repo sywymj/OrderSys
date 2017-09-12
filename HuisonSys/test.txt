@@ -1,16 +1,30 @@
 ﻿{
-	"Code":"200",
-	"Msg":"数据加载成功",
-	"ErrCode":"",
-	"ErrMsg":"",
-	"Data":
-		[
-		{"ID":"2","ParentID":"1","Title":"佛山外国语"},
-		{"ID":"3","ParentID":"2","Title":"工程部"},
-		{"ID":"5","ParentID":"2","Title":"教师部"},
-		{"ID":"8","ParentID":"2","Title":"系统管理部"}
-		],
-	"RspType":"None",
-	"RspTypeCode":0
-}
-
+"Code":"200",
+"Msg":"数据加载成功",
+"ErrCode":"",
+"ErrMsg":"",
+"Data":
+	{"DT":
+		{"JSNet":
+			[
+			{"Resource_ID":"2","Resource_ParentID":"11","Resource_Code":"Order","Resource_FullName":"报障单","Resource_ResourceType":"Data","Resource_Groups":null,"Resource_Target":"O_Order","Resource_TargetConstraint":null,"Resource_NavigateUrl":null,"Resource_ImagUrl":null,"Resource_Description":"报账单内容","Resource_SortCode":100,"Resource_IsPublic":0,"Resource_IsEnable":1,"Resource_IsVisible":1},
+			{"Resource_ID":"5","Resource_ParentID":"11","Resource_Code":"OrderFlow","Resource_FullName":"报障单流水","Resource_ResourceType":"Data","Resource_Groups":null,"Resource_Target":"O_OrderFlow","Resource_TargetConstraint":null,"Resource_NavigateUrl":null,"Resource_ImagUrl":null,"Resource_Description":"报障单流水","Resource_SortCode":100,"Resource_IsPublic":0,"Resource_IsEnable":1,"Resource_IsVisible":1},
+			{"Resource_ID":"6","Resource_ParentID":"11","Resource_Code":"OrderSys_VX","Resource_FullName":"保障系统_微信","Resource_ResourceType":"System","Resource_Groups":null,"Resource_Target":null,"Resource_TargetConstraint":null,"Resource_NavigateUrl":null,"Resource_ImagUrl":null,"Resource_Description":"报障系统_微信端","Resource_SortCode":100,"Resource_IsPublic":0,"Resource_IsEnable":1,"Resource_IsVisible":1},
+			{"Resource_ID":"7","Resource_ParentID":"2","Resource_Code":"StartedOrder","Resource_FullName":"已发起报障单","Resource_ResourceType":"Data","Resource_Groups":null,"Resource_Target":"O_Order","Resource_TargetConstraint":null,"Resource_NavigateUrl":null,"Resource_ImagUrl":null,"Resource_Description":"已发起的报账单","Resource_SortCode":100,"Resource_IsPublic":0,"Resource_IsEnable":1,"Resource_IsVisible":1},
+			{"Resource_ID":"8","Resource_ParentID":"6","Resource_Code":"MyStartOrderIndex","Resource_FullName":"我的发起","Resource_ResourceType":"Menu","Resource_Groups":null,"Resource_Target":null,"Resource_TargetConstraint":null,"Resource_NavigateUrl":null,"Resource_ImagUrl":null,"Resource_Description":"我发起的报障单","Resource_SortCode":100,"Resource_IsPublic":0,"Resource_IsEnable":1,"Resource_IsVisible":1},
+			{"Resource_ID":"9","Resource_ParentID":"6","Resource_Code":"MyHandleOrderIndex","Resource_FullName":"我的处理","Resource_ResourceType":"Menu","Resource_Groups":null,"Resource_Target":null,"Resource_TargetConstraint":null,"Resource_NavigateUrl":null,"Resource_ImagUrl":null,"Resource_Description":"我处理的报障单","Resource_SortCode":100,"Resource_IsPublic":0,"Resource_IsEnable":1,"Resource_IsVisible":1},
+			{"Resource_ID":"10","Resource_ParentID":"6","Resource_Code":"MyAppointOrderIndex","Resource_FullName":"我的委派","Resource_ResourceType":"Menu","Resource_Groups":null,"Resource_Target":null,"Resource_TargetConstraint":null,"Resource_NavigateUrl":null,"Resource_ImagUrl":null,"Resource_Description":"我委派的报账单","Resource_SortCode":100,"Resource_IsPublic":0,"Resource_IsEnable":1,"Resource_IsVisible":1},
+			{"Resource_ID":"11","Resource_ParentID":"0","Resource_Code":"OrderSys","Resource_FullName":"报障系统","Resource_ResourceType":"System","Resource_Groups":null,"Resource_Target":null,"Resource_TargetConstraint":null,"Resource_NavigateUrl":null,"Resource_ImagUrl":null,"Resource_Description":"报障系统","Resource_SortCode":100,"Resource_IsPublic":0,"Resource_IsEnable":1,"Resource_IsVisible":1},
+			{"Resource_ID":"12","Resource_ParentID":"11","Resource_Code":"OrderSys_PC","Resource_FullName":"报障系统_PC","Resource_ResourceType":"System","Resource_Groups":null,"Resource_Target":null,"Resource_TargetConstraint":null,"Resource_NavigateUrl":null,"Resource_ImagUrl":null,"Resource_Description":null,"Resource_SortCode":100,"Resource_IsPublic":0,"Resource_IsEnable":1,"Resource_IsVisible":1},
+			{"Resource_ID":"13","Resource_ParentID":"12","Resource_Code":"OrderSys_PC.PermissionModule","Resource_FullName":"权限模块","Resource_ResourceType":"Menu","Resource_Groups":null,"Resource_Target":null,"Resource_TargetConstraint":null,"Resource_NavigateUrl":null,"Resource_ImagUrl":null,"Resource_Description":null,"Resource_SortCode":100,"Resource_IsPublic":0,"Resource_IsEnable":1,"Resource_IsVisible":1},
+			{"Resource_ID":"14","Resource_ParentID":"12","Resource_Code":"OrderSys_PC.UserModoule","Resource_FullName":"用户模块","Resource_ResourceType":"Menu","Resource_Groups":null,"Resource_Target":null,"Resource_TargetConstraint":null,"Resource_NavigateUrl":null,"Resource_ImagUrl":null,"Resource_Description":null,"Resource_SortCode":100,"Resource_IsPublic":0,"Resource_IsEnable":1,"Resource_IsVisible":1},
+			{"Resource_ID":"15","Resource_ParentID":"14","Resource_Code":"OrderSys_PC.User","Resource_FullName":"用户管理","Resource_ResourceType":"Menu","Resource_Groups":null,"Resource_Target":null,"Resource_TargetConstraint":null,"Resource_NavigateUrl":"Admin/User/Index","Resource_ImagUrl":null,"Resource_Description":null,"Resource_SortCode":100,"Resource_IsPublic":0,"Resource_IsEnable":1,"Resource_IsVisible":1},
+			{"Resource_ID":"16","Resource_ParentID":"14","Resource_Code":"OrderSys_PC.Staff","Resource_FullName":"员工管理","Resource_ResourceType":"Menu","Resource_Groups":null,"Resource_Target":null,"Resource_TargetConstraint":null,"Resource_NavigateUrl":"Admin/Staff/Index","Resource_ImagUrl":null,"Resource_Description":null,"Resource_SortCode":100,"Resource_IsPublic":0,"Resource_IsEnable":1,"Resource_IsVisible":1},
+			{"Resource_ID":"17","Resource_ParentID":"13","Resource_Code":"OrderSys_PC.Resource","Resource_FullName":"资源管理","Resource_ResourceType":"Menu","Resource_Groups":null,"Resource_Target":null,"Resource_TargetConstraint":null,"Resource_NavigateUrl":"Admin/Permission/ResourceIndex","Resource_ImagUrl":null,"Resource_Description":null,"Resource_SortCode":100,"Resource_IsPublic":0,"Resource_IsEnable":1,"Resource_IsVisible":1},
+			{"Resource_ID":"18","Resource_ParentID":"13","Resource_Code":"OrderSys_PC.PermissionScope","Resource_FullName":"资源权限管理","Resource_ResourceType":"Menu","Resource_Groups":null,"Resource_Target":null,"Resource_TargetConstraint":null,"Resource_NavigateUrl":"Admin/Permission/Index","Resource_ImagUrl":null,"Resource_Description":null,"Resource_SortCode":100,"Resource_IsPublic":0,"Resource_IsEnable":1,"Resource_IsVisible":1},
+			{"Resource_ID":"19","Resource_ParentID":"13","Resource_Code":"OrderSys_PC.Permission","Resource_FullName":"功能权限管理","Resource_ResourceType":"Menu","Resource_Groups":null,"Resource_Target":null,"Resource_TargetConstraint":null,"Resource_NavigateUrl":"Admin/PermissionScope/Index","Resource_ImagUrl":null,"Resource_Description":null,"Resource_SortCode":100,"Resource_IsPublic":0,"Resource_IsEnable":1,"Resource_IsVisible":1}
+			]
+		},
+	"Count":16},
+"RspType":"None",
+"RspTypeCode":0}

@@ -6,9 +6,9 @@
 @RenderPage("~/Areas/Admin/Views/Shared/_Header.cshtml")
 <div class="mini-fit">
     <div id="staff-datagrid" class="mini-datagrid" idfield="User_ID" ajaxoptions="{type : 'get'}" style="width:100%;height:100%"
-         url="@Url.Action("GetList", "Staff", new { area = "Admin" })" datafield="Data.DT.JSNet" totalfield="Data.Count">
+         url="@Url.Action("GetList", "User", new { area = "Admin" })" datafield="Data.DT.JSNet" totalfield="Data.Count">
         <div property="columns">
-            <div type="indexcolumn">序号</div>
+            <div type="indexcolumn" headeralign="center">序号</div>
             <div field="Role_ID" width="120" headeralign="center" allowsort="true" visible="false">Role_ID</div>
             <div field="Staff_ID" width="120" headeralign="center" allowsort="true" visible="false">Staff_ID</div>
             <div field="Organize_ID" width="120" headeralign="center" allowsort="true" visible="false">Organize_ID</div>
@@ -37,7 +37,7 @@
 
     function add() {
         mini.open({
-            url: "@Url.Action("InsertIndex", "Staff", new { area = "Admin" })",
+            url: "@Url.Action("InsertIndex", "User", new { area = "Admin" })",
             title: "新增员工", width: 600, height: 400,
             onload: function () {
                 debugger;
@@ -55,17 +55,15 @@
         var row = staff_grid.getSelected();
         if (row) {
             mini.open({
-                url: "@Url.Action("InsertIndex", "Staff", new { area = "Admin" })",
+                url: "@Url.Action("InsertIndex", "User", new { area = "Admin" })",
                 title: "编辑员工", width: 600, height: 400,
                 onload: function () {
                     var iframe = this.getIFrameEl();
                     var data = { action: "edit", ID: row.User_ID };
                     iframe.contentWindow.SetData(data);
-
                 },
                 ondestroy: function (action) {
-                    grid.reload();
-
+                    staff_grid.reload();
                 }
             });
 

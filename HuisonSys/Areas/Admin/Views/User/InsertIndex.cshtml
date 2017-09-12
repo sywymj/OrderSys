@@ -1,5 +1,5 @@
 ﻿
-<form id="staff-form" method="post" style="">
+<form id="user-form" method="post" style="">
     <input name="ID" class="mini-hidden" />
     <div style="padding-left:11px;padding-bottom:5px;">
         <table style="table-layout:fixed;">
@@ -70,7 +70,7 @@
                 <tr>
                     <td>所属部门：</td>
                     <td>
-                        @Html.Partial("~/Areas/Admin/Views/Staff/OrganizeDDL.cshtml")
+                        @Html.Partial("~/Areas/Admin/Views/Organize/OrganizeDDL.cshtml")
                     </td>
                     <td></td>
                     <td></td>
@@ -97,7 +97,7 @@
 
 <script>
     mini.parse();
-    var form = new mini.Form("staff-form");
+    var form = new mini.Form("user-form");
 
     ////////////////////
     //标准方法接口定义
@@ -114,26 +114,9 @@
                 form.setData(o);
                 form.setChanged(false);
 
-                // TODO 170912 赋值不成功
-                mini.get("RoleDDL").setValue(o.RoleIDs);
-                mini.get("OrganizeDDL").setValue(o.Staff.OrganizeID);
-
-                //onDeptChanged();
-                //mini.getbyName("position").setValue(o.position);
+                mini.get("RoleDDL").setValue(o.RoleIDs.toString());
+                mini.get("OrganizeDDL").setValue(o.Staff.OrganizeID.toString());
             })
-
-            //$.ajax({
-            //    url: "../data/AjaxService.aspx?method=GetEmployee&id=" + data.id,
-            //    cache: false,
-            //    success: function (text) {
-            //        var o = mini.decode(text);
-            //        form.setData(o);
-            //        form.setChanged(false);
-
-            //        onDeptChanged();
-            //        mini.getbyName("position").setValue(o.position);
-            //    }
-            //});
         }
     }
 
@@ -142,8 +125,9 @@
     function onExistUserNameValidation(e) {
         var pass = false;
         if (e.isValid) {
+            var userID = mini.getbyName("ID").getValue();
             var url = '@Url.Action("VerifyUserName", "User", new { area = "Admin" })';
-            var data = { userName: e.value };
+            var data = { userName: e.value, userID: userID };
             doGetSync(url, data, function (jdata) {
                 if (jdata.Code == '200') {
                     debugger;
@@ -191,7 +175,8 @@
     }
     function onCancel(e) {
         CloseWindow("cancel");
-    }
+    }
+
 
     function CloseWindow(action) {
         if (action == "close" && form.isChanged()) {
@@ -201,7 +186,8 @@
         }
         if (window.CloseOwnerWindow) return window.CloseOwnerWindow(action);
         else window.close();
-    }
+    }
+
 
 </script>
 

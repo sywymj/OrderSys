@@ -310,5 +310,14 @@ namespace JSNet.Service
             return dt;
         }
         
+        public DataTable GetResources(out int count)
+        {
+            ViewManager vmanager = new ViewManager("VP_Resource_Show");
+            WhereStatement where = new WhereStatement();
+
+            DataTable dt = vmanager.GetDataTable(where, out count);
+            return dt;
+
+        }
     }
 }

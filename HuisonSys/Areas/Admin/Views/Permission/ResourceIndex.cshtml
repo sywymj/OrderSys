@@ -1,0 +1,72 @@
+﻿@{
+    ViewBag.Title = "资源管理";
+    Layout = "~/Areas/Admin/Views/Shared/_InnerLayout.cshtml";
+}
+
+@RenderPage("~/Areas/Admin/Views/Shared/_Header.cshtml")
+<div class="mini-fit">
+    <div id="resource-datagrid" class="mini-treegrid" ajaxoptions="{type : 'get'}" style="width:100%;height:100%"
+         showtreeicon="false" resultastree="false" expandonload="1"
+         treecolumn="resourcename" idfield="Resource_ID" parentfield="Resource_ParentID" datafield="Data.DT.JSNet">
+        <div property="columns">
+            <div name="resourcename" field="Resource_FullName" width="120" headeralign="center" align="left" allowsort="true">标题</div>
+            <div field="Resource_Code" width="120" headeralign="center" align="center" allowsort="true">标识码</div>
+            <div field="Resource_ResourceType" width="120" headeralign="center" align="center" allowsort="true">资源类型</div>
+            <div field="Resource_Target" width="120" headeralign="center" align="center" allowsort="true">资源</div>
+            <div field="Resource_NavigateUrl" width="120" headeralign="center" align="center" allowsort="true">Url地址</div>
+            <div field="Resource_SortCode" width="120" headeralign="center" align="center" allowsort="true">排序</div>
+            <div field="Resource_Description" width="120" headeralign="center" align="center" allowsort="true">资源描述</div>
+        </div>
+    </div>
+</div>
+
+<script>
+    mini.parse()
+    var resource_grid = mini.get("resource-datagrid");
+
+    resource_grid.setUrl("@Url.Action("GetResourceList", "Permission", new { area = "Admin" })");
+    resource_grid.load({
+    }, function (data) {
+        ajaxTips(data.text);
+    }, function (data) {
+    })
+
+    function add() {
+        mini.open({
+            url: "@Url.Action("InsertIndex", "Resource", new { area = "Admin" })",
+            title: "新增资源", width: 600, height: 400,
+            onload: function () {
+                debugger;
+                var iframe = this.getIFrameEl();
+                var data = { action: "new" };
+                iframe.contentWindow.SetData(data);
+            },
+            ondestroy: function (action) {
+                resource_grid.reload();
+            }
+        });
+    }
+
+    function edit() {
+        var row = resource_grid.getSelected();
+        if (row) {
+            mini.open({
+                url: "@Url.Action("InsertIndex", "Resource", new { area = "Admin" })",
+                title: "编辑资源", width: 600, height: 400,
+                onload: function () {
+                    var iframe = this.getIFrameEl();
+                    var data = { action: "edit", ID: row.Resource_ID };
+                    iframe.contentWindow.SetData(data);
+                },
+                ondestroy: function (action) {
+                    resource_grid.reload();
+                }
+            });
+
+        } else {
+            alert("请选中一条记录");
+        }
+
+    }
+
+</script>

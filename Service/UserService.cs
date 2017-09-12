@@ -81,36 +81,48 @@ namespace JSNet.Service
 
             //1.0 修改用户信息
             EntityManager<UserEntity> userManager = new EntityManager<UserEntity>();
-            entity.ModifiedUserId = currentUser.ID.ToString();
-            entity.ModifiedBy = currentUser.UserName;
-            entity.ModifiedOn = DateTime.Now;
-            userManager.Update(entity, entity.ID);
+            List<KeyValuePair<string, object>> userTargetKVPs = new List<KeyValuePair<string, object>>();
+            userTargetKVPs.Add(new KeyValuePair<string, object>(UserEntity.FieldUserName, entity.UserName));
+            userTargetKVPs.Add(new KeyValuePair<string, object>(UserEntity.FieldPassword, entity.Password));
+            userTargetKVPs.Add(new KeyValuePair<string, object>(UserEntity.FieldIsLogin, entity.IsLogin));
+            userTargetKVPs.Add(new KeyValuePair<string, object>(UserEntity.FieldModifiedUserId, currentUser.ID.ToString()));
+            userTargetKVPs.Add(new KeyValuePair<string, object>(UserEntity.FieldModifiedBy, currentUser.UserName));
+            userTargetKVPs.Add(new KeyValuePair<string, object>(UserEntity.FieldModifiedOn, DateTime.Now));
+            userManager.Update(userTargetKVPs, entity.ID);
 
             //2.0 修改员工信息
             EntityManager<StaffEntity> staffManager = new EntityManager<StaffEntity>();
             StaffEntity staff1 = staffManager.GetSingle(entity.ID, StaffEntity.FieldUserID);
-            staff.ModifiedUserId = currentUser.ID.ToString();
-            staff.ModifiedBy = currentUser.UserName;
-            staff.ModifiedOn = DateTime.Now;
-            staffManager.Update(staff, staff1.ID);
+            List<KeyValuePair<string, object>> staffTargetKVPs = new List<KeyValuePair<string, object>>();
+            staffTargetKVPs.Add(new KeyValuePair<string, object>(StaffEntity.FieldName, staff.Name));
+            staffTargetKVPs.Add(new KeyValuePair<string, object>(StaffEntity.FieldTel, staff.Tel));
+            staffTargetKVPs.Add(new KeyValuePair<string, object>(StaffEntity.FieldAddr, staff.Addr));
+            staffTargetKVPs.Add(new KeyValuePair<string, object>(StaffEntity.FieldSex, staff.Sex));
+            staffTargetKVPs.Add(new KeyValuePair<string, object>(StaffEntity.FieldOrganizeID, staff.OrganizeID));
+            staffTargetKVPs.Add(new KeyValuePair<string, object>(StaffEntity.FieldIsOnJob, staff.IsOnJob));
+            staffTargetKVPs.Add(new KeyValuePair<string, object>(StaffEntity.FieldModifiedUserId, currentUser.ID.ToString()));
+            staffTargetKVPs.Add(new KeyValuePair<string, object>(StaffEntity.FieldModifiedBy, currentUser.UserName));
+            staffTargetKVPs.Add(new KeyValuePair<string, object>(StaffEntity.FieldModifiedOn, DateTime.Now));
+            staffManager.Update(staffTargetKVPs, staff1.ID);
 
             //3.0 删除role-user-rel关系
-            EntityManager<UserRoleEntity> roleUserManager = new EntityManager<UserRoleEntity>();
+            EntityManager<UserRoleEntity> userRoleManager = new EntityManager<UserRoleEntity>();
             WhereStatement where = new WhereStatement();
             where.Add(UserRoleEntity.FieldUserID,Comparison.Equals,entity.ID);
-            roleUserManager.Delete(where);
+            userRoleManager.Delete(where);
 
             //3.1 增加role-user-rel关系
             foreach (int roleID in roleIDs)
             {
-                roleUserManager.Insert(new UserRoleEntity()
+                UserRoleEntity userRole = new UserRoleEntity()
                 {
                     RoleID = roleID,
                     UserID = entity.ID,
                     CreateUserId = currentUser.ID.ToString(),
                     CreateBy = currentUser.UserName,
                     CreateOn = DateTime.Now,
-                });
+                };
+                userRoleManager.Insert(userRole);
             }
 
 
@@ -178,9 +190,9 @@ namespace JSNet.Service
             return list;
         }
 
-        public DataTable GetAllStaffs(Paging paging, out int count)
+        public DataTable GetAllUser(Paging paging, out int count)
         {
-            ViewManager vmanager = new ViewManager("VS_Staff_Show");
+            ViewManager vmanager = new ViewManager("VS_User_Show");
 
             WhereStatement where = new WhereStatement();
             where.Add("Staff_IsEnable", Comparison.Equals, (int)TrueFalse.True);
@@ -193,12 +205,17 @@ namespace JSNet.Service
             return dt;
         }
 
-        public bool ChkUserNameExist(string userName)
+        public bool ChkUserNameExist(string userName,string userID)
         {
             EntityManager<UserEntity> manager = new EntityManager<UserEntity>();
 
             WhereStatement where = new WhereStatement();
             where.Add(UserEntity.FieldUserName, Comparison.Equals, userName);
+            if (!string.IsNullOrEmpty(userID))
+            {
+                //编辑时
+                where.Add(UserEntity.FieldID, Comparison.NotEquals, userID);
+            }
 
             bool b = manager.Exists(where);
             return b;

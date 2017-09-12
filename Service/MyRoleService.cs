@@ -31,7 +31,6 @@ namespace JSNet.Service
                 UserRoleEntity entity = new UserRoleEntity();
                 entity.UserID = userID;
                 entity.RoleID = id;
-                entity.DeletionStateCode = (int)TrueFalse.True;
                 entity.CreateUserId = user.ID.ToString();
                 entity.CreateBy = user.UserName;
                 entity.CreateOn = DateTime.Now;
@@ -91,7 +90,7 @@ namespace JSNet.Service
             EntityManager<UserRoleEntity> manager = new EntityManager<UserRoleEntity>();
             WhereStatement where = new WhereStatement();
             where.Add(UserRoleEntity.FieldUserID,Comparison.Equals,userID);
-            string[] sRoleIDs = manager.GetIds(where);
+            string[] sRoleIDs = manager.GetProperties(UserRoleEntity.FieldRoleID, where);
 
             int[] roleIDs = CommonUtil.ConvertToIntArry(sRoleIDs);
             return roleIDs;
