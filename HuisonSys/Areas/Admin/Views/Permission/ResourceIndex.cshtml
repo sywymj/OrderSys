@@ -33,7 +33,7 @@
 
     function add() {
         mini.open({
-            url: "@Url.Action("InsertIndex", "Resource", new { area = "Admin" })",
+            url: "@Url.Action("InsertResourceIndex", "Permission", new { area = "Admin" })",
             title: "新增资源", width: 600, height: 400,
             onload: function () {
                 debugger;
@@ -51,7 +51,7 @@
         var row = resource_grid.getSelected();
         if (row) {
             mini.open({
-                url: "@Url.Action("InsertIndex", "Resource", new { area = "Admin" })",
+                url: "@Url.Action("EditResourceIndex", "Permission", new { area = "Admin" })",
                 title: "编辑资源", width: 600, height: 400,
                 onload: function () {
                     var iframe = this.getIFrameEl();

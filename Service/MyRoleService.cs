@@ -72,6 +72,8 @@ namespace JSNet.Service
 
             }
 
+            roleID = "1";//debugger
+
             //2.0 根据roleID，获取role对象
             EntityManager<RoleEntity> manager = new EntityManager<RoleEntity>();
             RoleEntity role = manager.GetSingle(roleID);

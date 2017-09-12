@@ -55,7 +55,7 @@
         var row = staff_grid.getSelected();
         if (row) {
             mini.open({
-                url: "@Url.Action("InsertIndex", "User", new { area = "Admin" })",
+                url: "@Url.Action("EditIndex", "User", new { area = "Admin" })",
                 title: "编辑员工", width: 600, height: 400,
                 onload: function () {
                     var iframe = this.getIFrameEl();

@@ -20,7 +20,7 @@ namespace OrderSys.Controllers
 
         public ActionResult GetOrderStatus()
         {
-            Dictionary<int, string> dic = EnumExtensions.GetEnumDescription<OrderStatus>();
+            Dictionary<int, string> dic = EnumExtensions.ConvertToDic<OrderStatus>();
 
             ContentResult res = new ContentResult();
             res.Content = JSON.ToJSON(new JSResponse(dic), jsonParams);
@@ -30,7 +30,7 @@ namespace OrderSys.Controllers
         [HttpGet]
         public ActionResult GetOrderHandleType()
         {
-            Dictionary<int, string> dic = EnumExtensions.GetEnumDescription<OrderHandleType>();
+            Dictionary<int, string> dic = EnumExtensions.ConvertToDic<OrderHandleType>();
 
             ContentResult res = new ContentResult();
             res.Content = JSON.ToJSON(new JSResponse(dic), jsonParams);

@@ -15,16 +15,6 @@ namespace JSNet.Service
 {
     public class PermissionService:BaseService
     {
-        public JSDictionary GetRoleDDL ()
-        {
-            int count = 0;
-            EntityManager<RoleEntity> roleManager = new EntityManager<RoleEntity>();
-            WhereStatement where = new WhereStatement();
-            List<RoleEntity> list = roleManager.GetList(where, out count);
-
-            JSDictionary re = list.ToJSDictionary(Key => Key.ID, Value => Value.FullName);
-            return re;
-        }
 
         public void AddPermissionItem(PermissionItemEntity entity)
         {
@@ -36,21 +26,6 @@ namespace JSNet.Service
             entity.IsEnable = (int)TrueFalse.True;
             entity.AllowDelete = 1;
             entity.AllowEdit = 1;
-            entity.DeletionStateCode = (int)TrueFalse.True;
-            entity.CreateUserId = user.ID.ToString();
-            entity.CreateBy = user.UserName;
-            entity.CreateOn = DateTime.Now;
-            manager.Insert(entity);
-        }
-
-        public void AddResource(ResourceEntity entity)
-        {
-            UserService userService = new UserService();
-            EntityManager<ResourceEntity> manager = new EntityManager<ResourceEntity>();
-
-            UserEntity user = userService.GetCurrentUser();
-
-            entity.IsEnable = (int)TrueFalse.True;
             entity.DeletionStateCode = (int)TrueFalse.True;
             entity.CreateUserId = user.ID.ToString();
             entity.CreateBy = user.UserName;
@@ -191,95 +166,6 @@ namespace JSNet.Service
             return dic;
         }
 
-        /// <summary>
-        /// 获取 指定资源code 的整个树形menu
-        /// </summary>
-        /// <param name="role"></param>
-        /// <param name="resourceCode">资源code</param>
-        /// <returns></returns>
-        public DataTable GetMenu(RoleEntity role,string resourceCode)
-        {
-            //1.0 获取已授权的树形menu
-            string[] ids = GetTreeMenuIds(role,resourceCode);
-            if (ids.Length == 0)
-            {
-                throw new JSException(JSErrMsg.ERR_CODE_NotGrantMenuResource, JSErrMsg.ERR_MSG_NotGrantMenuResource);
-            }
-
-            //2.0 根据id 获取详细信息
-            ViewManager vmanager = new ViewManager("VP_RolePermission");
-
-            WhereStatement where = new WhereStatement();
-            where.Add("Resource_ID", Comparison.In, ids);
-
-            OrderByStatement order = new OrderByStatement("Resource_SortCode", Sorting.Ascending);
-
-            int count = 0;
-            DataTable dt = vmanager.GetDataTable(where, out count, order);
-
-            return dt;
-            
-        }
-
-        public string[] GetTreeMenuIds(RoleEntity role,string resourceCode)
-        {
-            IDbHelper dbHelper = DbHelperFactory.GetHelper(BaseSystemInfo.CenterDbConnectionString);
-            IDbDataParameter[] dbParameters = new IDbDataParameter[] { dbHelper.MakeParameter("Resource_Code", resourceCode) };
-
-            string sqlQuery = @" WITH TreeMenu AS (SELECT Resource_ID AS ID
-                                        FROM [VP_RolePermission] 
-                                        WHERE Resource_Code = " + dbHelper.GetParameter("Resource_Code") + @"
-                                        UNION ALL
-                                        SELECT ResourceTree.Resource_ID
-                                            FROM [VP_RolePermission] AS ResourceTree INNER JOIN
-                                                TreeMenu AS A ON A.ID = ResourceTree.Resource_ParentId
-                                            WHERE Resource_ResourceType = '" + ResourceType.Menu.ToString() + @"'
-                                                AND Resource_IsVisible = " + (int)TrueFalse.True + @"
-                                                AND Resource_IsEnable = " + (int)TrueFalse.True + @"
-                                                AND Role_ID = " + role.ID + @")
-                                SELECT ID
-                                    FROM TreeMenu ";
-            DataTable dt = dbHelper.Fill(sqlQuery, dbParameters);
-            return DataTableUtil.FieldToArray(dt, "ID");
-        }
-
-        /// <summary>
-        /// 获取对应code下一层的button
-        /// </summary>
-        /// <param name="role"></param>
-        /// <param name="resourceCode"></param>
-        /// <returns></returns>
-        public DataTable GetButton(RoleEntity role, string resourceCode)
-        {
-            ViewManager vmanager = new ViewManager("VP_RolePermission");
-
-            WhereStatement where = new WhereStatement();
-            where.Add("Resource_SortCode",Comparison.Equals, resourceCode);
-
-            int count = 0;
-            DataTable dt = vmanager.GetDataTable(where, out count);
-
-            if (count == 0)
-            {
-                throw new JSException(JSErrMsg.ERR_CODE_DATA_MISSING, string.Format(JSErrMsg.ERR_MSG_DATA_MISSING, resourceCode));
-            }
-            if (count > 1)
-            {
-                throw new JSException(JSErrMsg.ERR_CODE_DATA_REPETITION, string.Format(JSErrMsg.ERR_MSG_DATA_REPETITION,"Resource表的"+ resourceCode));
-            }
-
-            WhereStatement where1 = new WhereStatement();
-            where1.Add("Resource_ParentID", Comparison.Equals, dt.Rows[0]["Resource_ParentID"].ToString());
-            where1.Add("RolePermission_RoleID", Comparison.Equals, role.ID);
-
-            int count1 = 0;
-            DataTable dt1 = vmanager.GetDataTable(where1, out count1);
-            return dt1;
-
-        }
-
-
-
         public bool IsPermissionAuthorizedByRole(RoleEntity role,string controllerName,string actionName)
         {
             DataTable dt = GetAllPermissions();
@@ -309,7 +195,132 @@ namespace JSNet.Service
             DataTable dt = vmanager.GetDataTable(where, out count);
             return dt;
         }
-        
+
+        #region Resource
+
+        public void AddResource(ResourceEntity entity)
+        {
+            UserService userService = new UserService();
+            UserEntity currentUser = userService.GetCurrentUser();
+
+            EntityManager<ResourceEntity> manager = new EntityManager<ResourceEntity>();
+            entity.CreateUserId = currentUser.ID.ToString();
+            entity.CreateBy = currentUser.UserName;
+            entity.CreateOn = DateTime.Now;
+            manager.Insert(entity);
+        }
+
+        public void EditResource(ResourceEntity entity)
+        {
+            UserService userService = new UserService();
+            UserEntity currentUser = userService.GetCurrentUser();
+
+            EntityManager<ResourceEntity> manager = new EntityManager<ResourceEntity>();
+            List<KeyValuePair<string, object>> kvps = new List<KeyValuePair<string, object>>();
+            kvps.Add(new KeyValuePair<string, object>(ResourceEntity.FieldParentID, entity.ParentID));
+            kvps.Add(new KeyValuePair<string, object>(ResourceEntity.FieldCode, entity.Code));
+            kvps.Add(new KeyValuePair<string, object>(ResourceEntity.FieldFullName, entity.FullName));
+            kvps.Add(new KeyValuePair<string, object>(ResourceEntity.FieldResourceType, entity.ResourceType));
+            kvps.Add(new KeyValuePair<string, object>(ResourceEntity.FieldGroups, entity.Groups));
+            kvps.Add(new KeyValuePair<string, object>(ResourceEntity.FieldTarget, entity.Target));
+            kvps.Add(new KeyValuePair<string, object>(ResourceEntity.FieldNavigateUrl, entity.NavigateUrl));
+            kvps.Add(new KeyValuePair<string, object>(ResourceEntity.FieldSortCode, entity.SortCode));
+            kvps.Add(new KeyValuePair<string, object>(ResourceEntity.FieldIsVisible, entity.IsVisible));
+            kvps.Add(new KeyValuePair<string, object>(ResourceEntity.FieldIsEnable, entity.IsEnable));
+            kvps.Add(new KeyValuePair<string, object>(ResourceEntity.FieldIsPublic, entity.IsPublic));
+            kvps.Add(new KeyValuePair<string, object>(ResourceEntity.FieldModifiedUserId, currentUser.ID.ToString()));
+            kvps.Add(new KeyValuePair<string, object>(ResourceEntity.FieldModifiedBy, currentUser.UserName));
+            kvps.Add(new KeyValuePair<string, object>(ResourceEntity.FieldModifiedOn, DateTime.Now));
+            manager.Update(kvps, entity.ID);
+        }
+
+        /// <summary>
+        /// 获取对应code下一层的button
+        /// </summary>
+        /// <param name="role"></param>
+        /// <param name="resourceCode"></param>
+        /// <returns></returns>
+        public DataTable GetButton(RoleEntity role, string resourceCode)
+        {
+            ViewManager vmanager = new ViewManager("VP_RolePermission");
+
+            WhereStatement where = new WhereStatement();
+            where.Add("Resource_SortCode", Comparison.Equals, resourceCode);
+
+            int count = 0;
+            DataTable dt = vmanager.GetDataTable(where, out count);
+
+            if (count == 0)
+            {
+                throw new JSException(JSErrMsg.ERR_CODE_DATA_MISSING, string.Format(JSErrMsg.ERR_MSG_DATA_MISSING, resourceCode));
+            }
+            if (count > 1)
+            {
+                throw new JSException(JSErrMsg.ERR_CODE_DATA_REPETITION, string.Format(JSErrMsg.ERR_MSG_DATA_REPETITION, "Resource表的" + resourceCode));
+            }
+
+            WhereStatement where1 = new WhereStatement();
+            where1.Add("Resource_ParentID", Comparison.Equals, dt.Rows[0]["Resource_ParentID"].ToString());
+            where1.Add("RolePermission_RoleID", Comparison.Equals, role.ID);
+
+            int count1 = 0;
+            DataTable dt1 = vmanager.GetDataTable(where1, out count1);
+            return dt1;
+
+        }
+
+        /// <summary>
+        /// 获取 指定资源code 的整个树形menu
+        /// </summary>
+        /// <param name="role"></param>
+        /// <param name="resourceCode">资源code</param>
+        /// <returns></returns>
+        public DataTable GetMenu(RoleEntity role, string resourceCode)
+        {
+            //1.0 获取已授权的树形menu
+            string[] ids = GetTreeMenuIds(role, resourceCode);
+            if (ids.Length == 0)
+            {
+                throw new JSException(JSErrMsg.ERR_CODE_NotGrantMenuResource, JSErrMsg.ERR_MSG_NotGrantMenuResource);
+            }
+
+            //2.0 根据id 获取详细信息
+            ViewManager vmanager = new ViewManager("VP_RolePermission");
+
+            WhereStatement where = new WhereStatement();
+            where.Add("Resource_ID", Comparison.In, ids);
+
+            OrderByStatement order = new OrderByStatement("Resource_SortCode", Sorting.Ascending);
+
+            int count = 0;
+            DataTable dt = vmanager.GetDataTable(where, out count, order);
+
+            return dt;
+
+        }
+
+        public string[] GetTreeMenuIds(RoleEntity role, string resourceCode)
+        {
+            IDbHelper dbHelper = DbHelperFactory.GetHelper(BaseSystemInfo.CenterDbConnectionString);
+            IDbDataParameter[] dbParameters = new IDbDataParameter[] { dbHelper.MakeParameter("Resource_Code", resourceCode) };
+
+            string sqlQuery = @" WITH TreeMenu AS (SELECT Resource_ID AS ID
+                                        FROM [VP_RolePermission] 
+                                        WHERE Resource_Code = " + dbHelper.GetParameter("Resource_Code") + @"
+                                        UNION ALL
+                                        SELECT ResourceTree.Resource_ID
+                                            FROM [VP_RolePermission] AS ResourceTree INNER JOIN
+                                                TreeMenu AS A ON A.ID = ResourceTree.Resource_ParentId
+                                            WHERE Resource_ResourceType = '" + ResourceType.Menu.ToString() + @"'
+                                                AND Resource_IsVisible = " + (int)TrueFalse.True + @"
+                                                AND Resource_IsEnable = " + (int)TrueFalse.True + @"
+                                                AND Role_ID = " + role.ID + @")
+                                SELECT ID
+                                    FROM TreeMenu ";
+            DataTable dt = dbHelper.Fill(sqlQuery, dbParameters);
+            return DataTableUtil.FieldToArray(dt, "ID");
+        }
+
         public DataTable GetResources(out int count)
         {
             ViewManager vmanager = new ViewManager("VP_Resource_Show");
@@ -317,7 +328,52 @@ namespace JSNet.Service
 
             DataTable dt = vmanager.GetDataTable(where, out count);
             return dt;
-
         }
+
+        public List<ResourceEntity> GetTreeResourceList(string resouceCode, bool onlyChild = true)
+        {
+            EntityManager<ResourceEntity> manager = new EntityManager<ResourceEntity>();
+
+            string[] ids = GetTreeResourceIDs(resouceCode);
+            if (ids.Length == 0)
+            {
+                throw new JSException(JSErrMsg.ERR_CODE_DATA_MISSING, string.Format(JSErrMsg.ERR_MSG_DATA_MISSING, "resouceCode"));
+            }
+
+            WhereStatement where = new WhereStatement();
+            where.Add(ResourceEntity.FieldID, Comparison.In, ids);
+
+            int count = 0;
+            List<ResourceEntity> list = manager.GetList(where, out count);
+
+            if (onlyChild)
+            {
+                list.Where(l => l.Code != resouceCode);
+            }
+
+            return list;
+        }
+
+        public string[] GetTreeResourceIDs(string resouceCode)
+        {
+            IDbHelper dbHelper = DbHelperFactory.GetHelper(BaseSystemInfo.CenterDbConnectionString);
+            IDbDataParameter[] dbParameters = new IDbDataParameter[] { dbHelper.MakeParameter("Resource_Code", resouceCode) };
+
+            string sqlQuery = @" WITH Tree AS (
+                                    SELECT Resource_ID AS ID
+                                        FROM [VP_Resource] 
+                                        WHERE Resource_Code = " + dbHelper.GetParameter("Resource_Code") + @"
+                                    UNION ALL
+                                    SELECT ResourceTree.Resource_ID
+                                        FROM [VP_Resource] AS ResourceTree INNER JOIN
+                                        Tree AS A ON A.ID = ResourceTree.Resource_ParentID)
+                                SELECT ID
+                                    FROM Tree ";
+            DataTable dt = dbHelper.Fill(sqlQuery, dbParameters);
+            return DataTableUtil.FieldToArray(dt, "ID");
+
+        } 
+
+        #endregion
     }
 }

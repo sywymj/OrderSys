@@ -29,6 +29,12 @@ namespace OrderSys.Admin.Controllers
         {
             return View("~/Areas/Admin/Views/User/InsertIndex.cshtml");
         }
+
+        [HttpGet]
+        public ActionResult EditIndexIndex()
+        {
+            return View("~/Areas/Admin/Views/User/InsertIndex.cshtml");
+        }
         #endregion
 
         [HttpPost]

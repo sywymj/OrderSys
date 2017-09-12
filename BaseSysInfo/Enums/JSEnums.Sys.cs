@@ -20,22 +20,32 @@ namespace JSNet.BaseSys
         /// <summary>
         /// 数据资源
         /// </summary>
+        ///
+        [EnumDescription("数据")]
         Data = 1,
         /// <summary>
         /// 菜单
         /// </summary>
+        /// 
+        [EnumDescription("菜单")]
         Menu = 2,
         /// <summary>
         /// 内页菜单
         /// </summary>
+        /// 
+        [EnumDescription("内部菜单")]
         InnerMenu = 3,
-        /// <summary>
-        /// 弹出框
-        /// </summary>
-        Popup = 4,
+        ///// <summary>
+        ///// 弹出框
+        ///// </summary>
+        ///// 
+        //[EnumDescription("弹出框")]
+        //Popup = 4,
         /// <summary>
         /// 按钮
         /// </summary>
+        /// 
+        [EnumDescription("按钮")]
         Button=5,
 
     }
