@@ -346,37 +346,20 @@ namespace JSNet.Service
 
         public string[] GetTreeResourceIDs(string resouceCode)
         {
-            IDbHelper dbHelper = DbHelperFactory.GetHelper(BaseSystemInfo.CenterDbConnectionString);
-            IDbDataParameter[] dbParameters = new IDbDataParameter[] { dbHelper.MakeParameter("Resource_Code", resouceCode) };
-
-            string sqlQuery = @" WITH Tree AS (
-                                    SELECT Resource_ID AS ID
-                                        FROM [VP_Resource] 
-                                        WHERE Resource_Code = " + dbHelper.GetParameter("Resource_Code") + @"
-                                    UNION ALL
-                                    SELECT ResourceTree.Resource_ID
-                                        FROM [VP_Resource] AS ResourceTree INNER JOIN
-                                        Tree AS A ON A.ID = ResourceTree.Resource_ParentID)
-                                SELECT ID
-                                    FROM Tree ";
-            DataTable dt = dbHelper.Fill(sqlQuery, dbParameters);
-            return DataTableUtil.FieldToArray(dt, "ID");
-
+            string[] s = GetTreeIDs(
+                "[VP_Resource]",
+                "Resource_Code", resouceCode,
+                "Resource_ID", "Resource_ParentID");
+            return s;
         }
 
         public bool ChkResourceCodeExist(string resourceCode, string resourceID)
         {
             EntityManager<ResourceEntity> manager = new EntityManager<ResourceEntity>();
-
-            WhereStatement where = new WhereStatement();
-            where.Add(ResourceEntity.FieldCode, Comparison.Equals, resourceCode);
-            if (!string.IsNullOrEmpty(resourceID))
-            {
-                //编辑时
-                where.Add(ResourceEntity.FieldCode, Comparison.NotEquals, resourceID);
-            }
-
-            bool b = manager.Exists(where);
+            bool b = ChkExist<ResourceEntity>(
+                manager,
+                ResourceEntity.FieldCode, resourceCode,
+                ResourceEntity.FieldID, resourceID);
             return b;
         }
 
@@ -462,37 +445,20 @@ namespace JSNet.Service
 
         public string[] GetTreePermissionItemIDs(string permissionItemCode)
         {
-            IDbHelper dbHelper = DbHelperFactory.GetHelper(BaseSystemInfo.CenterDbConnectionString);
-            IDbDataParameter[] dbParameters = new IDbDataParameter[] { dbHelper.MakeParameter("PermissionItem_Code", permissionItemCode) };
-
-            string sqlQuery = @" WITH Tree1 AS (
-                                    SELECT PermissionItem_ID AS ID
-                                        FROM [VP_PermissionItem] 
-                                        WHERE PermissionItem_Code = " + dbHelper.GetParameter("PermissionItem_Code") + @"
-                                    UNION ALL
-                                    SELECT Tree.PermissionItem_ID
-                                        FROM [VP_PermissionItem] AS Tree INNER JOIN
-                                        Tree1 AS A ON A.ID = Tree.PermissionItem_ParentID)
-                                SELECT ID
-                                    FROM Tree1 ";
-            DataTable dt = dbHelper.Fill(sqlQuery, dbParameters);
-            return DataTableUtil.FieldToArray(dt, "ID");
-
+            string[] s = GetTreeIDs(
+                "[VP_PermissionItem]", 
+                "PermissionItem_Code", permissionItemCode, 
+                "PermissionItem_ID", "PermissionItem_ParentID");
+            return s;
         }
 
         public bool ChkPermissionItemCodeExist(string permissionItemCode, string permissionItemID)
         {
             EntityManager<PermissionItemEntity> manager = new EntityManager<PermissionItemEntity>();
-
-            WhereStatement where = new WhereStatement();
-            where.Add(PermissionItemEntity.FieldCode, Comparison.Equals, permissionItemCode);
-            if (!string.IsNullOrEmpty(permissionItemID))
-            {
-                //编辑时
-                where.Add(PermissionItemEntity.FieldCode, Comparison.NotEquals, permissionItemID);
-            }
-
-            bool b = manager.Exists(where);
+            bool b = ChkExist<PermissionItemEntity>(
+                manager, 
+                PermissionItemEntity.FieldCode, permissionItemCode, 
+                PermissionItemEntity.FieldID, permissionItemID);
             return b;
         }
 

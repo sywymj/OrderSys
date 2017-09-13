@@ -8,8 +8,10 @@
                 <td style="width:150px;">
                     @Html.Partial("~/Areas/Admin/Views/Permission/PermissionItem_TreeDDL.cshtml")
                 </td>
-                <td></td>
-                <td></td>
+                <td style="width:70px;">系统类型：</td>
+                <td style="width:150px;">
+                    @Html.Partial("~/Areas/Admin/Views/Permission/SysCategory_DDL.cshtml")
+                </td>
             </tr>
             <tr>
                 <td style="width:70px;">标题：</td>
@@ -22,24 +24,22 @@
                 </td>
             </tr>
             <tr>
-                <td style="width:70px;">系统类型：</td>
-                <td style="width:150px;">
-                    @Html.Partial("~/Areas/Admin/Views/Permission/SysCategory_DDL.cshtml")
-                </td>
                 <td style="width:70px;">Controller：</td>
                 <td style="width:150px;">
                     <input name="Controller" class="mini-textbox" required="true" emptytext="请输入Controller" />
                 </td>
-            </tr>
-            <tr>
                 <td style="width:70px;">Action：</td>
                 <td style="width:150px;">
                     <input name="Action" class="mini-textbox" required="true" emptytext="请输入Action" />
                 </td>
+            </tr>
+            <tr>
                 <td style="width:70px;">ActionParameter：</td>
                 <td style="width:150px;">
                     <input name="ActionParameter" class="mini-textbox" required="false" emptytext="请输入ActionParameter（可选）" />
                 </td>
+                <td></td>
+                <td></td>
             </tr>
             <tr>
                 <td style="width:70px;">是否公共：</td>

@@ -158,7 +158,7 @@ namespace OrderSys.Admin.Controllers
         }
         #endregion
 
-#region DDL
+        #region DDL
         [HttpGet]
         public string GetResourceTreeDDL()
         {
@@ -252,7 +252,7 @@ namespace OrderSys.Admin.Controllers
             string s = JSON.ToJSON(new JSResponse(re), jsonParams);
             return s;
         } 
-#endregion
+        #endregion
 
 
         //验证

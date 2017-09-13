@@ -44,22 +44,11 @@ namespace JSNet.Service
 
         public string[] GetTreeOrganizeIDs(string organizeCode)
         {
-            IDbHelper dbHelper = DbHelperFactory.GetHelper(BaseSystemInfo.CenterDbConnectionString);
-            IDbDataParameter[] dbParameters = new IDbDataParameter[] { dbHelper.MakeParameter("Organize_Code", organizeCode) };
-
-            string sqlQuery = @" WITH Tree AS (
-                                    SELECT Organize_ID AS ID
-                                        FROM [VOrg_Organize] 
-                                        WHERE Organize_Code = " + dbHelper.GetParameter("Organize_Code") + @"
-                                    UNION ALL
-                                    SELECT OrganizeTree.Organize_ID
-                                        FROM [VOrg_Organize] AS OrganizeTree INNER JOIN
-                                        Tree AS A ON A.ID = OrganizeTree.Organize_ParentID)
-                                SELECT ID
-                                    FROM Tree ";
-            DataTable dt = dbHelper.Fill(sqlQuery, dbParameters);
-            return DataTableUtil.FieldToArray(dt, "ID");
-
+            string[] s = GetTreeIDs(
+                "[VOrg_Organize]",
+                "Organize_Code", organizeCode,
+                "Organize_ID", "Organize_ParentID");
+            return s;
         }
 
         public List<OrganizeEntity> GetTreeOrganizeList(string organizeCode,bool onlyChild = true)
