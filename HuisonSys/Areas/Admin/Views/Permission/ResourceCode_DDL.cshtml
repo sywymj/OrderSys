@@ -1,0 +1,30 @@
+﻿@model string
+@{
+    Layout = null;
+}
+
+<input id="ResourceCodeDDL" class="mini-combobox" popupheight="150"
+       valuefield="ID" textfield="Title"
+       multiselect="false" valuefromselect="false" allowinput="true" required="true" shownullitem="false" emptytext="请选择..."
+       onvalidation="@Model" />
+
+<script>
+    mini.parse();
+
+    var ResourceCodeDDL = mini.get("ResourceCodeDDL");
+    load_ResourceCodeDDL();
+
+    function load_ResourceCodeDDL() {
+        var url = '@Url.Action("GetResourceCodeDDL", "Permission", new { area = "Admin" })';
+        doGet(url, null, function (jdata) {
+            if (jdata.Code == '200') {
+                debugger;
+                ResourceCodeDDL.setData(jdata.Data);
+            }
+        })
+    }
+
+
+
+</script>
+

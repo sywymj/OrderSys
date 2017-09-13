@@ -1,0 +1,181 @@
+﻿
+<form id="permissionItem-form" method="post" style="">
+    <input name="ID" class="mini-hidden" />
+    <div style="padding-left:11px;padding-bottom:5px;">
+        <table style="table-layout:fixed;">
+            <tr>
+                <td style="width:70px;">父级元素：</td>
+                <td style="width:150px;">
+                    @Html.Partial("~/Areas/Admin/Views/Permission/PermissionItem_TreeDDL.cshtml")
+                </td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td style="width:70px;">标题：</td>
+                <td style="width:150px;">
+                    <input name="FullName" class="mini-textbox" required="true" emptytext="请输入标题"/>
+                </td>
+                <td style="width:70px;">标识码：</td>
+                <td style="width:150px;">
+                    @Html.Partial("~/Areas/Admin/Views/Permission/PermissionItemCode_DDL.cshtml", "onExistPermissionItemCodeValidation")
+                </td>
+            </tr>
+            <tr>
+                <td style="width:70px;">系统类型：</td>
+                <td style="width:150px;">
+                    @Html.Partial("~/Areas/Admin/Views/Permission/SysCategory_DDL.cshtml")
+                </td>
+                <td style="width:70px;">Controller：</td>
+                <td style="width:150px;">
+                    <input name="Controller" class="mini-textbox" required="true" emptytext="请输入Controller" />
+                </td>
+            </tr>
+            <tr>
+                <td style="width:70px;">Action：</td>
+                <td style="width:150px;">
+                    <input name="Action" class="mini-textbox" required="true" emptytext="请输入Action" />
+                </td>
+                <td style="width:70px;">ActionParameter：</td>
+                <td style="width:150px;">
+                    <input name="ActionParameter" class="mini-textbox" required="false" emptytext="请输入ActionParameter（可选）" />
+                </td>
+            </tr>
+            <tr>
+                <td style="width:70px;">是否公共：</td>
+                <td>
+                    <select name="IsPublic" class="mini-radiobuttonlist" value="0">
+                        <option value="1">是</option>
+                        <option value="0">否</option>
+                    </select>
+                </td>
+                <td style="width:70px;">是否可用：</td>
+                <td>
+                    <select name="IsEnable" class="mini-radiobuttonlist" value="1">
+                        <option value="1">是</option>
+                        <option value="0">否</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td style="width:70px;">排序：</td>
+                <td style="width:150px;">
+                    <input name="SortCode" class="mini-textbox" required="true" value="100" emptytext="请输入排序号" />
+                </td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td style="width:70px;">备注：</td>
+                <td style="width:150px" colspan="3">
+                    <input name="Description" class="mini-textarea" required="false" emptytext="请输入备注内容（可选）" />
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div style="text-align:center;padding:10px;">
+        <a class="mini-button" onclick="onOk" style="width:60px;margin-right:20px;">确定</a>
+        <a class="mini-button" onclick="onCancel" style="width:60px;">取消</a>
+    </div>
+</form>
+
+<script>
+    mini.parse();
+    var form = new mini.Form("permissionItem-form");
+
+    ////////////////////
+    //标准方法接口定义
+    function SetData(data) {
+        if (data.action == "edit") {
+            //跨页面传递的数据对象，克隆后才可以安全使用
+            data = mini.clone(data);
+            var url = '@Url.Action("GetSinglePermissionItem", "Permission", new { area = "Admin" })';
+            var parms = { permissionItemID: data.ID };
+
+            doGet(url, parms, function (jdata) {
+                var o = jdata.Data
+                debugger;
+                form.setData(o);
+                form.setChanged(false);
+
+                mini.get("PermissionItemDDL").setValue(o.ParentID);
+                mini.get("SysCategoryDDL").setValue(o.SysCategory);
+                mini.get("PermissionItemCodeDDL").setValue(o.Code);
+            })
+        }
+    }
+
+    /////////////////
+    ///验证相关
+    function onExistPermissionItemCodeValidation(e) {
+        var pass = false;
+        if (e.isValid) {
+            var permissionItemID = mini.getbyName("ID").getValue();
+            var url = '@Url.Action("VerifyPermissionItemCode", "Permission", new { area = "Admin" })';
+            var data = { permissionItemCode: e.value, permissionItemID: permissionItemID };
+            doGetSync(url, data, function (jdata) {
+                if (jdata.Code == '200') {
+                    debugger;
+                    if (jdata.Data == true) {
+                    } else {
+                        e.errorText = "编号已存在！";
+                        e.isValid = false;
+                    }
+                }
+            });
+        }
+    }
+
+    /////////////////
+    ///保存数据
+    function SaveData() {
+
+        var o = form.getData();
+        o.ParentID = mini.get("PermissionItemDDL").getValue();
+        o.SysCategory = mini.get("SysCategoryDDL").getValue();
+        o.Code = mini.get("PermissionItemCodeDDL").getValue();
+        debugger;
+        //将空的属性转为null
+        if (o.ID == "") {
+            o.ID = null;
+        }
+
+        form.validate();
+        if (form.isValid() == false) return;
+
+        var url;
+        if (o.ID == null) {
+            url = '@Url.Action("AddPermissionItem", "Permission", new { area = "Admin"})';
+        } else {
+            url = '@Url.Action("EditPermissionItem", "Permission", new { area = "Admin" })';
+        }
+        var json = mini.encode(o);
+        var data = { viewModel: json };
+        doPost(url, data, function (jdata) {
+            CloseWindow("save");
+        })
+    }
+
+    /////////////////
+    ///按钮方法
+    function onOk(e) {
+        SaveData();
+    }
+    function onCancel(e) {
+        CloseWindow("cancel");
+    }
+
+
+    function CloseWindow(action) {
+        if (action == "close" && form.isChanged()) {
+            if (confirm("数据被修改了，是否先保存？")) {
+                return false;
+            }
+        }
+        if (window.CloseOwnerWindow) return window.CloseOwnerWindow(action);
+        else window.close();
+    }
+
+
+</script>
+

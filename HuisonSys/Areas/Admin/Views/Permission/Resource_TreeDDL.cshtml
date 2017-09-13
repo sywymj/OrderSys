@@ -14,7 +14,7 @@
 
     function load_ResourceDDL() {
 
-        var url = '@Url.Action("GetResourceDDL", "Permission", new { area = "Admin" })';
+        var url = '@Url.Action("GetResourceTreeDDL", "Permission", new { area = "Admin" })';
         doGet(url, null, function (jdata) {
             if (jdata.Code == '200') {
                 debugger;

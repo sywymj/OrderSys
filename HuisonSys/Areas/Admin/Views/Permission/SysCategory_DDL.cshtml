@@ -1,0 +1,26 @@
+﻿@{
+    Layout = null;
+}
+
+<input id="SysCategoryDDL" class="mini-combobox" popupheight="150"
+       valuefield="ID" textfield="Title"
+       multiselect="false" valuefromselect="true" allowinput="true" required="true" shownullitem="false" emptytext="请选择..." />
+
+<script>
+    mini.parse();
+
+    var SysCategoryDDL = mini.get("SysCategoryDDL");
+    load_SysCategoryDDL();
+
+    function load_SysCategoryDDL() {
+
+        var url = '@Url.Action("GetSysCategoryDDL", "Permission", new { area = "Admin" })';
+        doGet(url, null, function (jdata) {
+            if (jdata.Code == '200') {
+                debugger;
+                SysCategoryDDL.setData(jdata.Data);
+            }
+        })
+    }
+
+</script>

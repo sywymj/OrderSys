@@ -1,0 +1,30 @@
+﻿@model string
+@{
+    Layout = null;
+}
+
+<input id="PermissionItemCodeDDL" class="mini-combobox" popupheight="150"
+       valuefield="ID" textfield="Title"
+       multiselect="false" valuefromselect="false" allowinput="true" required="true" shownullitem="false" emptytext="请选择..."
+       onvalidation="@Model" />
+
+<script>
+    mini.parse();
+
+    var PermissionItemCodeDDL = mini.get("PermissionItemCodeDDL");
+    load_PermissionItemCodeDDL();
+
+    function load_PermissionItemCodeDDL() {
+        var url = '@Url.Action("GetPermissionItemCodeDDL", "Permission", new { area = "Admin" })';
+        doGet(url, null, function (jdata) {
+            if (jdata.Code == '200') {
+                debugger;
+                PermissionItemCodeDDL.setData(jdata.Data);
+            }
+        })
+    }
+
+
+
+</script>
+

@@ -8,15 +8,26 @@ namespace JSNet.BaseSys
 {
     public enum SysCategory
     {
+        [EnumDescription("System")]
         System = 1,
+        [EnumDescription("WinForm")]
         WinForm = 2,
+        [EnumDescription("WebForm")]
         WebForm = 3,
+        [EnumDescription("WebApi")]
         WebApi = 4,
-        Mvc = 5,
+        [EnumDescription("MVC")]
+        MVC = 5,
     }
 
     public enum ResourceType
     {
+        /// <summary>
+        /// 系统
+        /// </summary>
+        ///
+        [EnumDescription("系统")]
+        System = 0,
         /// <summary>
         /// 数据资源
         /// </summary>

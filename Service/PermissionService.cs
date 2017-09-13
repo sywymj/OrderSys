@@ -16,23 +16,6 @@ namespace JSNet.Service
     public class PermissionService:BaseService
     {
 
-        public void AddPermissionItem(PermissionItemEntity entity)
-        {
-            UserService userService = new UserService();
-            EntityManager<PermissionItemEntity> manager = new EntityManager<PermissionItemEntity>();
-
-            UserEntity user = userService.GetCurrentUser();
-
-            entity.IsEnable = (int)TrueFalse.True;
-            entity.AllowDelete = 1;
-            entity.AllowEdit = 1;
-            entity.DeletionStateCode = (int)TrueFalse.True;
-            entity.CreateUserId = user.ID.ToString();
-            entity.CreateBy = user.UserName;
-            entity.CreateOn = DateTime.Now;
-            manager.Insert(entity);
-        }
-
         public void AddRole(RoleEntity entity)
         {
             UserService userService = new UserService();
@@ -196,7 +179,7 @@ namespace JSNet.Service
             return dt;
         }
 
-        #region Resource
+#region Resource
 
         public void AddResource(ResourceEntity entity)
         {
@@ -232,6 +215,22 @@ namespace JSNet.Service
             kvps.Add(new KeyValuePair<string, object>(ResourceEntity.FieldModifiedBy, currentUser.UserName));
             kvps.Add(new KeyValuePair<string, object>(ResourceEntity.FieldModifiedOn, DateTime.Now));
             manager.Update(kvps, entity.ID);
+        }
+
+        public ResourceEntity GetResource(int resourceID)
+        {
+            EntityManager<ResourceEntity> manager = new EntityManager<ResourceEntity>();
+            ResourceEntity entity = manager.GetSingle(resourceID);
+            return entity;
+        }
+
+        public DataTable GetResources(out int count)
+        {
+            ViewManager vmanager = new ViewManager("VP_Resource_Show");
+            WhereStatement where = new WhereStatement();
+
+            DataTable dt = vmanager.GetDataTable(where, out count);
+            return dt;
         }
 
         /// <summary>
@@ -321,15 +320,6 @@ namespace JSNet.Service
             return DataTableUtil.FieldToArray(dt, "ID");
         }
 
-        public DataTable GetResources(out int count)
-        {
-            ViewManager vmanager = new ViewManager("VP_Resource_Show");
-            WhereStatement where = new WhereStatement();
-
-            DataTable dt = vmanager.GetDataTable(where, out count);
-            return dt;
-        }
-
         public List<ResourceEntity> GetTreeResourceList(string resouceCode, bool onlyChild = true)
         {
             EntityManager<ResourceEntity> manager = new EntityManager<ResourceEntity>();
@@ -372,8 +362,146 @@ namespace JSNet.Service
             DataTable dt = dbHelper.Fill(sqlQuery, dbParameters);
             return DataTableUtil.FieldToArray(dt, "ID");
 
-        } 
+        }
 
-        #endregion
+        public bool ChkResourceCodeExist(string resourceCode, string resourceID)
+        {
+            EntityManager<ResourceEntity> manager = new EntityManager<ResourceEntity>();
+
+            WhereStatement where = new WhereStatement();
+            where.Add(ResourceEntity.FieldCode, Comparison.Equals, resourceCode);
+            if (!string.IsNullOrEmpty(resourceID))
+            {
+                //编辑时
+                where.Add(ResourceEntity.FieldCode, Comparison.NotEquals, resourceID);
+            }
+
+            bool b = manager.Exists(where);
+            return b;
+        }
+
+#endregion
+
+#region PermissionItem
+
+        public void AddPermissionItem(PermissionItemEntity entity)
+        {
+            UserService userService = new UserService();
+            UserEntity currentUser = userService.GetCurrentUser();
+
+            EntityManager<PermissionItemEntity> manager = new EntityManager<PermissionItemEntity>();
+            entity.CreateUserId = currentUser.ID.ToString();
+            entity.CreateBy = currentUser.UserName;
+            entity.CreateOn = DateTime.Now;
+            manager.Insert(entity);
+        }
+
+        public void EditPermissionItem(PermissionItemEntity entity)
+        {
+            UserService userService = new UserService();
+            UserEntity currentUser = userService.GetCurrentUser();
+
+            EntityManager<PermissionItemEntity> manager = new EntityManager<PermissionItemEntity>();
+            List<KeyValuePair<string, object>> kvps = new List<KeyValuePair<string, object>>();
+            kvps.Add(new KeyValuePair<string, object>(PermissionItemEntity.FieldParentID, entity.ParentID));
+            kvps.Add(new KeyValuePair<string, object>(PermissionItemEntity.FieldCode, entity.Code));
+            kvps.Add(new KeyValuePair<string, object>(PermissionItemEntity.FieldFullName, entity.FullName));
+            kvps.Add(new KeyValuePair<string, object>(PermissionItemEntity.FieldSysCategory, entity.SysCategory));
+            kvps.Add(new KeyValuePair<string, object>(PermissionItemEntity.FieldController, entity.Controller));
+            kvps.Add(new KeyValuePair<string, object>(PermissionItemEntity.FieldActionName, entity.ActionName));
+            kvps.Add(new KeyValuePair<string, object>(PermissionItemEntity.FieldActionParameter, entity.ActionParameter));
+            kvps.Add(new KeyValuePair<string, object>(PermissionItemEntity.FieldIsEnable, entity.IsEnable));
+            kvps.Add(new KeyValuePair<string, object>(PermissionItemEntity.FieldIsPublic, entity.IsPublic));
+            kvps.Add(new KeyValuePair<string, object>(PermissionItemEntity.FieldDescription, entity.Description));
+            kvps.Add(new KeyValuePair<string, object>(PermissionItemEntity.FieldSortCode, entity.SortCode));
+            kvps.Add(new KeyValuePair<string, object>(PermissionItemEntity.FieldModifiedUserId, currentUser.ID.ToString()));
+            kvps.Add(new KeyValuePair<string, object>(PermissionItemEntity.FieldModifiedBy, currentUser.UserName));
+            kvps.Add(new KeyValuePair<string, object>(PermissionItemEntity.FieldModifiedOn, DateTime.Now));
+            manager.Update(kvps, entity.ID);
+        }
+
+        public PermissionItemEntity GetPermissionItem(int permissionItemID)
+        {
+            EntityManager<PermissionItemEntity> manager = new EntityManager<PermissionItemEntity>();
+            PermissionItemEntity entity = manager.GetSingle(permissionItemID);
+            return entity;
+        }
+
+        public DataTable GetPermissionItems(out int count)
+        {
+            ViewManager vmanager = new ViewManager("VP_PermissionItem_Show");
+            WhereStatement where = new WhereStatement();
+
+            DataTable dt = vmanager.GetDataTable(where, out count);
+            return dt;
+        }
+
+        public List<PermissionItemEntity> GetTreePermissionItemList(string permissionItemCode, bool onlyChild=true)
+        {
+            EntityManager<PermissionItemEntity> manager = new EntityManager<PermissionItemEntity>();
+
+            string[] ids = GetTreePermissionItemIDs(permissionItemCode);
+            if (ids.Length == 0)
+            {
+                throw new JSException(JSErrMsg.ERR_CODE_DATA_MISSING, string.Format(JSErrMsg.ERR_MSG_DATA_MISSING, "permissionItemCode"));
+            }
+
+            WhereStatement where = new WhereStatement();
+            where.Add(PermissionItemEntity.FieldID, Comparison.In, ids);
+
+            int count = 0;
+            List<PermissionItemEntity> list = manager.GetList(where, out count);
+
+            if (onlyChild)
+            {
+                list.Where(l => l.Code != permissionItemCode);
+            }
+
+            return list;
+        }
+
+        public string[] GetTreePermissionItemIDs(string permissionItemCode)
+        {
+            IDbHelper dbHelper = DbHelperFactory.GetHelper(BaseSystemInfo.CenterDbConnectionString);
+            IDbDataParameter[] dbParameters = new IDbDataParameter[] { dbHelper.MakeParameter("PermissionItem_Code", permissionItemCode) };
+
+            string sqlQuery = @" WITH Tree1 AS (
+                                    SELECT PermissionItem_ID AS ID
+                                        FROM [VP_PermissionItem] 
+                                        WHERE PermissionItem_Code = " + dbHelper.GetParameter("PermissionItem_Code") + @"
+                                    UNION ALL
+                                    SELECT Tree.PermissionItem_ID
+                                        FROM [VP_PermissionItem] AS Tree INNER JOIN
+                                        Tree1 AS A ON A.ID = Tree.PermissionItem_ParentID)
+                                SELECT ID
+                                    FROM Tree1 ";
+            DataTable dt = dbHelper.Fill(sqlQuery, dbParameters);
+            return DataTableUtil.FieldToArray(dt, "ID");
+
+        }
+
+        public bool ChkPermissionItemCodeExist(string permissionItemCode, string permissionItemID)
+        {
+            EntityManager<PermissionItemEntity> manager = new EntityManager<PermissionItemEntity>();
+
+            WhereStatement where = new WhereStatement();
+            where.Add(PermissionItemEntity.FieldCode, Comparison.Equals, permissionItemCode);
+            if (!string.IsNullOrEmpty(permissionItemID))
+            {
+                //编辑时
+                where.Add(PermissionItemEntity.FieldCode, Comparison.NotEquals, permissionItemID);
+            }
+
+            bool b = manager.Exists(where);
+            return b;
+        }
+
+#endregion
+
+
+
+
+
+
     }
 }

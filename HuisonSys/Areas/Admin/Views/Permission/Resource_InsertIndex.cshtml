@@ -6,33 +6,25 @@
             <tr>
                 <td style="width:70px;">父级元素：</td>
                 <td style="width:150px;">
-                    @Html.Partial("~/Areas/Admin/Views/Permission/ResourceDDL.cshtml")
+                    @Html.Partial("~/Areas/Admin/Views/Permission/Resource_TreeDDL.cshtml")
                 </td>
-                <td style="width:70px;">标识码：</td>
-                <td style="width:150px;">
-                    <input name="Code" class="mini-textbox" required="true" emptytext="请输入标识码" onvalidation="onExistResourceValidation" />
-                </td>
+                <td></td>
+                <td></td>
             </tr>
             <tr>
                 <td style="width:70px;">标题：</td>
                 <td style="width:150px;">
-                    <input name="FullName" class="mini-textbox" required="true" emptytext="请输入标题"/>
+                    <input name="FullName" class="mini-textbox" required="true" emptytext="请输入标题" />
                 </td>
-                <td></td>
-                <td></td>
+                <td style="width:70px;">标识码：</td>
+                <td style="width:150px;">
+                    @Html.Partial("~/Areas/Admin/Views/Permission/ResourceCode_DDL.cshtml", "onExistResourceCodeValidation")
+                </td>
             </tr>
             <tr>
                 <td style="width:70px;">资源类型：</td>
                 <td style="width:150px;">
-                    @Html.Partial("~/Areas/Admin/Views/Permission/ResourceTypeDDL.cshtml")
-                </td>
-                <td></td>
-                <td></td>
-            </tr>
-            <tr>
-                <td style="width:70px;">组别：</td>
-                <td style="width:150px;">
-                    <input name="Groups" class="mini-textbox" required="false" emptytext="请输入组别（可选）" />
+                    @Html.Partial("~/Areas/Admin/Views/Permission/ResourceType_DDL.cshtml")
                 </td>
                 <td style="width:70px;">资源表：</td>
                 <td style="width:150px;">
@@ -40,10 +32,22 @@
                 </td>
             </tr>
             <tr>
+                <td style="width:70px;">组别：</td>
+                <td style="width:150px;">
+                    <input name="Groups" class="mini-textbox" required="false" emptytext="请输入组别（可选）" />
+                </td>
+                <td style="width:70px;">排序：</td>
+                <td style="width:150px;">
+                    <input name="SortCode" class="mini-textbox" required="true" value="100" emptytext="请输入排序号" />
+                </td>
+            </tr>
+            <tr>
                 <td style="width:70px;">URL地址：</td>
                 <td style="width:150px;">
-                    <input name="NavigateUrl" class="mini-textbox" required="false" emptytext="请输入URL地址（可选）" />
+                    <input name="NavigateUrl" class="mini-textbox" required="false" emptytext="请输入URL地址（可选）" style="width:100%" />
                 </td>
+                <td></td>
+                <td></td>
             </tr>
             <tr>
                 <td style="width:70px;">是否可见：</td>
@@ -57,30 +61,26 @@
                 <td>
                     <select name="IsEnable" class="mini-radiobuttonlist">
                         <option value="1">是</option>
-                        <option value="0" checked="checked">否</option>
+                        <option value="0">否</option>
                     </select>
                 </td>
             </tr>
             <tr>
                 <td style="width:70px;">是否公共：</td>
                 <td>
-                    <select name="IsPublic" class="mini-radiobuttonlist">
+                    <select name="IsPublic" class="mini-radiobuttonlist" value="0">
                         <option value="1">是</option>
                         <option value="0">否</option>
                     </select>
                 </td>
-                <td style="width:70px;">排序：</td>
-                <td style="width:150px;">
-                    <input name="SortCode" class="mini-textbox" required="true" value="100" emptytext="请输入排序号" />
-                </td>
+                <td></td>
+                <td></td>
             </tr>
             <tr>
                 <td style="width:70px;">备注：</td>
-                <td>
+                <td style="width:150px" colspan="3">
                     <input name="Description" class="mini-textarea" required="false" emptytext="请输入备注内容（可选）" />
                 </td>
-                <td></td>
-                <td></td>
             </tr>
         </table>
     </div>
@@ -101,7 +101,7 @@
             //跨页面传递的数据对象，克隆后才可以安全使用
             data = mini.clone(data);
             var url = '@Url.Action("GetSingleResource", "Permission", new { area = "Admin" })';
-            var parms = { userID: data.ID };
+            var parms = { resourceID: data.ID };
 
             doGet(url, parms, function (jdata) {
                 var o = jdata.Data
@@ -109,28 +109,27 @@
                 form.setData(o);
                 form.setChanged(false);
 
-                mini.get("ResourceDDL").setValue(o.ParentID.toString());
+                mini.get("ResourceDDL").setValue(o.ParentID);
                 mini.get("ResourceTypeDDL").setValue(o.ResourceType);
+                mini.get("ResourceCodeDDL").setValue(o.Code);
             })
         }
     }
 
     /////////////////
     ///验证相关
-    function onExistResourceValidation(e) {
-        alert("TODO");
-        return;
+    function onExistResourceCodeValidation(e) {
         var pass = false;
         if (e.isValid) {
-            var userID = mini.getbyName("ID").getValue();
-            var url = '@Url.Action("VerifyUserName", "User", new { area = "Admin" })';
-            var data = { userName: e.value, userID: userID };
+            var resourceID = mini.getbyName("ID").getValue();
+            var url = '@Url.Action("VerifyResourceCode", "Permission", new { area = "Admin" })';
+            var data = { resourceCode: e.value, resourceID: resourceID };
             doGetSync(url, data, function (jdata) {
                 if (jdata.Code == '200') {
                     debugger;
                     if (jdata.Data == true) {
                     } else {
-                        e.errorText = "用户名已存在！";
+                        e.errorText = "资源编号已存在！";
                         e.isValid = false;
                     }
                 }
@@ -144,8 +143,9 @@
 
         var o = form.getData();
         o.ParentID = mini.get("ResourceDDL").getValue();
+        o.Code = mini.get("ResourceCodeDDL").getValue();
         o.ResourceType = mini.get("ResourceTypeDDL").getValue();
-
+        debugger;
         //将空的属性转为null
         if (o.ID == "") {
             o.ID = null;

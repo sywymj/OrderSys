@@ -2911,16 +2911,34 @@
     <Content Include="Areas\Admin\Views\Role\RoleDDL.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Areas\Admin\Views\Permission\ResourceIndex.cshtml" />
+    <Content Include="Areas\Admin\Views\Permission\Resource_Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Areas\Admin\Views\Permission\InsertResourceIndex.cshtml" />
+    <Content Include="Areas\Admin\Views\Permission\PermissionItem_InsertIndex.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Areas\Admin\Views\Permission\ResourceDDL.cshtml" />
+    <Content Include="Areas\Admin\Views\Permission\Resource_TreeDDL.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Areas\Admin\Views\Permission\ResourceTypeDDL.cshtml" />
+    <Content Include="Areas\Admin\Views\Permission\ResourceType_DDL.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\Admin\Views\Permission\ResourceCode_DDL.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\Admin\Views\Permission\Resource_InsertIndex.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\Admin\Views\Permission\PermissionItem_Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\Admin\Views\Permission\PermissionItem_TreeDDL.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\Admin\Views\Permission\PermissionItemCode_DDL.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\Admin\Views\Permission\SysCategory_DDL.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
