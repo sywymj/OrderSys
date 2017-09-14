@@ -8,15 +8,15 @@ using JSNet.Model;
 using JSNet.DbUtilities;
 namespace JSNet.Model
 {
-    //P_Permission
-    public class PermissionEntity : BaseEntity, IEntity<PermissionEntity>
+    //P_RoleResource_Rel
+    public class RoleResourceEntity : BaseEntity, IEntity<RoleResourceEntity>
     {
         /// <summary>
         /// TableName
         /// </summary>
         public string TableName
         {
-            get { return "[P_Permission]"; }
+            get { return "[P_RoleResource_Rel]"; }
         }
 
         /// <summary>
@@ -48,6 +48,15 @@ namespace JSNet.Model
             set { _id = value; }
         }
         /// <summary>
+        /// RoleID
+        /// </summary>		
+        private int? _roleid;
+        public int? RoleID
+        {
+            get { return _roleid; }
+            set { _roleid = value; }
+        }
+        /// <summary>
         /// ResourceID
         /// </summary>		
         private int? _resourceid;
@@ -55,15 +64,6 @@ namespace JSNet.Model
         {
             get { return _resourceid; }
             set { _resourceid = value; }
-        }
-        /// <summary>
-        /// PermissionItemID
-        /// </summary>		
-        private int? _permissionitemid;
-        public int? PermissionItemID
-        {
-            get { return _permissionitemid; }
-            set { _permissionitemid = value; }
         }
         /// <summary>
         /// CreateOn
@@ -103,18 +103,18 @@ namespace JSNet.Model
             get { return "ID"; }
         }
         /// <summary>
+        /// FiledName:RoleID
+        /// </summary>		
+        public static string FieldRoleID
+        {
+            get { return "RoleID"; }
+        }
+        /// <summary>
         /// FiledName:ResourceID
         /// </summary>		
         public static string FieldResourceID
         {
             get { return "ResourceID"; }
-        }
-        /// <summary>
-        /// FiledName:PermissionItemID
-        /// </summary>		
-        public static string FieldPermissionItemID
-        {
-            get { return "PermissionItemID"; }
         }
         /// <summary>
         /// FiledName:CreateOn
@@ -139,12 +139,12 @@ namespace JSNet.Model
         }
         #endregion
 
-        public PermissionEntity GetFrom(System.Data.DataRow dataRow)
+        public RoleResourceEntity GetFrom(System.Data.DataRow dataRow)
         {
-            PermissionEntity entity = new PermissionEntity();
+            RoleResourceEntity entity = new RoleResourceEntity();
             entity.ID = CommonUtil.ConvertToInt(dataRow[this.PrimaryKey]);
+            entity.RoleID = CommonUtil.ConvertToInt(dataRow[FieldRoleID]);
             entity.ResourceID = CommonUtil.ConvertToInt(dataRow[FieldResourceID]);
-            entity.PermissionItemID = CommonUtil.ConvertToInt(dataRow[FieldPermissionItemID]);
             entity.CreateOn = CommonUtil.ConvertToDateTime(dataRow[FieldCreateOn]);
             entity.CreateUserId = CommonUtil.ConvertToString(dataRow[FieldCreateUserId]);
             entity.CreateBy = CommonUtil.ConvertToString(dataRow[FieldCreateBy]);
@@ -152,22 +152,22 @@ namespace JSNet.Model
         }
 
 
-        public PermissionEntity GetFrom(System.Data.IDataReader dataReader)
+        public RoleResourceEntity GetFrom(System.Data.IDataReader dataReader)
         {
-            PermissionEntity entity = new PermissionEntity();
+            RoleResourceEntity entity = new RoleResourceEntity();
             entity.ID = CommonUtil.ConvertToInt(dataReader[this.PrimaryKey]);
+            entity.RoleID = CommonUtil.ConvertToInt(dataReader[FieldRoleID]);
             entity.ResourceID = CommonUtil.ConvertToInt(dataReader[FieldResourceID]);
-            entity.PermissionItemID = CommonUtil.ConvertToInt(dataReader[FieldPermissionItemID]);
             entity.CreateOn = CommonUtil.ConvertToDateTime(dataReader[FieldCreateOn]);
             entity.CreateUserId = CommonUtil.ConvertToString(dataReader[FieldCreateUserId]);
             entity.CreateBy = CommonUtil.ConvertToString(dataReader[FieldCreateBy]);
             return entity;
         }
 
-        public void SetEntity(NonQueryBuilder sqlBuilder, PermissionEntity entity)
+        public void SetEntity(NonQueryBuilder sqlBuilder, RoleResourceEntity entity)
         {
+            sqlBuilder.SetValue(FieldRoleID, entity.RoleID);
             sqlBuilder.SetValue(FieldResourceID, entity.ResourceID);
-            sqlBuilder.SetValue(FieldPermissionItemID, entity.PermissionItemID);
             sqlBuilder.SetValue(FieldCreateOn, entity.CreateOn);
             sqlBuilder.SetValue(FieldCreateUserId, entity.CreateUserId);
             sqlBuilder.SetValue(FieldCreateBy, entity.CreateBy);

@@ -198,7 +198,7 @@ namespace OrderSys.Admin.Controllers
         [HttpGet]
         public string GetResourceTreeDDL()
         {
-            List<ResourceEntity> list = service.GetTreeResourceList("OrderSys", true);
+            List<ResourceEntity> list = service.GetResourceList("OrderSys", true);
             var re = list.Select(l => new ViewResourceDDL()
             {
                 ID = l.ID.ToString(),
@@ -217,7 +217,7 @@ namespace OrderSys.Admin.Controllers
         [HttpGet]
         public string GetResourceCodeDDL()
         {
-            List<ResourceEntity> list = service.GetTreeResourceList("OrderSys", true);
+            List<ResourceEntity> list = service.GetResourceList("OrderSys", true);
             var re = list.Select(l => new ViewResourceDDL()
             {
                 ID = l.Code,

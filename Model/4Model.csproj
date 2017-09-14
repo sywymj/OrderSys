@@ -54,7 +54,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResourceEntity.cs" />
     <Compile Include="RoleEntity.cs" />
-    <Compile Include="RolePermissionRelEntity.cs" />
+    <Compile Include="RolePesourceRelEntity.cs" />
     <Compile Include="RolePermissionScopeRelEntity.cs" />
     <Compile Include="StaffEntity.cs" />
     <Compile Include="TabSNEntity.cs" />
