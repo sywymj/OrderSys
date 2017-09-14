@@ -31,14 +31,14 @@
                     <input name="Target" class="mini-textbox" required="false" emptytext="请输入资源表（可选）" />
                 </td>
             </tr>
-            <tr>
+            @*<tr>
                 <td style="width:70px;">分配资源明细：</td>
                 <td style="width:150px;">
                     @Html.Partial("~/Areas/Admin/Views/Permission/PermissionItem_TreeDDL2.cshtml")
                 </td>
                 <td></td>
                 <td></td>
-            </tr>
+            </tr>*@
             <tr>
                 <td style="width:70px;">组别：</td>
                 <td style="width:150px;">
@@ -120,7 +120,6 @@
                 mini.get("ResourceDDL").setValue(o.ParentID);
                 mini.get("ResourceTypeDDL").setValue(o.ResourceType);
                 mini.get("ResourceCodeDDL").setValue(o.Code);
-                mini.get("PermissionItemDDL").setValue(o.PermissionItemIDs)
             })
         }
     }

@@ -157,7 +157,7 @@ namespace JSNet.BaseSys
         {
             if (!require && string.IsNullOrEmpty(value.Trim()))
             {
-                return null;
+                return new int[0];
             }
             if (require && string.IsNullOrEmpty(value))
             {

@@ -89,9 +89,16 @@ namespace OrderSys.Admin.Controllers
         #endregion
 
         #region PermissionItem
+        [HttpGet]
         public ActionResult PermissionItemIndex()
         {
             return View("~/Areas/Admin/Views/Permission/PermissionItem_Index.cshtml");
+        }
+
+        [HttpGet]
+        public ActionResult GrantPermissionItemIndex()
+        {
+            return View("~/Areas/Admin/Views/Permission/GrantPermissionItem_Index.cshtml");
         }
 
         [HttpGet]
@@ -151,11 +158,40 @@ namespace OrderSys.Admin.Controllers
         public string GetPermissionItemList()
         {
             int count = 0;
-            DataTable re = service.GetPermissionItems(out count);
+            DataTable re = service.GetPermissionItemsForShow(out count);
 
             string s = JSON.ToJSON(new JSResponse(new DataTableData(re, count)), jsonParams);
             return s;
         }
+
+        [HttpGet]
+        public string GetGrantPermissionItemList()
+        {
+            string resourceCode = JSRequest.GetRequestUrlParm("resourceCode");
+            string resourceType = JSRequest.GetRequestUrlParm("resourceType");
+
+            int count = 0;
+            DataTable re = service.GetGrantPermissionItemsForShow(resourceCode, resourceType, out count);
+
+            string s = JSON.ToJSON(new JSResponse(new DataTableData(re, count)), jsonParams);
+            return s;
+        }
+
+        [HttpGet]
+        public string GrantPermissionItem()
+        {
+            string sReourceID = JSRequest.GetRequestUrlParm("reourceID", true);
+            string sPermissionItemIDs = JSRequest.GetRequestUrlParm("permissionItemIDs", false);
+
+            int resourceID = (int)JSValidator.ValidateInt("资源ID", sReourceID, true);
+            int[] permissionItemIDs =  JSValidator.ValidateStrings("资源明细ID", sPermissionItemIDs, false);
+
+            service.GrantPermissionItem(resourceID, permissionItemIDs);
+
+            string s = JSON.ToJSON(new JSResponse(ResponseType.Remind, "配置成功！"), jsonParams);
+            return s;
+        }
+
         #endregion
 
         #region DDL

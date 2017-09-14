@@ -34,6 +34,9 @@ namespace OrderSys.Admin
 
         public string RoleIDs { get; set; }
     }
-    public class ViewResource : ResourceEntity { }
+    public class ViewResource : ResourceEntity
+    {
+        public string permissionItemIDs { get; set; }
+    }
     public class ViewPermissionItem : PermissionItemEntity { }
 }

@@ -40,6 +40,10 @@ namespace JSNet.BaseSys
         public const string ERR_MSG_NotGrantPermissionScope = "没有分配资源权限";
         public const string ERR_CODE_NotGrantMenuResource = "74";
         public const string ERR_MSG_NotGrantMenuResource = "没有分配菜单权限。";
+        public const string ERR_CODE_ErrorFormatCode = "75";
+        public const string ERR_MSG_ErrorFormatCode = "标识码格式有误，Data标识码格式为：{System}.{Data}";
+        public const string ERR_CODE_NotAllowGrantItem = "76";
+        public const string ERR_MSG_NotAllowGrantItem = "{0}不允许分配资源明细。";
 
     }
 }

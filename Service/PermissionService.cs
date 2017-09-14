@@ -284,16 +284,14 @@ namespace JSNet.Service
             }
 
             //2.0 根据id 获取详细信息
+            int count = 0;
             ViewManager vmanager = new ViewManager("VP_RolePermission");
 
             WhereStatement where = new WhereStatement();
             where.Add("Resource_ID", Comparison.In, ids);
+            OrderByStatement order = new OrderByStatement("Resource_SortCode", Sorting.Ascending); 
 
-            OrderByStatement order = new OrderByStatement("Resource_SortCode", Sorting.Ascending);
-
-            int count = 0;
             DataTable dt = vmanager.GetDataTable(where, out count, order);
-
             return dt;
 
         }
@@ -410,10 +408,58 @@ namespace JSNet.Service
             return entity;
         }
 
-        public DataTable GetPermissionItems(out int count)
+        public void GrantPermissionItem(int resourceID,int[] permissionItemIDs)
         {
+            UserService userService = new UserService();
+            UserEntity currentUser = userService.GetCurrentUser();
+
+            EntityManager<PermissionEntity> manager = new EntityManager<PermissionEntity>();
+            manager.Delete(resourceID, PermissionEntity.FieldResourceID);
+
+            List<PermissionEntity> entitys = new List<PermissionEntity>();
+            foreach (int permissionItemID in permissionItemIDs)
+            {
+                PermissionEntity entity = new PermissionEntity();
+                entity.ResourceID = resourceID;
+                entity.PermissionItemID = permissionItemID;
+                entity.CreateUserId = currentUser.ID.ToString();
+                entity.CreateBy = currentUser.UserName;
+                entity.CreateOn = DateTime.Now;
+                entitys.Add(entity);
+            }
+            manager.Insert(entitys);
+        }
+
+        public DataTable GetGrantPermissionItemsForShow(string permissionItemCode,string resourceType, out int count)
+        {
+            if (!string.IsNullOrEmpty(permissionItemCode))
+            {
+                if (resourceType == ResourceType.System.ToString())
+                {
+                    throw new JSException(JSErrMsg.ERR_CODE_NotAllowGrantItem, string.Format(JSErrMsg.ERR_MSG_NotAllowGrantItem, "资源类型为" + resourceType + "，"));
+                }
+            }
+            if (!string.IsNullOrEmpty(permissionItemCode))
+            {
+                if (permissionItemCode.Split('.').Length < 2)
+                {
+                    throw new JSException(JSErrMsg.ERR_CODE_ErrorFormatCode, JSErrMsg.ERR_MSG_ErrorFormatCode);
+                }
+                permissionItemCode = permissionItemCode.Split('.')[0];
+            }
+
+
+            DataTable dt = GetPermissionItemsForShow(out count, permissionItemCode);
+            return dt;
+        }
+
+        public DataTable GetPermissionItemsForShow(out int count, string permissionItemCode = "Resource.ManagePermission")
+        {
+            string[] permissionItemIDs = GetTreePermissionItemIDs(permissionItemCode);
+
             ViewManager vmanager = new ViewManager("VP_PermissionItem_Show");
             WhereStatement where = new WhereStatement();
+            where.Add("PermissionItem_ID", Comparison.In, permissionItemIDs);
 
             DataTable dt = vmanager.GetDataTable(where, out count);
             return dt;
