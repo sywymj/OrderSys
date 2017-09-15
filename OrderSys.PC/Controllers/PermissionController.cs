@@ -95,11 +95,6 @@ namespace OrderSys.Admin.Controllers
             return View("~/Areas/Admin/Views/Permission/PermissionItem_Index.cshtml");
         }
 
-        [HttpGet]
-        public ActionResult GrantPermissionItemIndex()
-        {
-            return View("~/Areas/Admin/Views/Permission/GrantPermissionItem_Index.cshtml");
-        }
 
         [HttpGet]
         public ActionResult InsertPermissionItemIndex()
@@ -165,7 +160,29 @@ namespace OrderSys.Admin.Controllers
         }
 
         [HttpGet]
-        public string GetGrantPermissionItemList()
+        public string GetGrantedItemIDs()
+        {
+            string sReourceID = JSRequest.GetRequestUrlParm("resourceID");
+            int resourceID = (int)JSValidator.ValidateInt("资源ID", sReourceID, true);
+
+            int[] itemIDs = service.GetGrantedItemIDs(resourceID);
+            string re = string.Join(",", itemIDs);
+            string s = JSON.ToJSON(new JSResponse(data: re), jsonParams);
+            return s;
+        }
+
+        #endregion
+
+        #region Permission
+
+        [HttpGet]
+        public ActionResult GrantPermissionIndex()
+        {
+            return View("~/Areas/Admin/Views/Permission/GrantPermission_Index.cshtml");
+        }
+
+        [HttpGet]
+        public string GetGrantPermissionList()
         {
             string resourceCode = JSRequest.GetRequestUrlParm("resourceCode");
             string resourceType = JSRequest.GetRequestUrlParm("resourceType");
@@ -178,21 +195,54 @@ namespace OrderSys.Admin.Controllers
         }
 
         [HttpGet]
-        public string GrantPermissionItem()
+        public string GrantPermission()
         {
             string sReourceID = JSRequest.GetRequestUrlParm("reourceID", true);
             string sPermissionItemIDs = JSRequest.GetRequestUrlParm("permissionItemIDs", false);
 
             int resourceID = (int)JSValidator.ValidateInt("资源ID", sReourceID, true);
-            int[] permissionItemIDs =  JSValidator.ValidateStrings("资源明细ID", sPermissionItemIDs, false);
+            int[] permissionItemIDs = JSValidator.ValidateStrings("资源明细ID", sPermissionItemIDs, false);
 
-            service.GrantPermissionItem(resourceID, permissionItemIDs);
+            service.GrantItem(resourceID, permissionItemIDs);
 
             string s = JSON.ToJSON(new JSResponse(ResponseType.Remind, "配置成功！"), jsonParams);
             return s;
         }
 
         #endregion
+
+        [HttpGet]
+        public ViewResult GrantScopeIndex()
+        {
+            return View("~/Areas/Admin/Views/Permission/GrantScope_Index.cshtml");
+        }
+
+        [HttpGet]
+        public string GrantScope()
+        {
+            string sReourceID = JSRequest.GetRequestUrlParm("ResourceID", true);
+            string sScopeIDs = JSRequest.GetRequestUrlParm("OrganizeIDs", false);
+
+            int resourceID = (int)JSValidator.ValidateInt("资源ID", sReourceID, true);
+            int[] scopeIDs = JSValidator.ValidateStrings("资源对象ID", sScopeIDs, false);
+
+            service.GrantScope(resourceID, scopeIDs);
+
+            string s = JSON.ToJSON(new JSResponse(ResponseType.Remind, "配置成功！"), jsonParams);
+            return s;
+        }
+
+        [HttpGet]
+        public string GetGrantedScopeIDs()
+        {
+            string sReourceID = JSRequest.GetRequestUrlParm("ResourceID");
+            int resourceID = (int)JSValidator.ValidateInt("资源ID", sReourceID, true);
+
+            int[] scopeIDs = service.GetGrantedScopeIDs(resourceID);
+            string re = string.Join(",", scopeIDs);
+            string s = JSON.ToJSON(new JSResponse(data: re), jsonParams);
+            return s;
+        }
 
         #region DDL
         [HttpGet]
@@ -218,7 +268,7 @@ namespace OrderSys.Admin.Controllers
         public string GetResourceCodeDDL()
         {
             List<ResourceEntity> list = service.GetResourceList("OrderSys", true);
-            var re = list.Select(l => new ViewResourceDDL()
+            var re = list.Select(l => new ViewResourceCodeDDL()
             {
                 ID = l.Code,
                 Title = l.Code
@@ -232,7 +282,7 @@ namespace OrderSys.Admin.Controllers
         public string GetPermissionItemTreeDDL()
         {
             List<PermissionItemEntity> list = service.GetTreePermissionItemList("OrderSys", true);
-            var re = list.Select(l => new ViewResourceDDL()
+            var re = list.Select(l => new ViewPermissionItemDDL()
             {
                 ID = l.ID.ToString(),
                 ParentID = l.ParentID.ToString(),

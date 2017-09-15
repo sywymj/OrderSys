@@ -58,7 +58,6 @@ namespace JSNet.Service
             scope.PermissionItemID = 13;//资源访问权限，写死的，以后改成1
             scope.ResourceID = resourceID;
             scope.PermissionConstraint = permissionConstraint;
-            scope.DeletionStateCode = (int)TrueFalse.True;
             scope.CreateUserId = user.ID.ToString();
             scope.CreateBy = user.UserName;
             scope.CreateOn = DateTime.Now;
@@ -94,26 +93,35 @@ namespace JSNet.Service
         /// <summary>
         /// 分配资源权限
         /// </summary>
-        public void GrantPermissionScope(UserEntity user, int roleID, int[] permissionScopeIDs)
+        public void GrantScope(int resourceID, int[] scopeIDs)
         {
-            //1.0 清空该角色原有的操作权限
-            EntityManager<RolePermissionScopeEntity> manager = new EntityManager<RolePermissionScopeEntity>();
-            WhereStatement where = new WhereStatement();
-            where.Add(RolePermissionScopeEntity.FieldRoleID, Comparison.Equals, roleID);
-            manager.Delete(where);
-
-            //2.0 添加当前选中的操作权限
-            foreach (int id in permissionScopeIDs)
+            //判断资源类型是否为Menu、button，只有Menu、button才能分配资源明细
+            EntityManager<ResourceEntity> resourceManager = new EntityManager<ResourceEntity>();
+            ResourceEntity resource = resourceManager.GetSingle(resourceID);
+            if (!(resource.ResourceType == ResourceType.Data.ToString()))
             {
-                RolePermissionScopeEntity entity = new RolePermissionScopeEntity();
-                entity.RoleID = roleID;
-                entity.PermissionScopeID = id;
-                entity.DeletionStateCode = (int)TrueFalse.True;
-                entity.CreateUserId = user.ID.ToString();
-                entity.CreateBy = user.UserName;
-                entity.CreateOn = DateTime.Now;
-                manager.Insert(entity);
+                throw new JSException(JSErrMsg.ERR_CODE_NotAllowGrantItem, string.Format(JSErrMsg.ERR_MSG_NotAllowGrantItem, "资源类型为" + resource.ResourceType + "，"));
             }
+
+            UserService userService = new UserService();
+            UserEntity currentUser = userService.GetCurrentUser();
+
+            EntityManager<PermissionScopeEntity> manager = new EntityManager<PermissionScopeEntity>();
+            manager.Delete(resourceID, PermissionEntity.FieldResourceID);
+
+            List<PermissionScopeEntity> entitys = new List<PermissionScopeEntity>();
+            foreach (int scopeID in scopeIDs)
+            {
+                PermissionScopeEntity entity = new PermissionScopeEntity();
+                entity.ResourceID = resourceID;
+                entity.TargetID = scopeID;
+                entity.PermissionItemID = 2;
+                entity.CreateUserId = currentUser.ID.ToString();
+                entity.CreateBy = currentUser.UserName;
+                entity.CreateOn = DateTime.Now;
+                entitys.Add(entity);
+            }
+            manager.Insert(entitys);
         }
 
         public Dictionary<string, List<string>> GetRolePermissionScope(RoleEntity role, string resouceCode)
@@ -371,6 +379,8 @@ namespace JSNet.Service
             UserEntity currentUser = userService.GetCurrentUser();
 
             EntityManager<PermissionItemEntity> manager = new EntityManager<PermissionItemEntity>();
+            entity.AllowEdit = (int)TrueFalse.True;
+            entity.AllowDelete = (int)TrueFalse.True;
             entity.CreateUserId = currentUser.ID.ToString();
             entity.CreateBy = currentUser.UserName;
             entity.CreateOn = DateTime.Now;
@@ -408,7 +418,7 @@ namespace JSNet.Service
             return entity;
         }
 
-        public void GrantPermissionItem(int resourceID,int[] permissionItemIDs)
+        public void GrantItem(int resourceID,int[] permissionItemIDs)
         {
             //判断资源类型是否为Menu、button，只有Menu、button才能分配资源明细
             EntityManager<ResourceEntity> resourceManager = new EntityManager<ResourceEntity>();
@@ -439,7 +449,7 @@ namespace JSNet.Service
             manager.Insert(entitys);
         }
 
-        public DataTable GetGrantPermissionItemsForShow(string permissionItemCode,string resourceType, out int count)
+        public DataTable GetGrantPermissionItemsForShow(string resourceCode,string resourceType, out int count)
         {
             if (!(resourceType == ResourceType.Menu.ToString()
                 || resourceType == ResourceType.Button.ToString()))
@@ -447,13 +457,13 @@ namespace JSNet.Service
                 throw new JSException(JSErrMsg.ERR_CODE_NotAllowGrantItem, string.Format(JSErrMsg.ERR_MSG_NotAllowGrantItem, "资源类型为" + resourceType + "，"));
             }
 
-            if (permissionItemCode.Split('.').Length < 2)
+            if (resourceCode.Split('.').Length < 2)
             {
                 throw new JSException(JSErrMsg.ERR_CODE_ErrorFormatCode, JSErrMsg.ERR_MSG_ErrorFormatCode);
             }
-            permissionItemCode = permissionItemCode.Split('.')[0];
+            string parentPermissionItemCode = resourceCode.Split('.')[0];
 
-            DataTable dt = GetPermissionItemsForShow(out count, permissionItemCode);
+            DataTable dt = GetPermissionItemsForShow(out count, parentPermissionItemCode);
             return dt;
         }
 
@@ -514,10 +524,26 @@ namespace JSNet.Service
 
         #endregion
 
+        public int[] GetGrantedItemIDs(int reourceID)
+        {
+            EntityManager<PermissionEntity> manager = new EntityManager<PermissionEntity>();
+            WhereStatement where = new WhereStatement();
+            where.Add(PermissionEntity.FieldResourceID, Comparison.Equals, reourceID);
 
+            string[] sScopeIDs = manager.GetProperties(PermissionEntity.FieldPermissionItemID, where);
+            int[] scopeIDs = CommonUtil.ConvertToIntArry(sScopeIDs);
+            return scopeIDs;
+        }
 
+        public int[] GetGrantedScopeIDs(int reourceID)
+        {
+            EntityManager<PermissionScopeEntity> manager = new EntityManager<PermissionScopeEntity>();
+            WhereStatement where = new WhereStatement();
+            where.Add(PermissionScopeEntity.FieldResourceID, Comparison.Equals, reourceID);
 
-
-
+            string[] sItems = manager.GetProperties(PermissionScopeEntity.FieldTargetID, where);
+            int[] itemIDs = CommonUtil.ConvertToIntArry(sItems);
+            return itemIDs;
+        }
     }
 }

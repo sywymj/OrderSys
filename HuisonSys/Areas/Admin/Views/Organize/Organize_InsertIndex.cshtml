@@ -1,0 +1,198 @@
+﻿
+<form id="Organize-form" method="post" style="">
+    <input name="ID" class="mini-hidden" />
+    <div style="padding-left:11px;padding-bottom:5px;">
+        <table style="table-layout:fixed;">
+            <tr>
+                <td style="width:70px;">父级元素：</td>
+                <td style="width:150px;">
+                    @Html.Partial("~/Areas/Admin/Views/Organize/Organize_TreeDDL.cshtml")
+                </td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td style="width:70px;">父级元素：</td>
+                <td style="width:150px;">
+                    @Html.Partial("~/Areas/Admin/Views/Organize/OrganizeCategory_DDL.cshtml")
+                </td>
+                <td style="width:70px;">标识码：</td>
+                <td style="width:150px;">
+                    @Html.Partial("~/Areas/Admin/Views/Organize/OrganizeCode_DDL.cshtml", "onExistOrganizeCodeValidation")
+                </td>
+            </tr>
+            <tr>
+                <td style="width:70px;">标题：</td>
+                <td style="width:150px;">
+                    <input name="FullName" class="mini-textbox" required="true" emptytext="请输入标题" />
+                </td>
+                <td style="width:70px;">副标题：</td>
+                <td style="width:150px;">
+                    <input name="ShortName" class="mini-textbox" required="false" emptytext="请输入副标题（可选）" />
+                </td>
+            </tr>
+            <tr>
+                <td style="width:70px;">外线电话：</td>
+                <td style="width:150px;">
+                    <input name="OuterPhone" class="mini-textbox" required="false" emptytext="请输入外线电话（可选）" />
+                </td>
+                <td style="width:70px;">内线电话：</td>
+                <td style="width:150px;">
+                    <input name="InnerPhone" class="mini-textbox" required="false" emptytext="请输入内线电话（可选）" />
+                </td>
+            </tr>
+            <tr>
+                <td style="width:70px;">传真：</td>
+                <td style="width:150px;">
+                    <input name="Fax" class="mini-textbox" required="false" emptytext="请输入传真（可选）" />
+                </td>
+                <td style="width:70px;">邮箱：</td>
+                <td style="width:150px;">
+                    <input name="Email" class="mini-textbox" required="false" emptytext="请输入邮箱（可选）" />
+                </td>
+            </tr>
+            <tr>
+                <td style="width:70px;">邮编：</td>
+                <td style="width:150px;">
+                    <input name="Postalcode" class="mini-textbox" required="false" emptytext="请输入邮编（可选）" />
+                </td>
+                <td style="width:70px;">通讯地址：</td>
+                <td style="width:150px;">
+                    <input name="Address" class="mini-textbox" required="false" emptytext="请输入地址（可选）" />
+                </td>
+            </tr>
+            <tr>
+                <td style="width:70px;">网址：</td>
+                <td style="width:150px;">
+                    <input name="Web" class="mini-textbox" required="false" emptytext="请输入网址（可选）" />
+                </td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td style="width:70px;">排序号：</td>
+                <td style="width:150px;">
+                    <input name="SortCode" class="mini-textbox" required="false" value="100" emptytext="请输入排序号（可选）" />
+                </td>
+                <td style="width:70px;">是否可见：</td>
+                <td>
+                    <select name="IsVisible" class="mini-radiobuttonlist" value="1">
+                        <option value="1">是</option>
+                        <option value="0">否</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td style="width:70px;">备注：</td>
+                <td style="width:150px" colspan="3">
+                    <input name="Description" class="mini-textarea" required="false" emptytext="请输入备注内容（可选）" />
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div style="text-align:center;padding:10px;">
+        <a class="mini-button" onclick="onOk" style="width:60px;margin-right:20px;">确定</a>
+        <a class="mini-button" onclick="onCancel" style="width:60px;">取消</a>
+    </div>
+</form>
+
+<script>
+    mini.parse();
+    var form = new mini.Form("Organize-form");
+
+    ////////////////////
+    //标准方法接口定义
+    function SetData(data) {
+        if (data.action == "edit") {
+            //跨页面传递的数据对象，克隆后才可以安全使用
+            data = mini.clone(data);
+            var url = '@Url.Action("GetSingleOrganize", "Organize", new { area = "Admin" })';
+            var parms = { OrganizeID: data.ID };
+
+            doGet(url, parms, function (jdata) {
+                var o = jdata.Data
+                debugger;
+                form.setData(o);
+                form.setChanged(false);
+
+                mini.get("OrganizeTreeDDL").setValue(o.ParentID);
+                mini.get("OrganizeCategoryDDL").setValue(o.OrganizeCategoryID);
+                mini.get("OrganizeCodeDDL").setValue(o.Code);
+            })
+        }
+    }
+
+    /////////////////
+    ///验证相关
+    function onExistOrganizeCodeValidation(e) {
+        var pass = false;
+        if (e.isValid) {
+            var OrganizeID = mini.getbyName("ID").getValue();
+            var url = '@Url.Action("VerifyOrganizeCode", "Organize", new { area = "Admin" })';
+            var data = { OrganizeCode: e.value, OrganizeID: OrganizeID };
+            doGetSync(url, data, function (jdata) {
+                if (jdata.Code == '200') {
+                    debugger;
+                    if (jdata.Data == true) {
+                    } else {
+                        e.errorText = "编号已存在！";
+                        e.isValid = false;
+                    }
+                }
+            });
+        }
+    }
+
+    /////////////////
+    ///保存数据
+    function SaveData() {
+
+        var o = form.getData();
+        o.ParentID = mini.get("OrganizeTreeDDL").getValue();
+        o.Code = mini.get("OrganizeCodeDDL").getValue();
+        o.OrganizeCategoryID = mini.get("OrganizeCategoryDDL").getValue();
+        debugger;
+        //将空的属性转为null
+        if (o.ID == "") {
+            o.ID = null;
+        }
+
+        form.validate();
+        if (form.isValid() == false) return;
+
+        var url;
+        if (o.ID == null) {
+            url = '@Url.Action("AddOrganize", "Organize", new { area = "Admin" })';
+        } else {
+            url = '@Url.Action("EditOrganize", "Organize", new { area = "Admin" })';
+        }
+        var json = mini.encode(o);
+        var data = { viewModel: json };
+        doPost(url, data, function (jdata) {
+            CloseWindow("save");
+        })
+    }
+
+    /////////////////
+    ///按钮方法
+    function onOk(e) {
+        SaveData();
+    }
+    function onCancel(e) {
+        CloseWindow("cancel");
+    }
+
+
+    function CloseWindow(action) {
+        if (action == "close" && form.isChanged()) {
+            if (confirm("数据被修改了，是否先保存？")) {
+                return false;
+            }
+        }
+        if (window.CloseOwnerWindow) return window.CloseOwnerWindow(action);
+        else window.close();
+    }
+
+
+</script>
+

@@ -102,6 +102,7 @@ ajaxTips = function (json, container, callback) {
     }
 
     callback && callback(jdata);
+    return jdata;
 }
 
 showLoading = function () {

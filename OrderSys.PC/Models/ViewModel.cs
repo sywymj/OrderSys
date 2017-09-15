@@ -16,16 +16,18 @@ namespace OrderSys.Admin
         public string ParentID { get; set; }
     }
 
-    //普通 DDL
+    //Tree DDL
     public class ViewOrganizeDDL : BaseTreeViewDDL { }
     public class ViewResourceDDL : BaseTreeViewDDL { }
     public class ViewPermissionItemDDL : BaseTreeViewDDL { }
 
-    //Tree DDL
+    //普通 DDL
     public class ViewRoleDDL : BaseViewDDL { }
     public class ViewResourceTypeDDL : BaseViewDDL { }
     public class ViewResourceCodeDDL : BaseViewDDL { }
     public class ViewSysCategoryDDL : BaseViewDDL { }
+    public class ViewOrganizeCategoryDDL : BaseViewDDL { }
+    public class ViewOrganizeCodeDDL : BaseViewDDL { }
 
     //ViewModel
     public class ViewUser : UserEntity
@@ -39,4 +41,6 @@ namespace OrderSys.Admin
         public string permissionItemIDs { get; set; }
     }
     public class ViewPermissionItem : PermissionItemEntity { }
+
+    public class ViewOrganize : OrganizeEntity { }
 }

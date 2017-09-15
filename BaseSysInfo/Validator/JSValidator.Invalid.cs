@@ -170,11 +170,11 @@ namespace JSNet.BaseSys
 
         public static int[] ValidateStrings(string name, string[] value, bool require = false)
         {
-            if (!require)
+            if (!require && value.Length ==0)
             {
-                return null;
+                return new int[0];
             }
-            if (require && value.Length <= 0)
+            if (require && value.Length == 0)
             {
                 throw new JSException(JSErrMsg.ERR_CODE_PARAM_MISSING, string.Format(JSErrMsg.ERR_MSG_PARAM_MISSING, name));
             }
@@ -190,11 +190,11 @@ namespace JSNet.BaseSys
 
         public static string[] ValidateInts(string name, int[] value, bool require = false)
         {
-            if (!require)
+            if (!require && value.Length == 0)
             {
-                return null;
+                return new string[0];
             }
-            if (require && value.Length <= 0)
+            if (require && value.Length == 0)
             {
                 throw new JSException(JSErrMsg.ERR_CODE_PARAM_MISSING, string.Format(JSErrMsg.ERR_MSG_PARAM_MISSING, name));
             }

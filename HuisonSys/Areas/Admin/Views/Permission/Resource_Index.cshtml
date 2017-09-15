@@ -72,8 +72,8 @@
         var row = resource_grid.getSelected();
         if (row) {
             mini.open({
-                url: "@Url.Action("GrantPermissionItemIndex", "Permission", new { area = "Admin" })",
-                title: "分配资源明细", width: 800, height: 600,
+                url: "@Url.Action("GrantPermissionIndex", "Permission", new { area = "Admin" })",
+                title: "配置资源明细", width: 800, height: 600,
                 onload: function () {
                     var iframe = this.getIFrameEl();
                     var data = {
@@ -90,6 +90,30 @@
         } else {
             alert("请选中一条记录");
         }
+    }
+
+    function grantScope() {
+        var row = resource_grid.getSelected();
+        if (row) {
+            mini.open({
+                url: "@Url.Action("GrantScopeIndex", "Permission", new { area = "Admin" })",
+                title: "配置资源对象", width: 800, height: 600,
+            onload: function () {
+                var iframe = this.getIFrameEl();
+                var data = {
+                    ID: row.Resource_ID,
+                    Code: row.Resource_Code,
+                    ResourceType: row.Resource_ResourceType
+                };
+                iframe.contentWindow.SetGridData(data);
+            },
+            ondestroy: function (action) {
+                resource_grid.reload();
+            }
+        });
+    } else {
+            alert("请选中一条记录");
+    }
     }
     
 

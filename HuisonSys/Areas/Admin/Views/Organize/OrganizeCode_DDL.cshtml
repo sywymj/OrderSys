@@ -1,0 +1,30 @@
+﻿@model string
+@{
+    Layout = null;
+}
+
+<input id="OrganizeCodeDDL" class="mini-combobox" popupheight="150"
+       valuefield="ID" textfield="Title"
+       multiselect="false" valuefromselect="false" allowinput="true" required="true" shownullitem="false" emptytext="请选择..."
+       onvalidation="@Model" />
+
+<script>
+    mini.parse();
+
+    var OrganizeCodeDDL = mini.get("OrganizeCodeDDL");
+    load_OrganizeCodeDDL();
+
+    function load_OrganizeCodeDDL() {
+        var url = '@Url.Action("GetOrganizeCodeDDL", "Organize", new { area = "Admin" })';
+        doGet(url, null, function (jdata) {
+            if (jdata.Code == '200') {
+                debugger;
+                OrganizeCodeDDL.setData(jdata.Data);
+            }
+        })
+    }
+
+
+
+</script>
+
