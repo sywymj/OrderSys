@@ -18,27 +18,36 @@ namespace JSNet.Service
         public void AddOrganizeCategory(OrganizeCategoryEntity entity)
         {
             UserService userService = new UserService();
-            EntityManager<OrganizeCategoryEntity> manager = new EntityManager<OrganizeCategoryEntity>();
-
             UserEntity user = userService.GetCurrentUser();
 
+            EntityManager<OrganizeCategoryEntity> manager = new EntityManager<OrganizeCategoryEntity>();
             entity.CreateUserId = user.ID.ToString();
             entity.CreateBy = user.UserName;
             entity.CreateOn = DateTime.Now;
             manager.Insert(entity);
         }
 
-        public void AddOranize(OrganizeEntity entity)
+        public void EditOrganizeCategory(OrganizeCategoryEntity entity)
         {
             UserService userService = new UserService();
-            EntityManager<OrganizeEntity> manager = new EntityManager<OrganizeEntity>();
+            UserEntity currentUser = userService.GetCurrentUser();
 
-            UserEntity user = userService.GetCurrentUser();
+            EntityManager<OrganizeCategoryEntity> manager = new EntityManager<OrganizeCategoryEntity>();
+            List<KeyValuePair<string, object>> kvps = new List<KeyValuePair<string, object>>();
+            kvps.Add(new KeyValuePair<string, object>(OrganizeCategoryEntity.FieldCode, entity.Code));
+            kvps.Add(new KeyValuePair<string, object>(OrganizeCategoryEntity.FieldFullName, entity.FullName));
+            kvps.Add(new KeyValuePair<string, object>(OrganizeCategoryEntity.FieldDescription, entity.Description));
+            kvps.Add(new KeyValuePair<string, object>(OrganizeCategoryEntity.FieldModifiedUserId, currentUser.ID.ToString()));
+            kvps.Add(new KeyValuePair<string, object>(OrganizeCategoryEntity.FieldModifiedBy, currentUser.UserName));
+            kvps.Add(new KeyValuePair<string, object>(OrganizeCategoryEntity.FieldModifiedOn, DateTime.Now));
+            manager.Update(kvps, entity.ID);
+        }
 
-            entity.CreateUserId = user.ID.ToString();
-            entity.CreateBy = user.UserName;
-            entity.CreateOn = DateTime.Now;
-            manager.Insert(entity);
+        public OrganizeCategoryEntity GetOrganizeCategory(int organizeCategoryID)
+        {
+            EntityManager<OrganizeCategoryEntity> manager = new EntityManager<OrganizeCategoryEntity>();
+            OrganizeCategoryEntity entity = manager.GetSingle(organizeCategoryID);
+            return entity;
         }
 
         public string[] GetTreeOrganizeIDs(string organizeCode)
@@ -162,7 +171,16 @@ namespace JSNet.Service
             return b;
         }
 
-        public List<OrganizeCategoryEntity> GetOrganizeCategoryList()
+        public List<OrganizeCategoryEntity> GetOrganizeCategorys(Paging paging,out int count)
+        {
+            EntityManager<OrganizeCategoryEntity> manager = new EntityManager<OrganizeCategoryEntity>();
+            WhereStatement where = new WhereStatement();
+
+            List<OrganizeCategoryEntity> list = manager.GetListByPage(where, out count, paging.PageIndex, paging.PageSize);
+            return list;
+        }
+
+        public List<OrganizeCategoryEntity> GetOrganizeCategorys()
         {
             int count = 0;
             EntityManager<OrganizeCategoryEntity> manager = new EntityManager<OrganizeCategoryEntity>();
@@ -170,6 +188,21 @@ namespace JSNet.Service
 
             List<OrganizeCategoryEntity> list = manager.GetList(where, out count);
             return list;
+        }
+
+        public DataTable GetOrganizeCategoryDT(out int count, string p)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool ChkOrganizeCategoryCodeExist(string organizeCategoryCode, string organizeCategoryID)
+        {
+            EntityManager<OrganizeCategoryEntity> manager = new EntityManager<OrganizeCategoryEntity>();
+            bool b = ChkExist<OrganizeCategoryEntity>(
+                manager,
+                OrganizeCategoryEntity.FieldCode, organizeCategoryCode,
+                OrganizeCategoryEntity.FieldID, organizeCategoryID);
+            return b;
         }
     }
 }

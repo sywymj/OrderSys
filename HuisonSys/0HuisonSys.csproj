@@ -2950,7 +2950,7 @@
     <Content Include="Areas\Admin\Views\Permission\GrantScope_Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Areas\Admin\Views\Organize\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Organize\Organize_Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\Admin\Views\Organize\Organize_InsertIndex.cshtml" />
@@ -2963,6 +2963,12 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\Admin\Views\Organize\OrganizeCategory_DDL.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\Admin\Views\Organize\OrganizeCategory_Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\Admin\Views\Organize\OrganizeCategory_InsertIndex.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

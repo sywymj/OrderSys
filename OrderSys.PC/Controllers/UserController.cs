@@ -96,7 +96,6 @@ namespace OrderSys.Admin.Controllers
         public string GetList(int pageIndex, int pageSize, string sortField, string sortOrder)
         {
             int count = 0;
-
             Paging paging = new Paging(pageIndex, pageSize, sortField, sortOrder);
             DataTable re = service.GetAllUser(paging, out count);
 
