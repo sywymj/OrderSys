@@ -48,9 +48,13 @@ namespace OrderSys.Admin
     //ListData ViewModel
     public class DataTableData
     {
-        public DataTableData(DataTable dt, int count)
+        public DataTableData(DataTable dt)
         {
             this.DT = dt;
+        }
+        public DataTableData(DataTable dt, int count)
+            : this(dt)
+        {
             this.Count = count;
         }
         public DataTable DT { get; set; }

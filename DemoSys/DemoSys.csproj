@@ -117,6 +117,7 @@
     <Compile Include="MiniUI\Controllers\DemoController.cs" />
     <Compile Include="MiniUI\Models\ViewModel.cs" />
     <Compile Include="Model\DemoEntity.cs" />
+    <Compile Include="Model\SonDemo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Service\DemoService.cs" />
   </ItemGroup>
@@ -130,7 +131,7 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="MiniUI\Views\" />
+    <Content Include="MiniUI\Views\Demo_Index - GetListByPage.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
@@ -160,6 +161,33 @@
       <Project>{9c16e557-1f7a-4111-bf98-229a95879a71}</Project>
       <Name>7Utilities</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="MiniUI\Views\Demo_Index - GetList.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="MiniUI\Views\Demo_Index - GetTreeDT.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="MiniUI\Views\Demo_Index - GetTreeList.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="MiniUI\Views\Demo_Index - GetDT.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="MiniUI\Views\Demo_Index - GetDTByPage.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="MiniUI\Views\Demo_DDL.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="MiniUI\Views\Demo_TreeDDL .cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="MiniUI\Views\Demo_DDL -  Validation.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="MiniUI\Views\Demo_InsertIndex.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

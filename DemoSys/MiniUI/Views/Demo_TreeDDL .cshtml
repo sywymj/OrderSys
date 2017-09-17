@@ -1,0 +1,27 @@
+﻿@{
+    Layout = null;
+}
+
+<input id="DemoDDL" class="mini-treeselect" popupheight="150"
+       valuefield="ID" parentfield="ParentID" textfield="Title"
+       valuefromselect="true" allowinput="true" required="true" showtreeicon="false" expandonload="0" shownullitem="false" multiselect="true" showfoldercheckbox="true" emptytext="请选择..." />
+
+<script>
+    mini.parse();
+
+    var DemoDDL = mini.get("DemoDDL");
+    load_DemoDDL();
+
+    function load_DemoDDL() {
+
+        var url = '@Url.Action("GetDemoTreeDDL", "Demo", new { area = "XXX" })';
+        doGet(url, null, function (jdata) {
+            if (jdata.Code == '200') {
+                debugger;
+                DemoDDL.loadList(jdata.Data);
+            }
+        })
+    }
+
+</script>
+

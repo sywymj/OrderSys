@@ -229,7 +229,7 @@ namespace OrderSys.Admin.Controllers
             int count = 0;
             Paging paging = new Paging(pageIndex, pageSize, sortField, sortOrder);
 
-            List<OrganizeCategoryEntity> re = service.GetOrganizeCategorys(paging);
+            List<OrganizeCategoryEntity> re = service.GetOrganizeCategorys(paging,out count);
             string s = JSON.ToJSON(new JSResponse(new ListData<OrganizeCategoryEntity>(re, count)), jsonParams);
             return s;
         } 

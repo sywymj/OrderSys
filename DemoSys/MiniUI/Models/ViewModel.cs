@@ -1,4 +1,5 @@
-﻿using System;
+﻿using JSNet.Model;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -25,13 +26,23 @@ namespace DemoSys.MiniUI.Models
     //Tree DDL
     public class ViewDemoTreeDDL : BaseTreeViewDDL { }
 
+    public class ViewDemo : DemoEntity 
+    {
+        public SonEntity Son { get; set; }
+        public string SonIDs { get; set; }
+    }
+
     //ListData ViewModel
     #region 列表用的 ViewModel
     public class DataTableData
     {
-        public DataTableData(DataTable dt, int count)
+        public DataTableData(DataTable dt)
         {
             this.DT = dt;
+        }
+        public DataTableData(DataTable dt, int count)
+            : this(dt)
+        {
             this.Count = count;
         }
         public DataTable DT { get; set; }

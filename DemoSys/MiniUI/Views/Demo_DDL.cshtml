@@ -1,0 +1,26 @@
+﻿@{
+    Layout = null;
+}
+
+<input id="DemoDDL" class="mini-combobox" popupheight="150"
+       valuefield="ID" textfield="Title"
+       multiselect="false" valuefromselect="true" allowinput="true" required="true" shownullitem="false" emptytext="请选择..." />
+
+<script>
+    mini.parse();
+
+    var DemoDDL = mini.get("DemoDDL");
+    load_DemoDDL();
+
+    function load_DemoDDL() {
+
+        var url = '@Url.Action("GetDemoDDL", "Demo", new { area = "Admin" })';
+        doGet(url, null, function (jdata) {
+            if (jdata.Code == '200') {
+                debugger;
+                DemoDDL.setData(jdata.Data);
+            }
+        })
+    }
+
+</script>

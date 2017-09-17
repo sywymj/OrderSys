@@ -1,0 +1,75 @@
+﻿@{
+    //【GetDTByPage】
+    ViewBag.Title = "XXX管理";
+    Layout = "~/Areas/Admin/Views/Shared/_InnerLayout.cshtml";
+}
+
+@RenderPage("~/Areas/Admin/Views/Shared/_Header.cshtml")
+<div class="mini-fit">
+    <div id="Demo-datagrid" class="mini-datagrid" idfield="User_ID" ajaxoptions="{type : 'get'}" style="width:100%;height:100%" autoload="false"
+         url="@Url.Action("GetDemoDTByPage", "Demo", new { area = "XXX" })" datafield="Data.DT.JSNet" totalfield="Data.Count">
+        <div property="columns">
+            <div type="indexcolumn" headeralign="center">序号</div>
+            <div field="Demo_FullName" width="180" headeralign="center" align="left" allowsort="true">标题</div>
+            <div field="Demo_Code" width="180" headeralign="center" align="left" allowsort="true">标识码</div>
+            <div field="DemoCategory_FullName" width="120" headeralign="center" align="center" allowsort="true">机构类别</div>
+            <div field="DemoCategory_Code" width="120" headeralign="center" align="center" allowsort="true">类别标识码</div>
+            <div field="Demo_Description" width="120" headeralign="center" align="center" allowsort="true">机构描述</div>
+            <div field="Demo_SortCode" width="120" headeralign="center" align="center" allowsort="true">排序</div>
+        </div>
+    </div>
+</div>
+
+<script>
+    mini.parse()
+    var Demo_grid = mini.get("Demo-datagrid");
+
+    Demo_grid.load({
+        pageIndex: 0,
+        pageSize: 50,
+        sortField: "Demo_ID",//排序字段必需要，不然没法分页
+        sortOrder: "DESC",//排序字段必需要，不然没法分页
+    }, function (data) {
+        ajaxTips(data.text);
+    }, function (data) {
+    })
+
+    function add() {
+        mini.open({
+            url: "@Url.Action("InsertDemoIndex", "Demo", new { area = "XXX" })",
+            title: "新增XXX", width: 600, height: 400,
+            onload: function () {
+                debugger;
+                var iframe = this.getIFrameEl();
+                var data = { action: "new" };
+                iframe.contentWindow.SetData(data);
+            },
+            ondestroy: function (action) {
+                Demo_grid.reload();
+            }
+        });
+    }
+
+    function edit() {
+        var row = Demo_grid.getSelected();
+        if (row) {
+            mini.open({
+                url: "@Url.Action("EditDemoIndex", "Demo", new { area = "XXX" })",
+                title: "编辑XXX", width: 600, height: 400,
+                onload: function () {
+                    var iframe = this.getIFrameEl();
+                    var data = { action: "edit", ID: row.Demo_ID };
+                    iframe.contentWindow.SetData(data);
+                },
+                ondestroy: function (action) {
+                    Demo_grid.reload();
+                }
+            });
+
+        } else {
+            alert("请选中一条记录");
+        }
+
+    }
+
+</script>
