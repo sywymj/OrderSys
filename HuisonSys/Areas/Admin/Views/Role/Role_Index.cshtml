@@ -1,0 +1,122 @@
+﻿@{
+    //【GetList分页】
+    ViewBag.Title = "角色管理";
+    Layout = "~/Areas/Admin/Views/Shared/_InnerLayout.cshtml";
+}
+
+@RenderPage("~/Areas/Admin/Views/Shared/_Header.cshtml")
+<div class="mini-fit">
+    <div id="Role-datagrid" class="mini-datagrid" idfield="ID" ajaxoptions="{type : 'get'}" style="width:100%;height:100%" autoload="false"
+         url="@Url.Action("GetRoleListByPage", "Role", new { area = "Admin" })" datafield="Data.List" totalfield="Data.Count">
+        <div property="columns">
+            <div field="FullName" width="180" headeralign="center" align="center" allowsort="true">标题</div>
+            <div field="Description" width="120" headeralign="center" align="center" allowsort="true">机构描述</div>
+            <div field="CreateBy" width="120" headeralign="center" align="center" allowsort="true">添加人</div>
+            <div field="CreateOn" width="120" headeralign="center" align="center" allowsort="true" dateformat="yyyy/MM/dd HH:mm:ss">添加时间</div>
+            <div field="ModifiedBy" width="120" headeralign="center" align="center" allowsort="true">修改人</div>
+            <div field="ModifiedOn" width="120" headeralign="center" align="center" allowsort="true" dateformat="yyyy/MM/dd HH:mm:ss">修改时间</div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    mini.parse()
+    var Role_grid = mini.get("Role-datagrid");
+
+    Role_grid.load({
+        pageIndex: 0,
+        pageSize: 50,
+        sortField: "ID",//排序字段必需要，不然没法分页
+        sortOrder: "DESC",//排序字段必需要，不然没法分页
+    }, function (data) {
+        ajaxTips(data.text);
+    }, function (data) {
+    })
+
+
+    function add() {
+        mini.open({
+            url: "@Url.Action("InsertRoleIndex", "Role", new { area = "Admin" })",
+            title: "新增角色", width: 500, height: 600,
+            onload: function () {
+                debugger;
+                var iframe = this.getIFrameEl();
+                var data = { action: "new" };
+                iframe.contentWindow.SetData(data);
+            },
+            ondestroy: function (action) {
+                Role_grid.reload();
+            }
+        });
+    }
+
+    function edit() {
+        var row = Role_grid.getSelected();
+        if (row) {
+            mini.open({
+                url: "@Url.Action("EditRoleIndex", "Role", new { area = "Admin" })",
+                title: "编辑角色", width: 500, height: 600,
+                onload: function () {
+                    var iframe = this.getIFrameEl();
+                    var data = { action: "edit", ID: row.ID };
+                    iframe.contentWindow.SetData(data);
+                },
+                ondestroy: function (action) {
+                    Role_grid.reload();
+                }
+            });
+
+        } else {
+            alert("请选中一条记录");
+        }
+    }
+
+    function grantRoleModule() {
+        var row = Role_grid.getSelected();
+        if (row) {
+            mini.open({
+                url: "@Url.Action("GrantRoleModuleIndex", "Role", new { area = "Admin" })",
+                title: "配置角色模块", width: 800, height: 600,
+                onload: function () {
+                    var iframe = this.getIFrameEl();
+                    var data = {
+                        ID: row.ID,
+                    };
+                    iframe.contentWindow.SetGridData(data);
+                },
+                ondestroy: function (action) {
+                    Role_grid.reload();
+                }
+            });
+        } else {
+            alert("请选中一条记录");
+        }
+
+    }
+
+    function grantRoleScope() {
+        var row = Role_grid.getSelected();
+        if (row) {
+            mini.open({
+                url: "@Url.Action("GrantRoleScopeIndex", "Role", new { area = "Admin" })",
+                title: "配置角色资源", width: 800, height: 600,
+                onload: function () {
+                    var iframe = this.getIFrameEl();
+                    var data = {
+                        ID: row.ID,
+                    };
+                    iframe.contentWindow.SetGridData(data);
+                },
+                ondestroy: function (action) {
+                    Role_grid.reload();
+                }
+            });
+        } else {
+            alert("请选中一条记录");
+        }
+
+    }
+
+
+</script>

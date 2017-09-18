@@ -16,20 +16,6 @@ namespace JSNet.Service
     public class PermissionService:BaseService
     {
 
-        public void AddRole(RoleEntity entity)
-        {
-            UserService userService = new UserService();
-            EntityManager<RoleEntity> manager = new EntityManager<RoleEntity>();
-
-            UserEntity user = userService.GetCurrentUser();
-
-            entity.DeletionStateCode = (int)TrueFalse.True;
-            entity.CreateUserId = user.ID.ToString();
-            entity.CreateBy = user.UserName;
-            entity.CreateOn = DateTime.Now;
-            manager.Insert(entity);
-        }
-
         /// <summary>
         /// 添加操作权限
         /// </summary>
@@ -237,6 +223,12 @@ namespace JSNet.Service
 
             DataTable dt = vmanager.GetDataTable(where, out count);
             return dt;
+        }
+
+        public List<ResourceEntity> GetResourceOfModuleList(string resouceCode, bool onlyChild = true)
+        {
+            List<ResourceEntity> list = GetResourceList(resouceCode, onlyChild);
+            return list.Where(l => l.ResourceType != ResourceType.Data.ToString()).ToList();
         }
 
         public List<ResourceEntity> GetResourceList(string resouceCode, bool onlyChild = true)
@@ -523,6 +515,33 @@ namespace JSNet.Service
         }
 
         #endregion
+
+        public DataTable GetScopeTreeDT(string parentCode)
+        {
+            ViewManager vmanager = new ViewManager("VP_PermissionScope");
+
+            string[] ids = GetTreeScopeIDs(parentCode);
+            if (ids.Length == 0)
+            {
+                return new DataTable("JSNet");
+            }
+
+            WhereStatement where = new WhereStatement();
+            where.Add("Resource_ID", Comparison.In, ids);
+
+            int count = 0;
+            DataTable dt = vmanager.GetDataTable(where, out count);
+            return dt;
+        }
+
+        public string[] GetTreeScopeIDs(string parentCode)
+        {
+            string[] s = GetTreeIDs(
+                "[VP_PermissionScope]",
+                "Resource_Code", parentCode,
+                "Resource_ID", "Resource_ParentID");
+            return s;
+        }
 
         public int[] GetGrantedItemIDs(int reourceID)
         {

@@ -45,6 +45,15 @@ namespace OrderSys.Admin
     public class ViewOrganize : OrganizeEntity { }
     public class ViewOrganizeCategory : OrganizeCategoryEntity { }
 
+    public class ViewRole : RoleEntity 
+    {
+        public List<RolePermissionScopeEntity> RolePermissionScopes { get; set; }
+        public List<RoleResourceEntity> RoleResource { get; set; }
+        public string GrantedScopeIDs { get; set; }
+        public string GrantedResourceIDs { get; set; }
+    
+    }
+
     //ListData ViewModel
     public class DataTableData
     {

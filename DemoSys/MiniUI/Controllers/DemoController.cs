@@ -93,7 +93,6 @@ namespace DemoSys.MiniUI.Controllers
         } 
         #endregion
 
-        // TODO 增删该茶
         #region 增
 
         [HttpGet]
@@ -194,9 +193,9 @@ namespace DemoSys.MiniUI.Controllers
 
         #endregion
 
-        //查
+        #region 查
         [HttpGet]
-        public string GetSingleDemo(int demoID) 
+        public string GetSingleDemo(int demoID)
         {
             ViewDemo viewModel = new ViewDemo();
             DemoEntity entity = service.GetDemo(demoID);
@@ -205,6 +204,7 @@ namespace DemoSys.MiniUI.Controllers
             return JSON.ToJSON(new JSResponse(viewModel), jsonParams);
         }
 
+        #region GetList
         [HttpGet]
         public string GetDemoList()
         {
@@ -225,7 +225,9 @@ namespace DemoSys.MiniUI.Controllers
             string s = JSON.ToJSON(new JSResponse(new ListData<DemoEntity>(re, count)), jsonParams);
             return s;
         }
+        #endregion
 
+        #region GetDT
         [HttpGet]
         public string GetDemoDT()
         {
@@ -246,7 +248,9 @@ namespace DemoSys.MiniUI.Controllers
             string s = JSON.ToJSON(new JSResponse(new DataTableData(re, count)), jsonParams);
             return s;
         }
+        #endregion
 
+        #region Tree
         [HttpGet]
         public string GetDemoTreeList()
         {
@@ -264,7 +268,8 @@ namespace DemoSys.MiniUI.Controllers
             string s = JSON.ToJSON(new JSResponse(new DataTableData(re)), jsonParams);
             return s;
         }
-
+        #endregion 
+        #endregion
 
         [HttpGet]
         public string VerifyDemoCode(string demoCode, string demoID)

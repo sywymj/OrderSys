@@ -1,0 +1,99 @@
+﻿
+<form id="Role-form" method="post" style="">
+    <input name="ID" class="mini-hidden" />
+    <div style="padding-left:11px;padding-bottom:5px;">
+        <table style="table-layout:fixed;">
+            <tr>
+                <td style="width:70px;">标题：</td>
+                <td style="width:150px;">
+                    <input name="FullName" class="mini-textbox" required="true" emptytext="请输入标题" />
+                </td>
+            </tr>
+            <tr>
+                <td style="width:70px;">备注：</td>
+                <td style="width:150px" colspan="3">
+                    <input name="Description" class="mini-textarea" required="false" emptytext="请输入备注内容（可选）" />
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div style="text-align:center;padding:10px;">
+        <a class="mini-button" onclick="onOk" style="width:60px;margin-right:20px;">确定</a>
+        <a class="mini-button" onclick="onCancel" style="width:60px;">取消</a>
+    </div>
+</form>
+
+<script>
+    mini.parse();
+    var form = new mini.Form("Role-form");
+
+    ////////////////////
+    //标准方法接口定义
+    function SetData(data) {
+        if (data.action == "edit") {
+            //跨页面传递的数据对象，克隆后才可以安全使用
+            data = mini.clone(data);
+            var url = '@Url.Action("GetSingleRole", "Role", new { area = "Admin" })';
+            var parms = { RoleID: data.ID };
+
+            doGet(url, parms, function (jdata) {
+                var o = jdata.Data
+                debugger;
+                form.setData(o);
+                form.setChanged(false);
+
+            })
+        }
+    }
+
+    /////////////////
+    ///保存数据
+    function SaveData() {
+
+        var o = form.getData();
+
+        debugger;
+        //将空的属性转为null
+        if (o.ID == "") {
+            o.ID = null;
+        }
+
+        form.validate();
+        if (form.isValid() == false) return;
+
+        var url;
+        if (o.ID == null) {
+            url = '@Url.Action("AddRole", "Role", new { area = "Admin"})';
+        } else {
+            url = '@Url.Action("EditRole", "Role", new { area = "Admin" })';
+        }
+        var json = mini.encode(o);
+        var data = { ViewModel: json };
+        doPost(url, data, function (jdata) {
+            CloseWindow("save");
+        })
+    }
+
+    /////////////////
+    ///按钮方法
+    function onOk(e) {
+        SaveData();
+    }
+    function onCancel(e) {
+        CloseWindow("cancel");
+    }
+
+
+    function CloseWindow(action) {
+        if (action == "close" && form.isChanged()) {
+            if (confirm("数据被修改了，是否先保存？")) {
+                return false;
+            }
+        }
+        if (window.CloseOwnerWindow) return window.CloseOwnerWindow(action);
+        else window.close();
+    }
+
+
+</script>
+

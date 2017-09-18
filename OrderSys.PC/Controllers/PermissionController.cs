@@ -244,6 +244,28 @@ namespace OrderSys.Admin.Controllers
             return s;
         }
 
+        [HttpGet]
+        public string GetGrantRoleModuleList()
+        {
+            List<ResourceEntity> modules = service.GetResourceOfModuleList("OrderSys");
+
+            string s = JSON.ToJSON(new JSResponse(new ListData<ResourceEntity>(modules)), jsonParams);
+            return s;
+        }
+
+        [HttpGet]
+        public string GetGrantRoleScopeDT()
+        {
+            int count = 0;
+            //获取当前登陆的角色所属的系统类型，从而获取属性列表
+
+            DataTable dt = service.GetScopeTreeDT("OrderSys" + "_Data");
+
+            string s = JSON.ToJSON(new JSResponse(new DataTableData(dt,count)), jsonParams);
+            return s;
+        }
+
+
         #region DDL
         [HttpGet]
         public string GetResourceTreeDDL()
@@ -259,7 +281,7 @@ namespace OrderSys.Admin.Controllers
             string s = JSON.ToJSON(new JSResponse(re), jsonParams);
             return s;
         }
-
+        
         /// <summary>
         /// 获取 Resource Code ，用作方便输入Code前缀
         /// </summary>

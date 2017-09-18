@@ -107,5 +107,125 @@ namespace JSNet.Service
             List<RoleEntity> roles = manager.GetList(where, out count);
             return roles;
         }
+
+        public void AddRole(RoleEntity entity)
+        {
+            UserService userService = new UserService();
+            UserEntity currentUser = userService.GetCurrentUser();
+
+            EntityManager<RoleEntity> manager = new EntityManager<RoleEntity>();
+            entity.CreateUserId = currentUser.ID.ToString();
+            entity.CreateBy = currentUser.UserName;
+            entity.CreateOn = DateTime.Now;
+            manager.Insert(entity);
+        }
+
+        public void EditRole(RoleEntity entity)
+        {
+            UserService userService = new UserService();
+            UserEntity currentUser = userService.GetCurrentUser();
+
+            EntityManager<RoleEntity> manager = new EntityManager<RoleEntity>();
+            List<KeyValuePair<string, object>> kvps = new List<KeyValuePair<string, object>>();
+            kvps.Add(new KeyValuePair<string, object>(RoleEntity.FieldFullName, entity.FullName));
+            kvps.Add(new KeyValuePair<string, object>(RoleEntity.FieldDescription, entity.Description));
+            kvps.Add(new KeyValuePair<string, object>(RoleEntity.FieldModifiedUserId, currentUser.ID.ToString()));
+            kvps.Add(new KeyValuePair<string, object>(RoleEntity.FieldModifiedBy, currentUser.UserName));
+            kvps.Add(new KeyValuePair<string, object>(RoleEntity.FieldModifiedOn, DateTime.Now));
+            manager.Update(kvps, entity.ID);
+        }
+        public RoleEntity GetRole(int roleID)
+        {
+            EntityManager<RoleEntity> manager = new EntityManager<RoleEntity>();
+            RoleEntity entity = manager.GetSingle(roleID);
+            return entity;
+        }
+
+        public List<RoleEntity> GetRoleList(Paging paging, out int count)
+        {
+            EntityManager<RoleEntity> manager = new EntityManager<RoleEntity>();
+            WhereStatement where = new WhereStatement();
+
+            List<RoleEntity> list = manager.GetListByPage(where, out count, paging.PageIndex, paging.PageSize);
+            return list;
+        }
+
+        public void GrantRoleModule(int roleID, int[] moduleIDs)
+        {
+            //判断资源类型是否为Menu、button，只有Menu、button才能分配资源明细
+            EntityManager<RoleEntity> roleManager = new EntityManager<RoleEntity>();
+            RoleEntity role = roleManager.GetSingle(roleID);
+
+
+            UserService userService = new UserService();
+            UserEntity currentUser = userService.GetCurrentUser();
+
+            EntityManager<RoleResourceEntity> manager = new EntityManager<RoleResourceEntity>();
+            manager.Delete(roleID, RoleResourceEntity.FieldRoleID);
+
+            List<RoleResourceEntity> entitys = new List<RoleResourceEntity>();
+            foreach (int moduleID in moduleIDs)
+            {
+                RoleResourceEntity entity = new RoleResourceEntity();
+                entity.RoleID = roleID;
+                entity.ResourceID = moduleID;
+                entity.CreateUserId = currentUser.ID.ToString();
+                entity.CreateBy = currentUser.UserName;
+                entity.CreateOn = DateTime.Now;
+                entitys.Add(entity);
+            }
+            manager.Insert(entitys);
+        }
+
+        public int[] GetGrantedModuleIDs(int roleID)
+        {
+            EntityManager<RoleResourceEntity> manager = new EntityManager<RoleResourceEntity>();
+            WhereStatement where = new WhereStatement();
+            where.Add(RoleResourceEntity.FieldRoleID, Comparison.Equals, roleID);
+
+            string[] sIDs = manager.GetProperties(RoleResourceEntity.FieldResourceID, where);
+            int[] ids = CommonUtil.ConvertToIntArry(sIDs);
+            return ids;
+        }
+
+
+        public void GrantRoleScope(int roleID, int[] scopeIDs)
+        {
+            //判断资源类型是否为Menu、button，只有Menu、button才能分配资源明细
+            EntityManager<RoleEntity> roleManager = new EntityManager<RoleEntity>();
+            RoleEntity role = roleManager.GetSingle(roleID);
+
+
+            UserService userService = new UserService();
+            UserEntity currentUser = userService.GetCurrentUser();
+
+            EntityManager<RolePermissionScopeEntity> manager = new EntityManager<RolePermissionScopeEntity>();
+            manager.Delete(roleID, RolePermissionScopeEntity.FieldRoleID);
+
+            List<RolePermissionScopeEntity> entitys = new List<RolePermissionScopeEntity>();
+            foreach (int scopeID in scopeIDs)
+            {
+                RolePermissionScopeEntity entity = new RolePermissionScopeEntity();
+                entity.RoleID = roleID;
+                entity.PermissionScopeID = scopeID;
+                entity.CreateUserId = currentUser.ID.ToString();
+                entity.CreateBy = currentUser.UserName;
+                entity.CreateOn = DateTime.Now;
+                entitys.Add(entity);
+            }
+            manager.Insert(entitys);
+        }
+
+        public int[] GetGrantedScopeIDs(int roleID)
+        {
+            EntityManager<RolePermissionScopeEntity> manager = new EntityManager<RolePermissionScopeEntity>();
+            WhereStatement where = new WhereStatement();
+            where.Add(RolePermissionScopeEntity.FieldPermissionScopeID, Comparison.Equals, roleID);
+
+            string[] sIDs = manager.GetProperties(RolePermissionScopeEntity.FieldRoleID, where);
+            int[] ids = CommonUtil.ConvertToIntArry(sIDs);
+            return ids;
+        }
+
     }
 }
