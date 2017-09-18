@@ -216,13 +216,13 @@ namespace JSNet.Service
             manager.Insert(entitys);
         }
 
-        public int[] GetGrantedScopeIDs(int roleID)
+        public int[] GetGrantedRoleScopeIDs(int roleID)
         {
             EntityManager<RolePermissionScopeEntity> manager = new EntityManager<RolePermissionScopeEntity>();
             WhereStatement where = new WhereStatement();
-            where.Add(RolePermissionScopeEntity.FieldPermissionScopeID, Comparison.Equals, roleID);
+            where.Add(RolePermissionScopeEntity.FieldRoleID, Comparison.Equals, roleID);
 
-            string[] sIDs = manager.GetProperties(RolePermissionScopeEntity.FieldRoleID, where);
+            string[] sIDs = manager.GetProperties(RolePermissionScopeEntity.FieldPermissionScopeID, where);
             int[] ids = CommonUtil.ConvertToIntArry(sIDs);
             return ids;
         }

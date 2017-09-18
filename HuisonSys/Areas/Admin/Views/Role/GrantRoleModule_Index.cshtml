@@ -8,7 +8,7 @@
 <div class="mini-fit">
     <div id="RoleID" class="mini-hidden"></div>
     <div id="Module-datagrid" class="mini-treegrid" ajaxoptions="{type : 'get'}" style="width:100%;height:100%" autoload="false"
-         url="@Url.Action("GetGrantRoleModuleList", "Permission", new { area = "Admin" })" showtreeicon="false" resultastree="false" expandonload="1" multiselect="false" showcheckbox="true" showfoldercheckbox="true" autocheckparent="true"
+         url="@Url.Action("GetGrantRoleModuleList", "Permission", new { area = "Admin" })" showtreeicon="false" resultastree="false" expandonload="1" multiselect="false" showcheckbox="true" showfoldercheckbox="true" autocheckparent="false" checkrecursive="true"
          treecolumn="treename" idfield="ID" parentfield="ParentID" datafield="Data.List">
         <div property="columns">
             <div name="treename" field="FullName" width="180" headeralign="center" align="left" allowsort="true">标题</div>
@@ -48,10 +48,10 @@
                 var parms = {
                     RoleID: data.ID
                 };
-                debugger;
                 doGetSync(url, parms, function (jdata) {
+                    debugger;
                     if (jdata.Code == "200") {
-                        Module_grid.setValue(jdata.Data);
+                        Module_grid.setValue(jdata.Data,false);
                     }
                 })
             }

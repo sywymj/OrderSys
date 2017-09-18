@@ -168,7 +168,7 @@ namespace OrderSys.Admin.Controllers
             string sRoleID = JSRequest.GetRequestUrlParm("RoleID");
             int roleID = (int)JSValidator.ValidateInt("资源ID", sRoleID, true);
 
-            int[] scopeIDs = service.GetGrantedScopeIDs(roleID);
+            int[] scopeIDs = service.GetGrantedRoleScopeIDs(roleID);
             string re = string.Join(",", scopeIDs);
             string s = JSON.ToJSON(new JSResponse(data: re), jsonParams);
             return s;

@@ -12,6 +12,7 @@
          treecolumn="treename" idfield="Resource_ID" parentfield="Resource_ParentID" datafield="Data.DT.JSNet">
         <div property="columns">
             <div name="treename" field="Resource_FullName" width="180" headeralign="center" align="left" allowsort="true">资源标题</div>
+            <div field="PermissionScope_ID" width="180" headeralign="center" align="left" allowsort="true" visible="false">资源对象ID</div>
             <div field="Resource_Code" width="180" headeralign="center" align="left" allowsort="true">资源标识码</div>
             <div field="Organize_FullName" width="120" headeralign="center" align="center" allowsort="true">资源对象</div>
             <div field="Organize_Code" width="120" headeralign="center" align="center" allowsort="true">资源对象标识码</div>
@@ -50,7 +51,7 @@
                 debugger;
                 doGetSync(url, parms, function (jdata) {
                     if (jdata.Code == "200") {
-                        Scope_grid.setValue(jdata.Data);
+                        Scope_grid.setValue(jdata.Data,false);
                     }
                 })
             }
@@ -73,7 +74,7 @@
         var ids = [];
         for (var i = 0, l = rows.length; i < l; i++) {
             var row = rows[i];
-            ids.push(row.ID);
+            ids.push(row.PermissionScope_ID);
         }
         ScopeIDs = ids.join(",");
 
