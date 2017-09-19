@@ -36,11 +36,19 @@ namespace OrderSys.Admin.Controllers
             return JSON.ToJSON(new JSResponse(re),jsonParams);
         }
 
-        public string GetButton(string resourceCode)
+        [HttpGet]
+        public string GetButton()
         {
+            //获取当前请求的URL地址
+            //HttpRequest
+            string url = JSRequest.GetRequestUrlParm("NavigateUrl");
+
+
             RoleEntity role = new MyRoleService().GetCurrentRole();
-            DataTable dt  = permissionService.GetButton(role, resourceCode);
-            return JSON.ToJSON(new JSResponse(dt), jsonParams);
+            DataTable re  = permissionService.GetButtons(role,url);
+
+            string s = JSON.ToJSON(new JSResponse(new DataTableData(re)), jsonParams);
+            return s;
         }
 
         

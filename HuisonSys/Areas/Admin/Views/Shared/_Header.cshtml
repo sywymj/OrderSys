@@ -1,4 +1,5 @@
-﻿@{
+﻿@model string
+@{
     Layout = null;
 }
 <div style="width:100%;">
@@ -6,50 +7,37 @@
         <table style="width:100%;">
             <tr>
                 <td id="Header" style="width:100%;">
-                    <a class="mini-button" iconcls="icon-add" onclick="add()">增加</a>
-                    <a class="mini-button" iconcls="icon-add" onclick="edit()">编辑</a>
-                    <a class="mini-button" iconcls="icon-add" onclick="grantItem()">配置资源明细</a>
-                    <a class="mini-button" iconcls="icon-add" onclick="grantScope()">配置资源对象</a>
-                    <a class="mini-button" iconcls="icon-add" onclick="grantRoleModule()">配置角色模块</a>
-                    <a class="mini-button" iconcls="icon-add" onclick="grantRoleScope()">配置角色资源</a>
+                    @*<a class="mini-button" iconcls="icon-add" onclick="add()">增加</a>*@
                 </td>
             </tr>
         </table>
     </div>
 </div>
 
-@*<script>
+<script>
     $(function () {
-        //不能使用ajax，若使用ajax会导致后台获取的controller,action是ajax请求的，这里需要的是页面请求的。
-        var data = '@Html.Action("_Header", "Shared")';
-        var objJson = eval('(' + data + ')');
-        var tdLeftHeader = $("#leftHeader");
-        if (objJson.data == "undefined") { return false; }
-        $.each(objJson.data, function (i, n) {
-            var topButton = $('<a>' + n.Title + '</a>').appendTo(tdLeftHeader); //顶部按钮
-            topButton.prop("id", "btn_" + n.ID);
-            topButton.attr("plain", false);
-            topButton.addClass("mini-button mini-button-info");
-            mini.parse();//一定需要才能初始化按钮成为mini ui对象
-            var btn = mini.get("btn_" + n.ID);
-            btn.on("click", n.Fun);
+        var Header = $("#Header");
+        var url = '@Url.Action("GetButton", "Home", new { area = "Admin" })';
+        var parm = { NavigateUrl: '@Model' };
+        debugger;
+        
+        doGet(url, parm, function (jdata) {
+            if (jdata.Code == '200') {
+                debugger;
+                $.each(jdata.Data.DT.JSNet, function (i, n) {
+                    var topButton = $('<a>' + n.Resource_FullName + '</a>').appendTo(Header); //顶部按钮
+                    topButton.prop("id", "btn_" + n.Resource_ID);
+                    topButton.attr("plain", false);
+                    topButton.addClass("mini-button mini-button-info");
+                    mini.parse();//一定需要才能初始化按钮成为mini ui对象
+                    var btn = mini.get("btn_" + n.Resource_ID);
+                    var fun = n.Resource_Code.split('.');
+                    debugger;
+                    btn.on("click", lowerFirstLetter(fun[fun.length - 1]));
+                })
+            }
         })
     })
-
-    //备用
-    function addEvent(obj, type, handle) {
-        try {  // Chrome、FireFox、Opera、Safari、IE9.0及其以上版本
-            obj.addEventListener(type, handle, false);
-        } catch (e) {
-            try {  // IE8.0及其以下版本
-                obj.attachEvent('on' + type, handle);
-            } catch (e) {  // 早期浏览器
-                obj['on' + type] = handle;
-            }
-        }
-    }
-
-
-</script>*@
+</script>
 
 

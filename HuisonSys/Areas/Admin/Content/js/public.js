@@ -116,3 +116,11 @@ showLoading = function () {
 hideLoading = function () {
     mini.unmask(document.body);
 }
+
+
+function lowerFirstLetter(str)   
+{   
+    return str.replace(/\b\w+\b/g, function(word) {   
+        return word.substring(0, 1).toLowerCase() + word.substring(1);
+    });   
+}

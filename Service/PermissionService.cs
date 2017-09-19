@@ -142,34 +142,6 @@ namespace JSNet.Service
             return dic;
         }
 
-        public bool IsPermissionAuthorizedByRole(RoleEntity role,string controllerName,string actionName)
-        {
-            DataTable dt = GetAllPermissions();
-
-            foreach (DataRow dr in dt.Rows)
-            {
-                if(dr["RolePermission_RoleID"].ToString() == role.ID.ToString()
-                    &&dr["PermissionItem_Controller"].ToString() == controllerName 
-                    && dr["PermissionItem_ActionName"].ToString() == actionName )
-                {
-                    return true;
-                }
-            }
-            return false;
-
-        }
-
-        public DataTable GetAllPermissions()
-        {
-            // TODO 先从缓存里面拿，如果没有再从数据库拿
-            ViewManager vmanager = new ViewManager("VP_RolePermission");
-            WhereStatement where = new WhereStatement();
-            where.Add("PermissionItem_IsEnable", Comparison.Equals, (int)TrueFalse.True);
-
-            int count = 0;
-            DataTable dt = vmanager.GetDataTable(where, out count);
-            return dt;
-        }
 
         #region Resource
 
@@ -275,34 +247,61 @@ namespace JSNet.Service
         }
 
         #region 模块相关
+
+        public bool IsPermissionAuthorizedByRole(RoleEntity role, string controllerName, string actionName)
+        {
+            DataTable dt = GetAllPermissions();
+
+            foreach (DataRow dr in dt.Rows)
+            {
+                if (dr["RolePermission_RoleID"].ToString() == role.ID.ToString()
+                    && dr["PermissionItem_Controller"].ToString() == controllerName
+                    && dr["PermissionItem_ActionName"].ToString() == actionName)
+                {
+                    return true;
+                }
+            }
+            return false;
+
+        }
+
+        public DataTable GetAllPermissions()
+        {
+            // TODO 先从缓存里面拿，如果没有再从数据库拿
+            ViewManager vmanager = new ViewManager("VP_RolePermission");
+            WhereStatement where = new WhereStatement();
+            where.Add("PermissionItem_IsEnable", Comparison.Equals, (int)TrueFalse.True);
+
+            int count = 0;
+            DataTable dt = vmanager.GetDataTable(where, out count);
+            return dt;
+        }
+
+
         /// <summary>
         /// 获取对应code下一层的button
         /// </summary>
         /// <param name="role"></param>
         /// <param name="resourceCode"></param>
         /// <returns></returns>
-        public DataTable GetButton(RoleEntity role, string resourceCode)
+        public DataTable GetButtons(RoleEntity role, string navigateUrl)
         {
-            ViewManager vmanager = new ViewManager("VP_RolePermission");
+            ViewManager vmanager = new ViewManager("VP_RoleResource");
 
             WhereStatement where = new WhereStatement();
-            where.Add("Resource_SortCode", Comparison.Equals, resourceCode);
+            where.Add("Resource_NavigateUrl", Comparison.Equals, navigateUrl);
 
             int count = 0;
             DataTable dt = vmanager.GetDataTable(where, out count);
 
             if (count == 0)
             {
-                throw new JSException(JSErrMsg.ERR_CODE_DATA_MISSING, string.Format(JSErrMsg.ERR_MSG_DATA_MISSING, resourceCode));
-            }
-            if (count > 1)
-            {
-                throw new JSException(JSErrMsg.ERR_CODE_DATA_REPETITION, string.Format(JSErrMsg.ERR_MSG_DATA_REPETITION, "Resource表的" + resourceCode));
+                return new DataTable("JSNet");
             }
 
             WhereStatement where1 = new WhereStatement();
-            where1.Add("Resource_ParentID", Comparison.Equals, dt.Rows[0]["Resource_ParentID"].ToString());
-            where1.Add("RolePermission_RoleID", Comparison.Equals, role.ID);
+            where1.Add("Resource_ParentID", Comparison.Equals, dt.Rows[0]["Resource_ID"].ToString());
+            where1.Add("Role_ID", Comparison.Equals, role.ID);
 
             int count1 = 0;
             DataTable dt1 = vmanager.GetDataTable(where1, out count1);
@@ -359,6 +358,7 @@ namespace JSNet.Service
             DataTable dt = dbHelper.Fill(sqlQuery, dbParameters);
             return DataTableUtil.FieldToArray(dt, "ID");
         } 
+
         #endregion
 
         #endregion
@@ -564,5 +564,6 @@ namespace JSNet.Service
             int[] itemIDs = CommonUtil.ConvertToIntArry(sItems);
             return itemIDs;
         }
+
     }
 }

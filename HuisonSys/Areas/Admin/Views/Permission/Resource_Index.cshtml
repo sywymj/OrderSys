@@ -3,7 +3,7 @@
     Layout = "~/Areas/Admin/Views/Shared/_InnerLayout.cshtml";
 }
 
-@RenderPage("~/Areas/Admin/Views/Shared/_Header.cshtml")
+@Html.Partial("~/Areas/Admin/Views/Shared/_Header.cshtml", Request.Url.AbsolutePath)
 <div class="mini-fit">
     <div id="resource-datagrid" class="mini-treegrid" ajaxoptions="{type : 'get'}" style="width:100%;height:100%"
          showtreeicon="false" resultastree="false" expandonload="1"
