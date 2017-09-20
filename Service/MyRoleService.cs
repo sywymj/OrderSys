@@ -27,33 +27,18 @@ namespace JSNet.Service
 
         public RoleEntity GetCurrentRole(UserEntity user)
         {
-            //1.0 先从cookie查，有没有相应的role，若没有，选择第一个role
-            string roleID = JSRequest.GetCookie("RoleID", true);
-
-            if (string.IsNullOrEmpty(roleID))
+            string sRoleID = JSRequest.GetCookie("RoleID", true);
+            if (string.IsNullOrEmpty(sRoleID))
             {
-                ViewManager vmanager = new ViewManager("[VP_UserRole]");
-
-                WhereStatement where = new WhereStatement();
-                where.Add("User_ID", Comparison.Equals, user.ID);
-
-                int count = 0;
-                DataTable dt = vmanager.GetDataTable(where, out count);
-
-                if (dt.Rows.Count == 0)
-                {
-                    throw new JSException(JSErrMsg.ERR_CODE_NotGrantRole, JSErrMsg.ERR_MSG_NotGrantRole);
-                }
-                roleID = dt.Rows[0]["Role_ID"].ToString();
-
+                throw new JSException(JSErrMsg.ERR_MSG_LoginOvertime);
             }
 
-            //2.0 根据roleID，获取role对象
-            EntityManager<RoleEntity> manager = new EntityManager<RoleEntity>();
-            RoleEntity role = manager.GetSingle(roleID);
-
-            //3.0 将当前roleID 写进cookie
-            JSResponse.WriteCookie("RoleID", role.ID.ToString());
+            int roleID = (int)JSValidator.ValidateInt("RID", SecretUtil.Decrypt(sRoleID), true);
+            RoleEntity role =  GetRole(roleID);
+            if (role == null)
+            {
+                throw new JSException(JSErrMsg.ERR_MSG_LoginOvertime);
+            }
             return role;
         }
 
@@ -66,6 +51,26 @@ namespace JSNet.Service
 
             int[] roleIDs = CommonUtil.ConvertToIntArry(sRoleIDs);
             return roleIDs;
+        }
+
+        public RoleEntity GetRole(UserEntity user)
+        {
+            ViewManager vmanager = new ViewManager("[VP_UserRole]");
+
+            WhereStatement where = new WhereStatement();
+            where.Add("User_ID", Comparison.Equals, user.ID);
+
+            int count = 0;
+            DataTable dt = vmanager.GetDataTable(where, out count);
+
+            if (dt.Rows.Count == 0)
+            {
+                throw new JSException(JSErrMsg.ERR_CODE_NotGrantRole, JSErrMsg.ERR_MSG_NotGrantRole);
+            }
+            int roleID = Convert.ToInt32(dt.Rows[0]["Role_ID"].ToString());
+            
+            RoleEntity role = GetRole(roleID);
+            return role;
         }
 
         public List<RoleEntity> GetRoleList()

@@ -57,5 +57,9 @@ namespace JSNet.BaseSys
         public const string ERR_MSG_WrongPwd = "用户名或密码错误。";
         public const string ERR_CODE_WrongOpenID = "85";
         public const string ERR_MSG_WrongOpenID = "用户名OpenID有误！";
+        public const string ERR_CODE_WrongUserID = "86";
+        public const string ERR_MSG_WrongUserID = "RID有误！";
+        public const string ERR_CODE_WrongRoleID = "87";
+        public const string ERR_MSG_WrongRoleID = "RID有误！";
     }
 }

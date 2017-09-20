@@ -146,7 +146,7 @@ namespace JSNet.Utilities
         /// <returns>加密</returns>
         public static string Encrypt(string targetValue)
         {
-            return Encrypt(targetValue, "DotNetKey");
+            return Encrypt(targetValue, "JSNetKey");
         }
 
         /// <summary>
@@ -192,7 +192,7 @@ namespace JSNet.Utilities
         /// <returns>解密</returns>
         public static string Decrypt(string targetValue)
         {
-            return Decrypt(targetValue, "DotNetKey");
+            return Decrypt(targetValue, "JSNetKey");
         }
 
         /// <summary>
