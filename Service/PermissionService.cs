@@ -142,7 +142,6 @@ namespace JSNet.Service
             return dic;
         }
 
-
         #region Resource
 
         public void AddResource(ResourceEntity entity)
@@ -254,7 +253,7 @@ namespace JSNet.Service
 
             foreach (DataRow dr in dt.Rows)
             {
-                if (dr["RolePermission_RoleID"].ToString() == role.ID.ToString()
+                if (dr["Role_ID"].ToString() == role.ID.ToString()
                     && dr["PermissionItem_Controller"].ToString() == controllerName
                     && dr["PermissionItem_ActionName"].ToString() == actionName)
                 {
@@ -262,7 +261,6 @@ namespace JSNet.Service
                 }
             }
             return false;
-
         }
 
         public DataTable GetAllPermissions()
@@ -564,6 +562,18 @@ namespace JSNet.Service
             int[] itemIDs = CommonUtil.ConvertToIntArry(sItems);
             return itemIDs;
         }
+
+
+        public void Login()
+        {
+
+        }
+
+        public void LoginOut()
+        {
+
+        }
+
 
     }
 }

@@ -45,5 +45,17 @@ namespace JSNet.BaseSys
         public const string ERR_CODE_NotAllowGrantItem = "76";
         public const string ERR_MSG_NotAllowGrantItem = "{0}不允许分配资源明细。";
 
+
+        //8开头的是登陆问题
+        public const string ERR_CODE_NotAllowLogin = "81";
+        public const string ERR_MSG_NotAllowLogin = "当前用户禁止登陆。";
+        public const string ERR_CODE_LoginOvertime = "82";
+        public const string ERR_MSG_LoginOvertime = "登陆超时，请重新登陆。";
+        public const string ERR_CODE_UserUnable = "83";
+        public const string ERR_MSG_UserUnable = "当前用户已失效。";
+        public const string ERR_CODE_WrongPwd = "84";
+        public const string ERR_MSG_WrongPwd = "用户名或密码错误。";
+        public const string ERR_CODE_WrongOpenID = "85";
+        public const string ERR_MSG_WrongOpenID = "用户名OpenID有误！";
     }
 }

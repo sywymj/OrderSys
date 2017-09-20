@@ -14,29 +14,7 @@ namespace JSNet.Service
 {
     public class MyRoleService
     {
-        /// <summary>
-        /// 分配角色
-        /// </summary>
-        public void GrantRole(UserEntity user, int userID, int[] roleIDs)
-        {
-            //1.0 清空该用户原有的角色权限
-            EntityManager<UserRoleEntity> manager = new EntityManager<UserRoleEntity>();
-            WhereStatement where = new WhereStatement();
-            where.Add(UserRoleEntity.FieldUserID, Comparison.Equals, userID);
-            manager.Delete(where);
 
-            //2.0 添加当前选中的角色
-            foreach (int id in roleIDs)
-            {
-                UserRoleEntity entity = new UserRoleEntity();
-                entity.UserID = userID;
-                entity.RoleID = id;
-                entity.CreateUserId = user.ID.ToString();
-                entity.CreateBy = user.UserName;
-                entity.CreateOn = DateTime.Now;
-                manager.Insert(entity);
-            }
-        }
         public RoleEntity GetCurrentRole()
         {
             UserService userService = new UserService();
@@ -46,20 +24,18 @@ namespace JSNet.Service
             RoleEntity role = roleService.GetCurrentRole(user);
             return role;
         }
+
         public RoleEntity GetCurrentRole(UserEntity user)
         {
             //1.0 先从cookie查，有没有相应的role，若没有，选择第一个role
-            // todo fix bug 其他用户登录会获取错误的roleid
             string roleID = JSRequest.GetCookie("RoleID", true);
+
             if (string.IsNullOrEmpty(roleID))
             {
                 ViewManager vmanager = new ViewManager("[VP_UserRole]");
 
                 WhereStatement where = new WhereStatement();
-                where.Add("UserID", Comparison.Equals, user.ID);
-
-                //OrderByStatement order = new OrderByStatement();
-                //order.Add("UserID", Sorting.Ascending);
+                where.Add("User_ID", Comparison.Equals, user.ID);
 
                 int count = 0;
                 DataTable dt = vmanager.GetDataTable(where, out count);
@@ -68,19 +44,13 @@ namespace JSNet.Service
                 {
                     throw new JSException(JSErrMsg.ERR_CODE_NotGrantRole, JSErrMsg.ERR_MSG_NotGrantRole);
                 }
-                roleID = dt.Rows[0][UserRoleEntity.FieldRoleID].ToString();
+                roleID = dt.Rows[0]["Role_ID"].ToString();
 
             }
-
-            roleID = "1";//debugger
 
             //2.0 根据roleID，获取role对象
             EntityManager<RoleEntity> manager = new EntityManager<RoleEntity>();
             RoleEntity role = manager.GetSingle(roleID);
-            if (role == null)
-            {
-                throw new JSException(JSErrMsg.ERR_CODE_DATA_MISSING, string.Format(JSErrMsg.ERR_MSG_DATA_MISSING, "该角色的"));
-            }
 
             //3.0 将当前roleID 写进cookie
             JSResponse.WriteCookie("RoleID", role.ID.ToString());
@@ -97,6 +67,7 @@ namespace JSNet.Service
             int[] roleIDs = CommonUtil.ConvertToIntArry(sRoleIDs);
             return roleIDs;
         }
+
         public List<RoleEntity> GetRoleList()
         {
             EntityManager<RoleEntity> manager = new EntityManager<RoleEntity>();
@@ -134,6 +105,7 @@ namespace JSNet.Service
             kvps.Add(new KeyValuePair<string, object>(RoleEntity.FieldModifiedOn, DateTime.Now));
             manager.Update(kvps, entity.ID);
         }
+
         public RoleEntity GetRole(int roleID)
         {
             EntityManager<RoleEntity> manager = new EntityManager<RoleEntity>();
@@ -188,7 +160,6 @@ namespace JSNet.Service
             return ids;
         }
 
-
         public void GrantRoleScope(int roleID, int[] scopeIDs)
         {
             //判断资源类型是否为Menu、button，只有Menu、button才能分配资源明细
@@ -214,6 +185,30 @@ namespace JSNet.Service
                 entitys.Add(entity);
             }
             manager.Insert(entitys);
+        }
+
+        /// <summary>
+        /// 分配角色
+        /// </summary>
+        public void GrantRole(UserEntity user, int userID, int[] roleIDs)
+        {
+            //1.0 清空该用户原有的角色权限
+            EntityManager<UserRoleEntity> manager = new EntityManager<UserRoleEntity>();
+            WhereStatement where = new WhereStatement();
+            where.Add(UserRoleEntity.FieldUserID, Comparison.Equals, userID);
+            manager.Delete(where);
+
+            //2.0 添加当前选中的角色
+            foreach (int id in roleIDs)
+            {
+                UserRoleEntity entity = new UserRoleEntity();
+                entity.UserID = userID;
+                entity.RoleID = id;
+                entity.CreateUserId = user.ID.ToString();
+                entity.CreateBy = user.UserName;
+                entity.CreateOn = DateTime.Now;
+                manager.Insert(entity);
+            }
         }
 
         public int[] GetGrantedRoleScopeIDs(int roleID)
