@@ -29,19 +29,26 @@ namespace HuisonSys
             var actionname = httpContext.Request.RequestContext.RouteData.Values["action"].ToString().ToLower();
 
             UserService userService = new UserService();
-            MyRoleService roleService = new MyRoleService();
-            PermissionService permissionService = new PermissionService();
-
-            UserEntity user = userService.GetCurrentUser();//获取当前用户
-
-            RoleEntity role = roleService.GetCurrentRole(user);//获取当前用户角色
-            bool b = permissionService.IsPermissionAuthorizedByRole(role, controllername, actionname);
-
-            if (!b)
+            UserEntity user = new UserEntity();
+            RoleEntity role = new RoleEntity();
+            try
+            {
+                userService.ChkLogin(out user, out role);
+            }
+            catch(JSException e)
             {
                 httpContext.Response.StatusDescription = PermissionStatus.NoLogin.ToString();
                 return false;
             }
+
+            PermissionService permissionService = new PermissionService();
+            bool b = permissionService.IsPermissionAuthorizedByRole(role, controllername, actionname);
+            if (!b)
+            {
+                httpContext.Response.StatusDescription = PermissionStatus.NoRight.ToString();
+                return false;
+            }
+            return true;
         }
 
         public override void OnAuthorization(AuthorizationContext filterContext)

@@ -14,17 +14,9 @@ namespace JSNet.Service
 {
     public class UserService:BaseService
     {
-        public UserEntity ChkLogin()
+        public void Login(string userName ,string pwd)
         {
-            string userName = JSRequest.GetCookie("AdminName",true);
-            string password = JSRequest.GetCookie("AdminPwd",true);
-            if (string.IsNullOrEmpty(userName)
-                || string.IsNullOrEmpty(password))
-            {
-                throw new JSException(JSErrMsg.ERR_MSG_LoginOvertime);
-            }
-
-            UserEntity user = GetUser(userName, password);
+            UserEntity user = GetUser(userName, pwd);
             if (user == null)
             {
                 throw new JSException(JSErrMsg.ERR_MSG_WrongPwd);
@@ -35,32 +27,81 @@ namespace JSNet.Service
             }
             if (user.IsLogin == (int)TrueFalse.False)
             {
-                throw new JSException(JSErrMsg.ERR_CODE_NotAllowLogin);
+                throw new JSException(JSErrMsg.ERR_MSG_NotAllowLogin);
+            }
+
+            //TODO 
+        }
+
+        public void ChkLogin(out UserEntity user,out RoleEntity role)
+        {
+            string userName = JSRequest.GetCookie("AdminName",true);
+            string password = JSRequest.GetCookie("AdminPwd",true);
+            string rid = SecretUtil.Encrypt(JSRequest.GetCookie("RID", true));
+            string uid = SecretUtil.Encrypt(JSRequest.GetCookie("UID", true));
+
+            if (string.IsNullOrEmpty(userName)
+                || string.IsNullOrEmpty(password)
+                || string.IsNullOrEmpty(rid)
+                || string.IsNullOrEmpty(uid))
+            {
+                throw new JSException(JSErrMsg.ERR_MSG_LoginOvertime);
+            }
+
+            user = GetUser(Convert.ToInt32(uid));
+            if (user == null)
+            {
+                throw new JSException(JSErrMsg.ERR_MSG_LoginOvertime);
+            }
+            if (user.IsEnable == (int)TrueFalse.False)
+            {
+                throw new JSException(JSErrMsg.ERR_MSG_LoginOvertime);
+            }
+            if (user.IsLogin == (int)TrueFalse.False)
+            {
+                throw new JSException(JSErrMsg.ERR_MSG_LoginOvertime);
+            }
+            if (user.ID.ToString() != uid)
+            {
+                throw new JSException(JSErrMsg.ERR_MSG_LoginOvertime);
             }
 
             MyRoleService roleService = new MyRoleService();
-            RoleEntity role = roleService.GetCurrentRole(user);
+            role = roleService.GetRole(Convert.ToInt32(rid));
+            if (role == null)
+            {
+                throw new JSException(JSErrMsg.ERR_MSG_LoginOvertime);
+            }
+            
+            //UserRoleEntity userRole = new UserRoleEntity();
+            //EntityManager<UserRoleEntity> userRoleManager = new EntityManager<UserRoleEntity>();
+            //WhereStatement where = new WhereStatement();
+            //where.Add(UserRoleEntity.FieldUserID, Comparison.Equals, uid);
+            //where.Add(UserRoleEntity.FieldRoleID, Comparison.Equals, rid);
+            //if (userRoleManager.GetCount(where) == 0)
+            //{
+            //    throw new JSException(JSErrMsg.ERR_MSG_LoginOvertime);
+            //}
 
             //写入cookie
 
-            JSResponse.WriteCookie("AdminID", SecretUtil.Encrypt(user.ID.ToString()));
-            JSResponse.WriteCookie("OpenID", user.OpenID);
+            JSResponse.WriteCookie("UID", SecretUtil.Encrypt(uid), 60);
+            JSResponse.WriteCookie("RID", SecretUtil.Encrypt(rid), 60);
+            JSResponse.WriteCookie("OpenID", user.OpenID, 60);
             JSResponse.WriteCookie("AdminName", user.UserName, 60);
             JSResponse.WriteCookie("AdminPwd", user.Password, 60);
-            return user;
         }
 
         public UserEntity GetCurrentUser()
         {
-            string sUserID = JSRequest.GetCookie("AdminID",true);
-            if(string.IsNullOrEmpty(sUserID))
+            string uid = SecretUtil.Encrypt(JSRequest.GetCookie("UID", true));
+            if(string.IsNullOrEmpty(uid))
             {
                 throw new JSException(JSErrMsg.ERR_MSG_LoginOvertime);
             }
 
             EntityManager<UserEntity> manager = new EntityManager<UserEntity>();
-            int userID = (int)JSValidator.ValidateInt("UID", SecretUtil.Decrypt(sUserID), true);
-            UserEntity user = manager.GetSingle(userID);
+            UserEntity user = manager.GetSingle(Convert.ToInt32(uid));
 
             if (user == null)
             {
@@ -72,14 +113,13 @@ namespace JSNet.Service
 
         public UserEntity GetCurrentUserByOpenID()
         {
-            if (string.IsNullOrEmpty(JSRequest.GetCookie("OpenID", true)))
+            string openID = JSRequest.GetCookie("OpenID", true);
+            if (string.IsNullOrEmpty(openID))
             {
-                return null;
+                throw new JSException(JSErrMsg.ERR_MSG_WrongOpenID);
             }
 
-            string openID = JSRequest.GetCookie("OpenID");
             UserEntity user = GetUser(openID);
-
             if (user == null)
             {
                 throw new JSException(JSErrMsg.ERR_MSG_WrongOpenID);

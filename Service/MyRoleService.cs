@@ -14,27 +14,15 @@ namespace JSNet.Service
 {
     public class MyRoleService
     {
-
         public RoleEntity GetCurrentRole()
         {
-            UserService userService = new UserService();
-            MyRoleService roleService = new MyRoleService();
-
-            UserEntity user = userService.GetCurrentUser();
-            RoleEntity role = roleService.GetCurrentRole(user);
-            return role;
-        }
-
-        public RoleEntity GetCurrentRole(UserEntity user)
-        {
-            string sRoleID = JSRequest.GetCookie("RoleID", true);
-            if (string.IsNullOrEmpty(sRoleID))
+            string rid = SecretUtil.Encrypt(JSRequest.GetCookie("RID", true));
+            if (string.IsNullOrEmpty(rid))
             {
                 throw new JSException(JSErrMsg.ERR_MSG_LoginOvertime);
             }
 
-            int roleID = (int)JSValidator.ValidateInt("RID", SecretUtil.Decrypt(sRoleID), true);
-            RoleEntity role =  GetRole(roleID);
+            RoleEntity role = GetRole(Convert.ToInt32(rid));
             if (role == null)
             {
                 throw new JSException(JSErrMsg.ERR_MSG_LoginOvertime);
