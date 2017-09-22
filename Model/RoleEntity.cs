@@ -57,6 +57,15 @@ namespace JSNet.Model
             set { _fullname = value; }
         }
         /// <summary>
+        /// SysCategory
+        /// </summary>		
+        private string _syscategory;
+        public string SysCategory
+        {
+            get { return _syscategory; }
+            set { _syscategory = value; }
+        }
+        /// <summary>
         /// Description
         /// </summary>		
         private string _description;
@@ -137,6 +146,13 @@ namespace JSNet.Model
             get { return "FullName"; }
         }
         /// <summary>
+        /// FiledName:SysCategory
+        /// </summary>		
+        public static string FieldSysCategory
+        {
+            get { return "SysCategory"; }
+        }
+        /// <summary>
         /// FiledName:Description
         /// </summary>		
         public static string FieldDescription
@@ -192,6 +208,7 @@ namespace JSNet.Model
             RoleEntity entity = new RoleEntity();
             entity.ID = CommonUtil.ConvertToInt(dataRow[this.PrimaryKey]);
             entity.FullName = CommonUtil.ConvertToString(dataRow[FieldFullName]);
+            entity.SysCategory = CommonUtil.ConvertToString(dataRow[FieldSysCategory]);
             entity.Description = CommonUtil.ConvertToString(dataRow[FieldDescription]);
             entity.CreateOn = CommonUtil.ConvertToDateTime(dataRow[FieldCreateOn]);
             entity.CreateUserId = CommonUtil.ConvertToString(dataRow[FieldCreateUserId]);
@@ -208,6 +225,7 @@ namespace JSNet.Model
             RoleEntity entity = new RoleEntity();
             entity.ID = CommonUtil.ConvertToInt(dataReader[this.PrimaryKey]);
             entity.FullName = CommonUtil.ConvertToString(dataReader[FieldFullName]);
+            entity.SysCategory = CommonUtil.ConvertToString(dataReader[FieldSysCategory]);
             entity.Description = CommonUtil.ConvertToString(dataReader[FieldDescription]);
             entity.CreateOn = CommonUtil.ConvertToDateTime(dataReader[FieldCreateOn]);
             entity.CreateUserId = CommonUtil.ConvertToString(dataReader[FieldCreateUserId]);
@@ -221,6 +239,7 @@ namespace JSNet.Model
         public void SetEntity(NonQueryBuilder sqlBuilder, RoleEntity entity)
         {
             sqlBuilder.SetValue(FieldFullName, entity.FullName);
+            sqlBuilder.SetValue(FieldSysCategory, entity.SysCategory);
             sqlBuilder.SetValue(FieldDescription, entity.Description);
             sqlBuilder.SetValue(FieldCreateOn, entity.CreateOn);
             sqlBuilder.SetValue(FieldCreateUserId, entity.CreateUserId);

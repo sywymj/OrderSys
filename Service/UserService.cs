@@ -30,15 +30,36 @@ namespace JSNet.Service
                 throw new JSException(JSErrMsg.ERR_MSG_NotAllowLogin);
             }
 
-            //TODO 
+            MyRoleService roleService = new MyRoleService();
+            RoleEntity role = roleService.GetRole(user);
+            if (role == null)
+            {
+                throw new JSException(JSErrMsg.ERR_CODE_NotGrantRole, JSErrMsg.ERR_MSG_NotGrantRole);
+            }
+
+            JSResponse.WriteCookie("UID", SecretUtil.Encrypt(user.ID.ToString()), 120);
+            JSResponse.WriteCookie("RID", SecretUtil.Encrypt(role.ID.ToString()), 120);
+            JSResponse.WriteCookie("OpenID", user.OpenID, 60);
+            JSResponse.WriteCookie("AdminName", user.UserName, 120);
+            JSResponse.WriteCookie("AdminPwd", user.Password, 120);
         }
+
+        public void Logout()
+        {
+            JSResponse.WriteCookie("UID", "");
+            JSResponse.WriteCookie("RID", "");
+            JSResponse.WriteCookie("OpenID", "");
+            JSResponse.WriteCookie("AdminName", "");
+            JSResponse.WriteCookie("AdminPwd", "");
+        }
+
 
         public void ChkLogin(out UserEntity user,out RoleEntity role)
         {
             string userName = JSRequest.GetCookie("AdminName",true);
             string password = JSRequest.GetCookie("AdminPwd",true);
-            string rid = SecretUtil.Encrypt(JSRequest.GetCookie("RID", true));
-            string uid = SecretUtil.Encrypt(JSRequest.GetCookie("UID", true));
+            string rid = SecretUtil.Decrypt(JSRequest.GetCookie("RID", true));
+            string uid = SecretUtil.Decrypt(JSRequest.GetCookie("UID", true));
 
             if (string.IsNullOrEmpty(userName)
                 || string.IsNullOrEmpty(password)
@@ -73,28 +94,17 @@ namespace JSNet.Service
                 throw new JSException(JSErrMsg.ERR_MSG_LoginOvertime);
             }
             
-            //UserRoleEntity userRole = new UserRoleEntity();
-            //EntityManager<UserRoleEntity> userRoleManager = new EntityManager<UserRoleEntity>();
-            //WhereStatement where = new WhereStatement();
-            //where.Add(UserRoleEntity.FieldUserID, Comparison.Equals, uid);
-            //where.Add(UserRoleEntity.FieldRoleID, Comparison.Equals, rid);
-            //if (userRoleManager.GetCount(where) == 0)
-            //{
-            //    throw new JSException(JSErrMsg.ERR_MSG_LoginOvertime);
-            //}
-
             //写入cookie
-
-            JSResponse.WriteCookie("UID", SecretUtil.Encrypt(uid), 60);
-            JSResponse.WriteCookie("RID", SecretUtil.Encrypt(rid), 60);
-            JSResponse.WriteCookie("OpenID", user.OpenID, 60);
-            JSResponse.WriteCookie("AdminName", user.UserName, 60);
-            JSResponse.WriteCookie("AdminPwd", user.Password, 60);
+            JSResponse.WriteCookie("UID", SecretUtil.Encrypt(uid), 120);
+            JSResponse.WriteCookie("RID", SecretUtil.Encrypt(rid), 120);
+            JSResponse.WriteCookie("OpenID", user.OpenID, 120);
+            JSResponse.WriteCookie("AdminName", user.UserName, 120);
+            JSResponse.WriteCookie("AdminPwd", user.Password, 120);
         }
 
         public UserEntity GetCurrentUser()
         {
-            string uid = SecretUtil.Encrypt(JSRequest.GetCookie("UID", true));
+            string uid = SecretUtil.Decrypt(JSRequest.GetCookie("UID", true));
             if(string.IsNullOrEmpty(uid))
             {
                 throw new JSException(JSErrMsg.ERR_MSG_LoginOvertime);

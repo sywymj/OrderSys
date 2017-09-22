@@ -249,21 +249,47 @@ namespace JSNet.Service
 
         public bool IsPermissionAuthorizedByRole(RoleEntity role, string controllerName, string actionName)
         {
-            DataTable dt = GetAllPermissions();
+            //超级管理员权限
+            if (role.ID == 1)
+            {
+                return true;
+            }
+
+            DataTable dt = GetAllRolesPermissions();
 
             foreach (DataRow dr in dt.Rows)
             {
                 if (dr["Role_ID"].ToString() == role.ID.ToString()
-                    && dr["PermissionItem_Controller"].ToString() == controllerName
-                    && dr["PermissionItem_ActionName"].ToString() == actionName)
+                    && dr["PermissionItem_Controller"].ToString().ToLower() == controllerName.ToLower()
+                    && dr["PermissionItem_ActionName"].ToString().ToLower() == actionName.ToLower())
                 {
                     return true;
                 }
             }
+
+            List<PermissionItemEntity> list = GetAllPublicPermissionItem();
+            foreach(PermissionItemEntity item in list)
+            {
+                if (string.IsNullOrEmpty(item.Controller) || string.IsNullOrEmpty(item.ActionName))
+                {
+                    continue;
+                }
+                if (item.Controller.ToLower() == controllerName.ToLower()
+                    && item.ActionName.ToLower() == actionName.ToLower())
+                {
+                    string sysCategory = item.Code.Split('.')[0].Split('_')[0];//item code 的格式 {系统名}_{类别}.{action}，如OrderSys_PC.Login
+                    if (role.SysCategory == sysCategory
+                        && item.IsPublic == (int)TrueFalse.True)
+                    {
+                        return true;
+                    }
+                }
+            }
+
             return false;
         }
 
-        public DataTable GetAllPermissions()
+        public DataTable GetAllRolesPermissions()
         {
             // TODO 先从缓存里面拿，如果没有再从数据库拿
             ViewManager vmanager = new ViewManager("VP_RolePermission");
@@ -273,6 +299,16 @@ namespace JSNet.Service
             int count = 0;
             DataTable dt = vmanager.GetDataTable(where, out count);
             return dt;
+        }
+
+        public List<PermissionItemEntity> GetAllPublicPermissionItem()
+        {
+            int count = 0;
+            EntityManager<PermissionItemEntity> manager = new EntityManager<PermissionItemEntity>();
+            WhereStatement where = new WhereStatement();
+            where.Add(PermissionItemEntity.FieldIsPublic,Comparison.Equals,(int)TrueFalse.True);
+            List<PermissionItemEntity> list = manager.GetList(where, out count);
+            return list;
         }
 
 
@@ -356,6 +392,16 @@ namespace JSNet.Service
             DataTable dt = dbHelper.Fill(sqlQuery, dbParameters);
             return DataTableUtil.FieldToArray(dt, "ID");
         } 
+
+        //public string[] GetTreeMenuIds(RoleEntity role,string resourceCode)
+        //{
+        //    ViewManager vmanager = new ViewManager("VP_RoleResource");
+        //    WhereStatement where = new WhereStatement();
+        //    where.Add("Role_ID",Comparison.Equals,role.ID);
+        //    where.Add("", Comparison.Equals, role.ID);
+        //    string[] ids = vmanager.GetDataTable(where);
+        //    return ids;
+        //}
 
         #endregion
 
@@ -562,18 +608,6 @@ namespace JSNet.Service
             int[] itemIDs = CommonUtil.ConvertToIntArry(sItems);
             return itemIDs;
         }
-
-
-        public void Login()
-        {
-
-        }
-
-        public void LoginOut()
-        {
-
-        }
-
 
     }
 }

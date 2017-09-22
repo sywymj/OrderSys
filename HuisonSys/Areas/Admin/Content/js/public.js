@@ -70,9 +70,19 @@ ajaxTips = function (json, container, callback) {
     //通过这种方法可将字符串转换为对象
     var jdata = eval('(' + json + ')');
     if (jdata.RspTypeCode == -1) {
-        //错误消息提示
-        console.log(jdata.ErrCode + ":" + jdata.ErrMsg);
-        mini.alert(jdata.Msg);
+        if (jdata.ErrCode == "401") {
+            mini.alert(jdata.ErrMsg, "警告", function () {
+                window.location.href = "/Admin/Home/LoginIndex";
+            });
+        } else if (jdata.ErrCode == "403") {
+            mini.alert(jdata.ErrMsg, "警告", function () {
+                //;
+            });
+        } else {
+            //错误消息提示
+            console.log(jdata.ErrCode + ":" + jdata.ErrMsg);
+            mini.alert(jdata.Msg);
+        }
     } else if (jdata.RspTypeCode == 1) {
         //提示信息提示
         mini.showTips({

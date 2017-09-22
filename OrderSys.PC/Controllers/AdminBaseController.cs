@@ -9,6 +9,7 @@ using System.Web.Mvc;
 
 namespace OrderSys.Admin.Controllers
 {
+    [ManagerAuthorize]
     public class AdminBaseController : Controller
     {
         //protected RoleEntity role;

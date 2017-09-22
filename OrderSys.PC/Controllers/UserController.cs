@@ -12,6 +12,7 @@ using System.Web.Mvc;
 
 namespace OrderSys.Admin.Controllers
 {
+    [ManagerAuthorize]
     public class UserController : AdminBaseController
     {
         //
@@ -31,7 +32,7 @@ namespace OrderSys.Admin.Controllers
         }
 
         [HttpGet]
-        public ActionResult EditIndexIndex()
+        public ActionResult EditIndex()
         {
             return View("~/Areas/Admin/Views/User/InsertIndex.cshtml");
         }

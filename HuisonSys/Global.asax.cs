@@ -48,13 +48,13 @@ namespace HuisonSys
                     switch (httpException.GetHttpCode())
                     {
                         case 404:
-                            routeData.Values["action"] = "http404";
+                            routeData.Values["action"] = "Http404";
                             break;
                         case 401:  //没有登录
-                            routeData.Values["action"] = "http401";
+                            routeData.Values["action"] = "Http401";
                             break;
                         case 403:  //没有执行的权限
-                            routeData.Values["action"] = "http403";
+                            routeData.Values["action"] = "Http403";
                             break;
                     }
                 }
@@ -72,6 +72,7 @@ namespace HuisonSys
                 var exception = ex;
                 if (exception != null)
                 {
+                    routeData.Values["exception"] = ex.ToString();
                     routeData.Values["action"] = "Http500";
                 }
             }

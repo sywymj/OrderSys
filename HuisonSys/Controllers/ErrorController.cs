@@ -42,7 +42,7 @@ namespace HuisonSys.Controllers
             bool isAjax = Request.Headers["x-requested-with"] == null ? false : true;//判断是否ajax请求
             if (!isAjax)
             {
-                Response.Redirect("/NoRight.html");
+                Response.Redirect(Url.Action("NorightIndex", "Home", new { area = "Admin" }));
                 Response.End();
                 //return Redirect("/Login.html");
             }
@@ -58,23 +58,19 @@ namespace HuisonSys.Controllers
         /// 没有登录
         /// </summary>
         /// <returns>ActionResult.</returns>
-        public ActionResult Http401()
+        public string Http401()
         {
             string message = RouteData.Values["exception"].ToString();
             bool isAjax = Request.Headers["x-requested-with"] == null ? false : true;//判断是否ajax请求
             if (!isAjax)
             {
-                Response.Redirect("/Login.html");
+                Response.Redirect(Url.Action("LoginIndex", "Home", new { area = "Admin" }));
                 Response.End();
                 //return Redirect("/Login.html");
             }
 
-            Response.Charset = "utf-8";
-            ContentResult res = new ContentResult()
-            {
-                Content = JSON.ToJSON(new JSResponse("401", message), jsonParams)
-            };
-            return res;
+            string re = JSON.ToJSON(new JSResponse("401", message), jsonParams);
+            return re;
         }
 
 

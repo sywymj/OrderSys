@@ -12,6 +12,7 @@ using System.Web.Mvc;
 
 namespace OrderSys.Admin.Controllers
 {
+    [ManagerAuthorize]
     public class OrganizeController : AdminBaseController
     {
         //

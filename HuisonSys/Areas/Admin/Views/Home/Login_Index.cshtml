@@ -1,0 +1,69 @@
+﻿@{
+    Layout = "~/Areas/Admin/Views/Shared/_InnerLayout.cshtml";
+}
+
+<div id="LoginWindow" class="mini-window" title="用户登录" style="width:300px;height:165px;"
+     showmodal="true" showclosebutton="false">
+
+    <div id="Login-Form">
+        <table>
+            <tr>
+                <td style="width:60px;text-align:right;"><label for="username$text">帐号：</label></td>
+                <td>
+                    <input name="UserName" class="mini-textbox" required="true" style="width:150px;" />
+                </td>
+            </tr>
+            <tr>
+                <td style="width:60px;text-align:right;"><label for="pwd$text">密码：</label></td>
+                <td>
+                    <input name="Password" class="mini-password" requirederrortext="密码不能为空" required="true" style="width:150px;" onenter="onLoginClick" />
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td style="padding-top:5px;">
+                    <a onclick="onLoginClick" class="mini-button" style="width:60px;">登录</a>
+                    <a onclick="onResetClick" class="mini-button" style="width:60px;">重置</a>
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td colspan="2"><span id="tips" style="color:red"></span></td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<script>
+    mini.parse();
+    var LoginWindow = mini.get("LoginWindow");
+    var form = new mini.Form("Login-Form");
+    LoginWindow.show();
+
+
+    function onLoginClick(e) {
+
+        var o = form.getData();
+
+        form.validate();
+        if (form.isValid() == false) return;
+
+        var url = '@Url.Action("Login", "Home", new { area = "Admin" })';
+        var json = mini.encode(o);
+        var data = { UserName: o.UserName, Password: o.Password };
+        doPost(url, data, function (jdata) {
+            debugger;
+            if (jdata.Code == '200') {
+                mini.loading("登录成功，马上转到系统...", "登录成功");
+                setTimeout(function () {
+                    top.location.href = '@Url.Action("Index", "Home", new { area = "Admin" })';//后端直接报错，返回Json格式
+                }, 1500);
+                return;
+            }
+        })
+    }
+
+    function onResetClick(e) {
+        form.clear();
+    }
+</script>

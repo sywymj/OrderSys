@@ -16,7 +16,7 @@ namespace JSNet.Service
     {
         public RoleEntity GetCurrentRole()
         {
-            string rid = SecretUtil.Encrypt(JSRequest.GetCookie("RID", true));
+            string rid = SecretUtil.Decrypt(JSRequest.GetCookie("RID", true));
             if (string.IsNullOrEmpty(rid))
             {
                 throw new JSException(JSErrMsg.ERR_MSG_LoginOvertime);
@@ -53,7 +53,7 @@ namespace JSNet.Service
 
             if (dt.Rows.Count == 0)
             {
-                throw new JSException(JSErrMsg.ERR_CODE_NotGrantRole, JSErrMsg.ERR_MSG_NotGrantRole);
+                return null;
             }
             int roleID = Convert.ToInt32(dt.Rows[0]["Role_ID"].ToString());
             
