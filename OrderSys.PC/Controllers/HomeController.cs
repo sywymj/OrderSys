@@ -63,6 +63,13 @@ namespace OrderSys.Admin.Controllers
         }
 
         [AllowAnonymous]
+        [HttpGet]
+        public ViewResult NoRightIndex()
+        {
+            return View("~/Areas/Admin/Views/Home/NoRight_Index.cshtml");
+        }
+
+        [AllowAnonymous]
         [HttpPost]
         public string Login()
         {

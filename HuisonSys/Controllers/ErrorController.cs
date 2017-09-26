@@ -36,22 +36,19 @@ namespace HuisonSys.Controllers
         /// <summary>
         /// 
         /// </summary>
-        public ActionResult Http403()
+        public string Http403()
         {
             string message = RouteData.Values["exception"].ToString();
             bool isAjax = Request.Headers["x-requested-with"] == null ? false : true;//判断是否ajax请求
             if (!isAjax)
             {
-                Response.Redirect(Url.Action("NorightIndex", "Home", new { area = "Admin" }));
+                Response.Redirect(Url.Action("NoRightIndex", "Home", new { area = "Admin" }));
                 Response.End();
                 //return Redirect("/Login.html");
             }
-            Response.Charset = "utf-8";
-            ContentResult res = new ContentResult()
-            {
-                Content = JSON.ToJSON(new JSResponse("403", message), jsonParams)
-            };
-            return res;
+
+            string re = JSON.ToJSON(new JSResponse("403", message), jsonParams);
+            return re;
         }
 
         /// <summary>

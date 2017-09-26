@@ -245,165 +245,7 @@ namespace JSNet.Service
             return b;
         }
 
-        #region 模块相关
 
-        public bool IsPermissionAuthorizedByRole(RoleEntity role, string controllerName, string actionName)
-        {
-            //超级管理员权限
-            if (role.ID == 1)
-            {
-                return true;
-            }
-
-            DataTable dt = GetAllRolesPermissions();
-
-            foreach (DataRow dr in dt.Rows)
-            {
-                if (dr["Role_ID"].ToString() == role.ID.ToString()
-                    && dr["PermissionItem_Controller"].ToString().ToLower() == controllerName.ToLower()
-                    && dr["PermissionItem_ActionName"].ToString().ToLower() == actionName.ToLower())
-                {
-                    return true;
-                }
-            }
-
-            List<PermissionItemEntity> list = GetAllPublicPermissionItem();
-            foreach(PermissionItemEntity item in list)
-            {
-                if (string.IsNullOrEmpty(item.Controller) || string.IsNullOrEmpty(item.ActionName))
-                {
-                    continue;
-                }
-                if (item.Controller.ToLower() == controllerName.ToLower()
-                    && item.ActionName.ToLower() == actionName.ToLower())
-                {
-                    string sysCategory = item.Code.Split('.')[0].Split('_')[0];//item code 的格式 {系统名}_{类别}.{action}，如OrderSys_PC.Login
-                    if (role.SysCategory == sysCategory
-                        && item.IsPublic == (int)TrueFalse.True)
-                    {
-                        return true;
-                    }
-                }
-            }
-
-            return false;
-        }
-
-        public DataTable GetAllRolesPermissions()
-        {
-            // TODO 先从缓存里面拿，如果没有再从数据库拿
-            ViewManager vmanager = new ViewManager("VP_RolePermission");
-            WhereStatement where = new WhereStatement();
-            where.Add("PermissionItem_IsEnable", Comparison.Equals, (int)TrueFalse.True);
-
-            int count = 0;
-            DataTable dt = vmanager.GetDataTable(where, out count);
-            return dt;
-        }
-
-        public List<PermissionItemEntity> GetAllPublicPermissionItem()
-        {
-            int count = 0;
-            EntityManager<PermissionItemEntity> manager = new EntityManager<PermissionItemEntity>();
-            WhereStatement where = new WhereStatement();
-            where.Add(PermissionItemEntity.FieldIsPublic,Comparison.Equals,(int)TrueFalse.True);
-            List<PermissionItemEntity> list = manager.GetList(where, out count);
-            return list;
-        }
-
-
-        /// <summary>
-        /// 获取对应code下一层的button
-        /// </summary>
-        /// <param name="role"></param>
-        /// <param name="resourceCode"></param>
-        /// <returns></returns>
-        public DataTable GetButtons(RoleEntity role, string navigateUrl)
-        {
-            ViewManager vmanager = new ViewManager("VP_RoleResource");
-
-            WhereStatement where = new WhereStatement();
-            where.Add("Resource_NavigateUrl", Comparison.Equals, navigateUrl);
-
-            int count = 0;
-            DataTable dt = vmanager.GetDataTable(where, out count);
-
-            if (count == 0)
-            {
-                return new DataTable("JSNet");
-            }
-
-            WhereStatement where1 = new WhereStatement();
-            where1.Add("Resource_ParentID", Comparison.Equals, dt.Rows[0]["Resource_ID"].ToString());
-            where1.Add("Role_ID", Comparison.Equals, role.ID);
-
-            int count1 = 0;
-            DataTable dt1 = vmanager.GetDataTable(where1, out count1);
-            return dt1;
-
-        }
-
-        /// <summary>
-        /// 获取 指定资源code 的整个树形menu
-        /// </summary>
-        /// <param name="role"></param>
-        /// <param name="resourceCode">资源code</param>
-        /// <returns></returns>
-        public DataTable GetLeftMenu(RoleEntity role, string resourceCode)
-        {
-            //1.0 获取已授权的树形menu
-            string[] ids = GetTreeMenuIds(role, resourceCode);
-            if (ids.Length == 0)
-            {
-                throw new JSException(JSErrMsg.ERR_CODE_NotGrantMenuResource, JSErrMsg.ERR_MSG_NotGrantMenuResource);
-            }
-
-            //2.0 根据id 获取详细信息
-            int count = 0;
-            ViewManager vmanager = new ViewManager("VP_RoleResource");
-
-            WhereStatement where = new WhereStatement();
-            where.Add("Resource_ID", Comparison.In, ids);
-            OrderByStatement order = new OrderByStatement("Resource_SortCode", Sorting.Ascending);
-
-            DataTable dt = vmanager.GetDataTable(where, out count, order);
-            return dt;
-
-        }
-
-        public string[] GetTreeMenuIds(RoleEntity role, string resourceCode)
-        {
-            IDbHelper dbHelper = DbHelperFactory.GetHelper(BaseSystemInfo.CenterDbConnectionString);
-            IDbDataParameter[] dbParameters = new IDbDataParameter[] { dbHelper.MakeParameter("Resource_Code", resourceCode) };
-
-            string sqlQuery = @" WITH TreeMenu AS (SELECT Resource_ID AS ID
-                                        FROM [VP_RoleResource] 
-                                        WHERE Resource_Code = " + dbHelper.GetParameter("Resource_Code") + @"
-                                        UNION ALL
-                                        SELECT ResourceTree.Resource_ID
-                                            FROM [VP_RoleResource] AS ResourceTree INNER JOIN
-                                                TreeMenu AS A ON A.ID = ResourceTree.Resource_ParentId
-                                            WHERE Resource_ResourceType = '" + ResourceType.Menu.ToString() + @"'
-                                                AND Resource_IsVisible = " + (int)TrueFalse.True + @"
-                                                AND Resource_IsEnable = " + (int)TrueFalse.True + @"
-                                                AND Role_ID = " + role.ID + @")
-                                SELECT ID
-                                    FROM TreeMenu ";
-            DataTable dt = dbHelper.Fill(sqlQuery, dbParameters);
-            return DataTableUtil.FieldToArray(dt, "ID");
-        } 
-
-        //public string[] GetTreeMenuIds(RoleEntity role,string resourceCode)
-        //{
-        //    ViewManager vmanager = new ViewManager("VP_RoleResource");
-        //    WhereStatement where = new WhereStatement();
-        //    where.Add("Role_ID",Comparison.Equals,role.ID);
-        //    where.Add("", Comparison.Equals, role.ID);
-        //    string[] ids = vmanager.GetDataTable(where);
-        //    return ids;
-        //}
-
-        #endregion
 
         #endregion
 
@@ -558,6 +400,199 @@ namespace JSNet.Service
             return b;
         }
 
+        #endregion
+
+        #region 模块权限相关
+
+        public bool IsPermissionAuthorizedByRole(RoleEntity role, string controllerName, string actionName)
+        {
+            //超级管理员权限
+            if (role.ID == 1)
+            {
+                return true;
+            }
+
+            DataTable dt = GetAllRolesPermissions();
+
+            foreach (DataRow dr in dt.Rows)
+            {
+                if (dr["Role_ID"].ToString() == role.ID.ToString()
+                    && dr["PermissionItem_Controller"].ToString().ToLower() == controllerName.ToLower()
+                    && dr["PermissionItem_ActionName"].ToString().ToLower() == actionName.ToLower())
+                {
+                    return true;
+                }
+            }
+
+            List<PermissionItemEntity> list = GetAllPublicPermissionItem();
+            foreach (PermissionItemEntity item in list)
+            {
+                if (string.IsNullOrEmpty(item.Controller) || string.IsNullOrEmpty(item.ActionName))
+                {
+                    continue;
+                }
+                if (item.Controller.ToLower() == controllerName.ToLower()
+                    && item.ActionName.ToLower() == actionName.ToLower())
+                {
+                    string sysCategory = item.Code.Split('.')[0].Split('_')[0];//item code 的格式 {系统名}_{类别}.{action}，如OrderSys_PC.Login => OrderSys
+                    if (role.SysCategory == sysCategory
+                        && item.IsPublic == (int)TrueFalse.True)
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        public DataTable GetAllRolesPermissions()
+        {
+            // TODO 先从缓存里面拿，如果没有再从数据库拿
+            ViewManager vmanager = new ViewManager("VP_RolePermission");
+            WhereStatement where = new WhereStatement();
+            where.Add("PermissionItem_IsEnable", Comparison.Equals, (int)TrueFalse.True);
+
+            int count = 0;
+            DataTable dt = vmanager.GetDataTable(where, out count);
+            return dt;
+        }
+
+        public List<PermissionItemEntity> GetAllPublicPermissionItem()
+        {
+            int count = 0;
+            EntityManager<PermissionItemEntity> manager = new EntityManager<PermissionItemEntity>();
+            WhereStatement where = new WhereStatement();
+            where.Add(PermissionItemEntity.FieldIsPublic, Comparison.Equals, (int)TrueFalse.True);
+            List<PermissionItemEntity> list = manager.GetList(where, out count);
+            return list;
+        }
+
+
+        /// <summary>
+        /// 获取对应code下一层的button
+        /// </summary>
+        /// <param name="role"></param>
+        /// <param name="resourceCode"></param>
+        /// <returns></returns>
+        public DataTable GetButtons(RoleEntity role, string navigateUrl)
+        {
+            ViewManager vmanager = new ViewManager("VP_RoleResource");
+
+            WhereStatement where = new WhereStatement();
+            where.Add("Resource_NavigateUrl", Comparison.Equals, navigateUrl);
+
+            int count = 0;
+            DataTable dt = vmanager.GetDataTable(where, out count);
+
+            if (count == 0)
+            {
+                return new DataTable("JSNet");
+            }
+
+            WhereStatement where1 = new WhereStatement();
+            where1.Add("Resource_ParentID", Comparison.Equals, dt.Rows[0]["Resource_ID"].ToString());
+            where1.Add("Role_ID", Comparison.Equals, role.ID);
+
+            int count1 = 0;
+            DataTable dt1 = vmanager.GetDataTable(where1, out count1);
+            return dt1;
+
+        }
+
+        /// <summary>
+        /// 获取 指定资源code 的整个树形menu
+        /// </summary>
+        /// <param name="role"></param>
+        /// <param name="resourceCode">资源code</param>
+        /// <returns></returns>
+        public DataTable GetLeftMenu(RoleEntity role, string resourceCode)
+        {
+            //1.0 获取已授权的树形menu
+            string[] ids = GetTreeMenuIds(role, resourceCode);
+            if (ids.Length == 0)
+            {
+                throw new JSException(JSErrMsg.ERR_CODE_NotGrantMenuResource, JSErrMsg.ERR_MSG_NotGrantMenuResource);
+            }
+
+            //2.0 根据id 获取详细信息
+            int count = 0;
+            ViewManager vmanager = new ViewManager("VP_Resource");
+
+            WhereStatement where = new WhereStatement();
+            where.Add("Resource_ID", Comparison.In, ids);
+            OrderByStatement order = new OrderByStatement("Resource_SortCode", Sorting.Ascending);
+
+            DataTable dt = vmanager.GetDataTable(where, out count, order);
+            return dt;
+
+        }
+
+        public string[] GetTreeMenuIds(RoleEntity role, string resourceCode)
+        {
+            IDbHelper dbHelper = DbHelperFactory.GetHelper(BaseSystemInfo.CenterDbConnectionString);
+            IDbDataParameter[] dbParameters = new IDbDataParameter[] { dbHelper.MakeParameter("Resource_Code", resourceCode) };
+
+            string sqlQuery = @" WITH TreeMenu AS (SELECT Resource_ID AS ID
+                                        FROM [VP_RoleResource] 
+                                        WHERE Resource_Code = " + dbHelper.GetParameter("Resource_Code") + @"
+                                        AND Role_ID = " + role.ID + @"
+                                        UNION ALL
+                                        SELECT ResourceTree.Resource_ID
+                                            FROM [VP_RoleResource] AS ResourceTree INNER JOIN
+                                                TreeMenu AS A ON A.ID = ResourceTree.Resource_ParentId
+                                            WHERE Resource_ResourceType = '" + ResourceType.Menu.ToString() + @"'
+                                                AND Resource_IsVisible = " + (int)TrueFalse.True + @"
+                                                AND Resource_IsEnable = " + (int)TrueFalse.True + @"
+                                                AND Role_ID = " + role.ID + @")
+                                SELECT ID
+                                    FROM TreeMenu ";
+            DataTable dt = dbHelper.Fill(sqlQuery, dbParameters);
+            return DataTableUtil.FieldToArray(dt, "ID");
+        }
+
+        //public string[] GetTreeMenuIds(RoleEntity role,string resourceCode)
+        //{
+        //    ViewManager vmanager = new ViewManager("VP_RoleResource");
+        //    WhereStatement where = new WhereStatement();
+        //    where.Add("Role_ID",Comparison.Equals,role.ID);
+        //    where.Add("", Comparison.Equals, role.ID);
+        //    string[] ids = vmanager.GetDataTable(where);
+        //    return ids;
+        //}
+
+        #endregion
+
+        #region  资源权限相关
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="role">角色</param>
+        /// <param name="scopeCode">资源代码</param>
+        /// <returns></returns>
+        public Dictionary<string,List<string>> GetAuthorizedScopeByRole(RoleEntity role, string scopeCode)
+        {
+            int count = 0;
+            ViewManager vmanager = new ViewManager("VP_RoleScope");
+            WhereStatement where = new WhereStatement();
+            where.Add("Resource_Code", Comparison.Equals, scopeCode);
+            where.Add("Role_ID", Comparison.Equals, role.ID);
+            DataTable dt = vmanager.GetDataTable(where, out count);
+            
+            Dictionary<string,List<string>> dic = new Dictionary<string,List<string>>();
+            foreach(DataRow dr in dt.Rows)
+            {
+                string organizeCategory = dr["OrganizeCategory_Code"].ToString();//字段名
+                string organize = dr["Organize_Code"].ToString().Split('.')[dr["Organize_Code"].ToString().Split('.').Length - 1];//数据值，split('.')的code最后一个 OrderSys.FSWGY.TeacherDEPT，最后一个就是列名
+                if (!dic.ContainsKey(organizeCategory))
+                {
+                    dic.Add(organizeCategory, new List<string>());
+                }
+                dic[organizeCategory].Add(organize);
+            }
+            return dic;
+
+        }
         #endregion
 
         public DataTable GetScopeTreeDT(string parentCode)

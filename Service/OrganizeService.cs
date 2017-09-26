@@ -59,6 +59,37 @@ namespace JSNet.Service
             return s;
         }
 
+        public List<OrganizeEntity> GetTreeOrganizeListByUser(UserEntity user)
+        {
+            //如何处理管理员情况
+            EntityManager<StaffEntity> manager = new EntityManager<StaffEntity>();
+            StaffEntity staff = manager.GetSingle(user.ID, StaffEntity.FieldUserID);
+
+            int deep = 0;
+            if (user.ID == 1)
+            {
+                deep = 0;
+            }
+            else
+            {
+                deep = 1;
+            }
+
+            List<OrganizeEntity> list = GetTreeOrganizeList((int)staff.OrganizeID, deep);
+            return list;
+        }
+
+        public List<OrganizeEntity> GetTreeOrganizeList(int organizeID, int deep, bool onlyChild = true)
+        {
+            EntityManager<OrganizeEntity> manager = new EntityManager<OrganizeEntity>();
+            OrganizeEntity organize = manager.GetSingle(organizeID);
+
+            string organizeCode = organize.Code.Split('.')[deep + 1].ToString();
+            List<OrganizeEntity> list = GetTreeOrganizeList(organizeCode, onlyChild);
+            return list;
+        }
+
+
         public List<OrganizeEntity> GetTreeOrganizeList(string organizeCode,bool onlyChild = true)
         {
             EntityManager<OrganizeEntity> manager = new EntityManager<OrganizeEntity>();

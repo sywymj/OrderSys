@@ -74,6 +74,7 @@ ajaxTips = function (json, container, callback) {
             mini.alert(jdata.ErrMsg, "警告", function () {
                 window.location.href = "/Admin/Home/LoginIndex";
             });
+
         } else if (jdata.ErrCode == "403") {
             mini.alert(jdata.ErrMsg, "警告", function () {
                 //;
