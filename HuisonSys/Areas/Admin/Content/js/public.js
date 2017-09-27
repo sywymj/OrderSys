@@ -29,7 +29,6 @@ doGetSync = function (url, urlParmsObj, callback) {
         dataType: "text", //xml、html、script、jsonp、text
         beforeSend: function () { },
         success: function (data) {
-            //我这里跳转之后，怎么返回我想要回的页面
             var jdata = ajaxTips(data, callback);
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -50,7 +49,6 @@ doPost = function (url, urlParmsObj, callback) {
         dataType: "text", //xml、html、script、jsonp、text
         beforeSend: function () { },
         success: function (data) {
-            //我这里跳转之后，怎么返回我想要回的页面
             var jdata = ajaxTips(data, callback);
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -74,16 +72,18 @@ ajaxTips = function (json, container, callback) {
             mini.alert(jdata.ErrMsg, "警告", function () {
                 window.location.href = "/Admin/Home/LoginIndex";
             });
-
         } else if (jdata.ErrCode == "403") {
             mini.alert(jdata.ErrMsg, "警告", function () {
-                //;
+                callback && callback(jdata);
             });
         } else {
             //错误消息提示
             console.log(jdata.ErrCode + ":" + jdata.ErrMsg);
-            mini.alert(jdata.Msg);
+            mini.alert(jdata.Msg, "警告", function () {
+                callback && callback(jdata);
+            });
         }
+        return jdata;
     } else if (jdata.RspTypeCode == 1) {
         //提示信息提示
         mini.showTips({

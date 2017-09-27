@@ -84,7 +84,7 @@ namespace JSNet.Service
             EntityManager<OrganizeEntity> manager = new EntityManager<OrganizeEntity>();
             OrganizeEntity organize = manager.GetSingle(organizeID);
 
-            string organizeCode = organize.Code.Split('.')[deep + 1].ToString();
+            string organizeCode = organize.Code.SubstringWithDeep('.', deep);//OrderSys.FSWGY
             List<OrganizeEntity> list = GetTreeOrganizeList(organizeCode, onlyChild);
             return list;
         }

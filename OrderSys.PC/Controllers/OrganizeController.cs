@@ -102,7 +102,7 @@ namespace OrderSys.Admin.Controllers
             int count = 0;
             //string sParentCode = JSRequest.GetRequestUrlParm("ParentCode");
 
-            DataTable re = service.GetTreeOrganizeDTForShow(out count, "OrderSys");
+            DataTable re = service.GetTreeOrganizeDTForShow(out count);
             string s = JSON.ToJSON(new JSResponse(new DataTableData(re, count)), jsonParams);
             return s;
         }
@@ -122,7 +122,10 @@ namespace OrderSys.Admin.Controllers
         [HttpGet]
         public string GetOrganizeDDL()
         {
-            List<OrganizeEntity> list = service.GetTreeOrganizeList("OrderSys.FSWGY");
+           // List<OrganizeEntity> list = service.GetTreeOrganizeList("OrderSys.FSWGY");
+            UserService userService = new UserService();
+            UserEntity user = userService.GetCurrentUser();
+            List<OrganizeEntity> list = service.GetTreeOrganizeListByUser(user);
 
             var re = list.Select(l =>
                 new ViewOrganizeDDL()
@@ -140,7 +143,10 @@ namespace OrderSys.Admin.Controllers
         [HttpGet]
         public string GetOrganizeCodeDDL()
         {
-            List<OrganizeEntity> list = service.GetTreeOrganizeList("OrderSys.FSWGY", true);
+            UserService userService = new UserService();
+            UserEntity user = userService.GetCurrentUser();
+            List<OrganizeEntity> list = service.GetTreeOrganizeListByUser(user);
+
             var re = list.Select(l => new ViewOrganizeCodeDDL()
             {
                 ID = l.Code,
@@ -170,7 +176,10 @@ namespace OrderSys.Admin.Controllers
         [HttpGet]
         public string GetOrganizeTreeDDL()
         {
-            List<OrganizeEntity> list = service.GetTreeOrganizeList("OrderSys", true);
+            UserService userService = new UserService();
+            UserEntity user = userService.GetCurrentUser();
+            List<OrganizeEntity> list = service.GetTreeOrganizeListByUser(user);
+
             var re = list.Select(l => new ViewOrganizeDDL()
             {
                 ID = l.ID.ToString(),

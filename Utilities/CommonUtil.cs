@@ -549,5 +549,24 @@ namespace JSNet.Utilities
                 }
             }
         }
+
+        /// <summary>
+        /// 截取
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="deepIndex"></param>
+        /// <returns></returns>
+        public static string SubstringWithDeep(this string source ,char separator, int deepIndex)
+        {
+            StringBuilder sb = new StringBuilder();
+            string[] arry = source.Split(separator);
+            for (int i = 0; i < deepIndex + 1; i++)
+            {
+                sb.Append(arry[i]);
+                sb.Append(separator);
+            }
+            string s = sb.ToString();
+            return s.Remove(s.Length - 1, 1);
+        }
     }
 }
