@@ -50,6 +50,8 @@ namespace JSNet.Service
             return entity;
         }
 
+
+
         public string[] GetTreeOrganizeIDs(string organizeCode)
         {
             string[] s = GetTreeIDs(
@@ -114,7 +116,7 @@ namespace JSNet.Service
             return list;
         }
 
-        public DataTable GetGrantOrganizeDTForShow(string resourceCode, string resourceType, out int count)
+        public DataTable GetGrantOrganizeDT(string resourceCode, string resourceType, out int count)
         {
             if (!(resourceType == ResourceType.Data.ToString()))
             {
@@ -127,17 +129,46 @@ namespace JSNet.Service
             //resouceCode正确的格式 OrderSys_Data.XXXX
             string parentOrganizeCode = resourceCode.Split('.')[0].Split('_')[0];
 
-            DataTable dt = GetTreeOrganizeDTForShow(out count, parentOrganizeCode);
+            DataTable dt = GetTreeOrganizeDT(out count, parentOrganizeCode);
             return dt;
         }
 
-        public DataTable GetTreeOrganizeDTForShow(out int count, string parentOrganizeCode = "BaseSys")
+        public DataTable GetTreeOrganizeDTByUser(UserEntity user,out int count)
+        {
+            EntityManager<StaffEntity> manager = new EntityManager<StaffEntity>();
+            StaffEntity staff = manager.GetSingle(user.ID, StaffEntity.FieldUserID);
+
+            int deep = 0;
+            if (user.ID == 1)
+            {
+                deep = 0;
+            }
+            else
+            {
+                deep = 1;
+            }
+
+            DataTable dt = GetTreeOrganizeDT((int)staff.OrganizeID, deep,out count);
+            return dt;
+        }
+
+        public DataTable GetTreeOrganizeDT(int organizeID, int deep,out int count)
+        {
+            EntityManager<OrganizeEntity> manager = new EntityManager<OrganizeEntity>();
+            OrganizeEntity organize = manager.GetSingle(organizeID);
+
+            string organizeCode = organize.Code.SubstringWithDeep('.', deep);//OrderSys.FSWGY
+            DataTable dt = GetTreeOrganizeDT(out count, organizeCode);
+            return dt;
+        }
+
+        public DataTable GetTreeOrganizeDT(out int count, string parentOrganizeCode = "BaseSys")
         {
             ViewManager vmanager = new ViewManager("VOrg_Organize");
 
             string[] ids = GetTreeOrganizeIDs(parentOrganizeCode);
             WhereStatement where = new WhereStatement();
-            where.Add("Organize_ID",Comparison.In,ids);
+            where.Add("Organize_ID", Comparison.In, ids);
 
             DataTable dt = vmanager.GetDataTable(where, out count);
             return dt;

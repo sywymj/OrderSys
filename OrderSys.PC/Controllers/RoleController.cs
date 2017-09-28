@@ -29,7 +29,7 @@ namespace OrderSys.Admin.Controllers
 
             RoleEntity role = service.GetCurrentRole();
 
-            List<RoleEntity> list = service.GetRoleList();
+            List<RoleEntity> list = service.GetRoleList(role);
 
             var re = list.Select(l =>
                 new ViewRoleDDL()
@@ -100,9 +100,11 @@ namespace OrderSys.Admin.Controllers
         [HttpGet]
         public string GetRoleListByPage(int pageIndex, int pageSize, string sortField, string sortOrder)
         {
+            RoleEntity role = service.GetCurrentRole();
+
             int count = 0;
             Paging paging = new Paging(pageIndex, pageSize, sortField, sortOrder);
-            List<RoleEntity> re = service.GetRoleList(paging, out count);
+            List<RoleEntity> re = service.GetRoleListByRole(role, paging, out count);
 
             string s = JSON.ToJSON(new JSResponse(new ListData<RoleEntity>(re, count)), jsonParams);
             return s;

@@ -434,7 +434,8 @@ namespace JSNet.Service
                 if (item.Controller.ToLower() == controllerName.ToLower()
                     && item.ActionName.ToLower() == actionName.ToLower())
                 {
-                    string sysCategory = item.Code.Split('.')[0].Split('_')[0];//item code 的格式 {系统名}_{类别}.{action}，如OrderSys_PC.Login => OrderSys
+                    //item code 的格式 {系统名}_{类别}.{action}，如OrderSys_PC.Login => OrderSys
+                    string sysCategory = item.Code.Split('.')[0].Split('_')[0];
                     if (role.SysCategory == sysCategory
                         && item.IsPublic == (int)TrueFalse.True)
                     {
@@ -572,6 +573,11 @@ namespace JSNet.Service
         /// <returns></returns>
         public Dictionary<string,List<string>> GetAuthorizedScopeByRole(RoleEntity role, string scopeCode)
         {
+            if (role.ID == 1)
+            {
+                return new Dictionary<string, List<string>>();
+            }
+
             int count = 0;
             ViewManager vmanager = new ViewManager("VP_RoleScope");
             WhereStatement where = new WhereStatement();
@@ -579,19 +585,58 @@ namespace JSNet.Service
             where.Add("Role_ID", Comparison.Equals, role.ID);
             DataTable dt = vmanager.GetDataTable(where, out count);
             
+            //填入dic
             Dictionary<string,List<string>> dic = new Dictionary<string,List<string>>();
             foreach(DataRow dr in dt.Rows)
             {
                 string organizeCategory = dr["OrganizeCategory_Code"].ToString();//字段名
-                string organize = dr["Organize_Code"].ToString().Split('.')[dr["Organize_Code"].ToString().Split('.').Length - 1];//数据值，split('.')的code最后一个 OrderSys.FSWGY.TeacherDEPT，最后一个就是列名
+                //数据值，split('.')的code最后一个 OrderSys.FSWGY.TeacherDEPT，最后一个就是列值
+                string organize = dr["Organize_Code"].ToString().Split('.')[dr["Organize_Code"].ToString().Split('.').Length - 1];
                 if (!dic.ContainsKey(organizeCategory))
                 {
                     dic.Add(organizeCategory, new List<string>());
                 }
                 dic[organizeCategory].Add(organize);
             }
+
+            if (dic.Count == 0)
+            {
+                List<string> list = new List<string>();
+                list.Add("1");
+                dic.Add("0", list);//没有配置资源时，where 从句 => 0 in (1)
+            }
             return dic;
 
+        }
+
+        public List<string> GetAuthorizeOrganizeIDByRole(RoleEntity role,string scopeCode)
+        {
+            if (role.ID == 1)
+            {
+                return new List<string>();
+            }
+
+            int count = 0;
+            ViewManager vmanager = new ViewManager("VP_RoleScope");
+            WhereStatement where = new WhereStatement();
+            where.Add("Resource_Code", Comparison.Equals, scopeCode);
+            where.Add("Role_ID", Comparison.Equals, role.ID);
+            DataTable dt = vmanager.GetDataTable(where, out count);
+
+            //填入list
+            OrganizeService organizeService = new OrganizeService();
+            List<string> list = new List<string>();
+            foreach (DataRow dr in dt.Rows)
+            {
+                list.AddRange(organizeService.GetTreeOrganizeIDs(dr["Organize_Code"].ToString()).ToList());
+            }
+
+            if (list.Count == 0)
+            {
+                list.Add("0");
+            }
+
+            return list.Distinct<string>().ToList(); ;
         }
         #endregion
 

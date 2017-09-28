@@ -149,6 +149,7 @@ namespace JSNet.Service
             }
             entity.OpenID = null;
             entity.IsEnable = (int)TrueFalse.True;
+            entity.OrganizeID = staff.OrganizeID;
             entity.DeletionStateCode = (int)TrueFalse.False;
             entity.CreateUserId = currentUser.ID.ToString();
             entity.CreateBy = currentUser.UserName;
@@ -158,7 +159,7 @@ namespace JSNet.Service
 
             //添加staff
             staff.UserID = Convert.ToInt32(userID);
-            staff.IsEnable = (int)TrueFalse.True; ;
+            staff.IsEnable = (int)TrueFalse.True;
             staff.DeletionStateCode = (int)TrueFalse.False;
             staff.CreateUserId = currentUser.ID.ToString();
             staff.CreateBy = currentUser.UserName;
@@ -191,6 +192,7 @@ namespace JSNet.Service
             userTargetKVPs.Add(new KeyValuePair<string, object>(UserEntity.FieldUserName, entity.UserName));
             userTargetKVPs.Add(new KeyValuePair<string, object>(UserEntity.FieldPassword, entity.Password));
             userTargetKVPs.Add(new KeyValuePair<string, object>(UserEntity.FieldIsLogin, entity.IsLogin));
+            userTargetKVPs.Add(new KeyValuePair<string, object>(UserEntity.FieldOrganizeID, staff.OrganizeID));
             userTargetKVPs.Add(new KeyValuePair<string, object>(UserEntity.FieldModifiedUserId, currentUser.ID.ToString()));
             userTargetKVPs.Add(new KeyValuePair<string, object>(UserEntity.FieldModifiedBy, currentUser.UserName));
             userTargetKVPs.Add(new KeyValuePair<string, object>(UserEntity.FieldModifiedOn, DateTime.Now));
@@ -314,17 +316,23 @@ namespace JSNet.Service
             return list;
         }
 
-        public DataTable GetAllUser(Paging paging, out int count)
+        public DataTable GetUserDTByRole(RoleEntity role,Paging paging,out int count)
         {
-            ViewManager vmanager = new ViewManager("VS_User_Show");
+            PermissionService permissionService = new PermissionService();
+            List<string> list = permissionService.GetAuthorizeOrganizeIDByRole(role, "OrderSys_Data.User");
 
             WhereStatement where = new WhereStatement();
             where.Add("Staff_IsEnable", Comparison.Equals, (int)TrueFalse.True);
             where.Add("Staff_IsOnJob", Comparison.Equals, (int)TrueFalse.True);
-
+            if (list.Count > 0)
+            {
+                where.Add("Organize_ID", Comparison.In, list.ToArray());//kvp.Value.ToArray();
+            }
+            
             OrderByStatement orderby = new OrderByStatement();
             orderby.Add(paging.SortField, ConvertToSort(paging.SortOrder));
 
+            ViewManager vmanager = new ViewManager("VS_User_Show");
             DataTable dt = vmanager.GetDataTableByPage(where, out count, paging.PageIndex, paging.PageSize, orderby);
             return dt;
         }

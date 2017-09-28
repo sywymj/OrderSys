@@ -96,9 +96,12 @@ namespace OrderSys.Admin.Controllers
         [HttpGet]
         public string GetList(int pageIndex, int pageSize, string sortField, string sortOrder)
         {
+            MyRoleService roleService = new MyRoleService();
+            RoleEntity role = roleService.GetCurrentRole();
+
             int count = 0;
             Paging paging = new Paging(pageIndex, pageSize, sortField, sortOrder);
-            DataTable re = service.GetAllUser(paging, out count);
+            DataTable re = service.GetUserDTByRole(role, paging, out count);
 
             string s = JSON.ToJSON(new JSResponse(new DataTableData(re, count)), jsonParams);
             return s;

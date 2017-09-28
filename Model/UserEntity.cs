@@ -93,6 +93,15 @@ namespace JSNet.Model
             set { _isenable = value; }
         }
         /// <summary>
+        /// OrganizeID
+        /// </summary>		
+        private int? _organizeid;
+        public int? OrganizeID
+        {
+            get { return _organizeid; }
+            set { _organizeid = value; }
+        }
+        /// <summary>
         /// Description
         /// </summary>		
         private string _description;
@@ -210,6 +219,13 @@ namespace JSNet.Model
             get { return "IsEnable"; }
         }
         /// <summary>
+        /// FiledName:OrganizeID
+        /// </summary>		
+        public static string FieldOrganizeID
+        {
+            get { return "OrganizeID"; }
+        }
+        /// <summary>
         /// FiledName:Description
         /// </summary>		
         public static string FieldDescription
@@ -276,6 +292,7 @@ namespace JSNet.Model
             entity.OpenID = CommonUtil.ConvertToString(dataRow[FieldOpenID]);
             entity.IsLogin = CommonUtil.ConvertToInt(dataRow[FieldIsLogin]);
             entity.IsEnable = CommonUtil.ConvertToInt(dataRow[FieldIsEnable]);
+            entity.OrganizeID = CommonUtil.ConvertToInt(dataRow[FieldOrganizeID]);
             entity.Description = CommonUtil.ConvertToString(dataRow[FieldDescription]);
             entity.DeletionStateCode = CommonUtil.ConvertToInt(dataRow[FieldDeletionStateCode]);
             entity.CreateOn = CommonUtil.ConvertToDateTime(dataRow[FieldCreateOn]);
@@ -297,6 +314,7 @@ namespace JSNet.Model
             entity.OpenID = CommonUtil.ConvertToString(dataReader[FieldOpenID]);
             entity.IsLogin = CommonUtil.ConvertToInt(dataReader[FieldIsLogin]);
             entity.IsEnable = CommonUtil.ConvertToInt(dataReader[FieldIsEnable]);
+            entity.OrganizeID = CommonUtil.ConvertToInt(dataReader[FieldOrganizeID]);
             entity.Description = CommonUtil.ConvertToString(dataReader[FieldDescription]);
             entity.DeletionStateCode = CommonUtil.ConvertToInt(dataReader[FieldDeletionStateCode]);
             entity.CreateOn = CommonUtil.ConvertToDateTime(dataReader[FieldCreateOn]);
@@ -315,6 +333,7 @@ namespace JSNet.Model
             sqlBuilder.SetValue(FieldOpenID, entity.OpenID);
             sqlBuilder.SetValue(FieldIsLogin, entity.IsLogin);
             sqlBuilder.SetValue(FieldIsEnable, entity.IsEnable);
+            sqlBuilder.SetValue(FieldOrganizeID, entity.OrganizeID);
             sqlBuilder.SetValue(FieldDescription, entity.Description);
             sqlBuilder.SetValue(FieldDeletionStateCode, entity.DeletionStateCode);
             sqlBuilder.SetValue(FieldCreateOn, entity.CreateOn);

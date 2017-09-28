@@ -101,8 +101,9 @@ namespace OrderSys.Admin.Controllers
         {
             int count = 0;
             //string sParentCode = JSRequest.GetRequestUrlParm("ParentCode");
-
-            DataTable re = service.GetTreeOrganizeDTForShow(out count);
+            UserService userService = new UserService();
+            UserEntity user = userService.GetCurrentUser();
+            DataTable re = service.GetTreeOrganizeDTByUser(user,out count);
             string s = JSON.ToJSON(new JSResponse(new DataTableData(re, count)), jsonParams);
             return s;
         }
@@ -114,7 +115,7 @@ namespace OrderSys.Admin.Controllers
             string sResourceCode = JSRequest.GetRequestUrlParm("ResourceCode");
             string sResourceType = JSRequest.GetRequestUrlParm("ResourceType");
 
-            DataTable re = service.GetGrantOrganizeDTForShow(sResourceCode, sResourceType, out count);
+            DataTable re = service.GetGrantOrganizeDT(sResourceCode, sResourceType, out count);
             string s = JSON.ToJSON(new JSResponse(new DataTableData(re, count)), jsonParams);
             return s;
         }

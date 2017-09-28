@@ -10,6 +10,12 @@
                 </td>
             </tr>
             <tr>
+                <td style="width:70px;">所属机构：</td>
+                <td style="width:150px;">
+                    @Html.Partial("~/Areas/Admin/Views/Organize/OrganizeDDL.cshtml")
+                </td>
+            </tr>
+            <tr>
                 <td style="width:70px;">备注：</td>
                 <td style="width:150px" colspan="3">
                     <input name="Description" class="mini-textarea" required="false" emptytext="请输入备注内容（可选）" />
@@ -41,7 +47,7 @@
                 debugger;
                 form.setData(o);
                 form.setChanged(false);
-
+                mini.get("OrganizeDDL").setValue(o.OrganizeID.toString());
             })
         }
     }
@@ -51,7 +57,7 @@
     function SaveData() {
 
         var o = form.getData();
-
+        o.OrganizeID = mini.get("OrganizeDDL").getValue();
         debugger;
         //将空的属性转为null
         if (o.ID == "") {
