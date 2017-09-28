@@ -19,24 +19,30 @@ namespace OrderSys.Admin.Controllers
         // GET: /User/
         UserService service = new UserService();
 
-        #region Index
+        #region INDEX
         public ActionResult Index()
         {
             return View("~/Areas/Admin/Views/User/Index.cshtml");
         }
+        [HttpGet]
+        public string GetList(int pageIndex, int pageSize, string sortField, string sortOrder)
+        {
+            int count = 0;
+            Paging paging = new Paging(pageIndex, pageSize, sortField, sortOrder);
+            DataTable re = service.GetUserDTByRole(service.CurrentRole, paging, out count);
 
+            string s = JSON.ToJSON(new JSResponse(new DataTableData(re, count)), jsonParams);
+            return s;
+
+        }
+        #endregion
+
+        #region INSERT
         [HttpGet]
         public ActionResult InsertIndex()
         {
             return View("~/Areas/Admin/Views/User/InsertIndex.cshtml");
         }
-
-        [HttpGet]
-        public ActionResult EditIndex()
-        {
-            return View("~/Areas/Admin/Views/User/InsertIndex.cshtml");
-        }
-        #endregion
 
         [HttpPost]
         public string Add()
@@ -55,8 +61,15 @@ namespace OrderSys.Admin.Controllers
 
             service.AddUser(user, staff, roleIDs);
             return JSON.ToJSON(new JSResponse(ResponseType.Remind, "添加成功！"), jsonParams);
-        }
+        } 
+        #endregion
 
+        #region EDIT
+        [HttpGet]
+        public ActionResult EditIndex()
+        {
+            return View("~/Areas/Admin/Views/User/InsertIndex.cshtml");
+        }
         [HttpPost]
         public string Edit()
         {
@@ -84,43 +97,31 @@ namespace OrderSys.Admin.Controllers
 
             UserEntity user = service.GetUser(userID);
             StaffEntity staff = service.GetStaff((int)user.ID);
-            int[] roleIDs = roleService.GetRoleIDs((int)user.ID);
+            int[] roleIDs = roleService.GetGrantedRoleIDs((int)user.ID);
 
             user.CopyTo(viewModel);
             viewModel.Staff = staff;
             viewModel.RoleIDs = string.Join(",", Array.ConvertAll<int, string>(roleIDs, s => s.ToString()));
 
             return JSON.ToJSON(new JSResponse(viewModel), jsonParams);
-        }
+        } 
+        #endregion
 
+        #region VERIFY
         [HttpGet]
-        public string GetList(int pageIndex, int pageSize, string sortField, string sortOrder)
-        {
-            MyRoleService roleService = new MyRoleService();
-            RoleEntity role = roleService.GetCurrentRole();
-
-            int count = 0;
-            Paging paging = new Paging(pageIndex, pageSize, sortField, sortOrder);
-            DataTable re = service.GetUserDTByRole(role, paging, out count);
-
-            string s = JSON.ToJSON(new JSResponse(new DataTableData(re, count)), jsonParams);
-            return s;
-
-        }
-
-        [HttpGet]
-        public string VerifyUserName(string userName,string userID)
+        public string VerifyUserName(string userName, string userID)
         {
             bool re = false;
-            
-            if (service.ChkUserNameExist(userName,userID))
+
+            if (service.ChkUserNameExist(userName, userID))
             {
                 return JSON.ToJSON(new JSResponse(re), jsonParams);
             }
 
             re = true;
             return JSON.ToJSON(new JSResponse(re), jsonParams);
-            
-        }
+
+        } 
+        #endregion
     }
 }

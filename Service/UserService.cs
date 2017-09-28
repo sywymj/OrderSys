@@ -12,9 +12,11 @@ using System.Text;
 
 namespace JSNet.Service
 {
-    public class UserService:BaseService
+    public class UserService : BaseService
     {
-        public void Login(string userName ,string pwd)
+
+        #region Login
+        public void Login(string userName, string pwd)
         {
             UserEntity user = GetUser(userName, pwd);
             if (user == null)
@@ -31,7 +33,7 @@ namespace JSNet.Service
             }
 
             MyRoleService roleService = new MyRoleService();
-            RoleEntity role = roleService.GetRole(user);
+            RoleEntity role = roleService.GetGrantedRole(user);
             if (role == null)
             {
                 throw new JSException(JSErrMsg.ERR_CODE_NotGrantRole, JSErrMsg.ERR_MSG_NotGrantRole);
@@ -39,7 +41,7 @@ namespace JSNet.Service
 
             JSResponse.WriteCookie("UID", SecretUtil.Encrypt(user.ID.ToString()), 120);
             JSResponse.WriteCookie("RID", SecretUtil.Encrypt(role.ID.ToString()), 120);
-            JSResponse.WriteCookie("OpenID", user.OpenID, 60);
+            JSResponse.WriteCookie("OpenID", user.OpenID, 120);
             JSResponse.WriteCookie("AdminName", user.UserName, 120);
             JSResponse.WriteCookie("AdminPwd", user.Password, 120);
         }
@@ -53,11 +55,10 @@ namespace JSNet.Service
             JSResponse.WriteCookie("AdminPwd", "");
         }
 
-
-        public void ChkLogin(out UserEntity user,out RoleEntity role)
+        public void ChkLogin(out UserEntity user, out RoleEntity role)
         {
-            string userName = JSRequest.GetCookie("AdminName",true);
-            string password = JSRequest.GetCookie("AdminPwd",true);
+            string userName = JSRequest.GetCookie("AdminName", true);
+            string password = JSRequest.GetCookie("AdminPwd", true);
             string rid = SecretUtil.Decrypt(JSRequest.GetCookie("RID", true));
             string uid = SecretUtil.Decrypt(JSRequest.GetCookie("UID", true));
 
@@ -93,7 +94,7 @@ namespace JSNet.Service
             {
                 throw new JSException(JSErrMsg.ERR_MSG_LoginOvertime);
             }
-            
+
             //写入cookie
             JSResponse.WriteCookie("UID", SecretUtil.Encrypt(uid), 120);
             JSResponse.WriteCookie("RID", SecretUtil.Encrypt(rid), 120);
@@ -101,11 +102,13 @@ namespace JSNet.Service
             JSResponse.WriteCookie("AdminName", user.UserName, 120);
             JSResponse.WriteCookie("AdminPwd", user.Password, 120);
         }
+        #endregion
 
+        #region Current
         public UserEntity GetCurrentUser()
         {
             string uid = SecretUtil.Decrypt(JSRequest.GetCookie("UID", true));
-            if(string.IsNullOrEmpty(uid))
+            if (string.IsNullOrEmpty(uid))
             {
                 throw new JSException(JSErrMsg.ERR_MSG_LoginOvertime);
             }
@@ -138,10 +141,22 @@ namespace JSNet.Service
             return user;
         }
 
-        public void AddUser(UserEntity entity,StaffEntity staff, int[] roleIDs)
+        public StaffEntity GetCurrentStaff()
         {
-            UserEntity currentUser = GetCurrentUser();
+            EntityManager<StaffEntity> manager = new EntityManager<StaffEntity>();
+            StaffEntity staff = manager.GetSingle(CurrentUser.ID, StaffEntity.FieldID);
+            if (staff == null)
+            {
+                throw new JSException(JSErrMsg.ERR_CODE_DATA_MISSING, string.Format(JSErrMsg.ERR_MSG_DATA_MISSING, "员工"));
+            }
 
+            return staff;
+        } 
+        #endregion
+
+        #region User
+        public void AddUser(UserEntity entity, StaffEntity staff, int[] roleIDs)
+        {
             //添加user
             if (string.IsNullOrEmpty(entity.Password))
             {
@@ -151,8 +166,8 @@ namespace JSNet.Service
             entity.IsEnable = (int)TrueFalse.True;
             entity.OrganizeID = staff.OrganizeID;
             entity.DeletionStateCode = (int)TrueFalse.False;
-            entity.CreateUserId = currentUser.ID.ToString();
-            entity.CreateBy = currentUser.UserName;
+            entity.CreateUserId = CurrentUser.ID.ToString();
+            entity.CreateBy = CurrentUser.UserName;
             entity.CreateOn = DateTime.Now;
             EntityManager<UserEntity> userManager = new EntityManager<UserEntity>();
             string userID = userManager.Insert(entity);
@@ -161,8 +176,8 @@ namespace JSNet.Service
             staff.UserID = Convert.ToInt32(userID);
             staff.IsEnable = (int)TrueFalse.True;
             staff.DeletionStateCode = (int)TrueFalse.False;
-            staff.CreateUserId = currentUser.ID.ToString();
-            staff.CreateBy = currentUser.UserName;
+            staff.CreateUserId = CurrentUser.ID.ToString();
+            staff.CreateBy = CurrentUser.UserName;
             staff.CreateOn = DateTime.Now;
             EntityManager<StaffEntity> staffManager = new EntityManager<StaffEntity>();
             string staffID = staffManager.Insert(staff);
@@ -175,8 +190,8 @@ namespace JSNet.Service
                 {
                     RoleID = roleID,
                     UserID = Convert.ToInt32(userID),
-                    CreateUserId = currentUser.ID.ToString(),
-                    CreateBy = currentUser.UserName,
+                    CreateUserId = CurrentUser.ID.ToString(),
+                    CreateBy = CurrentUser.UserName,
                     CreateOn = DateTime.Now,
                 });
             }
@@ -184,8 +199,6 @@ namespace JSNet.Service
 
         public void EditUser(UserEntity entity, StaffEntity staff, int[] roleIDs)
         {
-            UserEntity currentUser = GetCurrentUser();
-
             //1.0 修改用户信息
             EntityManager<UserEntity> userManager = new EntityManager<UserEntity>();
             List<KeyValuePair<string, object>> userTargetKVPs = new List<KeyValuePair<string, object>>();
@@ -193,8 +206,8 @@ namespace JSNet.Service
             userTargetKVPs.Add(new KeyValuePair<string, object>(UserEntity.FieldPassword, entity.Password));
             userTargetKVPs.Add(new KeyValuePair<string, object>(UserEntity.FieldIsLogin, entity.IsLogin));
             userTargetKVPs.Add(new KeyValuePair<string, object>(UserEntity.FieldOrganizeID, staff.OrganizeID));
-            userTargetKVPs.Add(new KeyValuePair<string, object>(UserEntity.FieldModifiedUserId, currentUser.ID.ToString()));
-            userTargetKVPs.Add(new KeyValuePair<string, object>(UserEntity.FieldModifiedBy, currentUser.UserName));
+            userTargetKVPs.Add(new KeyValuePair<string, object>(UserEntity.FieldModifiedUserId, CurrentUser.ID.ToString()));
+            userTargetKVPs.Add(new KeyValuePair<string, object>(UserEntity.FieldModifiedBy, CurrentUser.UserName));
             userTargetKVPs.Add(new KeyValuePair<string, object>(UserEntity.FieldModifiedOn, DateTime.Now));
             userManager.Update(userTargetKVPs, entity.ID);
 
@@ -208,15 +221,15 @@ namespace JSNet.Service
             staffTargetKVPs.Add(new KeyValuePair<string, object>(StaffEntity.FieldSex, staff.Sex));
             staffTargetKVPs.Add(new KeyValuePair<string, object>(StaffEntity.FieldOrganizeID, staff.OrganizeID));
             staffTargetKVPs.Add(new KeyValuePair<string, object>(StaffEntity.FieldIsOnJob, staff.IsOnJob));
-            staffTargetKVPs.Add(new KeyValuePair<string, object>(StaffEntity.FieldModifiedUserId, currentUser.ID.ToString()));
-            staffTargetKVPs.Add(new KeyValuePair<string, object>(StaffEntity.FieldModifiedBy, currentUser.UserName));
+            staffTargetKVPs.Add(new KeyValuePair<string, object>(StaffEntity.FieldModifiedUserId, CurrentUser.ID.ToString()));
+            staffTargetKVPs.Add(new KeyValuePair<string, object>(StaffEntity.FieldModifiedBy, CurrentUser.UserName));
             staffTargetKVPs.Add(new KeyValuePair<string, object>(StaffEntity.FieldModifiedOn, DateTime.Now));
             staffManager.Update(staffTargetKVPs, staff1.ID);
 
             //3.0 删除role-user-rel关系
             EntityManager<UserRoleEntity> userRoleManager = new EntityManager<UserRoleEntity>();
             WhereStatement where = new WhereStatement();
-            where.Add(UserRoleEntity.FieldUserID,Comparison.Equals,entity.ID);
+            where.Add(UserRoleEntity.FieldUserID, Comparison.Equals, entity.ID);
             userRoleManager.Delete(where);
 
             //3.1 增加role-user-rel关系
@@ -226,8 +239,8 @@ namespace JSNet.Service
                 {
                     RoleID = roleID,
                     UserID = entity.ID,
-                    CreateUserId = currentUser.ID.ToString(),
-                    CreateBy = currentUser.UserName,
+                    CreateUserId = CurrentUser.ID.ToString(),
+                    CreateBy = CurrentUser.UserName,
                     CreateOn = DateTime.Now,
                 };
                 userRoleManager.Insert(userRole);
@@ -254,31 +267,46 @@ namespace JSNet.Service
         {
             EntityManager<UserEntity> manager = new EntityManager<UserEntity>();
             WhereStatement where = new WhereStatement();
-            where.Add(UserEntity.FieldUserName,Comparison.Equals,userName);
-            where.Add(UserEntity.FieldPassword,Comparison.Equals,pwd);
+            where.Add(UserEntity.FieldUserName, Comparison.Equals, userName);
+            where.Add(UserEntity.FieldPassword, Comparison.Equals, pwd);
             int count = 0;
             List<UserEntity> ls = manager.GetList(where, out count);
             return ls.FirstOrDefault();
         }
 
+        public DataTable GetUserDTByRole(RoleEntity role, Paging paging, out int count)
+        {
+            PermissionService permissionService = new PermissionService();
+            List<string> list = permissionService.GetAuthorizeOrganizeIDByRole(role, "OrderSys_Data.User");
+
+            WhereStatement where = new WhereStatement();
+            where.Add("Staff_IsEnable", Comparison.Equals, (int)TrueFalse.True);
+            where.Add("Staff_IsOnJob", Comparison.Equals, (int)TrueFalse.True);
+            if (list.Count > 0)
+            {
+                where.Add("Organize_ID", Comparison.In, list.ToArray());
+            }
+
+            OrderByStatement orderby = new OrderByStatement();
+            orderby.Add(paging.SortField, ConvertToSort(paging.SortOrder));
+
+            ViewManager vmanager = new ViewManager("VS_User_Show");
+            DataTable dt = vmanager.GetDataTableByPage(where, out count, paging.PageIndex, paging.PageSize, orderby);
+            return dt;
+        }
+        #endregion
+
+        #region Staff
+
         public void AddStaff(StaffEntity entity)
         {
-            EntityManager<StaffEntity> manager = new EntityManager<StaffEntity>();
-            UserEntity user = GetCurrentUser();
-
             entity.DeletionStateCode = (int)TrueFalse.True;
-            entity.CreateUserId = user.ID.ToString();
-            entity.CreateBy = user.UserName;
+            entity.CreateUserId = CurrentUser.ID.ToString();
+            entity.CreateBy = CurrentUser.UserName;
             entity.CreateOn = DateTime.Now;
-            manager.Insert(entity);
-        }
 
-        public void DeleteStaff(int id)
-        {
-            EntityManager<UserEntity> manamger = new EntityManager<UserEntity>();
-            List<KeyValuePair<string, object>> kvps = new List<KeyValuePair<string, object>>();
-            kvps.Add(new KeyValuePair<string, object>(StaffEntity.FieldDeletionStateCode, (int)TrueFalse.True));
-            manamger.Update(kvps, id);
+            EntityManager<StaffEntity> manager = new EntityManager<StaffEntity>();
+            manager.Insert(entity);
         }
 
         public StaffEntity GetStaff(int userID)
@@ -288,22 +316,7 @@ namespace JSNet.Service
             return entity;
         }
 
-        public StaffEntity GetCurrentStaff()
-        {
-            EntityManager<StaffEntity> manager = new EntityManager<StaffEntity>();
-
-            UserEntity user = GetCurrentUser();
-
-            StaffEntity staff = manager.GetSingle(user.ID, StaffEntity.FieldID);
-            if (staff == null)
-            {
-                throw new JSException(JSErrMsg.ERR_CODE_DATA_MISSING, string.Format(JSErrMsg.ERR_MSG_DATA_MISSING, "员工"));
-            }
-
-            return staff;
-        }
-
-        public List<StaffEntity> GetAllStaffs()
+        public List<StaffEntity> GetStaffs()
         {
             EntityManager<StaffEntity> manager = new EntityManager<StaffEntity>();
 
@@ -315,29 +328,9 @@ namespace JSNet.Service
             List<StaffEntity> list = manager.GetList(where, out count);
             return list;
         }
+        #endregion
 
-        public DataTable GetUserDTByRole(RoleEntity role,Paging paging,out int count)
-        {
-            PermissionService permissionService = new PermissionService();
-            List<string> list = permissionService.GetAuthorizeOrganizeIDByRole(role, "OrderSys_Data.User");
-
-            WhereStatement where = new WhereStatement();
-            where.Add("Staff_IsEnable", Comparison.Equals, (int)TrueFalse.True);
-            where.Add("Staff_IsOnJob", Comparison.Equals, (int)TrueFalse.True);
-            if (list.Count > 0)
-            {
-                where.Add("Organize_ID", Comparison.In, list.ToArray());//kvp.Value.ToArray();
-            }
-            
-            OrderByStatement orderby = new OrderByStatement();
-            orderby.Add(paging.SortField, ConvertToSort(paging.SortOrder));
-
-            ViewManager vmanager = new ViewManager("VS_User_Show");
-            DataTable dt = vmanager.GetDataTableByPage(where, out count, paging.PageIndex, paging.PageSize, orderby);
-            return dt;
-        }
-
-        public bool ChkUserNameExist(string userName,string userID)
+        public bool ChkUserNameExist(string userName, string userID)
         {
             EntityManager<UserEntity> manager = new EntityManager<UserEntity>();
 

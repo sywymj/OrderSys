@@ -12,11 +12,6 @@ namespace OrderSys.Admin.Controllers
     [ManagerAuthorize]
     public class AdminBaseController : Controller
     {
-        //protected RoleEntity role;
-        public AdminBaseController()
-        {
-            //role = new PermissionService().GetCurrentRole();
-        }
 
         protected JSONParameters jsonParams = new JSONParameters()
         {

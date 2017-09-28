@@ -26,11 +26,7 @@ namespace OrderSys.Admin.Controllers
         [HttpGet]
         public string GetRoleDDL()
         {
-
-            RoleEntity role = service.GetCurrentRole();
-
-            List<RoleEntity> list = service.GetRoleList(role);
-
+            List<RoleEntity> list = service.GetRoleListByRole(service.CurrentRole);
             var re = list.Select(l =>
                 new ViewRoleDDL()
                 {

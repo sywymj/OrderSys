@@ -17,28 +17,23 @@ namespace JSNet.Service
     {
         public void AddOrganizeCategory(OrganizeCategoryEntity entity)
         {
-            UserService userService = new UserService();
-            UserEntity user = userService.GetCurrentUser();
-
             EntityManager<OrganizeCategoryEntity> manager = new EntityManager<OrganizeCategoryEntity>();
-            entity.CreateUserId = user.ID.ToString();
-            entity.CreateBy = user.UserName;
+            entity.CreateUserId = CurrentUser.ID.ToString();
+            entity.CreateBy = CurrentUser.UserName;
             entity.CreateOn = DateTime.Now;
             manager.Insert(entity);
         }
 
         public void EditOrganizeCategory(OrganizeCategoryEntity entity)
         {
-            UserService userService = new UserService();
-            UserEntity currentUser = userService.GetCurrentUser();
 
             EntityManager<OrganizeCategoryEntity> manager = new EntityManager<OrganizeCategoryEntity>();
             List<KeyValuePair<string, object>> kvps = new List<KeyValuePair<string, object>>();
             kvps.Add(new KeyValuePair<string, object>(OrganizeCategoryEntity.FieldCode, entity.Code));
             kvps.Add(new KeyValuePair<string, object>(OrganizeCategoryEntity.FieldFullName, entity.FullName));
             kvps.Add(new KeyValuePair<string, object>(OrganizeCategoryEntity.FieldDescription, entity.Description));
-            kvps.Add(new KeyValuePair<string, object>(OrganizeCategoryEntity.FieldModifiedUserId, currentUser.ID.ToString()));
-            kvps.Add(new KeyValuePair<string, object>(OrganizeCategoryEntity.FieldModifiedBy, currentUser.UserName));
+            kvps.Add(new KeyValuePair<string, object>(OrganizeCategoryEntity.FieldModifiedUserId, CurrentUser.ID.ToString()));
+            kvps.Add(new KeyValuePair<string, object>(OrganizeCategoryEntity.FieldModifiedBy,CurrentUser.UserName));
             kvps.Add(new KeyValuePair<string, object>(OrganizeCategoryEntity.FieldModifiedOn, DateTime.Now));
             manager.Update(kvps, entity.ID);
         }
@@ -177,22 +172,16 @@ namespace JSNet.Service
 
         public void AddOrganize(OrganizeEntity entity)
         {
-            UserService userService = new UserService();
-            UserEntity currentUser = userService.GetCurrentUser();
-
             EntityManager<OrganizeEntity> manager = new EntityManager<OrganizeEntity>();
             entity.Layer = 0;//TODO
-            entity.CreateUserId = currentUser.ID.ToString();
-            entity.CreateBy = currentUser.UserName;
+            entity.CreateUserId = CurrentUser.ID.ToString();
+            entity.CreateBy = CurrentUser.UserName;
             entity.CreateOn = DateTime.Now;
             manager.Insert(entity);
         }
 
         public void EditOrganize(OrganizeEntity entity)
         {
-            UserService userService = new UserService();
-            UserEntity currentUser = userService.GetCurrentUser();
-
             EntityManager<OrganizeEntity> manager = new EntityManager<OrganizeEntity>();
             List<KeyValuePair<string, object>> kvps = new List<KeyValuePair<string, object>>();
             kvps.Add(new KeyValuePair<string, object>(OrganizeEntity.FieldOrganizeCategoryID, entity.OrganizeCategoryID));
@@ -210,8 +199,8 @@ namespace JSNet.Service
             kvps.Add(new KeyValuePair<string, object>(OrganizeEntity.FieldSortCode, entity.SortCode));
             kvps.Add(new KeyValuePair<string, object>(OrganizeEntity.FieldIsVisible, entity.IsVisible));
             kvps.Add(new KeyValuePair<string, object>(OrganizeEntity.FieldDescription, entity.Description));
-            kvps.Add(new KeyValuePair<string, object>(OrganizeEntity.FieldModifiedUserId, currentUser.ID.ToString()));
-            kvps.Add(new KeyValuePair<string, object>(OrganizeEntity.FieldModifiedBy, currentUser.UserName));
+            kvps.Add(new KeyValuePair<string, object>(OrganizeEntity.FieldModifiedUserId, CurrentUser.ID.ToString()));
+            kvps.Add(new KeyValuePair<string, object>(OrganizeEntity.FieldModifiedBy, CurrentUser.UserName));
             kvps.Add(new KeyValuePair<string, object>(OrganizeEntity.FieldModifiedOn, DateTime.Now));
             manager.Update(kvps, entity.ID);
         }

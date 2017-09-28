@@ -29,7 +29,7 @@ namespace OrderSys.Controllers
         {
             UserService userService = new UserService();
 
-            var list = userService.GetAllStaffs();
+            var list = userService.GetStaffs();
             if (list.Count > 0)
             {
                 return View("Staffs", list);

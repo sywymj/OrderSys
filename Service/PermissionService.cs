@@ -89,9 +89,6 @@ namespace JSNet.Service
                 throw new JSException(JSErrMsg.ERR_CODE_NotAllowGrantItem, string.Format(JSErrMsg.ERR_MSG_NotAllowGrantItem, "资源类型为" + resource.ResourceType + "，"));
             }
 
-            UserService userService = new UserService();
-            UserEntity currentUser = userService.GetCurrentUser();
-
             EntityManager<PermissionScopeEntity> manager = new EntityManager<PermissionScopeEntity>();
             manager.Delete(resourceID, PermissionEntity.FieldResourceID);
 
@@ -102,8 +99,8 @@ namespace JSNet.Service
                 entity.ResourceID = resourceID;
                 entity.TargetID = scopeID;
                 entity.PermissionItemID = 2;
-                entity.CreateUserId = currentUser.ID.ToString();
-                entity.CreateBy = currentUser.UserName;
+                entity.CreateUserId = CurrentUser.ID.ToString();
+                entity.CreateBy = CurrentUser.UserName;
                 entity.CreateOn = DateTime.Now;
                 entitys.Add(entity);
             }
@@ -146,21 +143,15 @@ namespace JSNet.Service
 
         public void AddResource(ResourceEntity entity)
         {
-            UserService userService = new UserService();
-            UserEntity currentUser = userService.GetCurrentUser();
-
             EntityManager<ResourceEntity> manager = new EntityManager<ResourceEntity>();
-            entity.CreateUserId = currentUser.ID.ToString();
-            entity.CreateBy = currentUser.UserName;
+            entity.CreateUserId = CurrentUser.ID.ToString();
+            entity.CreateBy = CurrentUser.UserName;
             entity.CreateOn = DateTime.Now;
             manager.Insert(entity);
         }
 
         public void EditResource(ResourceEntity entity)
         {
-            UserService userService = new UserService();
-            UserEntity currentUser = userService.GetCurrentUser();
-
             EntityManager<ResourceEntity> manager = new EntityManager<ResourceEntity>();
             List<KeyValuePair<string, object>> kvps = new List<KeyValuePair<string, object>>();
             kvps.Add(new KeyValuePair<string, object>(ResourceEntity.FieldParentID, entity.ParentID));
@@ -174,8 +165,8 @@ namespace JSNet.Service
             kvps.Add(new KeyValuePair<string, object>(ResourceEntity.FieldIsVisible, entity.IsVisible));
             kvps.Add(new KeyValuePair<string, object>(ResourceEntity.FieldIsEnable, entity.IsEnable));
             kvps.Add(new KeyValuePair<string, object>(ResourceEntity.FieldIsPublic, entity.IsPublic));
-            kvps.Add(new KeyValuePair<string, object>(ResourceEntity.FieldModifiedUserId, currentUser.ID.ToString()));
-            kvps.Add(new KeyValuePair<string, object>(ResourceEntity.FieldModifiedBy, currentUser.UserName));
+            kvps.Add(new KeyValuePair<string, object>(ResourceEntity.FieldModifiedUserId, CurrentUser.ID.ToString()));
+            kvps.Add(new KeyValuePair<string, object>(ResourceEntity.FieldModifiedBy, CurrentUser.UserName));
             kvps.Add(new KeyValuePair<string, object>(ResourceEntity.FieldModifiedOn, DateTime.Now));
             manager.Update(kvps, entity.ID);
         }
@@ -253,23 +244,17 @@ namespace JSNet.Service
 
         public void AddPermissionItem(PermissionItemEntity entity)
         {
-            UserService userService = new UserService();
-            UserEntity currentUser = userService.GetCurrentUser();
-
             EntityManager<PermissionItemEntity> manager = new EntityManager<PermissionItemEntity>();
             entity.AllowEdit = (int)TrueFalse.True;
             entity.AllowDelete = (int)TrueFalse.True;
-            entity.CreateUserId = currentUser.ID.ToString();
-            entity.CreateBy = currentUser.UserName;
+            entity.CreateUserId = CurrentUser.ID.ToString();
+            entity.CreateBy = CurrentUser.UserName;
             entity.CreateOn = DateTime.Now;
             manager.Insert(entity);
         }
 
         public void EditPermissionItem(PermissionItemEntity entity)
         {
-            UserService userService = new UserService();
-            UserEntity currentUser = userService.GetCurrentUser();
-
             EntityManager<PermissionItemEntity> manager = new EntityManager<PermissionItemEntity>();
             List<KeyValuePair<string, object>> kvps = new List<KeyValuePair<string, object>>();
             kvps.Add(new KeyValuePair<string, object>(PermissionItemEntity.FieldParentID, entity.ParentID));
@@ -283,8 +268,8 @@ namespace JSNet.Service
             kvps.Add(new KeyValuePair<string, object>(PermissionItemEntity.FieldIsPublic, entity.IsPublic));
             kvps.Add(new KeyValuePair<string, object>(PermissionItemEntity.FieldDescription, entity.Description));
             kvps.Add(new KeyValuePair<string, object>(PermissionItemEntity.FieldSortCode, entity.SortCode));
-            kvps.Add(new KeyValuePair<string, object>(PermissionItemEntity.FieldModifiedUserId, currentUser.ID.ToString()));
-            kvps.Add(new KeyValuePair<string, object>(PermissionItemEntity.FieldModifiedBy, currentUser.UserName));
+            kvps.Add(new KeyValuePair<string, object>(PermissionItemEntity.FieldModifiedUserId, CurrentUser.ID.ToString()));
+            kvps.Add(new KeyValuePair<string, object>(PermissionItemEntity.FieldModifiedBy, CurrentUser.UserName));
             kvps.Add(new KeyValuePair<string, object>(PermissionItemEntity.FieldModifiedOn, DateTime.Now));
             manager.Update(kvps, entity.ID);
         }
@@ -307,9 +292,6 @@ namespace JSNet.Service
                 throw new JSException(JSErrMsg.ERR_CODE_NotAllowGrantItem, string.Format(JSErrMsg.ERR_MSG_NotAllowGrantItem, "资源类型为" + resource.ResourceType + "，"));
             }
 
-            UserService userService = new UserService();
-            UserEntity currentUser = userService.GetCurrentUser();
-
             EntityManager<PermissionEntity> manager = new EntityManager<PermissionEntity>();
             manager.Delete(resourceID, PermissionEntity.FieldResourceID);
 
@@ -319,8 +301,8 @@ namespace JSNet.Service
                 PermissionEntity entity = new PermissionEntity();
                 entity.ResourceID = resourceID;
                 entity.PermissionItemID = permissionItemID;
-                entity.CreateUserId = currentUser.ID.ToString();
-                entity.CreateBy = currentUser.UserName;
+                entity.CreateUserId = CurrentUser.ID.ToString();
+                entity.CreateBy = CurrentUser.UserName;
                 entity.CreateOn = DateTime.Now;
                 entitys.Add(entity);
             }

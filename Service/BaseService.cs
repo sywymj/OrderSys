@@ -15,6 +15,50 @@ namespace JSNet.Service
 {
     public class BaseService
     {
+        private UserEntity _currentUser;
+        public UserEntity CurrentUser
+        {
+            get
+            {
+                if(_currentUser==null)
+                {
+                    UserService userService = new UserService();
+                    _currentUser =  userService.GetCurrentUser();
+                }
+                return _currentUser;
+            }
+        }
+
+        private RoleEntity _currentRole;
+        public RoleEntity CurrentRole
+        {
+            get
+            {
+                if (_currentUser == null)
+                {
+                    MyRoleService roleService = new MyRoleService();
+                    _currentRole = roleService.GetCurrentRole();
+                }
+                return _currentRole;
+            }
+        }
+
+        private StaffEntity _currentStaff;
+        public StaffEntity CurrentStaff
+        {
+            get
+            {
+                if(_currentStaff==null)
+                {
+                    UserService userService = new UserService();
+                    _currentStaff = userService.GetCurrentStaff();
+                }
+                return _currentStaff;
+            }
+        }
+
+
+
         public Sorting ConvertToSort(string sortOrder)
         {
             switch (sortOrder.ToLower())

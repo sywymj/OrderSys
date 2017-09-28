@@ -12,7 +12,7 @@ using System.Text;
 
 namespace JSNet.Service
 {
-    public class MyRoleService
+    public class MyRoleService:BaseService
     {
         public RoleEntity GetCurrentRole()
         {
@@ -30,25 +30,25 @@ namespace JSNet.Service
             return role;
         }
 
-        public int[] GetRoleIDs(int userID)
+        public int[] GetGrantedRoleIDs(int userID)
         {
-            EntityManager<UserRoleEntity> manager = new EntityManager<UserRoleEntity>();
             WhereStatement where = new WhereStatement();
             where.Add(UserRoleEntity.FieldUserID,Comparison.Equals,userID);
+
+            EntityManager<UserRoleEntity> manager = new EntityManager<UserRoleEntity>();
             string[] sRoleIDs = manager.GetProperties(UserRoleEntity.FieldRoleID, where);
 
             int[] roleIDs = CommonUtil.ConvertToIntArry(sRoleIDs);
             return roleIDs;
         }
 
-        public RoleEntity GetRole(UserEntity user)
+        public RoleEntity GetGrantedRole(UserEntity user)
         {
-            ViewManager vmanager = new ViewManager("[VP_UserRole]");
-
             WhereStatement where = new WhereStatement();
             where.Add("User_ID", Comparison.Equals, user.ID);
 
             int count = 0;
+            ViewManager vmanager = new ViewManager("[VP_UserRole]");
             DataTable dt = vmanager.GetDataTable(where, out count);
 
             if (dt.Rows.Count == 0)
@@ -56,12 +56,11 @@ namespace JSNet.Service
                 return null;
             }
             int roleID = Convert.ToInt32(dt.Rows[0]["Role_ID"].ToString());
-            
             RoleEntity role = GetRole(roleID);
             return role;
         }
 
-        public List<RoleEntity> GetRoleList(RoleEntity role)
+        public List<RoleEntity> GetRoleListByRole(RoleEntity role)
         {
             PermissionService permissionService = new PermissionService();
             List<string> organizeIDs = permissionService.GetAuthorizeOrganizeIDByRole(role, "OrderSys_Data.Role");
@@ -69,7 +68,7 @@ namespace JSNet.Service
             WhereStatement where = new WhereStatement();
             if (organizeIDs.Count > 0)
             {
-                where.Add(RoleEntity.FieldOrganizeID, Comparison.In, organizeIDs.ToArray());//kvp.Value.ToArray();
+                where.Add(RoleEntity.FieldOrganizeID, Comparison.In, organizeIDs.ToArray());
             }
 
             int count = 0;
@@ -80,15 +79,12 @@ namespace JSNet.Service
 
         public void AddRole(RoleEntity entity)
         {
-            UserService userService = new UserService();
-            UserEntity currentUser = userService.GetCurrentUser();
-
             //获取系统名称
             OrganizeEntity organize = new OrganizeService().GetOrganize((int)entity.OrganizeID);
             entity.SysCategory = organize.Code.Split('.')[0];
 
-            entity.CreateUserId = currentUser.ID.ToString();
-            entity.CreateBy = currentUser.UserName;
+            entity.CreateUserId = CurrentUser.ID.ToString();
+            entity.CreateBy = CurrentUser.UserName;
             entity.CreateOn = DateTime.Now;
 
             EntityManager<RoleEntity> manager = new EntityManager<RoleEntity>();
@@ -97,12 +93,8 @@ namespace JSNet.Service
 
         public void EditRole(RoleEntity entity)
         {
-            UserService userService = new UserService();
-            UserEntity currentUser = userService.GetCurrentUser();
-
             //获取系统名称
             OrganizeEntity organize = new OrganizeService().GetOrganize((int)entity.OrganizeID);
-            entity.CreateUserId = currentUser.ID.ToString();
 
             EntityManager<RoleEntity> manager = new EntityManager<RoleEntity>();
             List<KeyValuePair<string, object>> kvps = new List<KeyValuePair<string, object>>();
@@ -110,8 +102,8 @@ namespace JSNet.Service
             kvps.Add(new KeyValuePair<string, object>(RoleEntity.FieldOrganizeID, entity.OrganizeID));
             kvps.Add(new KeyValuePair<string, object>(RoleEntity.FieldSysCategory, organize.Code.Split('.')[0]));
             kvps.Add(new KeyValuePair<string, object>(RoleEntity.FieldDescription, entity.Description));
-            kvps.Add(new KeyValuePair<string, object>(RoleEntity.FieldModifiedUserId, currentUser.ID.ToString()));
-            kvps.Add(new KeyValuePair<string, object>(RoleEntity.FieldModifiedBy, currentUser.UserName));
+            kvps.Add(new KeyValuePair<string, object>(RoleEntity.FieldModifiedUserId, CurrentUser.ID.ToString()));
+            kvps.Add(new KeyValuePair<string, object>(RoleEntity.FieldModifiedBy, CurrentUser.UserName));
             kvps.Add(new KeyValuePair<string, object>(RoleEntity.FieldModifiedOn, DateTime.Now));
             manager.Update(kvps, entity.ID);
         }
@@ -145,10 +137,6 @@ namespace JSNet.Service
             EntityManager<RoleEntity> roleManager = new EntityManager<RoleEntity>();
             RoleEntity role = roleManager.GetSingle(roleID);
 
-
-            UserService userService = new UserService();
-            UserEntity currentUser = userService.GetCurrentUser();
-
             EntityManager<RoleResourceEntity> manager = new EntityManager<RoleResourceEntity>();
             manager.Delete(roleID, RoleResourceEntity.FieldRoleID);
 
@@ -158,8 +146,8 @@ namespace JSNet.Service
                 RoleResourceEntity entity = new RoleResourceEntity();
                 entity.RoleID = roleID;
                 entity.ResourceID = moduleID;
-                entity.CreateUserId = currentUser.ID.ToString();
-                entity.CreateBy = currentUser.UserName;
+                entity.CreateUserId = CurrentUser.ID.ToString();
+                entity.CreateBy = CurrentUser.UserName;
                 entity.CreateOn = DateTime.Now;
                 entitys.Add(entity);
             }
@@ -183,10 +171,6 @@ namespace JSNet.Service
             EntityManager<RoleEntity> roleManager = new EntityManager<RoleEntity>();
             RoleEntity role = roleManager.GetSingle(roleID);
 
-
-            UserService userService = new UserService();
-            UserEntity currentUser = userService.GetCurrentUser();
-
             EntityManager<RolePermissionScopeEntity> manager = new EntityManager<RolePermissionScopeEntity>();
             manager.Delete(roleID, RolePermissionScopeEntity.FieldRoleID);
 
@@ -196,8 +180,8 @@ namespace JSNet.Service
                 RolePermissionScopeEntity entity = new RolePermissionScopeEntity();
                 entity.RoleID = roleID;
                 entity.PermissionScopeID = scopeID;
-                entity.CreateUserId = currentUser.ID.ToString();
-                entity.CreateBy = currentUser.UserName;
+                entity.CreateUserId = CurrentUser.ID.ToString();
+                entity.CreateBy = CurrentUser.UserName;
                 entity.CreateOn = DateTime.Now;
                 entitys.Add(entity);
             }
