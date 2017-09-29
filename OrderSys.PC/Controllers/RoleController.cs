@@ -18,27 +18,27 @@ namespace OrderSys.Admin.Controllers
         //
         // GET: /Role/
         MyRoleService service = new MyRoleService();
+
+        #region INDEX
+        [HttpGet]
         public ActionResult RoleIndex()
         {
             return View("~/Areas/Admin/Views/Role/Role_Index.cshtml");
         }
 
         [HttpGet]
-        public string GetRoleDDL()
+        public string GetRoleListByPage(int pageIndex, int pageSize, string sortField, string sortOrder)
         {
-            List<RoleEntity> list = service.GetRoleListByRole(service.CurrentRole);
-            var re = list.Select(l =>
-                new ViewRoleDDL()
-                {
-                    ID = l.ID.ToString(),
-                    Title = l.FullName
-                }).ToList();
+            int count = 0;
+            Paging paging = new Paging(pageIndex, pageSize, sortField, sortOrder);
+            List<RoleEntity> re = service.GetRoleListByRole(service.CurrentRole, paging, out count);
 
-            string s = JSON.ToJSON(new JSResponse(re), jsonParams);
-
+            string s = JSON.ToJSON(new JSResponse(new ListData<RoleEntity>(re, count)), jsonParams);
             return s;
-        }
+        } 
+        #endregion
 
+        #region INSERT
         [HttpGet]
         public ActionResult InsertRoleIndex()
         {
@@ -57,8 +57,10 @@ namespace OrderSys.Admin.Controllers
             viewModel.CopyTo(entity);
             service.AddRole(entity);
             return JSON.ToJSON(new JSResponse(ResponseType.Remind, "添加成功！"), jsonParams);
-        }
+        } 
+        #endregion
 
+        #region EDIT
         [HttpGet]
         public ActionResult EditRoleIndex()
         {
@@ -75,11 +77,11 @@ namespace OrderSys.Admin.Controllers
             //TODO 数据验证。
 
             //ViewModel赋值
-            RoleEntity Role = new RoleEntity();
-            viewModel.CopyTo(Role);
+            RoleEntity entity = new RoleEntity();
+            viewModel.CopyTo(entity);
 
             //调用Service
-            service.EditRole(Role);
+            service.EditRole(entity);
             return JSON.ToJSON(new JSResponse(ResponseType.Remind, "修改成功！"), jsonParams);
         }
 
@@ -91,21 +93,10 @@ namespace OrderSys.Admin.Controllers
             entity.CopyTo(viewModel);
 
             return JSON.ToJSON(new JSResponse(viewModel), jsonParams);
-        }
+        } 
+        #endregion
 
-        [HttpGet]
-        public string GetRoleListByPage(int pageIndex, int pageSize, string sortField, string sortOrder)
-        {
-            RoleEntity role = service.GetCurrentRole();
-
-            int count = 0;
-            Paging paging = new Paging(pageIndex, pageSize, sortField, sortOrder);
-            List<RoleEntity> re = service.GetRoleListByRole(role, paging, out count);
-
-            string s = JSON.ToJSON(new JSResponse(new ListData<RoleEntity>(re, count)), jsonParams);
-            return s;
-        }
-
+        #region GRANT_MODULE
         [HttpGet]
         public ActionResult GrantRoleModuleIndex()
         {
@@ -138,8 +129,9 @@ namespace OrderSys.Admin.Controllers
             string s = JSON.ToJSON(new JSResponse(data: re), jsonParams);
             return s;
         }
+        #endregion
 
-
+        #region GRANT_SCOPE
         [HttpGet]
         public ActionResult GrantRoleScopeIndex()
         {
@@ -167,10 +159,28 @@ namespace OrderSys.Admin.Controllers
             string sRoleID = JSRequest.GetRequestUrlParm("RoleID");
             int roleID = (int)JSValidator.ValidateInt("资源ID", sRoleID, true);
 
-            int[] scopeIDs = service.GetGrantedRoleScopeIDs(roleID);
+            int[] scopeIDs = service.GetGrantedScopeIDs(roleID);
             string re = string.Join(",", scopeIDs);
             string s = JSON.ToJSON(new JSResponse(data: re), jsonParams);
             return s;
         }
+        #endregion
+
+        [HttpGet]
+        public string GetRoleDDL()
+        {
+            List<RoleEntity> list = service.GetRoleListByRole(service.CurrentRole);
+            var re = list.Select(l =>
+                new ViewRoleDDL()
+                {
+                    ID = l.ID.ToString(),
+                    Title = l.FullName
+                }).ToList();
+
+            string s = JSON.ToJSON(new JSResponse(re), jsonParams);
+
+            return s;
+        }
+
     }
 }

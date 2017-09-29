@@ -70,8 +70,9 @@ namespace OrderSys.Admin.Controllers
         [HttpGet]
         public string GetSingleResource(int resourceID)
         {
-            ViewResource viewModel = new ViewResource();
             ResourceEntity entity = service.GetResource(resourceID);
+
+            ViewResource viewModel = new ViewResource();
             entity.CopyTo(viewModel);
 
             return JSON.ToJSON(new JSResponse(viewModel), jsonParams);
@@ -82,7 +83,7 @@ namespace OrderSys.Admin.Controllers
         public string GetResourceList()
         {
             int count = 0;
-            DataTable re = service.GetResources(out count);
+            DataTable re = service.GetResourceDT(out count);
 
             string s = JSON.ToJSON(new JSResponse(new DataTableData(re, count)), jsonParams);
             return s;
@@ -151,10 +152,10 @@ namespace OrderSys.Admin.Controllers
 
 
         [HttpGet]
-        public string GetPermissionItemList()
+        public string GetPermissionItemDT()
         {
             int count = 0;
-            DataTable re = service.GetPermissionItemsForShow(out count);
+            DataTable re = service.GetTreePermissionItemDT(out count);
 
             string s = JSON.ToJSON(new JSResponse(new DataTableData(re, count)), jsonParams);
             return s;
@@ -189,7 +190,7 @@ namespace OrderSys.Admin.Controllers
             string resourceType = JSRequest.GetRequestUrlParm("resourceType");
 
             int count = 0;
-            DataTable re = service.GetGrantPermissionItemsForShow(resourceCode, resourceType, out count);
+            DataTable re = service.GetGrantItemsDT(resourceCode, resourceType, out count);
 
             string s = JSON.ToJSON(new JSResponse(new DataTableData(re, count)), jsonParams);
             return s;
@@ -212,10 +213,25 @@ namespace OrderSys.Admin.Controllers
 
         #endregion
 
+        #region GrantScope
+
         [HttpGet]
         public ViewResult GrantScopeIndex()
         {
-            return View("~/Areas/Admin/Views/Permission/GrantScope_Index.cshtml");
+            return View("~/Areas/Admin/Views/Organize/GrantScope_Index.cshtml");
+        }
+
+        [HttpGet]
+        public string GetGrantScopeList()
+        {
+            int count = 0;
+            string sResourceCode = JSRequest.GetRequestUrlParm("ResourceCode");
+            string sResourceType = JSRequest.GetRequestUrlParm("ResourceType");
+
+            OrganizeService organizeService = new OrganizeService();
+            DataTable re = organizeService.GetTreeOrganizeDT(sResourceCode, sResourceType, out count);
+            string s = JSON.ToJSON(new JSResponse(new DataTableData(re, count)), jsonParams);
+            return s;
         }
 
         [HttpGet]
@@ -233,6 +249,8 @@ namespace OrderSys.Admin.Controllers
             return s;
         }
 
+        #endregion
+
         [HttpGet]
         public string GetGrantedScopeIDs()
         {
@@ -248,7 +266,7 @@ namespace OrderSys.Admin.Controllers
         [HttpGet]
         public string GetGrantRoleModuleList()
         {
-            List<ResourceEntity> modules = service.GetResourceOfModuleList("OrderSys");
+            List<ResourceEntity> modules = service.GetModuleList("OrderSys");
 
             string s = JSON.ToJSON(new JSResponse(new ListData<ResourceEntity>(modules)), jsonParams);
             return s;
@@ -260,7 +278,7 @@ namespace OrderSys.Admin.Controllers
             int count = 0;
             //获取当前登陆的角色所属的系统类型，从而获取属性列表
 
-            DataTable dt = service.GetScopeTreeDT("OrderSys" + "_Data");
+            DataTable dt = service.GetTreeScopeDT("OrderSys" + "_Data");
 
             string s = JSON.ToJSON(new JSResponse(new DataTableData(dt,count)), jsonParams);
             return s;

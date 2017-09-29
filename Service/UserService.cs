@@ -174,27 +174,11 @@ namespace JSNet.Service
 
             //添加staff
             staff.UserID = Convert.ToInt32(userID);
-            staff.IsEnable = (int)TrueFalse.True;
-            staff.DeletionStateCode = (int)TrueFalse.False;
-            staff.CreateUserId = CurrentUser.ID.ToString();
-            staff.CreateBy = CurrentUser.UserName;
-            staff.CreateOn = DateTime.Now;
-            EntityManager<StaffEntity> staffManager = new EntityManager<StaffEntity>();
-            string staffID = staffManager.Insert(staff);
-
+            string staffID = AddStaff(staff);
+            
             //添加role-user-rel
-            EntityManager<UserRoleEntity> roleUserManager = new EntityManager<UserRoleEntity>();
-            foreach (int roleID in roleIDs)
-            {
-                roleUserManager.Insert(new UserRoleEntity()
-                {
-                    RoleID = roleID,
-                    UserID = Convert.ToInt32(userID),
-                    CreateUserId = CurrentUser.ID.ToString(),
-                    CreateBy = CurrentUser.UserName,
-                    CreateOn = DateTime.Now,
-                });
-            }
+            MyRoleService roleService = new MyRoleService();
+            roleService.GrantRole(Convert.ToInt32(userID), roleIDs);
         }
 
         public void EditUser(UserEntity entity, StaffEntity staff, int[] roleIDs)
@@ -298,15 +282,16 @@ namespace JSNet.Service
 
         #region Staff
 
-        public void AddStaff(StaffEntity entity)
+        public string AddStaff(StaffEntity entity)
         {
-            entity.DeletionStateCode = (int)TrueFalse.True;
+            entity.IsEnable = (int)TrueFalse.True;
+            entity.DeletionStateCode = (int)TrueFalse.False;
             entity.CreateUserId = CurrentUser.ID.ToString();
             entity.CreateBy = CurrentUser.UserName;
             entity.CreateOn = DateTime.Now;
 
             EntityManager<StaffEntity> manager = new EntityManager<StaffEntity>();
-            manager.Insert(entity);
+            return manager.Insert(entity);
         }
 
         public StaffEntity GetStaff(int userID)

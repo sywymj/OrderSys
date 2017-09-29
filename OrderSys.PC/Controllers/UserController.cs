@@ -25,7 +25,7 @@ namespace OrderSys.Admin.Controllers
             return View("~/Areas/Admin/Views/User/Index.cshtml");
         }
         [HttpGet]
-        public string GetList(int pageIndex, int pageSize, string sortField, string sortOrder)
+        public string GetListByPage(int pageIndex, int pageSize, string sortField, string sortOrder)
         {
             int count = 0;
             Paging paging = new Paging(pageIndex, pageSize, sortField, sortOrder);

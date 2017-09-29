@@ -25,7 +25,7 @@
     mini.parse()
     var permissionItem_grid = mini.get("permissionItem-datagrid");
 
-    permissionItem_grid.setUrl("@Url.Action("GetPermissionItemList", "Permission", new { area = "Admin" })");
+    permissionItem_grid.setUrl("@Url.Action("GetPermissionItemDT", "Permission", new { area = "Admin" })");
     permissionItem_grid.load({
     }, function (data) {
         ajaxTips(data.text);

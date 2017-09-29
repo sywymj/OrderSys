@@ -79,33 +79,7 @@ namespace JSNet.Service
         /// <summary>
         /// 分配资源权限
         /// </summary>
-        public void GrantScope(int resourceID, int[] scopeIDs)
-        {
-            //判断资源类型是否为Menu、button，只有Menu、button才能分配资源明细
-            EntityManager<ResourceEntity> resourceManager = new EntityManager<ResourceEntity>();
-            ResourceEntity resource = resourceManager.GetSingle(resourceID);
-            if (!(resource.ResourceType == ResourceType.Data.ToString()))
-            {
-                throw new JSException(JSErrMsg.ERR_CODE_NotAllowGrantItem, string.Format(JSErrMsg.ERR_MSG_NotAllowGrantItem, "资源类型为" + resource.ResourceType + "，"));
-            }
-
-            EntityManager<PermissionScopeEntity> manager = new EntityManager<PermissionScopeEntity>();
-            manager.Delete(resourceID, PermissionEntity.FieldResourceID);
-
-            List<PermissionScopeEntity> entitys = new List<PermissionScopeEntity>();
-            foreach (int scopeID in scopeIDs)
-            {
-                PermissionScopeEntity entity = new PermissionScopeEntity();
-                entity.ResourceID = resourceID;
-                entity.TargetID = scopeID;
-                entity.PermissionItemID = 2;
-                entity.CreateUserId = CurrentUser.ID.ToString();
-                entity.CreateBy = CurrentUser.UserName;
-                entity.CreateOn = DateTime.Now;
-                entitys.Add(entity);
-            }
-            manager.Insert(entitys);
-        }
+        
 
         public Dictionary<string, List<string>> GetRolePermissionScope(RoleEntity role, string resouceCode)
         {
@@ -143,16 +117,16 @@ namespace JSNet.Service
 
         public void AddResource(ResourceEntity entity)
         {
-            EntityManager<ResourceEntity> manager = new EntityManager<ResourceEntity>();
             entity.CreateUserId = CurrentUser.ID.ToString();
             entity.CreateBy = CurrentUser.UserName;
             entity.CreateOn = DateTime.Now;
+
+            EntityManager<ResourceEntity> manager = new EntityManager<ResourceEntity>();
             manager.Insert(entity);
         }
 
         public void EditResource(ResourceEntity entity)
         {
-            EntityManager<ResourceEntity> manager = new EntityManager<ResourceEntity>();
             List<KeyValuePair<string, object>> kvps = new List<KeyValuePair<string, object>>();
             kvps.Add(new KeyValuePair<string, object>(ResourceEntity.FieldParentID, entity.ParentID));
             kvps.Add(new KeyValuePair<string, object>(ResourceEntity.FieldCode, entity.Code));
@@ -168,6 +142,8 @@ namespace JSNet.Service
             kvps.Add(new KeyValuePair<string, object>(ResourceEntity.FieldModifiedUserId, CurrentUser.ID.ToString()));
             kvps.Add(new KeyValuePair<string, object>(ResourceEntity.FieldModifiedBy, CurrentUser.UserName));
             kvps.Add(new KeyValuePair<string, object>(ResourceEntity.FieldModifiedOn, DateTime.Now));
+
+            EntityManager<ResourceEntity> manager = new EntityManager<ResourceEntity>();
             manager.Update(kvps, entity.ID);
         }
 
@@ -178,29 +154,23 @@ namespace JSNet.Service
             return entity;
         }
 
-        public DataTable GetResources(out int count)
+        public DataTable GetResourceDT(out int count)
         {
-            ViewManager vmanager = new ViewManager("VP_Resource_Show");
             WhereStatement where = new WhereStatement();
 
+            ViewManager vmanager = new ViewManager("VP_Resource_Show");
             DataTable dt = vmanager.GetDataTable(where, out count);
             return dt;
         }
 
-        public List<ResourceEntity> GetResourceOfModuleList(string resouceCode, bool onlyChild = true)
-        {
-            List<ResourceEntity> list = GetResourceList(resouceCode, onlyChild);
-            return list.Where(l => l.ResourceType != ResourceType.Data.ToString()).ToList();
-        }
-
-        public List<ResourceEntity> GetResourceList(string resouceCode, bool onlyChild = true)
+        public List<ResourceEntity> GetResourceList(string parentResouceCode, bool onlyChild = true)
         {
             EntityManager<ResourceEntity> manager = new EntityManager<ResourceEntity>();
 
-            string[] ids = GetTreeResourceIDs(resouceCode);
+            string[] ids = GetTreeResourceIDs(parentResouceCode);
             if (ids.Length == 0)
             {
-                throw new JSException(JSErrMsg.ERR_CODE_DATA_MISSING, string.Format(JSErrMsg.ERR_MSG_DATA_MISSING, "resouceCode"));
+                throw new JSException(JSErrMsg.ERR_CODE_DATA_MISSING, string.Format(JSErrMsg.ERR_MSG_DATA_MISSING, "ResouceCode"));
             }
 
             WhereStatement where = new WhereStatement();
@@ -211,13 +181,13 @@ namespace JSNet.Service
 
             if (onlyChild)
             {
-                list.Where(l => l.Code != resouceCode);
+                list.Where(l => l.Code != parentResouceCode);
             }
 
             return list;
         }
 
-        public string[] GetTreeResourceIDs(string resouceCode)
+        private string[] GetTreeResourceIDs(string resouceCode)
         {
             string[] s = GetTreeIDs(
                 "[VP_Resource]",
@@ -226,36 +196,24 @@ namespace JSNet.Service
             return s;
         }
 
-        public bool ChkResourceCodeExist(string resourceCode, string resourceID)
-        {
-            EntityManager<ResourceEntity> manager = new EntityManager<ResourceEntity>();
-            bool b = ChkExist<ResourceEntity>(
-                manager,
-                ResourceEntity.FieldCode, resourceCode,
-                ResourceEntity.FieldID, resourceID);
-            return b;
-        }
-
-
-
         #endregion
 
         #region PermissionItem
 
         public void AddPermissionItem(PermissionItemEntity entity)
         {
-            EntityManager<PermissionItemEntity> manager = new EntityManager<PermissionItemEntity>();
             entity.AllowEdit = (int)TrueFalse.True;
             entity.AllowDelete = (int)TrueFalse.True;
             entity.CreateUserId = CurrentUser.ID.ToString();
             entity.CreateBy = CurrentUser.UserName;
             entity.CreateOn = DateTime.Now;
+
+            EntityManager<PermissionItemEntity> manager = new EntityManager<PermissionItemEntity>();
             manager.Insert(entity);
         }
 
         public void EditPermissionItem(PermissionItemEntity entity)
         {
-            EntityManager<PermissionItemEntity> manager = new EntityManager<PermissionItemEntity>();
             List<KeyValuePair<string, object>> kvps = new List<KeyValuePair<string, object>>();
             kvps.Add(new KeyValuePair<string, object>(PermissionItemEntity.FieldParentID, entity.ParentID));
             kvps.Add(new KeyValuePair<string, object>(PermissionItemEntity.FieldCode, entity.Code));
@@ -271,6 +229,8 @@ namespace JSNet.Service
             kvps.Add(new KeyValuePair<string, object>(PermissionItemEntity.FieldModifiedUserId, CurrentUser.ID.ToString()));
             kvps.Add(new KeyValuePair<string, object>(PermissionItemEntity.FieldModifiedBy, CurrentUser.UserName));
             kvps.Add(new KeyValuePair<string, object>(PermissionItemEntity.FieldModifiedOn, DateTime.Now));
+
+            EntityManager<PermissionItemEntity> manager = new EntityManager<PermissionItemEntity>();
             manager.Update(kvps, entity.ID);
         }
 
@@ -281,12 +241,78 @@ namespace JSNet.Service
             return entity;
         }
 
-        public void GrantItem(int resourceID,int[] permissionItemIDs)
+        public DataTable GetTreePermissionItemDT(out int count, string parentPermissionItemCode = "Resource.ManagePermission")
+        {
+            string[] permissionItemIDs = GetTreePermissionItemIDs(parentPermissionItemCode);
+
+            WhereStatement where = new WhereStatement();
+            where.Add("PermissionItem_ID", Comparison.In, permissionItemIDs);
+
+            ViewManager vmanager = new ViewManager("VP_PermissionItem_Show");
+            DataTable dt = vmanager.GetDataTable(where, out count);
+            return dt;
+        }
+
+        public List<PermissionItemEntity> GetTreePermissionItemList(string parentPermissionItemCode, bool onlyChild = true)
+        {
+            string[] ids = GetTreePermissionItemIDs(parentPermissionItemCode);
+            if (ids.Length == 0)
+            {
+                throw new JSException(JSErrMsg.ERR_CODE_DATA_MISSING, string.Format(JSErrMsg.ERR_MSG_DATA_MISSING, "permissionItemCode"));
+            }
+
+            WhereStatement where = new WhereStatement();
+            where.Add(PermissionItemEntity.FieldID, Comparison.In, ids);
+
+            int count = 0;
+            EntityManager<PermissionItemEntity> manager = new EntityManager<PermissionItemEntity>();
+            List<PermissionItemEntity> list = manager.GetList(where, out count);
+
+            if (onlyChild)
+            {
+                list.Where(l => l.Code != parentPermissionItemCode);
+            }
+
+            return list;
+        }
+
+        private string[] GetTreePermissionItemIDs(string permissionItemCode)
+        {
+            string[] s = GetTreeIDs(
+                "[VP_PermissionItem]",
+                "PermissionItem_Code", permissionItemCode,
+                "PermissionItem_ID", "PermissionItem_ParentID");
+            return s;
+        }
+
+        #endregion
+
+        #region GrantItem
+
+        public DataTable GetGrantItemsDT(string resourceCode, string resourceType, out int count)
+        {
+            if (!(resourceType == ResourceType.Menu.ToString()
+                || resourceType == ResourceType.Button.ToString()))
+            {
+                throw new JSException(JSErrMsg.ERR_CODE_NotAllowGrantItem, string.Format(JSErrMsg.ERR_MSG_NotAllowGrantItem, "资源类型为" + resourceType + "，"));
+            }
+
+            if (resourceCode.Split('.').Length < 2)
+            {
+                throw new JSException(JSErrMsg.ERR_CODE_ErrorFormatCode, JSErrMsg.ERR_MSG_ErrorFormatCode);
+            }
+            string parentPermissionItemCode = resourceCode.Split('.')[0];
+
+            DataTable dt = GetTreePermissionItemDT(out count, parentPermissionItemCode);
+            return dt;
+        }
+
+        public void GrantItem(int resourceID, int[] permissionItemIDs)
         {
             //判断资源类型是否为Menu、button，只有Menu、button才能分配资源明细
             EntityManager<ResourceEntity> resourceManager = new EntityManager<ResourceEntity>();
             ResourceEntity resource = resourceManager.GetSingle(resourceID);
-            if (!(resource.ResourceType == ResourceType.Menu.ToString() 
+            if (!(resource.ResourceType == ResourceType.Menu.ToString()
                 || resource.ResourceType == ResourceType.Button.ToString()))
             {
                 throw new JSException(JSErrMsg.ERR_CODE_NotAllowGrantItem, string.Format(JSErrMsg.ERR_MSG_NotAllowGrantItem, "资源类型为" + resource.ResourceType + "，"));
@@ -309,82 +335,91 @@ namespace JSNet.Service
             manager.Insert(entitys);
         }
 
-        public DataTable GetGrantPermissionItemsForShow(string resourceCode,string resourceType, out int count)
+        public int[] GetGrantedItemIDs(int reourceID)
         {
-            if (!(resourceType == ResourceType.Menu.ToString()
-                || resourceType == ResourceType.Button.ToString()))
-            {
-                throw new JSException(JSErrMsg.ERR_CODE_NotAllowGrantItem, string.Format(JSErrMsg.ERR_MSG_NotAllowGrantItem, "资源类型为" + resourceType + "，"));
-            }
-
-            if (resourceCode.Split('.').Length < 2)
-            {
-                throw new JSException(JSErrMsg.ERR_CODE_ErrorFormatCode, JSErrMsg.ERR_MSG_ErrorFormatCode);
-            }
-            string parentPermissionItemCode = resourceCode.Split('.')[0];
-
-            DataTable dt = GetPermissionItemsForShow(out count, parentPermissionItemCode);
-            return dt;
-        }
-
-        public DataTable GetPermissionItemsForShow(out int count, string permissionItemCode = "Resource.ManagePermission")
-        {
-            string[] permissionItemIDs = GetTreePermissionItemIDs(permissionItemCode);
-
-            ViewManager vmanager = new ViewManager("VP_PermissionItem_Show");
             WhereStatement where = new WhereStatement();
-            where.Add("PermissionItem_ID", Comparison.In, permissionItemIDs);
+            where.Add(PermissionEntity.FieldResourceID, Comparison.Equals, reourceID);
 
-            DataTable dt = vmanager.GetDataTable(where, out count);
-            return dt;
-        }
+            EntityManager<PermissionEntity> manager = new EntityManager<PermissionEntity>();
+            string[] sScopeIDs = manager.GetProperties(PermissionEntity.FieldPermissionItemID, where);
 
-        public List<PermissionItemEntity> GetTreePermissionItemList(string permissionItemCode, bool onlyChild=true)
-        {
-            EntityManager<PermissionItemEntity> manager = new EntityManager<PermissionItemEntity>();
-
-            string[] ids = GetTreePermissionItemIDs(permissionItemCode);
-            if (ids.Length == 0)
-            {
-                throw new JSException(JSErrMsg.ERR_CODE_DATA_MISSING, string.Format(JSErrMsg.ERR_MSG_DATA_MISSING, "permissionItemCode"));
-            }
-
-            WhereStatement where = new WhereStatement();
-            where.Add(PermissionItemEntity.FieldID, Comparison.In, ids);
-
-            int count = 0;
-            List<PermissionItemEntity> list = manager.GetList(where, out count);
-
-            if (onlyChild)
-            {
-                list.Where(l => l.Code != permissionItemCode);
-            }
-
-            return list;
-        }
-
-        public string[] GetTreePermissionItemIDs(string permissionItemCode)
-        {
-            string[] s = GetTreeIDs(
-                "[VP_PermissionItem]", 
-                "PermissionItem_Code", permissionItemCode, 
-                "PermissionItem_ID", "PermissionItem_ParentID");
-            return s;
-        }
-
-        public bool ChkPermissionItemCodeExist(string permissionItemCode, string permissionItemID)
-        {
-            EntityManager<PermissionItemEntity> manager = new EntityManager<PermissionItemEntity>();
-            bool b = ChkExist<PermissionItemEntity>(
-                manager, 
-                PermissionItemEntity.FieldCode, permissionItemCode, 
-                PermissionItemEntity.FieldID, permissionItemID);
-            return b;
+            int[] scopeIDs = CommonUtil.ConvertToIntArry(sScopeIDs);
+            return scopeIDs;
         }
 
         #endregion
 
-        #region 模块权限相关
+        #region GrantScope
+
+        public DataTable GetTreeScopeDT(string parentCode)
+        {
+            string[] ids = GetTreeScopeIDs(parentCode);
+            if (ids.Length == 0)
+            {
+                return new DataTable("JSNet");
+            }
+
+            WhereStatement where = new WhereStatement();
+            where.Add("Resource_ID", Comparison.In, ids);
+
+            int count = 0;
+            ViewManager vmanager = new ViewManager("VP_PermissionScope");
+            DataTable dt = vmanager.GetDataTable(where, out count);
+            return dt;
+        }
+
+        public void GrantScope(int resourceID, int[] scopeIDs)
+        {
+            //判断资源类型是否为Menu、button，只有Menu、button才能分配资源明细
+            EntityManager<ResourceEntity> resourceManager = new EntityManager<ResourceEntity>();
+            ResourceEntity resource = resourceManager.GetSingle(resourceID);
+            if (!(resource.ResourceType == ResourceType.Data.ToString()))
+            {
+                throw new JSException(JSErrMsg.ERR_CODE_NotAllowGrantItem, string.Format(JSErrMsg.ERR_MSG_NotAllowGrantItem, "资源类型为" + resource.ResourceType + "，"));
+            }
+
+            EntityManager<PermissionScopeEntity> manager = new EntityManager<PermissionScopeEntity>();
+            manager.Delete(resourceID, PermissionEntity.FieldResourceID);
+
+            List<PermissionScopeEntity> entitys = new List<PermissionScopeEntity>();
+            foreach (int scopeID in scopeIDs)
+            {
+                PermissionScopeEntity entity = new PermissionScopeEntity();
+                entity.ResourceID = resourceID;
+                entity.TargetID = scopeID;
+                entity.PermissionItemID = 2;
+                entity.CreateUserId = CurrentUser.ID.ToString();
+                entity.CreateBy = CurrentUser.UserName;
+                entity.CreateOn = DateTime.Now;
+                entitys.Add(entity);
+            }
+            manager.Insert(entitys);
+        }
+
+        public int[] GetGrantedScopeIDs(int reourceID)
+        {
+            WhereStatement where = new WhereStatement();
+            where.Add(PermissionScopeEntity.FieldResourceID, Comparison.Equals, reourceID);
+
+            EntityManager<PermissionScopeEntity> manager = new EntityManager<PermissionScopeEntity>();
+            string[] sItems = manager.GetProperties(PermissionScopeEntity.FieldTargetID, where);
+
+            int[] itemIDs = CommonUtil.ConvertToIntArry(sItems);
+            return itemIDs;
+        }
+
+        private string[] GetTreeScopeIDs(string parentCode)
+        {
+            string[] s = GetTreeIDs(
+                "[VP_PermissionScope]",
+                "Resource_Code", parentCode,
+                "Resource_ID", "Resource_ParentID");
+            return s;
+        }
+
+        #endregion
+
+        #region 操作权限相关
 
         public bool IsPermissionAuthorizedByRole(RoleEntity role, string controllerName, string actionName)
         {
@@ -429,28 +464,104 @@ namespace JSNet.Service
             return false;
         }
 
-        public DataTable GetAllRolesPermissions()
+        private DataTable GetAllRolesPermissions()
         {
             // TODO 先从缓存里面拿，如果没有再从数据库拿
-            ViewManager vmanager = new ViewManager("VP_RolePermission");
             WhereStatement where = new WhereStatement();
             where.Add("PermissionItem_IsEnable", Comparison.Equals, (int)TrueFalse.True);
 
             int count = 0;
+            ViewManager vmanager = new ViewManager("VP_RolePermission");
             DataTable dt = vmanager.GetDataTable(where, out count);
             return dt;
         }
 
-        public List<PermissionItemEntity> GetAllPublicPermissionItem()
+        private List<PermissionItemEntity> GetAllPublicPermissionItem()
         {
-            int count = 0;
-            EntityManager<PermissionItemEntity> manager = new EntityManager<PermissionItemEntity>();
             WhereStatement where = new WhereStatement();
             where.Add(PermissionItemEntity.FieldIsPublic, Comparison.Equals, (int)TrueFalse.True);
+
+            int count = 0;
+            EntityManager<PermissionItemEntity> manager = new EntityManager<PermissionItemEntity>();
             List<PermissionItemEntity> list = manager.GetList(where, out count);
             return list;
         }
 
+        #endregion
+
+        #region  资源权限相关
+
+        public Dictionary<string, List<string>> GetAuthorizedScopeByRole(RoleEntity role, string scopeCode)
+        {
+            if (role.ID == 1)
+            {
+                return new Dictionary<string, List<string>>();
+            }
+
+            int count = 0;
+            ViewManager vmanager = new ViewManager("VP_RoleScope");
+            WhereStatement where = new WhereStatement();
+            where.Add("Resource_Code", Comparison.Equals, scopeCode);
+            where.Add("Role_ID", Comparison.Equals, role.ID);
+            DataTable dt = vmanager.GetDataTable(where, out count);
+
+            //填入dic
+            Dictionary<string, List<string>> dic = new Dictionary<string, List<string>>();
+            foreach (DataRow dr in dt.Rows)
+            {
+                string organizeCategory = dr["OrganizeCategory_Code"].ToString();//字段名
+                //数据值，split('.')的code最后一个 OrderSys.FSWGY.TeacherDEPT，最后一个就是列值
+                string organize = dr["Organize_Code"].ToString().Split('.')[dr["Organize_Code"].ToString().Split('.').Length - 1];
+                if (!dic.ContainsKey(organizeCategory))
+                {
+                    dic.Add(organizeCategory, new List<string>());
+                }
+                dic[organizeCategory].Add(organize);
+            }
+
+            if (dic.Count == 0)
+            {
+                List<string> list = new List<string>();
+                list.Add("1");
+                dic.Add("0", list);//没有配置资源时，where 从句 => 0 in (1)
+            }
+            return dic;
+
+        }
+
+        public List<string> GetAuthorizeOrganizeIDByRole(RoleEntity role, string scopeCode)
+        {
+            if (role.ID == 1)
+            {
+                return new List<string>();
+            }
+
+            int count = 0;
+            ViewManager vmanager = new ViewManager("VP_RoleScope");
+            WhereStatement where = new WhereStatement();
+            where.Add("Resource_Code", Comparison.Equals, scopeCode);
+            where.Add("Role_ID", Comparison.Equals, role.ID);
+            DataTable dt = vmanager.GetDataTable(where, out count);
+
+            //填入list
+            OrganizeService organizeService = new OrganizeService();
+            List<string> list = new List<string>();
+            foreach (DataRow dr in dt.Rows)
+            {
+                list.AddRange(organizeService.GetTreeOrganizeIDs(dr["Organize_Code"].ToString()).ToList());
+            }
+
+            if (list.Count == 0)
+            {
+                list.Add("0");
+            }
+
+            return list.Distinct<string>().ToList(); ;
+        }
+
+        #endregion
+
+        #region 后台模块
 
         /// <summary>
         /// 获取对应code下一层的button
@@ -532,143 +643,35 @@ namespace JSNet.Service
                                     FROM TreeMenu ";
             DataTable dt = dbHelper.Fill(sqlQuery, dbParameters);
             return DataTableUtil.FieldToArray(dt, "ID");
-        }
-
-        //public string[] GetTreeMenuIds(RoleEntity role,string resourceCode)
-        //{
-        //    ViewManager vmanager = new ViewManager("VP_RoleResource");
-        //    WhereStatement where = new WhereStatement();
-        //    where.Add("Role_ID",Comparison.Equals,role.ID);
-        //    where.Add("", Comparison.Equals, role.ID);
-        //    string[] ids = vmanager.GetDataTable(where);
-        //    return ids;
-        //}
+        } 
 
         #endregion
 
-        #region  资源权限相关
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="role">角色</param>
-        /// <param name="scopeCode">资源代码</param>
-        /// <returns></returns>
-        public Dictionary<string,List<string>> GetAuthorizedScopeByRole(RoleEntity role, string scopeCode)
+        public List<ResourceEntity> GetModuleList(string parentResouceCode, bool onlyChild = true)
         {
-            if (role.ID == 1)
-            {
-                return new Dictionary<string, List<string>>();
-            }
+            List<ResourceEntity> list = GetResourceList(parentResouceCode, onlyChild);
+            return list.Where(l => l.ResourceType != ResourceType.Data.ToString()).ToList();
+        }
+        
 
-            int count = 0;
-            ViewManager vmanager = new ViewManager("VP_RoleScope");
-            WhereStatement where = new WhereStatement();
-            where.Add("Resource_Code", Comparison.Equals, scopeCode);
-            where.Add("Role_ID", Comparison.Equals, role.ID);
-            DataTable dt = vmanager.GetDataTable(where, out count);
-            
-            //填入dic
-            Dictionary<string,List<string>> dic = new Dictionary<string,List<string>>();
-            foreach(DataRow dr in dt.Rows)
-            {
-                string organizeCategory = dr["OrganizeCategory_Code"].ToString();//字段名
-                //数据值，split('.')的code最后一个 OrderSys.FSWGY.TeacherDEPT，最后一个就是列值
-                string organize = dr["Organize_Code"].ToString().Split('.')[dr["Organize_Code"].ToString().Split('.').Length - 1];
-                if (!dic.ContainsKey(organizeCategory))
-                {
-                    dic.Add(organizeCategory, new List<string>());
-                }
-                dic[organizeCategory].Add(organize);
-            }
-
-            if (dic.Count == 0)
-            {
-                List<string> list = new List<string>();
-                list.Add("1");
-                dic.Add("0", list);//没有配置资源时，where 从句 => 0 in (1)
-            }
-            return dic;
-
+        public bool ChkResourceCodeExist(string resourceCode, string resourceID)
+        {
+            EntityManager<ResourceEntity> manager = new EntityManager<ResourceEntity>();
+            bool b = ChkExist<ResourceEntity>(
+                manager,
+                ResourceEntity.FieldCode, resourceCode,
+                ResourceEntity.FieldID, resourceID);
+            return b;
         }
 
-        public List<string> GetAuthorizeOrganizeIDByRole(RoleEntity role,string scopeCode)
+        public bool ChkPermissionItemCodeExist(string permissionItemCode, string permissionItemID)
         {
-            if (role.ID == 1)
-            {
-                return new List<string>();
-            }
-
-            int count = 0;
-            ViewManager vmanager = new ViewManager("VP_RoleScope");
-            WhereStatement where = new WhereStatement();
-            where.Add("Resource_Code", Comparison.Equals, scopeCode);
-            where.Add("Role_ID", Comparison.Equals, role.ID);
-            DataTable dt = vmanager.GetDataTable(where, out count);
-
-            //填入list
-            OrganizeService organizeService = new OrganizeService();
-            List<string> list = new List<string>();
-            foreach (DataRow dr in dt.Rows)
-            {
-                list.AddRange(organizeService.GetTreeOrganizeIDs(dr["Organize_Code"].ToString()).ToList());
-            }
-
-            if (list.Count == 0)
-            {
-                list.Add("0");
-            }
-
-            return list.Distinct<string>().ToList(); ;
-        }
-        #endregion
-
-        public DataTable GetScopeTreeDT(string parentCode)
-        {
-            ViewManager vmanager = new ViewManager("VP_PermissionScope");
-
-            string[] ids = GetTreeScopeIDs(parentCode);
-            if (ids.Length == 0)
-            {
-                return new DataTable("JSNet");
-            }
-
-            WhereStatement where = new WhereStatement();
-            where.Add("Resource_ID", Comparison.In, ids);
-
-            int count = 0;
-            DataTable dt = vmanager.GetDataTable(where, out count);
-            return dt;
-        }
-
-        public string[] GetTreeScopeIDs(string parentCode)
-        {
-            string[] s = GetTreeIDs(
-                "[VP_PermissionScope]",
-                "Resource_Code", parentCode,
-                "Resource_ID", "Resource_ParentID");
-            return s;
-        }
-
-        public int[] GetGrantedItemIDs(int reourceID)
-        {
-            EntityManager<PermissionEntity> manager = new EntityManager<PermissionEntity>();
-            WhereStatement where = new WhereStatement();
-            where.Add(PermissionEntity.FieldResourceID, Comparison.Equals, reourceID);
-
-            string[] sScopeIDs = manager.GetProperties(PermissionEntity.FieldPermissionItemID, where);
-            int[] scopeIDs = CommonUtil.ConvertToIntArry(sScopeIDs);
-            return scopeIDs;
-        }
-
-        public int[] GetGrantedScopeIDs(int reourceID)
-        {
-            EntityManager<PermissionScopeEntity> manager = new EntityManager<PermissionScopeEntity>();
-            WhereStatement where = new WhereStatement();
-            where.Add(PermissionScopeEntity.FieldResourceID, Comparison.Equals, reourceID);
-
-            string[] sItems = manager.GetProperties(PermissionScopeEntity.FieldTargetID, where);
-            int[] itemIDs = CommonUtil.ConvertToIntArry(sItems);
-            return itemIDs;
+            EntityManager<PermissionItemEntity> manager = new EntityManager<PermissionItemEntity>();
+            bool b = ChkExist<PermissionItemEntity>(
+                manager,
+                PermissionItemEntity.FieldCode, permissionItemCode,
+                PermissionItemEntity.FieldID, permissionItemID);
+            return b;
         }
 
     }

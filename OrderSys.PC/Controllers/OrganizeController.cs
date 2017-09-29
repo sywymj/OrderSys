@@ -19,6 +19,10 @@ namespace OrderSys.Admin.Controllers
         // GET: /Organize/
         OrganizeService service = new OrganizeService();
 
+        #region Organize
+
+        #region INDEX
+
         [HttpGet]
         public ActionResult OrganizeIndex()
         {
@@ -26,36 +30,25 @@ namespace OrderSys.Admin.Controllers
         }
 
         [HttpGet]
+        public string GetOrganizeList()
+        {
+            int count = 0;
+            //string sParentCode = JSRequest.GetRequestUrlParm("ParentCode");
+
+            DataTable re = service.GetTreeOrganizeDTByUser(service.CurrentUser, out count);
+            string s = JSON.ToJSON(new JSResponse(new DataTableData(re, count)), jsonParams);
+            return s;
+        }
+
+        #endregion
+
+        #region INSERT
+
+        [HttpGet]
         public ActionResult InsertOrganizeIndex()
         {
             return View("~/Areas/Admin/Views/Organize/Organize_InsertIndex.cshtml");
         }
-
-        [HttpGet]
-        public ActionResult EditOrganizeIndex()
-        {
-            return View("~/Areas/Admin/Views/Organize/Organize_InsertIndex.cshtml");
-        }
-
-        [HttpGet]
-        public ActionResult OrganizeCategoryIndex()
-        {
-            return View("~/Areas/Admin/Views/Organize/OrganizeCategory_Index.cshtml");
-        }
-
-        [HttpGet]
-        public ActionResult InsertOrganizeCategoryIndex()
-        {
-            return View("~/Areas/Admin/Views/Organize/OrganizeCategory_InsertIndex.cshtml");
-        }
-
-        [HttpGet]
-        public ActionResult EditOrganizeCategoryIndex()
-        {
-            return View("~/Areas/Admin/Views/Organize/OrganizeCategory_InsertIndex.cshtml");
-        }
-
-        #region Organize
         [HttpPost]
         public string AddOrganize()
         {
@@ -69,6 +62,16 @@ namespace OrderSys.Admin.Controllers
 
             service.AddOrganize(Organize);
             return JSON.ToJSON(new JSResponse(ResponseType.Remind, "添加成功！"), jsonParams);
+        } 
+
+        #endregion
+
+        #region EDIT
+
+        [HttpGet]
+        public ActionResult EditOrganizeIndex()
+        {
+            return View("~/Areas/Admin/Views/Organize/Organize_InsertIndex.cshtml");
         }
 
         [HttpPost]
@@ -96,37 +99,96 @@ namespace OrderSys.Admin.Controllers
             return JSON.ToJSON(new JSResponse(viewModel), jsonParams);
         }
 
+        #endregion
+
+        #endregion
+
+        #region OrganizeCategory
+
+        #region INDEX
+
         [HttpGet]
-        public string GetOrganizeList()
+        public ActionResult OrganizeCategoryIndex()
         {
-            int count = 0;
-            //string sParentCode = JSRequest.GetRequestUrlParm("ParentCode");
-            UserService userService = new UserService();
-            UserEntity user = userService.GetCurrentUser();
-            DataTable re = service.GetTreeOrganizeDTByUser(user,out count);
-            string s = JSON.ToJSON(new JSResponse(new DataTableData(re, count)), jsonParams);
-            return s;
+            return View("~/Areas/Admin/Views/Organize/OrganizeCategory_Index.cshtml");
         }
 
         [HttpGet]
-        public string GetGrantOrganizeList()
+        public string GetOrganizeCategoryList(int pageIndex, int pageSize, string sortField, string sortOrder)
         {
             int count = 0;
-            string sResourceCode = JSRequest.GetRequestUrlParm("ResourceCode");
-            string sResourceType = JSRequest.GetRequestUrlParm("ResourceType");
+            Paging paging = new Paging(pageIndex, pageSize, sortField, sortOrder);
 
-            DataTable re = service.GetGrantOrganizeDT(sResourceCode, sResourceType, out count);
-            string s = JSON.ToJSON(new JSResponse(new DataTableData(re, count)), jsonParams);
+            List<OrganizeCategoryEntity> re = service.GetOrganizeCategorys(paging, out count);
+            string s = JSON.ToJSON(new JSResponse(new ListData<OrganizeCategoryEntity>(re, count)), jsonParams);
             return s;
         }
+
+        #endregion
+
+        #region INSERT
+
+        [HttpGet]
+        public ActionResult InsertOrganizeCategoryIndex()
+        {
+            return View("~/Areas/Admin/Views/Organize/OrganizeCategory_InsertIndex.cshtml");
+        }
+
+        [HttpPost]
+        public string AddOrganizeCategory()
+        {
+            string s = JSRequest.GetRequestFormParm("viewModel");
+            ViewOrganizeCategory viewModel = FastJSON.JSON.ToObject<ViewOrganizeCategory>(s);
+
+            //TODO 数据验证。
+
+            OrganizeCategoryEntity OrganizeCategory = new OrganizeCategoryEntity();
+            viewModel.CopyTo(OrganizeCategory);
+
+            service.AddOrganizeCategory(OrganizeCategory);
+            return JSON.ToJSON(new JSResponse(ResponseType.Remind, "添加成功！"), jsonParams);
+        }
+
+        #endregion
+
+        #region EDIT
+        [HttpGet]
+        public ActionResult EditOrganizeCategoryIndex()
+        {
+            return View("~/Areas/Admin/Views/Organize/OrganizeCategory_InsertIndex.cshtml");
+        }
+        [HttpPost]
+        public string EditOrganizeCategory()
+        {
+            string s = JSRequest.GetRequestFormParm("viewModel");
+            ViewOrganizeCategory viewModel = FastJSON.JSON.ToObject<ViewOrganizeCategory>(s);
+
+            //TODO 数据验证。
+
+            OrganizeCategoryEntity OrganizeCategory = new OrganizeCategoryEntity();
+            viewModel.CopyTo(OrganizeCategory);
+
+            service.EditOrganizeCategory(OrganizeCategory);
+            return JSON.ToJSON(new JSResponse(ResponseType.Remind, "修改成功！"), jsonParams);
+        }
+
+        [HttpGet]
+        public string GetSingleOrganizeCategory(int organizeCategoryID)
+        {
+            ViewOrganizeCategory viewModel = new ViewOrganizeCategory();
+            OrganizeCategoryEntity entity = service.GetOrganizeCategory(organizeCategoryID);
+            entity.CopyTo(viewModel);
+
+            return JSON.ToJSON(new JSResponse(viewModel), jsonParams);
+        }
+        #endregion
+
+        #endregion
 
         [HttpGet]
         public string GetOrganizeDDL()
         {
-           // List<OrganizeEntity> list = service.GetTreeOrganizeList("OrderSys.FSWGY");
-            UserService userService = new UserService();
-            UserEntity user = userService.GetCurrentUser();
-            List<OrganizeEntity> list = service.GetTreeOrganizeListByUser(user);
+            List<OrganizeEntity> list = service.GetTreeOrganizeListByUser(service.CurrentUser);
 
             var re = list.Select(l =>
                 new ViewOrganizeDDL()
@@ -142,11 +204,25 @@ namespace OrderSys.Admin.Controllers
         }
 
         [HttpGet]
+        public string GetOrganizeTreeDDL()
+        {
+            List<OrganizeEntity> list = service.GetTreeOrganizeListByUser(service.CurrentUser);
+
+            var re = list.Select(l => new ViewOrganizeDDL()
+            {
+                ID = l.ID.ToString(),
+                ParentID = l.ParentID.ToString(),
+                Title = l.FullName
+            }).ToList();
+
+            string s = JSON.ToJSON(new JSResponse(re), jsonParams);
+            return s;
+        } 
+
+        [HttpGet]
         public string GetOrganizeCodeDDL()
         {
-            UserService userService = new UserService();
-            UserEntity user = userService.GetCurrentUser();
-            List<OrganizeEntity> list = service.GetTreeOrganizeListByUser(user);
+            List<OrganizeEntity> list = service.GetTreeOrganizeListByUser(service.CurrentUser);
 
             var re = list.Select(l => new ViewOrganizeCodeDDL()
             {
@@ -175,81 +251,6 @@ namespace OrderSys.Admin.Controllers
         }
 
         [HttpGet]
-        public string GetOrganizeTreeDDL()
-        {
-            UserService userService = new UserService();
-            UserEntity user = userService.GetCurrentUser();
-            List<OrganizeEntity> list = service.GetTreeOrganizeListByUser(user);
-
-            var re = list.Select(l => new ViewOrganizeDDL()
-            {
-                ID = l.ID.ToString(),
-                ParentID = l.ParentID.ToString(),
-                Title = l.FullName
-            }).ToList();
-
-            string s = JSON.ToJSON(new JSResponse(re), jsonParams);
-            return s;
-        } 
-        #endregion
-
-        #region OrganizeCategory
-        [HttpPost]
-        public string AddOrganizeCategory()
-        {
-            string s = JSRequest.GetRequestFormParm("viewModel");
-            ViewOrganizeCategory viewModel = FastJSON.JSON.ToObject<ViewOrganizeCategory>(s);
-
-            //TODO 数据验证。
-
-            OrganizeCategoryEntity OrganizeCategory = new OrganizeCategoryEntity();
-            viewModel.CopyTo(OrganizeCategory);
-
-            service.AddOrganizeCategory(OrganizeCategory);
-            return JSON.ToJSON(new JSResponse(ResponseType.Remind, "添加成功！"), jsonParams);
-        }
-
-        [HttpPost]
-        public string EditOrganizeCategory()
-        {
-            string s = JSRequest.GetRequestFormParm("viewModel");
-            ViewOrganizeCategory viewModel = FastJSON.JSON.ToObject<ViewOrganizeCategory>(s);
-
-            //TODO 数据验证。
-
-            OrganizeCategoryEntity OrganizeCategory = new OrganizeCategoryEntity();
-            viewModel.CopyTo(OrganizeCategory);
-
-            service.EditOrganizeCategory(OrganizeCategory);
-            return JSON.ToJSON(new JSResponse(ResponseType.Remind, "修改成功！"), jsonParams);
-        }
-
-        [HttpGet]
-        public string GetSingleOrganizeCategory(int organizeCategoryID)
-        {
-            ViewOrganizeCategory viewModel = new ViewOrganizeCategory();
-            OrganizeCategoryEntity entity = service.GetOrganizeCategory(organizeCategoryID);
-            entity.CopyTo(viewModel);
-
-            return JSON.ToJSON(new JSResponse(viewModel), jsonParams);
-        }
-
-        [HttpGet]
-        public string GetOrganizeCategoryList(int pageIndex, int pageSize, string sortField, string sortOrder)
-        {
-            int count = 0;
-            Paging paging = new Paging(pageIndex, pageSize, sortField, sortOrder);
-
-            List<OrganizeCategoryEntity> re = service.GetOrganizeCategorys(paging,out count);
-            string s = JSON.ToJSON(new JSResponse(new ListData<OrganizeCategoryEntity>(re, count)), jsonParams);
-            return s;
-        } 
-        #endregion
-
-
-
-
-        [HttpGet]
         public string VerifyOrganizeCode(string organizeCode, string organizeID)
         {
             bool re = false;
@@ -276,7 +277,6 @@ namespace OrderSys.Admin.Controllers
             re = true;
             return JSON.ToJSON(new JSResponse(re), jsonParams);
         }
-
 
     }
 
