@@ -7,7 +7,7 @@
 <div class="mini-fit">
     <div id="ResourceID" class="mini-hidden"></div>
     <div id="permissionItem-datagrid" class="mini-treegrid" ajaxoptions="{type : 'get'}" style="width:100%;height:100%" autoload="false"
-         url="@Url.Action("GetGrantPermissionList", "Permission", new { area = "Admin" })" showtreeicon="false" resultastree="false" expandonload="1" multiselect="false" showcheckbox="true" showfoldercheckbox="false"
+         url="@Url.Action("GetGrantItemDT", "Permission", new { area = "Admin" })" showtreeicon="false" resultastree="false" expandonload="1" multiselect="false" showcheckbox="true" showfoldercheckbox="false"
          treecolumn="treename" idfield="PermissionItem_ID" parentfield="PermissionItem_ParentID" datafield="Data.DT.JSNet">
         <div property="columns">
             <div name="treename" field="PermissionItem_FullName" width="180" headeralign="center" align="left" allowsort="true">标题</div>
@@ -81,7 +81,7 @@
         }
         permissionItemIDs = ids.join(",");
 
-        var url = "@Url.Action("GrantPermission", "Permission", new { area = "Admin" })";
+        var url = "@Url.Action("GrantItem", "Permission", new { area = "Admin" })";
         var data = {
             reourceID: resourceID,
             permissionItemIDs: permissionItemIDs

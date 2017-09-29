@@ -72,7 +72,7 @@
         var row = resource_grid.getSelected();
         if (row) {
             mini.open({
-                url: "@Url.Action("GrantPermissionIndex", "Permission", new { area = "Admin" })",
+                url: "@Url.Action("GrantItemIndex", "Permission", new { area = "Admin" })",
                 title: "配置资源明细", width: 800, height: 600,
                 onload: function () {
                     var iframe = this.getIFrameEl();

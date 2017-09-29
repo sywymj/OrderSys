@@ -8,7 +8,7 @@
 <div class="mini-fit">
     <div id="RoleID" class="mini-hidden"></div>
     <div id="Module-datagrid" class="mini-treegrid" ajaxoptions="{type : 'get'}" style="width:100%;height:100%" autoload="false"
-         url="@Url.Action("GetGrantRoleModuleList", "Permission", new { area = "Admin" })" showtreeicon="false" resultastree="false" expandonload="1" multiselect="false" showcheckbox="true" showfoldercheckbox="true" autocheckparent="false" checkrecursive="true"
+         url="@Url.Action("GetGrantPermissionModuleList", "Permission", new { area = "Admin" })" showtreeicon="false" resultastree="false" expandonload="1" multiselect="false" showcheckbox="true" showfoldercheckbox="true" autocheckparent="false" checkrecursive="true"
          treecolumn="treename" idfield="ID" parentfield="ParentID" datafield="Data.List">
         <div property="columns">
             <div name="treename" field="FullName" width="180" headeralign="center" align="left" allowsort="true">标题</div>
@@ -44,7 +44,7 @@
             debugger;
             if (jdata.Code == "200") {
                 //check已配置的资源明细
-                var url = '@Url.Action("GetGrantedModuleIDs", "Role", new { area = "Admin" })';
+                var url = '@Url.Action("GetGrantedPermissionModuleIDs", "Permission", new { area = "Admin" })';
                 var parms = {
                     RoleID: data.ID
                 };
@@ -78,7 +78,7 @@
         }
         ModuleIDs = ids.join(",");
 
-        var url = "@Url.Action("GrantRoleModule", "Role", new { area = "Admin" })";
+        var url = "@Url.Action("GrantPermissionModule", "Permission", new { area = "Admin" })";
         var data = {
             RoleID: RoleID,
             ModuleIDs: ModuleIDs

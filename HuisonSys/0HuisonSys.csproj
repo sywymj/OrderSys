@@ -2945,7 +2945,7 @@
     <Content Include="Areas\Admin\Views\Permission\PermissionItem_TreeDDL2.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Areas\Admin\Views\Permission\GrantPermission_Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Permission\GrantItem_Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\Admin\Views\Permission\GrantScope_Index.cshtml" />
@@ -2978,10 +2978,10 @@
     <Content Include="Areas\Admin\Views\Role\Role_InsertIndex.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Areas\Admin\Views\Role\GrantRoleModule_Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Permission\GrantPermissionModule_Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Areas\Admin\Views\Role\GrantRoleScope_Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Permission\GrantPermissionScope_Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\Admin\Views\Permission\Scope_TreeDDL.cshtml" />

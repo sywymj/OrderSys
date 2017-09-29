@@ -20,19 +20,28 @@ namespace OrderSys.Admin.Controllers
         private PermissionService service = new PermissionService();
 
         #region Resource
+
+        #region ResourceIndex
+        [HttpGet]
         public ActionResult ResourceIndex()
         {
             return View("~/Areas/Admin/Views/Permission/Resource_Index.cshtml");
         }
 
         [HttpGet]
-        public ActionResult InsertResourceIndex()
+        public string GetResourceList()
         {
-            return View("~/Areas/Admin/Views/Permission/Resource_InsertIndex.cshtml");
-        }
+            int count = 0;
+            DataTable re = service.GetResourceDT(out count);
 
+            string s = JSON.ToJSON(new JSResponse(new DataTableData(re, count)), jsonParams);
+            return s;
+        }
+        #endregion
+
+        #region InsertResource
         [HttpGet]
-        public ActionResult EditResourceIndex()
+        public ActionResult InsertResourceIndex()
         {
             return View("~/Areas/Admin/Views/Permission/Resource_InsertIndex.cshtml");
         }
@@ -50,6 +59,14 @@ namespace OrderSys.Admin.Controllers
 
             service.AddResource(resource);
             return JSON.ToJSON(new JSResponse(ResponseType.Remind, "添加成功！"), jsonParams);
+        } 
+        #endregion
+
+        #region EditResource
+        [HttpGet]
+        public ActionResult EditResourceIndex()
+        {
+            return View("~/Areas/Admin/Views/Permission/Resource_InsertIndex.cshtml");
         }
 
         [HttpPost]
@@ -76,36 +93,34 @@ namespace OrderSys.Admin.Controllers
             entity.CopyTo(viewModel);
 
             return JSON.ToJSON(new JSResponse(viewModel), jsonParams);
-        }
+        } 
+        #endregion
 
-
-        [HttpGet]
-        public string GetResourceList()
-        {
-            int count = 0;
-            DataTable re = service.GetResourceDT(out count);
-
-            string s = JSON.ToJSON(new JSResponse(new DataTableData(re, count)), jsonParams);
-            return s;
-        }
         #endregion
 
         #region PermissionItem
+
+        #region ItemIndex
         [HttpGet]
         public ActionResult PermissionItemIndex()
         {
             return View("~/Areas/Admin/Views/Permission/PermissionItem_Index.cshtml");
         }
 
+        [HttpGet]
+        public string GetPermissionItemDT()
+        {
+            int count = 0;
+            DataTable re = service.GetTreePermissionItemDT(out count);
 
+            string s = JSON.ToJSON(new JSResponse(new DataTableData(re, count)), jsonParams);
+            return s;
+        } 
+        #endregion
+
+        #region InsertItem
         [HttpGet]
         public ActionResult InsertPermissionItemIndex()
-        {
-            return View("~/Areas/Admin/Views/Permission/PermissionItem_InsertIndex.cshtml");
-        }
-
-        [HttpGet]
-        public ActionResult EditPermissionItemIndex()
         {
             return View("~/Areas/Admin/Views/Permission/PermissionItem_InsertIndex.cshtml");
         }
@@ -123,6 +138,14 @@ namespace OrderSys.Admin.Controllers
 
             service.AddPermissionItem(entity);
             return JSON.ToJSON(new JSResponse(ResponseType.Remind, "添加成功！"), jsonParams);
+        } 
+        #endregion
+
+        #region EditItem
+        [HttpGet]
+        public ActionResult EditPermissionItemIndex()
+        {
+            return View("~/Areas/Admin/Views/Permission/PermissionItem_InsertIndex.cshtml");
         }
 
         [HttpPost]
@@ -148,16 +171,44 @@ namespace OrderSys.Admin.Controllers
             entity.CopyTo(viewModel);
 
             return JSON.ToJSON(new JSResponse(viewModel), jsonParams);
-        }
+        } 
+        #endregion
 
+        #endregion
+
+        #region Grant_Item
 
         [HttpGet]
-        public string GetPermissionItemDT()
+        public ActionResult GrantItemIndex()
         {
+            return View("~/Areas/Admin/Views/Permission/GrantItem_Index.cshtml");
+        }
+
+        [HttpGet]
+        public string GetGrantItemDT()
+        {
+            string resourceCode = JSRequest.GetRequestUrlParm("resourceCode");
+            string resourceType = JSRequest.GetRequestUrlParm("resourceType");
+
             int count = 0;
-            DataTable re = service.GetTreePermissionItemDT(out count);
+            DataTable re = service.GetGrantItemsDT(resourceCode, resourceType, out count);
 
             string s = JSON.ToJSON(new JSResponse(new DataTableData(re, count)), jsonParams);
+            return s;
+        }
+
+        [HttpGet]
+        public string GrantItem()
+        {
+            string sReourceID = JSRequest.GetRequestUrlParm("reourceID", true);
+            string sPermissionItemIDs = JSRequest.GetRequestUrlParm("permissionItemIDs", false);
+
+            int resourceID = (int)JSValidator.ValidateInt("资源ID", sReourceID, true);
+            int[] permissionItemIDs = JSValidator.ValidateStrings("资源明细ID", sPermissionItemIDs, false);
+
+            service.GrantItem(resourceID, permissionItemIDs);
+
+            string s = JSON.ToJSON(new JSResponse(ResponseType.Remind, "配置成功！"), jsonParams);
             return s;
         }
 
@@ -175,61 +226,22 @@ namespace OrderSys.Admin.Controllers
 
         #endregion
 
-        #region Permission
-
-        [HttpGet]
-        public ActionResult GrantPermissionIndex()
-        {
-            return View("~/Areas/Admin/Views/Permission/GrantPermission_Index.cshtml");
-        }
-
-        [HttpGet]
-        public string GetGrantPermissionList()
-        {
-            string resourceCode = JSRequest.GetRequestUrlParm("resourceCode");
-            string resourceType = JSRequest.GetRequestUrlParm("resourceType");
-
-            int count = 0;
-            DataTable re = service.GetGrantItemsDT(resourceCode, resourceType, out count);
-
-            string s = JSON.ToJSON(new JSResponse(new DataTableData(re, count)), jsonParams);
-            return s;
-        }
-
-        [HttpGet]
-        public string GrantPermission()
-        {
-            string sReourceID = JSRequest.GetRequestUrlParm("reourceID", true);
-            string sPermissionItemIDs = JSRequest.GetRequestUrlParm("permissionItemIDs", false);
-
-            int resourceID = (int)JSValidator.ValidateInt("资源ID", sReourceID, true);
-            int[] permissionItemIDs = JSValidator.ValidateStrings("资源明细ID", sPermissionItemIDs, false);
-
-            service.GrantItem(resourceID, permissionItemIDs);
-
-            string s = JSON.ToJSON(new JSResponse(ResponseType.Remind, "配置成功！"), jsonParams);
-            return s;
-        }
-
-        #endregion
-
-        #region GrantScope
+        #region Grant_Scope
 
         [HttpGet]
         public ViewResult GrantScopeIndex()
         {
-            return View("~/Areas/Admin/Views/Organize/GrantScope_Index.cshtml");
+            return View("~/Areas/Admin/Views/Permission/GrantScope_Index.cshtml");
         }
 
         [HttpGet]
         public string GetGrantScopeList()
         {
-            int count = 0;
             string sResourceCode = JSRequest.GetRequestUrlParm("ResourceCode");
             string sResourceType = JSRequest.GetRequestUrlParm("ResourceType");
 
-            OrganizeService organizeService = new OrganizeService();
-            DataTable re = organizeService.GetTreeOrganizeDT(sResourceCode, sResourceType, out count);
+            int count = 0;
+            DataTable re = service.GetGrantScopeDT(sResourceCode, sResourceType, out count);
             string s = JSON.ToJSON(new JSResponse(new DataTableData(re, count)), jsonParams);
             return s;
         }
@@ -249,8 +261,6 @@ namespace OrderSys.Admin.Controllers
             return s;
         }
 
-        #endregion
-
         [HttpGet]
         public string GetGrantedScopeIDs()
         {
@@ -263,8 +273,18 @@ namespace OrderSys.Admin.Controllers
             return s;
         }
 
+        #endregion
+
+        #region GRANT_MODULE
+
         [HttpGet]
-        public string GetGrantRoleModuleList()
+        public ActionResult GrantPermissionModuleIndex()
+        {
+            return View("~/Areas/Admin/Views/Permission/GrantPermissionModule_Index.cshtml");
+        }
+
+        [HttpGet]
+        public string GetGrantPermissionModuleList()
         {
             List<ResourceEntity> modules = service.GetModuleList("OrderSys");
 
@@ -273,17 +293,82 @@ namespace OrderSys.Admin.Controllers
         }
 
         [HttpGet]
-        public string GetGrantRoleScopeDT()
+        public string GrantPermissionModule()
+        {
+            string sRoleID = JSRequest.GetRequestUrlParm("RoleID", true);
+            string sModuleIDs = JSRequest.GetRequestUrlParm("ModuleIDs", false);
+
+            int roleID = (int)JSValidator.ValidateInt("角色ID", sRoleID, true);
+            int[] moduleIDs = JSValidator.ValidateStrings("模块ID", sModuleIDs, false);
+
+            service.GrantModule(roleID, moduleIDs);
+
+            string s = JSON.ToJSON(new JSResponse(ResponseType.Remind, "配置成功！"), jsonParams);
+            return s;
+        }
+
+        [HttpGet]
+        public string GetGrantedPermissionModuleIDs()
+        {
+            string sRoleID = JSRequest.GetRequestUrlParm("RoleID");
+            int roleID = (int)JSValidator.ValidateInt("资源ID", sRoleID, true);
+
+            int[] moduleIDs = service.GetGrantedModuleIDs(roleID);
+            string re = string.Join(",", moduleIDs);
+            string s = JSON.ToJSON(new JSResponse(data: re), jsonParams);
+            return s;
+        }
+
+        #endregion
+
+        #region GRANT_PermissionScope
+
+        [HttpGet]
+        public ActionResult GrantPermissionScopeIndex()
+        {
+            return View("~/Areas/Admin/Views/Permission/GrantPermissionScope_Index.cshtml");
+        }
+
+        [HttpGet]
+        public string GetGrantPermissionScopeDT()
         {
             int count = 0;
             //获取当前登陆的角色所属的系统类型，从而获取属性列表
 
-            DataTable dt = service.GetTreeScopeDT("OrderSys" + "_Data");
+            DataTable dt = service.GetTreePermissionScopeDT("OrderSys" + "_Data");
 
-            string s = JSON.ToJSON(new JSResponse(new DataTableData(dt,count)), jsonParams);
+            string s = JSON.ToJSON(new JSResponse(new DataTableData(dt, count)), jsonParams);
             return s;
         }
 
+        [HttpGet]
+        public string GrantPermissionScope()
+        {
+            string sRoleID = JSRequest.GetRequestUrlParm("RoleID", true);
+            string sScopeIDs = JSRequest.GetRequestUrlParm("ScopeIDs", false);
+
+            int roleID = (int)JSValidator.ValidateInt("角色ID", sRoleID, true);
+            int[] scopeIDs = JSValidator.ValidateStrings("资源ID", sScopeIDs, false);
+
+            service.GrantPermissionScope(roleID, scopeIDs);
+
+            string s = JSON.ToJSON(new JSResponse(ResponseType.Remind, "配置成功！"), jsonParams);
+            return s;
+        }
+
+        [HttpGet]
+        public string GetGrantedPermissionScopeIDs()
+        {
+            string sRoleID = JSRequest.GetRequestUrlParm("RoleID");
+            int roleID = (int)JSValidator.ValidateInt("资源ID", sRoleID, true);
+
+            int[] scopeIDs = service.GetGrantedScopeIDs(roleID);
+            string re = string.Join(",", scopeIDs);
+            string s = JSON.ToJSON(new JSResponse(data: re), jsonParams);
+            return s;
+        }
+
+        #endregion
 
         #region DDL
         [HttpGet]
@@ -380,7 +465,6 @@ namespace OrderSys.Admin.Controllers
             return s;
         } 
         #endregion
-
 
         //验证
         [HttpGet]

@@ -8,7 +8,7 @@
 <div class="mini-fit">
     <div id="RoleID" class="mini-hidden"></div>
     <div id="Scope-datagrid" class="mini-treegrid" ajaxoptions="{type : 'get'}" style="width:100%;height:100%" autoload="false"
-         url="@Url.Action("GetGrantRoleScopeDT", "Permission", new { area = "Admin" })" showtreeicon="false" resultastree="false" expandonload="1" multiselect="false" showcheckbox="true" showfoldercheckbox="false"
+         url="@Url.Action("GetGrantPermissionScopeDT", "Permission", new { area = "Admin" })" showtreeicon="false" resultastree="false" expandonload="1" multiselect="false" showcheckbox="true" showfoldercheckbox="false"
          treecolumn="treename" idfield="Resource_ID" parentfield="Resource_ParentID" datafield="Data.DT.JSNet">
         <div property="columns">
             <div name="treename" field="Resource_FullName" width="180" headeralign="center" align="left" allowsort="true">资源标题</div>
@@ -44,7 +44,7 @@
             debugger;
             if (jdata.Code == "200") {
                 //check已配置的资源明细
-                var url = '@Url.Action("GetGrantedScopeIDs", "Role", new { area = "Admin" })';
+                var url = '@Url.Action("GetGrantedPermissionScopeIDs", "Permission", new { area = "Admin" })';
                 var parms = {
                     RoleID: data.ID
                 };
@@ -87,7 +87,7 @@
         }
         ScopeIDs = ids.join(",");
 
-        var url = "@Url.Action("GrantRoleScope", "Role", new { area = "Admin" })";
+        var url = "@Url.Action("GrantPermissionScope", "Permission", new { area = "Admin" })";
         var data = {
             RoleID: RoleID,
             ScopeIDs: ScopeIDs

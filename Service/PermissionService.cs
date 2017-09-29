@@ -16,104 +16,7 @@ namespace JSNet.Service
     public class PermissionService:BaseService
     {
 
-        /// <summary>
-        /// 添加操作权限
-        /// </summary>
-        public void AddPermission(UserEntity user,int permissionItemID, int resourceID, string permissionConstraint)
-        {
-            EntityManager<PermissionEntity> manager = new EntityManager<PermissionEntity>();
-            
-            PermissionEntity permission = new PermissionEntity();
-            permission.PermissionItemID = permissionItemID;
-            permission.ResourceID = resourceID;
-            permission.CreateUserId = user.ID.ToString();
-            permission.CreateBy = user.UserName;
-            permission.CreateOn = DateTime.Now;
-            manager.Insert(permission);
-
-        }
-
-        /// <summary>
-        /// 添加资源权限
-        /// </summary>
-        public void AddPermissionScope(UserEntity user, int resourceID, int targetID, string permissionConstraint)
-        {
-            EntityManager<PermissionScopeEntity> manager = new EntityManager<PermissionScopeEntity>();
-
-            PermissionScopeEntity scope = new PermissionScopeEntity();
-            scope.PermissionItemID = 13;//资源访问权限，写死的，以后改成1
-            scope.ResourceID = resourceID;
-            scope.PermissionConstraint = permissionConstraint;
-            scope.CreateUserId = user.ID.ToString();
-            scope.CreateBy = user.UserName;
-            scope.CreateOn = DateTime.Now;
-            manager.Insert(scope);
-        }
-
-        /// <summary>
-        /// 分配操作权限
-        /// </summary>
-        public void GrantResource(UserEntity user,int roleID,int[] resourceIDs)
-        {
-            //1.0 清空该角色原有的操作权限
-            EntityManager<RoleResourceEntity> manager = new EntityManager<RoleResourceEntity>();
-            WhereStatement where = new WhereStatement();
-            where.Add(RoleResourceEntity.FieldRoleID, Comparison.Equals, roleID);
-            manager.Delete(where);
-
-            //2.0 添加当前选中的操作权限
-            List<RoleResourceEntity> list = new List<RoleResourceEntity>();
-            foreach (int resourceID in resourceIDs)
-            {
-                RoleResourceEntity entity = new RoleResourceEntity();
-                entity.RoleID = roleID;
-                entity.ResourceID = resourceID;
-                entity.CreateUserId = user.ID.ToString();
-                entity.CreateBy = user.UserName;
-                entity.CreateOn = DateTime.Now;
-                list.Add(entity);
-            }
-            manager.Insert(list);
-        }
-
-        /// <summary>
-        /// 分配资源权限
-        /// </summary>
-        
-
-        public Dictionary<string, List<string>> GetRolePermissionScope(RoleEntity role, string resouceCode)
-        {
-            Dictionary<string, List<string>> dic = new Dictionary<string, List<string>>();
-            ViewManager vmanager = new ViewManager("VP_UserRolePermissionScope");
-
-            WhereStatement where = new WhereStatement();
-            where.Add("Type", Comparison.Equals, ResourceType.Data.ToString());
-            where.Add("RoleID", Comparison.Equals, role.ID);
-            where.Add("Resource_Code", Comparison.Equals, resouceCode);
-
-            int count = 0;
-            DataTable dt = vmanager.GetDataTable(where, out count);// TODO 这里会有性能问题
-
-            if (count == 0)
-            {
-                throw new JSException(JSErrMsg.ERR_CODE_NotGrantPermissionScope, JSErrMsg.ERR_MSG_NotGrantPermissionScope);
-            }
-
-            foreach(DataRow dr in dt.Rows)
-            {
-                if(!dic.ContainsKey(dr["OrganizeCategory_Code"].ToString()))
-                {
-                    List<string> list = new List<string>();
-                    list.Add(dr["Organize_Code"].ToString());
-                    dic.Add(dr["OrganizeCategory_Code"].ToString(),list);
-                    continue;
-                }
-                dic[dr["OrganizeCategory_Code"].ToString()].Add(dr["Organize_Code"].ToString());
-            }
-            return dic;
-        }
-
-        #region Resource
+        #region Resource - 资源
 
         public void AddResource(ResourceEntity entity)
         {
@@ -198,7 +101,7 @@ namespace JSNet.Service
 
         #endregion
 
-        #region PermissionItem
+        #region PermissionItem - 操作明细
 
         public void AddPermissionItem(PermissionItemEntity entity)
         {
@@ -287,7 +190,7 @@ namespace JSNet.Service
 
         #endregion
 
-        #region GrantItem
+        #region GrantItem - 配置操作明细
 
         public DataTable GetGrantItemsDT(string resourceCode, string resourceType, out int count)
         {
@@ -349,22 +252,12 @@ namespace JSNet.Service
 
         #endregion
 
-        #region GrantScope
+        #region GrantScope - 配置资源对象
 
-        public DataTable GetTreeScopeDT(string parentCode)
+        public DataTable GetGrantScopeDT(string resourceCode, string resourceType, out int count)
         {
-            string[] ids = GetTreeScopeIDs(parentCode);
-            if (ids.Length == 0)
-            {
-                return new DataTable("JSNet");
-            }
-
-            WhereStatement where = new WhereStatement();
-            where.Add("Resource_ID", Comparison.In, ids);
-
-            int count = 0;
-            ViewManager vmanager = new ViewManager("VP_PermissionScope");
-            DataTable dt = vmanager.GetDataTable(where, out count);
+            OrganizeService organizeService = new OrganizeService();
+            DataTable dt = organizeService.GetTreeOrganizeDT(resourceCode, resourceType, out count);
             return dt;
         }
 
@@ -408,18 +301,9 @@ namespace JSNet.Service
             return itemIDs;
         }
 
-        private string[] GetTreeScopeIDs(string parentCode)
-        {
-            string[] s = GetTreeIDs(
-                "[VP_PermissionScope]",
-                "Resource_Code", parentCode,
-                "Resource_ID", "Resource_ParentID");
-            return s;
-        }
-
         #endregion
 
-        #region 操作权限相关
+        #region Permission - 操作权限相关
 
         public bool IsPermissionAuthorizedByRole(RoleEntity role, string controllerName, string actionName)
         {
@@ -489,7 +373,7 @@ namespace JSNet.Service
 
         #endregion
 
-        #region  资源权限相关
+        #region PermissionScope - 资源权限相关
 
         public Dictionary<string, List<string>> GetAuthorizedScopeByRole(RoleEntity role, string scopeCode)
         {
@@ -647,12 +531,106 @@ namespace JSNet.Service
 
         #endregion
 
+        #region GrantModule - 配置模块权限
         public List<ResourceEntity> GetModuleList(string parentResouceCode, bool onlyChild = true)
         {
             List<ResourceEntity> list = GetResourceList(parentResouceCode, onlyChild);
             return list.Where(l => l.ResourceType != ResourceType.Data.ToString()).ToList();
         }
-        
+
+        public void GrantModule(int roleID, int[] moduleIDs)
+        {
+            EntityManager<RoleResourceEntity> manager = new EntityManager<RoleResourceEntity>();
+            manager.Delete(roleID, RoleResourceEntity.FieldRoleID);
+
+            List<RoleResourceEntity> entitys = new List<RoleResourceEntity>();
+            foreach (int moduleID in moduleIDs)
+            {
+                RoleResourceEntity entity = new RoleResourceEntity();
+                entity.RoleID = roleID;
+                entity.ResourceID = moduleID;
+                entity.CreateUserId = CurrentUser.ID.ToString();
+                entity.CreateBy = CurrentUser.UserName;
+                entity.CreateOn = DateTime.Now;
+                entitys.Add(entity);
+            }
+            manager.Insert(entitys);
+        }
+
+        public int[] GetGrantedModuleIDs(int roleID)
+        {
+            WhereStatement where = new WhereStatement();
+            where.Add(RoleResourceEntity.FieldRoleID, Comparison.Equals, roleID);
+
+            EntityManager<RoleResourceEntity> manager = new EntityManager<RoleResourceEntity>();
+            string[] sIDs = manager.GetProperties(RoleResourceEntity.FieldResourceID, where);
+
+            int[] ids = CommonUtil.ConvertToIntArry(sIDs);
+            return ids;
+        } 
+
+        #endregion
+
+        #region GrantPermissionScope - 配置资源权限
+
+        public DataTable GetTreePermissionScopeDT(string parentCode)
+        {
+            string[] ids = GetTreePermissionScopeIDs(parentCode);
+            if (ids.Length == 0)
+            {
+                return new DataTable("JSNet");
+            }
+
+            WhereStatement where = new WhereStatement();
+            where.Add("Resource_ID", Comparison.In, ids);
+
+            int count = 0;
+            ViewManager vmanager = new ViewManager("VP_PermissionScope");
+            DataTable dt = vmanager.GetDataTable(where, out count);
+            return dt;
+        }
+
+        public void GrantPermissionScope(int roleID, int[] scopeIDs)
+        {
+            EntityManager<RolePermissionScopeEntity> manager = new EntityManager<RolePermissionScopeEntity>();
+            manager.Delete(roleID, RolePermissionScopeEntity.FieldRoleID);
+
+            List<RolePermissionScopeEntity> entitys = new List<RolePermissionScopeEntity>();
+            foreach (int scopeID in scopeIDs)
+            {
+                RolePermissionScopeEntity entity = new RolePermissionScopeEntity();
+                entity.RoleID = roleID;
+                entity.PermissionScopeID = scopeID;
+                entity.CreateUserId = CurrentUser.ID.ToString();
+                entity.CreateBy = CurrentUser.UserName;
+                entity.CreateOn = DateTime.Now;
+                entitys.Add(entity);
+            }
+            manager.Insert(entitys);
+        }
+
+        public int[] GetGrantedPermissionScopeIDs(int roleID)
+        {
+            WhereStatement where = new WhereStatement();
+            where.Add(RolePermissionScopeEntity.FieldRoleID, Comparison.Equals, roleID);
+
+            EntityManager<RolePermissionScopeEntity> manager = new EntityManager<RolePermissionScopeEntity>();
+            string[] sIDs = manager.GetProperties(RolePermissionScopeEntity.FieldPermissionScopeID, where);
+
+            int[] ids = CommonUtil.ConvertToIntArry(sIDs);
+            return ids;
+        } 
+
+        private string[] GetTreePermissionScopeIDs(string parentCode)
+        {
+            string[] s = GetTreeIDs(
+                "[VP_PermissionScope]",
+                "Resource_Code", parentCode,
+                "Resource_ID", "Resource_ParentID");
+            return s;
+        } 
+
+        #endregion
 
         public bool ChkResourceCodeExist(string resourceCode, string resourceID)
         {

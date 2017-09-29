@@ -76,7 +76,7 @@
         var row = Role_grid.getSelected();
         if (row) {
             mini.open({
-                url: "@Url.Action("GrantRoleModuleIndex", "Role", new { area = "Admin" })",
+                url: "@Url.Action("GrantPermissionModuleIndex", "Permission", new { area = "Admin" })",
                 title: "配置角色模块", width: 800, height: 600,
                 onload: function () {
                     var iframe = this.getIFrameEl();
@@ -99,7 +99,7 @@
         var row = Role_grid.getSelected();
         if (row) {
             mini.open({
-                url: "@Url.Action("GrantRoleScopeIndex", "Role", new { area = "Admin" })",
+                url: "@Url.Action("GrantPermissionScopeIndex", "Permission", new { area = "Admin" })",
                 title: "配置角色资源", width: 800, height: 600,
                 onload: function () {
                     var iframe = this.getIFrameEl();
