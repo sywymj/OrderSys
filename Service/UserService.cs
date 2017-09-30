@@ -301,15 +301,21 @@ namespace JSNet.Service
             return entity;
         }
 
-        public List<StaffEntity> GetStaffs()
+        public List<StaffEntity> GetStaffsByRole(RoleEntity role)
         {
-            EntityManager<StaffEntity> manager = new EntityManager<StaffEntity>();
+            PermissionService permissionService = new PermissionService();
+            List<string> organizeIDs = permissionService.GetAuthorizeOrganizeIDByRole(role,"OrderSys_Data.Staff");
 
             WhereStatement where = new WhereStatement();
             where.Add(StaffEntity.FieldIsEnable, Comparison.Equals, (int)TrueFalse.True);
             where.Add(StaffEntity.FieldIsOnJob, Comparison.Equals, (int)TrueFalse.True);
+            if (organizeIDs.Count > 0)
+            {
+                where.Add(StaffEntity.FieldOrganizeID, Comparison.In, organizeIDs.ToArray());
+            }
 
             int count = 0;
+            EntityManager<StaffEntity> manager = new EntityManager<StaffEntity>();
             List<StaffEntity> list = manager.GetList(where, out count);
             return list;
         }

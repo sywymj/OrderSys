@@ -9,11 +9,11 @@ using System.Web.Mvc;
 
 namespace OrderSys.Controllers
 {
-    public class PermissionController : WeixinBaseController
+    public class StaffController : WeixinBaseController
     {
         //
         // GET: /Permission/
-        private PermissionService permissionService = new PermissionService();
+        private UserService userService = new UserService();
 
         public ActionResult Index()
         {
@@ -25,11 +25,9 @@ namespace OrderSys.Controllers
         }
 
         [HttpGet]
-        public ActionResult AllStaffs()
+        public ActionResult GetAllStaffs()
         {
-            UserService userService = new UserService();
-
-            var list = userService.GetStaffs();
+            var list = userService.GetStaffsByRole(userService.CurrentRole);
             if (list.Count > 0)
             {
                 return View("Staffs", list);

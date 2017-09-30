@@ -38,8 +38,12 @@
     mini.parse();
     var LoginWindow = mini.get("LoginWindow");
     var form = new mini.Form("Login-Form");
-    LoginWindow.show();
 
+    if (window.top !== window) {
+        alert("登陆超时，请重新登陆！");
+        top.location.href = "/Admin/Home/LoginIndex";
+    }
+    LoginWindow.show();
 
     function onLoginClick(e) {
 

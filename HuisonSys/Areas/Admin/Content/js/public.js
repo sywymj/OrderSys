@@ -60,6 +60,11 @@ doPost = function (url, urlParmsObj, callback) {
 }
 
 ajaxTips = function (json, container, callback) {
+    ////判断是否Json
+    //if (!json.match("^\{(\n?.+:.+,?\n?){1,}\}$")) {
+    //    return;
+    //}
+
     if (typeof container === "function") {
         callback = container;
         container = 'undefined';
@@ -69,8 +74,9 @@ ajaxTips = function (json, container, callback) {
     var jdata = eval('(' + json + ')');
     if (jdata.RspTypeCode == -1) {
         if (jdata.ErrCode == "401") {
+            debugger;
             mini.alert(jdata.ErrMsg, "警告", function () {
-                window.location.href = "/Admin/Home/LoginIndex";
+                top.location.href = "/Admin/Home/LoginIndex";
             });
         } else if (jdata.ErrCode == "403") {
             mini.alert(jdata.ErrMsg, "警告", function () {
