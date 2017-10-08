@@ -32,13 +32,43 @@
         @Html.Partial("~/Areas/Weixin/Views/Shared/_Loading.cshtml")
         @Html.Partial("~/Areas/Weixin/Views/Shared/_End.cshtml")
     </div>
-    @Html.Partial("~/Areas/Weixin/Views/Shared/_Header.cshtml")
+    <div id="top">
+    </div>
     @RenderBody()
     <script>
-    var myTop = 0;
-    $(function () {
-        FastClick.attach(document.body);
-    });
+        var myTop = 0;
+        $(function () {
+            FastClick.attach(document.body);
+            getHeader();
+        });
+
+        getHeader = function () {
+            var container = '#top';
+            var url = '@Url.Action("GetHeader", "Home", new { area = "Weixin" })';
+            var article = new Article(container);
+            $.ajax({
+                type: "GET",
+                url: url,
+                data: null,
+                async: false, //默认设置为true，所有请求均为异步请求。
+                success: function (data) {
+                    debugger;
+                    //判断返回值不是 json 格式
+                    if (!data.match("^\{(\n?.+:.+,?\n?){1,}\}$")) {
+                        appendDom(container, data);
+                    }
+                    else {
+                        var jdata = ajaxTips(data, container);
+                    }
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert(errorThrown);
+                },
+                complete: function () {
+                }
+            })
+        }
+
     </script>
     
 </body>

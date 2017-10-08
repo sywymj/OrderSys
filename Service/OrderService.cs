@@ -19,36 +19,30 @@ namespace JSNet.Service
         //发起报障单
         public void StartOrder(OrderEntity order)
         {
-            UserService userService = new UserService();
-            EntityManager<OrderEntity> orderManager = new EntityManager<OrderEntity>();
-            EntityManager<OrderFlowEntity> orderflowManager = new EntityManager<OrderFlowEntity>();
-
-            //1.0 获取当前员工数据
-            StaffEntity staff = userService.GetCurrentStaff();
-
-            //2.0 添加工单实体
+            //1.0 添加工单实体
             order.ID = Guid.NewGuid();
             order.Status = (int)OrderStatus.Appointing;
-            order.StarterID = staff.ID;
-            order.OperatorID = staff.ID;
-            order.Status = (int)OrderStatus.Appointing;
+            order.StarterID = CurrentStaff.ID;
+            order.OperatorID = CurrentStaff.ID;
             order.StartTime = DateTime.Now;
             order.OperateTime = DateTime.Now;
             if (string.IsNullOrEmpty(order.Attn) || string.IsNullOrEmpty(order.AttnTel))
             {
-                order.Attn = staff.Name;
-                order.AttnTel = staff.Tel;
+                order.Attn = CurrentStaff.Name;
+                order.AttnTel = CurrentStaff.Tel;
             }
+            EntityManager<OrderEntity> orderManager = new EntityManager<OrderEntity>();
             string s = orderManager.Insert(order);
 
-            //3.0 添加工作流实体
+            //2.0 添加工作流实体
             OrderFlowEntity orderFlow = new OrderFlowEntity();
             orderFlow.OrderID = order.ID;
-            orderFlow.OperatorID=staff.ID;
+            orderFlow.OperatorID = CurrentStaff.ID;
             orderFlow.NextOperatorID = 0;
             orderFlow.Operation = (int)OperationEnum.Start;
             orderFlow.OperateTime = DateTime.Now;
             orderFlow.Remark = "";
+            EntityManager<OrderFlowEntity> orderflowManager = new EntityManager<OrderFlowEntity>();
             orderflowManager.Insert(orderFlow);
         }
 
@@ -338,15 +332,23 @@ namespace JSNet.Service
             //2.0 构建where从句
             WhereStatement where = new WhereStatement();
             where.Add(OrderEntity.FieldStatus, Comparison.NotEquals, (int)OrderStatus.Canceled);
-            //显示自己的工单
-            if (!organizeIDs.Contains(CurrentStaff.OrganizeID.ToString()))
-            {
-                where.Add(OrderEntity.FieldStarterID, Comparison.Equals, CurrentStaff.ID);
-            }
-            //显示指定部门的工单
             if (organizeIDs.Count > 0)
             {
+                //显示指定部门的工单
                 where.Add("StarterOrganizeID", Comparison.In, organizeIDs.ToArray());
+            }
+            else
+            {
+                if (CurrentRole.ID == 1)
+                {
+                    //超级管理员，显示所有内容
+                    where.Add("1", Comparison.Equals, "1");
+                }
+                else
+                {
+                    //默认显示自己的内容
+                    where.Add(OrderEntity.FieldStarterID, Comparison.Equals, CurrentStaff.ID);
+                }
             }
 
             OrderByStatement orderby = new OrderByStatement();
@@ -378,6 +380,18 @@ namespace JSNet.Service
             {
                 where.Add("StarterOrganizeID", Comparison.In, organizeIDs.ToArray());
             }
+            else
+            {
+                if (CurrentRole.ID == 1)
+                {
+                    //超级管理员，显示所有内容
+                    where.Add("1", Comparison.Equals, "1");
+                }
+                else
+                {
+                    where.Add("1", Comparison.Equals, "0");
+                }
+            }
 
             //2.1 构建orderby从句
             OrderByStatement orderby = new OrderByStatement();
@@ -398,22 +412,28 @@ namespace JSNet.Service
         {
             //1.0 构建资源对象
             PermissionService permissionService = new PermissionService();
-            List<string> organizeIDs = permissionService.GetAuthorizeOrganizeIDByRole(CurrentRole, "OrderSys_Data.AppointingOrders");
+            List<string> organizeIDs = permissionService.GetAuthorizeOrganizeIDByRole(CurrentRole, "OrderSys_Data.AppointedOrders");
 
             //2.0 构建where从句
             WhereStatement where = new WhereStatement();
             where.Add(OrderEntity.FieldStatus, Comparison.GreaterOrEquals, (int)OrderStatus.Receving);
-            //显示自己的工单
-            if (!organizeIDs.Contains(CurrentStaff.OrganizeID.ToString()))
-            {
-                where.Add(OrderEntity.FieldAppointerID, Comparison.Equals, CurrentStaff.ID);
-            }
-            //显示指定部门的工单
             if (organizeIDs.Count > 0)
             {
+                //显示指定部门的工单
                 where.Add("AppointerOrganizeID", Comparison.In, organizeIDs.ToArray());
             }
-
+            else
+            {
+                if (CurrentRole.ID == 1)
+                {
+                    //超级管理员，显示所有内容
+                    where.Add("1", Comparison.Equals, "1");
+                }
+                else
+                {
+                    where.Add(OrderEntity.FieldAppointerID, Comparison.Equals, CurrentStaff.ID);
+                }
+            }
 
             //2.1 构建orderby 从句
             OrderByStatement orderby = new OrderByStatement();
@@ -432,16 +452,30 @@ namespace JSNet.Service
         /// <returns></returns>
         public DataTable GetMyReceivingOrders(int pageIndex, int pageSize, out int count)
         {
-            UserService userService = new UserService();
-            ViewManager manager = new ViewManager("VO_Order");
-
-            //1.0 获取当前员工数据
-            StaffEntity staff = userService.GetCurrentStaff();
-
+            //1.0 构建资源对象
+            PermissionService permissionService = new PermissionService();
+            List<string> organizeIDs = permissionService.GetAuthorizeOrganizeIDByRole(CurrentRole, "OrderSys_Data.ReceivingOrders");
+            
             //2.0 构建where从句
             WhereStatement where = new WhereStatement();
             where.Add(OrderEntity.FieldStatus, Comparison.Equals, (int)OrderStatus.Receving);
-            where.Add(OrderEntity.FieldNextOperatorID, Comparison.Equals, staff.ID);
+            if (organizeIDs.Count > 0)
+            {
+                //显示指定部门的工单
+                where.Add("NextOperaterOrganizeID", Comparison.In, organizeIDs.ToArray());
+            }
+            else
+            {
+                if (CurrentRole.ID == 1)
+                {
+                    //超级管理员，显示所有内容
+                    where.Add("1", Comparison.Equals, "1");
+                }
+                else
+                {
+                    where.Add("NextOperatorID", Comparison.Equals, CurrentStaff.ID);
+                }
+            }
 
             //2.1 构建orderby 从句
             OrderByStatement orderby = new OrderByStatement();
@@ -449,6 +483,7 @@ namespace JSNet.Service
             orderby.Add(OrderEntity.FieldBookingTime, Sorting.Ascending);
 
             //3.0 获取已发起的数据
+            ViewManager manager = new ViewManager("VO_Order");
             DataTable dt = manager.GetDataTableByPage(where, out count, pageIndex, pageSize,orderby);
             return dt;
         }
@@ -459,18 +494,36 @@ namespace JSNet.Service
         /// <returns></returns>
         public DataTable GetMyHandlingOrders(int pageIndex, int pageSize, out int count)
         {
-            UserService userService = new UserService();
-            ViewManager manager = new ViewManager("VO_Order");
-
-            //1.0 获取当前员工数据
-            StaffEntity staff = userService.GetCurrentStaff();
+            //1.0 构建资源对象
+            PermissionService permissionService = new PermissionService();
+            List<string> organizeIDs = permissionService.GetAuthorizeOrganizeIDByRole(CurrentRole, "OrderSys_Data.HandlingOrders");
 
             //2.0 构建where从句
             WhereStatement where = new WhereStatement();
             WhereClause clause = new WhereClause(OrderEntity.FieldStatus, Comparison.Equals, (int)OrderStatus.Handling);
             clause.AddClause(LogicOperator.Or, Comparison.Equals, (int)OrderStatus.Rejected);
             where.Add(clause);
-            where.Add(OrderEntity.FieldHandlerID, Comparison.Equals, staff.ID);
+            if (organizeIDs.Count > 0)
+            {
+                //显示指定部门的工单
+                where.Add("HandlerOrganizeID", Comparison.In, organizeIDs.ToArray());
+                //只显示领队的，避免工单重复
+                where.Add("IsLeader", Comparison.Equals,(int)TrueFalse.True);
+            }
+            else
+            {
+                if (CurrentRole.ID == 1)
+                {
+                    //超级管理员，显示所有内容
+                    where.Add("1", Comparison.Equals, "1");
+                    //只显示领队的，避免工单重复
+                    where.Add("IsLeader", Comparison.Equals, (int)TrueFalse.True);
+                }
+                else
+                {
+                    where.Add("HandlerID", Comparison.Equals, CurrentStaff.ID);
+                }
+            }
 
             //2.1 构建orderby 从句
             OrderByStatement orderby = new OrderByStatement();
@@ -478,6 +531,7 @@ namespace JSNet.Service
             orderby.Add(OrderEntity.FieldBookingTime, Sorting.Ascending);
 
             //3.0 获取已发起的数据
+            ViewManager manager = new ViewManager("VO_OrderHandlers");
             DataTable dt = manager.GetDataTableByPage(where, out count, pageIndex, pageSize,orderby);
             return dt;
         }
@@ -488,16 +542,30 @@ namespace JSNet.Service
         /// <returns></returns>
         public DataTable GetMyHandledOrders(int pageIndex, int pageSize, out int count)
         {
-            UserService userService = new UserService();
-            ViewManager manager = new ViewManager("VO_Order");
-
-            //1.0 获取当前员工数据
-            StaffEntity staff = userService.GetCurrentStaff();
+            //1.0 构建资源对象
+            PermissionService permissionService = new PermissionService();
+            List<string> organizeIDs = permissionService.GetAuthorizeOrganizeIDByRole(CurrentRole, "OrderSys_Data.HandledOrders");
 
             //2.0 构建where从句
             WhereStatement where = new WhereStatement();
             where.Add(OrderEntity.FieldStatus, Comparison.GreaterOrEquals, (int)OrderStatus.Checking);
-            where.Add(OrderEntity.FieldHandlerID, Comparison.Equals, staff.ID);
+            if (organizeIDs.Count > 0)
+            {
+                //显示指定部门的工单
+                where.Add("HandlerOrganizeID", Comparison.In, organizeIDs.ToArray());
+            }
+            else
+            {
+                if (CurrentRole.ID == 1)
+                {
+                    //超级管理员，显示所有内容
+                    where.Add("1", Comparison.Equals, "1");
+                }
+                else
+                {
+                    where.Add("HandlerID", Comparison.Equals, CurrentStaff.ID);
+                }
+            }
 
             //2.1 构建orderby 从句
             OrderByStatement orderby = new OrderByStatement();
@@ -505,6 +573,7 @@ namespace JSNet.Service
             orderby.Add(OrderEntity.FieldBookingTime, Sorting.Ascending);
 
             //3.0 获取已发起的数据
+            ViewManager manager = new ViewManager("VO_Order");
             DataTable dt = manager.GetDataTableByPage(where, out count, pageIndex, pageSize,orderby);
             return dt;
         }

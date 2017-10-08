@@ -1,7 +1,7 @@
 ﻿@model System.Data.DataTable
 @using JSNet.Utilities;
 @using JSNet.BaseSys;
-
+@using JSNet.Service;
 
 @foreach (System.Data.DataRow dr in Model.Rows)
 {
@@ -53,7 +53,11 @@
             </div>
         </div>
         <div class="list_sym_r">
-            <a href="@Url.Action("OrderFlows", "Order", new { area = "Weixin",OrderID = dr["ID"] })" class="details">详情</a>
+            @{if (new PermissionService().IsButtonAuthorizedByRole("OrderSys_VX.PublicButton.OrderFlows"))
+              {
+                  <a href="@Url.Action("OrderFlows", "Order", new { area = "Weixin",OrderID = dr["ID"] })" class="details">详情</a>
+              }
+            }
         </div>
         <div class="clear"></div>
     </div>

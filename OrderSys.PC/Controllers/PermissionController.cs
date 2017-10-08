@@ -335,7 +335,7 @@ namespace OrderSys.Admin.Controllers
             int count = 0;
             //获取当前登陆的角色所属的系统类型，从而获取属性列表
 
-            DataTable dt = service.GetTreePermissionScopeDT("OrderSys" + "_Data");
+            DataTable dt = service.GetTreePermissionScopeDTByRole(service.CurrentRole);
 
             string s = JSON.ToJSON(new JSResponse(new DataTableData(dt, count)), jsonParams);
             return s;

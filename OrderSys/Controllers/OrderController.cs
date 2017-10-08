@@ -12,6 +12,7 @@ using System.Web.Mvc;
 
 namespace OrderSys.Controllers
 {
+    [ManagerAuthorize]
     public class OrderController : WeixinBaseController
     {
         private OrderService orderService = new OrderService();

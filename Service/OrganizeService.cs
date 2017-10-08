@@ -14,7 +14,7 @@ using System.Text;
 namespace JSNet.Service
 {
     /*
-     * OrganizeCode 命名规范：{系统名}.{机构...}
+     * OrganizeCode 命名规范：{系统名}.{机构...} => 例子：OrderSys.FSWYG
      * ResourceCode 命名规范：{系统名}_{类别}.XXX => 例子：OrderSys_Data.Role
      * 
      */
@@ -229,6 +229,14 @@ namespace JSNet.Service
             return dt;
         }
 
+        public string[] GetTreeOrganizeIDs(int organizeID)
+        {
+            string[] s = GetTreeIDs(
+                "[VOrg_Organize]",
+                "Organize_ID", organizeID.ToString(),
+                "Organize_ID", "Organize_ParentID");
+            return s;
+        }
         public string[] GetTreeOrganizeIDs(string parentOrganizeCode)
         {
             string[] s = GetTreeIDs(

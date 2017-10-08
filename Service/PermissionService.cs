@@ -348,6 +348,43 @@ namespace JSNet.Service
             return false;
         }
 
+        public bool IsButtonAuthorizedByRole(string resourceCode)
+        {
+            return IsButtonAuthorizedByRole(CurrentRole, resourceCode);
+        }
+
+        public bool IsButtonAuthorizedByRole(RoleEntity role, string resourceCode)
+        {
+            //超级管理员权限
+            if (role.ID == 1)
+            {
+                return true;
+            }
+
+            int count = 0;
+            WhereStatement where1 = new WhereStatement();
+            where1.Add(ResourceEntity.FieldIsPublic, Comparison.Equals, (int)TrueFalse.True);
+            where1.Add(ResourceEntity.FieldCode, Comparison.Equals, resourceCode);
+
+            EntityManager<ResourceEntity> manager = new EntityManager<ResourceEntity>();
+            count = manager.GetCount(where1);
+            if (count > 0)
+            {
+                return true;
+            }
+
+            WhereStatement where = new WhereStatement();
+            where.Add("Role_ID", Comparison.Equals, role.ID.ToString());
+            where.Add("Resource_Code", Comparison.Equals, resourceCode);
+            where.Add("Resource_IsEnable", Comparison.Equals, (int)TrueFalse.True);
+            where.Add("Resource_ResourceType", Comparison.Equals, ResourceType.Button.ToString());
+
+            ViewManager vmanager = new ViewManager("VP_RoleResource");
+            count = vmanager.GetCount(where);
+
+            return count > 0 ? true : false;
+        }
+
         private DataTable GetAllRolesPermissions()
         {
             // TODO 先从缓存里面拿，如果没有再从数据库拿
@@ -413,13 +450,15 @@ namespace JSNet.Service
 
         }
 
+        /// <summary>
+        /// 根据角色获取机构ID（默认递归返回获取子元素）
+        /// </summary>
+        /// <param name="role"></param>
+        /// <param name="scopeCode"></param>
+        /// <returns></returns>
         public List<string> GetAuthorizeOrganizeIDByRole(RoleEntity role, string scopeCode)
         {
-            if (role.ID == 1)
-            {
-                return new List<string>();
-            }
-
+            // TODO 增加是否显示所有子元素参数，默认显示所有子元素
             int count = 0;
             ViewManager vmanager = new ViewManager("VP_RoleScope");
             WhereStatement where = new WhereStatement();
@@ -428,16 +467,16 @@ namespace JSNet.Service
             DataTable dt = vmanager.GetDataTable(where, out count);
 
             //填入list
-            OrganizeService organizeService = new OrganizeService();
             List<string> list = new List<string>();
             foreach (DataRow dr in dt.Rows)
             {
+                OrganizeService organizeService = new OrganizeService();
                 list.AddRange(organizeService.GetTreeOrganizeIDs(dr["Organize_Code"].ToString()).ToList());
             }
 
             if (list.Count == 0)
             {
-                list.Add("0");
+                return new List<string>();
             }
 
             return list.Distinct<string>().ToList(); ;
@@ -484,11 +523,11 @@ namespace JSNet.Service
         /// <param name="role"></param>
         /// <param name="resourceCode">资源code</param>
         /// <returns></returns>
-        public DataTable GetLeftMenu(RoleEntity role, string resourceCode)
+        public DataTable GetLeftMenu(RoleEntity role, string resourceCode,bool showParent = true)
         {
             //1.0 获取已授权的树形menu
-            string[] ids = GetTreeMenuIds(role, resourceCode);
-            if (ids.Length == 0)
+            List<string> ids = GetTreeMenuIds(role, resourceCode, showParent);
+            if (ids.Count == 0)
             {
                 throw new JSException(JSErrMsg.ERR_CODE_NotGrantMenuResource, JSErrMsg.ERR_MSG_NotGrantMenuResource);
             }
@@ -498,7 +537,7 @@ namespace JSNet.Service
             ViewManager vmanager = new ViewManager("VP_Resource");
 
             WhereStatement where = new WhereStatement();
-            where.Add("Resource_ID", Comparison.In, ids);
+            where.Add("Resource_ID", Comparison.In, ids.ToArray());
             OrderByStatement order = new OrderByStatement("Resource_SortCode", Sorting.Ascending);
 
             DataTable dt = vmanager.GetDataTable(where, out count, order);
@@ -506,7 +545,7 @@ namespace JSNet.Service
 
         }
 
-        public string[] GetTreeMenuIds(RoleEntity role, string resourceCode)
+        public List<string> GetTreeMenuIds(RoleEntity role, string resourceCode,bool showParent = true)
         {
             IDbHelper dbHelper = DbHelperFactory.GetHelper(BaseSystemInfo.CenterDbConnectionString);
             IDbDataParameter[] dbParameters = new IDbDataParameter[] { dbHelper.MakeParameter("Resource_Code", resourceCode) };
@@ -526,7 +565,12 @@ namespace JSNet.Service
                                 SELECT ID
                                     FROM TreeMenu ";
             DataTable dt = dbHelper.Fill(sqlQuery, dbParameters);
-            return DataTableUtil.FieldToArray(dt, "ID");
+            List<string> ids =  DataTableUtil.FieldToArray(dt, "ID").ToList();
+            if (ids.Count > 0 && !showParent)
+            {
+                ids.RemoveAt(0);
+            }
+            return ids;
         } 
 
         #endregion
@@ -573,19 +617,31 @@ namespace JSNet.Service
 
         #region GrantPermissionScope - 配置资源权限
 
-        public DataTable GetTreePermissionScopeDT(string parentCode)
+        public DataTable GetTreePermissionScopeDTByRole(RoleEntity role)
         {
-            string[] ids = GetTreePermissionScopeIDs(parentCode);
-            if (ids.Length == 0)
+            int count = 0;
+            WhereStatement where = new WhereStatement();
+            ViewManager vmanager = new ViewManager("VP_PermissionScope");
+            if (role.ID == 1)
+            {
+                return vmanager.GetDataTable(where, out count);
+            }
+
+            List<string> organizeIDs = GetAuthorizeOrganizeIDByRole(role, "OrderSys_Data.PermissionScope");
+            if (organizeIDs.Count == 0)
             {
                 return new DataTable("JSNet");
             }
 
-            WhereStatement where = new WhereStatement();
-            where.Add("Resource_ID", Comparison.In, ids);
+            //OrganizeService organizeService = new OrganizeService();
+            //string[] ids = organizeService.GetTreeOrganizeIDs(organizeIDs[0]);
+            //string[] ids = GetTreePermissionScopeIDs(parentCode);
+            //if (ids.Length == 0)
+            //{
+            //    return new DataTable("JSNet");
+            //}
 
-            int count = 0;
-            ViewManager vmanager = new ViewManager("VP_PermissionScope");
+            where.Add("Organize_ID", Comparison.In, organizeIDs.ToArray());
             DataTable dt = vmanager.GetDataTable(where, out count);
             return dt;
         }

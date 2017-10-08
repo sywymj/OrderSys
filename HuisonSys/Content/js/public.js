@@ -86,30 +86,32 @@ doGetPartial1 = function (article,url,parms, callback) {
 
     var container = article.container;
     clearDom(container);
-    clearDom(container + "~" + "div");//清除旁边的加载中等元素
+    clearDom(container + "~" + ".loading");//清除旁边的加载中等元素
+    //clearDom(container + "~" + "div");//清除旁边的加载中等元素
 
     showLoading(container, 'append');
     article.isLoading = true;
-    //debugger;
+    debugger;
     $.ajax({
         type: "GET",
         url: url,
         data: parms,
         async: false, //默认设置为true，所有请求均为异步请求。
         success: function (data) {
-            //debugger;
+            debugger;
             //判断返回值不是 json 格式
             if (!data.match("^\{(\n?.+:.+,?\n?){1,}\}$")) {
                 appendDom(container, data);
             }
             else {
-                var jdata = ajaxTips(data, container,callback);
+                var jdata = ajaxTips(data, container);
             }
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) {
             alert(errorThrown);
         },
         complete: function () {
+            debugger;
             hideLoading(container, 'append');//直接remove
             article.isLoading = false;
         }
@@ -173,10 +175,22 @@ ajaxTips = function (json, container, callback) {
     var jdata = eval('(' + json + ')');
     if (jdata.RspTypeCode == -1) {
         //错误消息提示
-        console.log(jdata.ErrCode + ":" + jdata.ErrMsg);
-        $.alert(jdata.Msg, '错误', function () {
-            callback && callback(jdata);
-        });
+        if (jdata.ErrCode == "401") {
+            debugger;
+            $.alert(jdata.ErrMsg, "警告", function () {
+                top.location.href = "/Login.html";
+            });
+        } else if (jdata.ErrCode == "403") {
+            $.alert(jdata.ErrMsg, "警告", function () {
+                callback && callback(jdata);
+            });
+        } else {
+            //错误消息提示
+            console.log(jdata.ErrCode + ":" + jdata.ErrMsg);
+            $.alert(jdata.Msg, "警告", function () {
+                callback && callback(jdata);
+            });
+        }
         return jdata;
     } else if (jdata.RspTypeCode == 1) {
         //提示信息提示

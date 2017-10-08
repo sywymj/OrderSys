@@ -34,6 +34,24 @@ namespace HuisonSys.Controllers
         }
 
         /// <summary>
+        /// 没有登录
+        /// </summary>
+        /// <returns>ActionResult.</returns>
+        public string Http401()
+        {
+            string message = RouteData.Values["exception"].ToString();
+            bool isAjax = Request.Headers["x-requested-with"] == null ? false : true;//判断是否ajax请求
+            if (!isAjax)
+            {
+                Response.Redirect(Url.Action("LoginIndex", "Home", new { area = "Admin" }));
+                Response.End();
+                //return Redirect("/Login.html");
+            }
+
+            string re = JSON.ToJSON(new JSResponse("401", message), jsonParams);
+            return re;
+        }
+        /// <summary>
         /// 
         /// </summary>
         public string Http403()
@@ -51,22 +69,31 @@ namespace HuisonSys.Controllers
             return re;
         }
 
-        /// <summary>
-        /// 没有登录
-        /// </summary>
-        /// <returns>ActionResult.</returns>
-        public string Http401()
+        public string VXHttp401()
         {
             string message = RouteData.Values["exception"].ToString();
             bool isAjax = Request.Headers["x-requested-with"] == null ? false : true;//判断是否ajax请求
             if (!isAjax)
             {
-                Response.Redirect(Url.Action("LoginIndex", "Home", new { area = "Admin" }));
+                Response.Redirect("/Login.html");
                 Response.End();
-                //return Redirect("/Login.html");
             }
 
             string re = JSON.ToJSON(new JSResponse("401", message), jsonParams);
+            return re;
+        }
+
+        public string VXHttp403()
+        {
+            string message = RouteData.Values["exception"].ToString();
+            bool isAjax = Request.Headers["x-requested-with"] == null ? false : true;//判断是否ajax请求
+            if (!isAjax)
+            {
+                Response.Redirect("/NoRight.html");
+                Response.End();
+            }
+
+            string re = JSON.ToJSON(new JSResponse("403", message), jsonParams);
             return re;
         }
 

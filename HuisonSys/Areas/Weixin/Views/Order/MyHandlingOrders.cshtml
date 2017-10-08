@@ -1,7 +1,7 @@
 ﻿@model System.Data.DataTable
 @using JSNet.Utilities;
 @using JSNet.BaseSys;
-
+@using JSNet.Service;
 
 @foreach (System.Data.DataRow dr in Model.Rows)
 {
@@ -33,9 +33,19 @@
             </div>
         </div>
         <div class="list_sym_r">
-            @*<a class="orders" onclick="doHandled('@dr["ID"]')">完成</a>*@
-            <a class="orders" href="@Url.Action("AddHandleDetail", "Order", new { area = "Weixin",OrderID = dr["ID"] })">增加进度</a>
-            <a class="details" href="@Url.Action("OrderFlows", "Order", new { area = "Weixin",OrderID = dr["ID"] })">详情</a>
+            @{if (new PermissionService().IsButtonAuthorizedByRole("OrderSys_VX.MyHandleIndex.AddHandleDetail"))
+              {
+                  if (Convert.ToInt32(dr["IsLeader"]) == (int)TrueFalse.True)
+                  {
+                      <a class="orders" href="@Url.Action("AddHandleDetail", "Order", new { area = "Weixin",OrderID = dr["ID"] })">增加进度</a>
+                  }
+              }
+              }
+            @{if(new PermissionService().IsButtonAuthorizedByRole("OrderSys_VX.PublicButton.OrderFlows"))
+              {
+                  <a class="details" href="@Url.Action("OrderFlows", "Order", new { area = "Weixin",OrderID = dr["ID"] })">详情</a>
+              }
+            }
         </div>
         <div class="clear"></div>
     </div>

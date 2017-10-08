@@ -57,15 +57,15 @@ namespace JSNet.Service
 
         public void ChkLogin(out UserEntity user, out RoleEntity role)
         {
-            string userName = JSRequest.GetCookie("AdminName", true);
-            string password = JSRequest.GetCookie("AdminPwd", true);
+            //string userName = JSRequest.GetCookie("AdminName", true);
+            //string password = JSRequest.GetCookie("AdminPwd", true);
+            //string openID = JSRequest.GetCookie("OpenID", true);
             string rid = SecretUtil.Decrypt(JSRequest.GetCookie("RID", true));
             string uid = SecretUtil.Decrypt(JSRequest.GetCookie("UID", true));
+            
 
-            if (string.IsNullOrEmpty(userName)
-                || string.IsNullOrEmpty(password)
-                || string.IsNullOrEmpty(rid)
-                || string.IsNullOrEmpty(uid))
+            if (string.IsNullOrEmpty(uid)
+                || string.IsNullOrEmpty(rid))
             {
                 throw new JSException(JSErrMsg.ERR_MSG_LoginOvertime);
             }
@@ -98,10 +98,50 @@ namespace JSNet.Service
             //写入cookie
             JSResponse.WriteCookie("UID", SecretUtil.Encrypt(uid), 120);
             JSResponse.WriteCookie("RID", SecretUtil.Encrypt(rid), 120);
-            JSResponse.WriteCookie("OpenID", user.OpenID, 120);
-            JSResponse.WriteCookie("AdminName", user.UserName, 120);
-            JSResponse.WriteCookie("AdminPwd", user.Password, 120);
+            //JSResponse.WriteCookie("OpenID", user.OpenID, 120);
+            //JSResponse.WriteCookie("AdminName", user.UserName, 120);
+            //JSResponse.WriteCookie("AdminPwd", user.Password, 120);
         }
+
+        public void ChkVXLogin(out UserEntity user, out RoleEntity role)
+        {
+            string openID = JSRequest.GetCookie("OpenID", true);
+            string rid = SecretUtil.Decrypt(JSRequest.GetCookie("RID", true));
+
+            if (string.IsNullOrEmpty(openID))
+            {
+                throw new JSException(JSErrMsg.ERR_MSG_LoginOvertime);
+            }
+
+            user = GetUser(openID);
+            if (user == null)
+            {
+                throw new JSException(JSErrMsg.ERR_MSG_LoginOvertime);
+            }
+            if (user.IsEnable == (int)TrueFalse.False)
+            {
+                throw new JSException(JSErrMsg.ERR_MSG_LoginOvertime);
+            }
+            if (user.IsLogin == (int)TrueFalse.False)
+            {
+                throw new JSException(JSErrMsg.ERR_MSG_LoginOvertime);
+            }
+
+            MyRoleService roleService = new MyRoleService();
+            role = string.IsNullOrEmpty(rid) ?
+                roleService.GetRole(openID) :
+                roleService.GetRole(Convert.ToInt32(rid));
+
+            if (role == null)
+            {
+                throw new JSException(JSErrMsg.ERR_MSG_LoginOvertime);
+            }
+
+            //写入cookie
+            JSResponse.WriteCookie("OpenID", user.OpenID, 120);
+            JSResponse.WriteCookie("RID", SecretUtil.Encrypt(rid), 120);
+        }
+
         #endregion
 
         #region Current
@@ -110,7 +150,7 @@ namespace JSNet.Service
             string uid = SecretUtil.Decrypt(JSRequest.GetCookie("UID", true));
             if (string.IsNullOrEmpty(uid))
             {
-                throw new JSException(JSErrMsg.ERR_MSG_LoginOvertime);
+                GetCurrentVXUser();
             }
 
             EntityManager<UserEntity> manager = new EntityManager<UserEntity>();
@@ -124,12 +164,12 @@ namespace JSNet.Service
             return user;
         }
 
-        public UserEntity GetCurrentUserByOpenID()
+        public UserEntity GetCurrentVXUser()
         {
             string openID = JSRequest.GetCookie("OpenID", true);
             if (string.IsNullOrEmpty(openID))
             {
-                throw new JSException(JSErrMsg.ERR_MSG_WrongOpenID);
+                throw new JSException(JSErrMsg.ERR_MSG_LoginOvertime);
             }
 
             UserEntity user = GetUser(openID);
@@ -144,14 +184,15 @@ namespace JSNet.Service
         public StaffEntity GetCurrentStaff()
         {
             EntityManager<StaffEntity> manager = new EntityManager<StaffEntity>();
-            StaffEntity staff = manager.GetSingle(CurrentUser.ID, StaffEntity.FieldID);
+            StaffEntity staff = manager.GetSingle(CurrentUser.ID, StaffEntity.FieldUserID);
             if (staff == null)
             {
                 throw new JSException(JSErrMsg.ERR_CODE_DATA_MISSING, string.Format(JSErrMsg.ERR_MSG_DATA_MISSING, "员工"));
             }
 
             return staff;
-        } 
+        }
+
         #endregion
 
         #region User
@@ -270,6 +311,19 @@ namespace JSNet.Service
             {
                 where.Add("Organize_ID", Comparison.In, list.ToArray());
             }
+            else
+            {
+                if (role.ID == 1)
+                {
+                    //超级管理员，显示所有内容
+                    where.Add("1", Comparison.Equals, "1");
+                }
+                else
+                {
+                    //非超级管理员，不显示内容
+                    where.Add("1", Comparison.Equals, "0");
+                }
+            }
 
             OrderByStatement orderby = new OrderByStatement();
             orderby.Add(paging.SortField, ConvertToSort(paging.SortOrder));
@@ -304,7 +358,7 @@ namespace JSNet.Service
         public List<StaffEntity> GetStaffsByRole(RoleEntity role)
         {
             PermissionService permissionService = new PermissionService();
-            List<string> organizeIDs = permissionService.GetAuthorizeOrganizeIDByRole(role,"OrderSys_Data.Staff");
+            List<string> organizeIDs = permissionService.GetAuthorizeOrganizeIDByRole(role,"OrderSys_Data.User");
 
             WhereStatement where = new WhereStatement();
             where.Add(StaffEntity.FieldIsEnable, Comparison.Equals, (int)TrueFalse.True);
@@ -312,6 +366,19 @@ namespace JSNet.Service
             if (organizeIDs.Count > 0)
             {
                 where.Add(StaffEntity.FieldOrganizeID, Comparison.In, organizeIDs.ToArray());
+            }
+            else
+            {
+                if (role.ID == 1)
+                {
+                    //超级管理员，显示所有内容
+                    where.Add("1", Comparison.Equals, "1");
+                }
+                else
+                {
+                    //默认不显示内容
+                    where.Add("1", Comparison.Equals, "0");
+                }
             }
 
             int count = 0;

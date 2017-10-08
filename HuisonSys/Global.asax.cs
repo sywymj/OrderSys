@@ -45,17 +45,36 @@ namespace HuisonSys
                 var httpException = ex as HttpException;
                 if (httpException != null)
                 {
-                    switch (httpException.GetHttpCode())
+                    if (httpException.ErrorCode == 1001)
                     {
-                        case 404:
-                            routeData.Values["action"] = "Http404";
-                            break;
-                        case 401:  //没有登录
-                            routeData.Values["action"] = "Http401";
-                            break;
-                        case 403:  //没有执行的权限
-                            routeData.Values["action"] = "Http403";
-                            break;
+                        //微信端
+                        switch (httpException.GetHttpCode())
+                        {
+                            case 404:
+                                routeData.Values["action"] = "Http404";
+                                break;
+                            case 401:  //没有登录
+                                routeData.Values["action"] = "VXHttp401";
+                                break;
+                            case 403:  //没有执行的权限
+                                routeData.Values["action"] = "VXHttp403";
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        switch (httpException.GetHttpCode())
+                        {
+                            case 404:
+                                routeData.Values["action"] = "Http404";
+                                break;
+                            case 401:  //没有登录
+                                routeData.Values["action"] = "Http401";
+                                break;
+                            case 403:  //没有执行的权限
+                                routeData.Values["action"] = "Http403";
+                                break;
+                        }
                     }
                 }
             }

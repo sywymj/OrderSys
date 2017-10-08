@@ -9,20 +9,12 @@ using System.Web.Mvc;
 
 namespace OrderSys.Controllers
 {
+    [ManagerAuthorize]
     public class StaffController : WeixinBaseController
     {
         //
         // GET: /Permission/
         private UserService userService = new UserService();
-
-        public ActionResult Index()
-        {
-            //return View();
-
-            JsonResult js = new JsonResult();
-            js.Data = new JSResponse("成功删除");
-            return js;
-        }
 
         [HttpGet]
         public ActionResult GetAllStaffs()

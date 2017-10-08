@@ -40,6 +40,19 @@ namespace JSNet.Service
             {
                 where.Add(RoleEntity.FieldOrganizeID, Comparison.In, organizeIDs.ToArray());
             }
+            else
+            {
+                if (role.ID == 1)
+                {
+                    //超级管理员，显示所有内容
+                    where.Add("1", Comparison.Equals, "1");
+                }
+                else 
+                {
+                    //非超级管理员，不显示内容
+                    where.Add("1", Comparison.Equals, "0");
+                }
+            }
 
             int count = 0;
             EntityManager<RoleEntity> manager = new EntityManager<RoleEntity>();
@@ -87,6 +100,18 @@ namespace JSNet.Service
             return entity;
         }
 
+        public RoleEntity GetRole(string openID)
+        {
+            ViewManager vmanager = new ViewManager("VP_UserRole");
+            DataRow dr = vmanager.GetSingle(openID, "User_OpenID");
+            if (dr == null)
+            {
+                return null;
+            }
+
+            return GetRole(Convert.ToInt32(dr["Role_ID"]));
+        }
+
         public List<RoleEntity> GetRoleListByRole(RoleEntity role ,Paging paging,out int count)
         {
             PermissionService permissionService = new PermissionService();
@@ -97,6 +122,20 @@ namespace JSNet.Service
             {
                 where.Add(RoleEntity.FieldOrganizeID, Comparison.In, organizeIDs.ToArray());//kvp.Value.ToArray();
             }
+            else
+            {
+                if (role.ID == 1)
+                {
+                    //超级管理员，显示所有内容
+                    where.Add("1", Comparison.Equals, "1");
+                }
+                else
+                {
+                    //非超级管理员，不显示内容
+                    where.Add("1", Comparison.Equals, "0");
+                }
+            }
+
 
             EntityManager<RoleEntity> manager = new EntityManager<RoleEntity>();
             List<RoleEntity> list = manager.GetListByPage(where, out count, paging.PageIndex, paging.PageSize);

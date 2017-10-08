@@ -1,4 +1,6 @@
-﻿<!--头部-->
+﻿@model System.Data.DataTable
+
+<!--头部-->
 <div class="top">
     <span class="iconfont top_nav">
         <i>&#xe65b;</i>
@@ -7,18 +9,16 @@
                 <div class="top_nav_in_avatar circle">
                     <img src="/Content/images/avatar_t2.png" width="100%" />
                 </div>
-                <div class="top_nav_in_name">伊丽莎白班克斯</div>
+                <div class="top_nav_in_name">@ViewBag.StaffName</div>
             </div>
             <ul>
-                <li>
-                    <em class="iconfont">&#xe690;</em><a href="@Url.Action("MyStartIndex", "Order", new { area = "Weixin" })">我的发起</a>
-                </li>
-                <li>
-                    <em class="iconfont">&#xe690;</em><a href="@Url.Action("MyAppointIndex", "Order", new { area = "Weixin" })">我的委派</a>
-                </li>
-                <li>
-                    <em class="iconfont">&#xe690;</em><a href="@Url.Action("MyHandleIndex", "Order", new { area = "Weixin" })">我的工单</a>
-                </li>
+                @{foreach (System.Data.DataRow dr in Model.Rows)
+                  {
+                    <li>
+                        <em class="iconfont">&#xe690;</em><a href="@dr["Url"]">@dr["Title"]</a>
+                    </li>
+                  }
+                }
             </ul>
         </div>
         <div class="top_nav_in2"></div>

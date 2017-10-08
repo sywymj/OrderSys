@@ -1,6 +1,7 @@
 ﻿@model System.Data.DataTable
 @using JSNet.Utilities;
 @using JSNet.BaseSys;
+@using JSNet.Service;
 
 @foreach (System.Data.DataRow dr in Model.Rows)
 {
@@ -65,17 +66,28 @@
             </div>
         </div>
         <div class="list_sym_r">
-                @{if (Math.Abs((int)dr["Status"]) < (int)OrderStatus.Handling && Math.Abs((int)dr["Status"]) != (int)OrderStatus.Canceled)
+            @{if (Math.Abs((int)dr["Status"]) < (int)OrderStatus.Handling && Math.Abs((int)dr["Status"]) != (int)OrderStatus.Canceled)
+            {
+                if (new PermissionService().IsButtonAuthorizedByRole("OrderSys_VX.MyStartIndex.Cancel"))
                 {
                     <a href="javascript:doCancelOrder('@dr["ID"]');" class="orders">撤销</a>
                 }
-                }
-                @{if ((OrderStatus)dr["Status"] == OrderStatus.Checking)
+            }
+            }
+            @{if ((OrderStatus)dr["Status"] == OrderStatus.Checking)
+            {
+                if (new PermissionService().IsButtonAuthorizedByRole("OrderSys_VX.MyStartIndex.Check"))
                 {
                     <a href="javascript:checkOrder('@dr["ID"]');" class="orders">验收</a>
                 }
-                }
-            <a href="@Url.Action("OrderFlows", "Order", new { area = "Weixin", OrderID = dr["ID"] })" class="details">详情</a>
+            }
+            }
+            @{if (new PermissionService().IsButtonAuthorizedByRole("OrderSys_VX.PublicButton.OrderFlows"))
+              {
+                  <a href="@Url.Action("OrderFlows", "Order", new { area = "Weixin", OrderID = dr["ID"] })" class="details">详情</a>
+              }
+            }
+            
         </div>
         <div class="clear"></div>
     </div>

@@ -25,7 +25,7 @@
 
 <script>
     getOrderHandleType = function () {
-        var url = '@Url.Action("GetOrderHandleType", "Base", new { area = "Weixin" })';
+        var url = '@Url.Action("GetOrderHandleType", "Home", new { area = "Weixin" })';
         doGet(url, null, function (jdata) {
             if (jdata.Code == "200") {
                 $.each(jdata.Data, function (i, item) {

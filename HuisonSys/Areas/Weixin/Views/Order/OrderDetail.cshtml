@@ -61,13 +61,13 @@
         <div class="weui_cell">
             <div class="weui_cell_hd"><label class="weui_label">处理者</label></div>
             <div class="weui_cell_bd weui_cell_primary">
-                @dr["Name"] @((int)dr["IsLeader"] == (int)TrueFalse.True ? "（领队）" : "")
+                @dr["HandlerName"] @((int)dr["IsLeader"] == (int)TrueFalse.True ? "（领队）" : "")
             </div>
         </div>
         <div class="weui_cell">
             <div class="weui_cell_hd"><label class="weui_label">联系电话</label></div>
             <div class="weui_cell_bd weui_cell_primary">
-                <a href="tel:@dr["Tel"]">@dr["Tel"]</a>
+                <a href="tel:@dr["HandlerTel"]">@dr["HandlerTel"]</a>
             </div>
         </div>
     }

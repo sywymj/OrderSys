@@ -2780,6 +2780,8 @@
     <Content Include="Content\tinyselect\js\jquery-1.11.0.min.js" />
     <Content Include="Content\tinyselect\js\tinyselect.js" />
     <Content Include="Global.asax" />
+    <Content Include="Login.html" />
+    <Content Include="NoRight.html" />
     <Content Include="test.txt" />
     <Content Include="tree_grid_demo.txt" />
     <Content Include="Xml\Config.xml" />
@@ -2800,14 +2802,8 @@
     <Content Include="Areas\Weixin\Views\Order\OrderDetail.cshtml" />
     <Content Include="Areas\Weixin\Views\Order\OrderFlows.cshtml" />
     <Content Include="Areas\Weixin\Views\Order\StartOrder.cshtml" />
-    <Content Include="Areas\Weixin\Views\Permission\Staffs.cshtml" />
-    <Content Include="Areas\Weixin\Views\Popup\_DemoPopup.cshtml" />
-    <Content Include="Areas\Weixin\Views\Popup\AddhandledetailPopup.cshtml" />
-    <Content Include="Areas\Weixin\Views\Popup\AppointPopup.cshtml" />
-    <Content Include="Areas\Weixin\Views\Popup\HandledetailPopup.cshtml" />
-    <Content Include="Areas\Weixin\Views\Popup\OrderdetailPopup.cshtml" />
+    <Content Include="Areas\Weixin\Views\Staff\Staffs.cshtml" />
     <Content Include="Areas\Weixin\Views\Popup\StaffsPopup.cshtml" />
-    <Content Include="Areas\Weixin\Views\Popup\WorkflowsPopup.cshtml" />
     <Content Include="Areas\Weixin\Views\Shared\_Back.cshtml" />
     <Content Include="Areas\Weixin\Views\Shared\_End.cshtml" />
     <Content Include="Areas\Weixin\Views\Shared\_Fresh.cshtml" />
@@ -2991,6 +2987,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\Admin\Views\Home\NoRight_Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\Weixin\Views\Home\Index.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

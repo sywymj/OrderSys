@@ -57,8 +57,6 @@ namespace JSNet.Service
             }
         }
 
-
-
         public Sorting ConvertToSort(string sortOrder)
         {
             switch (sortOrder.ToLower())
