@@ -78,6 +78,7 @@
     <Compile Include="EnumDescription\EnumDescription.cs" />
     <Compile Include="EnumDescription\EnumExtensions.cs" />
     <Compile Include="Utilities\FileUtil.cs" />
+    <Compile Include="Utilities\ImageHelper.cs" />
     <Compile Include="Utilities\ImportUtil.cs" />
     <Compile Include="Utilities\Log4NetUtil.cs" />
     <Compile Include="Utilities\LogUtil.cs" />
@@ -86,6 +87,7 @@
     <Compile Include="Utilities\SecretUtil.cs" />
     <Compile Include="Utilities\StringUtil.cs" />
     <Compile Include="Utilities\VerifyCodeImage.cs" />
+    <Compile Include="Utilities\WatermarkHelper.cs" />
     <Compile Include="Validate\Validate.cs" />
   </ItemGroup>
   <ItemGroup />

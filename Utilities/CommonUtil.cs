@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Web;
 
 namespace JSNet.Utilities
@@ -20,7 +21,7 @@ namespace JSNet.Utilities
         /// <returns>主键</returns>
         public static string NewGuid()
         {
-            return Guid.NewGuid().ToString();
+            return Guid.NewGuid().ToString("N");
         }
         #endregion
 
@@ -365,6 +366,222 @@ namespace JSNet.Utilities
         public static byte[] ConvertToByte(Object targetValue)
         {
             return targetValue != DBNull.Value ? (byte[])targetValue : null;
+        }
+        #endregion
+
+        #region 文件操作
+        /// <summary>
+        /// 删除单个文件
+        /// </summary>
+        /// <param name="_filepath">文件相对路径</param>
+        public static bool DeleteFile(string _filepath)
+        {
+            if (string.IsNullOrEmpty(_filepath))
+            {
+                return false;
+            }
+            string fullpath = GetMapPath(_filepath);
+            if (File.Exists(fullpath))
+            {
+                File.Delete(fullpath);
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// 删除上传的文件(及缩略图)
+        /// </summary>
+        /// <param name="_filepath"></param>
+        public static void DeleteUpFile(string _filepath)
+        {
+            if (string.IsNullOrEmpty(_filepath))
+            {
+                return;
+            }
+            string fullpath = GetMapPath(_filepath); //原图
+            if (File.Exists(fullpath))
+            {
+                File.Delete(fullpath);
+            }
+            if (_filepath.LastIndexOf("/") >= 0)
+            {
+                string thumbnailpath = _filepath.Substring(0, _filepath.LastIndexOf("/") + 1) + "s_" + _filepath.Substring(_filepath.LastIndexOf("/") + 1);
+                string fullTPATH = GetMapPath(thumbnailpath); //宿略图
+                if (File.Exists(fullTPATH))
+                {
+                    File.Delete(fullTPATH);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 删除Content内容的图片
+        /// </summary>
+        /// <param name="content">内容</param>
+        /// <param name="startstr">匹配<img>标签src属性开头字符串</param>
+        public static void DeleteContentPic(string content, string startstr)
+        {
+            if (string.IsNullOrEmpty(content))
+            {
+                return;
+            }
+            Regex reg = new Regex("IMG[^>]*?src\\s*=\\s*(?:\"(?<1>[^\"]*)\"|'(?<1>[^\']*)')", RegexOptions.IgnoreCase);//<1>表示的内容也会输出，所以后面用maths.group[1]来接收此段内容
+            MatchCollection m = reg.Matches(content);
+            foreach (Match math in m)
+            {
+                string imgUrl = math.Groups[1].Value;
+                string fullPath = GetMapPath(imgUrl);
+                try
+                {
+                    if (imgUrl.ToLower().StartsWith(startstr.ToLower()) && File.Exists(fullPath))
+                    {
+                        File.Delete(fullPath);
+                    }
+                }
+                catch { }
+            }
+        }
+
+        /// <summary>
+        /// 删除指定文件夹
+        /// </summary>
+        /// <param name="_dirpath">文件相对路径</param>
+        public static bool DeleteDirectory(string _dirpath)
+        {
+            if (string.IsNullOrEmpty(_dirpath))
+            {
+                return false;
+            }
+            string fullpath = GetMapPath(_dirpath);
+            if (Directory.Exists(fullpath))
+            {
+                Directory.Delete(fullpath, true);
+                return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// 修改指定文件夹名称
+        /// </summary>
+        /// <param name="old_dirpath">旧相对路径</param>
+        /// <param name="new_dirpath">新相对路径</param>
+        /// <returns>bool</returns>
+        public static bool MoveDirectory(string old_dirpath, string new_dirpath)
+        {
+            if (string.IsNullOrEmpty(old_dirpath))
+            {
+                return false;
+            }
+            string fulloldpath = GetMapPath(old_dirpath);
+            string fullnewpath = GetMapPath(new_dirpath);
+            if (Directory.Exists(fulloldpath))
+            {
+                Directory.Move(fulloldpath, fullnewpath);
+                return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// 返回文件大小KB
+        /// </summary>
+        /// <param name="_filepath">文件相对路径</param>
+        /// <returns>int</returns>
+        public static int GetFileSize(string _filepath)
+        {
+            if (string.IsNullOrEmpty(_filepath))
+            {
+                return 0;
+            }
+            string fullpath = GetMapPath(_filepath);
+            if (File.Exists(fullpath))
+            {
+                FileInfo fileInfo = new FileInfo(fullpath);
+                return ((int)fileInfo.Length) / 1024;
+            }
+            return 0;
+        }
+
+        /// <summary>
+        /// 返回文件扩展名，不含“.”
+        /// </summary>
+        /// <param name="_filepath">文件全名称</param>
+        /// <returns>string</returns>
+        public static string GetFileExt(string _filepath)
+        {
+            if (string.IsNullOrEmpty(_filepath))
+            {
+                return "";
+            }
+            if (_filepath.LastIndexOf(".") > 0)
+            {
+                return _filepath.Substring(_filepath.LastIndexOf(".") + 1); //文件扩展名，不含“.”
+            }
+            return "";
+        }
+
+        /// <summary>
+        /// 返回文件名，不含路径
+        /// </summary>
+        /// <param name="_filepath">文件相对路径</param>
+        /// <returns>string</returns>
+        public static string GetFileName(string _filefullpath)
+        {
+            return _filefullpath.Substring(_filefullpath.LastIndexOf(@"/") + 1);
+        }
+
+        /// <summary>
+        /// 返回文件路径，不含文件名
+        /// </summary>
+        /// <param name="_filepath">文件相对路径</param>
+        /// <returns>string</returns>
+        public static string GetFilePath(string _filefullpath)
+        {
+            return _filefullpath.Substring(0, _filefullpath.LastIndexOf(@"/"));
+        }
+        /// <summary>
+        /// 文件是否存在
+        /// </summary>
+        /// <param name="_filepath">文件相对路径</param>
+        /// <returns>bool</returns>
+        public static bool FileExists(string _filepath)
+        {
+            string fullpath = GetMapPath(_filepath);
+            if (File.Exists(fullpath))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        #endregion
+
+        #region 获得当前绝对路径
+        /// <summary>
+        /// 获得当前绝对路径
+        /// </summary>
+        /// <param name="strPath">指定的路径</param>
+        /// <returns>绝对路径</returns>
+        public static string GetMapPath(string strPath)
+        {
+            //if (Path.IsPathRooted(strPath))
+            //{
+            //    return strPath;
+            //}
+            if (HttpContext.Current != null)
+            {
+                return HttpContext.Current.Server.MapPath(strPath);
+            }
+            else //非web程序引用
+            {
+                strPath = strPath.Replace("/", "\\");
+                if (strPath.StartsWith("\\"))
+                {
+                    strPath = strPath.Substring(strPath.IndexOf('\\', 1)).TrimStart('\\');
+                }
+                return System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, strPath);
+            }
         }
         #endregion
 

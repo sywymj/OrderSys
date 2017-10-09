@@ -172,7 +172,11 @@ ajaxTips = function (json, container, callback) {
     }
     //debugger;
     //通过这种方法可将字符串转换为对象
-    var jdata = eval('(' + json + ')');
+    var jdata = json;
+    if (typeof json === "string") {
+        jdata = eval('(' + json + ')');
+    }
+    
     if (jdata.RspTypeCode == -1) {
         //错误消息提示
         if (jdata.ErrCode == "401") {
@@ -208,10 +212,10 @@ ajaxTips = function (json, container, callback) {
         return jdata;
     } else if (jdata.RspTypeCode == 5) {
         //没数据
-        showEnding(container, jdata.Msg);
+        container || showEnding(container, jdata.Msg);
     } else if (jdata.RspTypeCode == 6) {
         //数据加载完
-        showEnding(container, jdata.Msg);
+        container || showEnding(container, jdata.Msg);
     }
 
     callback && callback(jdata);

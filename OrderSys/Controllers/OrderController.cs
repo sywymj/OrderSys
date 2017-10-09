@@ -266,7 +266,9 @@ namespace OrderSys.Controllers
             string sContent = JSRequest.GetRequestFormParm(OrderEntity.FieldContent);
             string sRemark = JSRequest.GetRequestFormParm(OrderEntity.FieldRemark, false);
             string sWorkingLocation = JSRequest.GetRequestFormParm(OrderEntity.FieldWorkingLocation, false);
-            
+            string sPhotoPath = JSRequest.GetRequestFormParm(OrderEntity.FieldPhotoPath, false);
+            string sPhotoPath1 = JSRequest.GetRequestFormParm(OrderEntity.FieldPhotoPath1, false);
+
             //参数验证
             OrderEntity order = new OrderEntity();
             order.BookingTime = JSValidator.ValidateDateTime(OrderEntity.FieldBookingTime, sBookingTime, true);
@@ -276,7 +278,8 @@ namespace OrderSys.Controllers
             order.Content = JSValidator.ValidateString(OrderEntity.FieldContent, sContent, true);
             order.Remark = JSValidator.ValidateString(OrderEntity.FieldRemark, sRemark, false);
             order.WorkingLocation = JSValidator.ValidateString(OrderEntity.FieldWorkingLocation, sWorkingLocation, false);
-
+            order.PhotoPath = JSValidator.ValidateString(OrderEntity.FieldPhotoPath, sPhotoPath, false);
+            order.PhotoPath1 = JSValidator.ValidateString(OrderEntity.FieldPhotoPath1, sPhotoPath1, false);
             orderService.StartOrder(order);
 
             ContentResult res = new ContentResult();

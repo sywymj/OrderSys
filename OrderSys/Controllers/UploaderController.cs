@@ -1,5 +1,6 @@
 ﻿using FastJSON;
 using JSNet.BaseSys;
+using JSNet.Service;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,10 +21,29 @@ namespace OrderSys.Controllers
 
         public ActionResult UploadPhoto()
         {
+            ContentResult res = new ContentResult();
             HttpFileCollectionBase files = Request.Files;
+            if (files.Count == 0)
+            {
+                res.Content = JSON.ToJSON(new JSResponse("请选择文件后上传！"), jsonParams);
+                return res;
+            }
+
+            string fileName = string.Empty;
+            UploadService service = new UploadService();
+            service.FileSaveAs(files[0], out fileName);
+
+            res.Content = JSON.ToJSON(new JSResponse(data: fileName), jsonParams);
+            return res;
+        }
+
+        public ActionResult RemovePhoto(string fileName)
+        {
+            UploadService service = new UploadService();
+            service.RemoveFile(fileName);
 
             ContentResult res = new ContentResult();
-            res.Content = JSON.ToJSON(new JSResponse("撤销成功！"), jsonParams);
+            res.Content = JSON.ToJSON(new JSResponse(ResponseType.None,"删除成功！"), jsonParams);
             return res;
         }
 
