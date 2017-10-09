@@ -25,7 +25,7 @@ namespace HuisonSys
             routes.MapRoute(
                 name: "Default_area",
                 url: "{area}/{controller}/{action}/{id}",
-                //defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional },
+                defaults: new { controller = "Home", action = "Index", area = "Weixin",id = UrlParameter.Optional },
                 namespaces: new string[] { "HuisonSys.Controllers" }
             );
         }

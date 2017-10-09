@@ -265,7 +265,8 @@ namespace OrderSys.Controllers
             string sPriority = JSRequest.GetRequestFormParm(OrderEntity.FieldPriority);
             string sContent = JSRequest.GetRequestFormParm(OrderEntity.FieldContent);
             string sRemark = JSRequest.GetRequestFormParm(OrderEntity.FieldRemark, false);
-
+            string sWorkingLocation = JSRequest.GetRequestFormParm(OrderEntity.FieldWorkingLocation, false);
+            
             //参数验证
             OrderEntity order = new OrderEntity();
             order.BookingTime = JSValidator.ValidateDateTime(OrderEntity.FieldBookingTime, sBookingTime, true);
@@ -274,6 +275,7 @@ namespace OrderSys.Controllers
             order.Priority = JSValidator.ValidateInt(OrderEntity.FieldPriority, sPriority, true);
             order.Content = JSValidator.ValidateString(OrderEntity.FieldContent, sContent, true);
             order.Remark = JSValidator.ValidateString(OrderEntity.FieldRemark, sRemark, false);
+            order.WorkingLocation = JSValidator.ValidateString(OrderEntity.FieldWorkingLocation, sWorkingLocation, false);
 
             orderService.StartOrder(order);
 

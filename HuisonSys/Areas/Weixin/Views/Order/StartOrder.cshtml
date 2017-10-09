@@ -1,4 +1,12 @@
-﻿<div class="weui_cells weui_cells_form">
+﻿
+<!--引入UICSS-->
+<link rel="stylesheet" type="text/css" href="/Content/uploader/style.css">
+<!--引入CSS-->
+<link rel="stylesheet" type="text/css" href="/Content/uploader/webuploader.css">
+<!--引入JS-->
+<script type="text/javascript" src="/Content/uploader/webuploader.js"></script>
+
+<div class="weui_cells weui_cells_form">
     <div class="weui_cell">
         <div class="weui_cell_hd"><label for="" class="weui_label">截止日期</label></div>
         <div class="weui_cell_bd weui_cell_primary">
@@ -17,7 +25,12 @@
             <input class="weui_input" id="AttnTel" type="text" placeholder="不填默认发单人电话">
         </div>
     </div>
-
+    <div class="weui_cell">
+        <div class="weui_cell_hd"><label class="weui_label">报障地点</label></div>
+        <div class="weui_cell_bd weui_cell_primary">
+            <input class="weui_input" id="WorkingLocation" type="text" placeholder="请输入报障地点">
+        </div>
+    </div>
 </div>
 
 <div class="weui_cells_title">紧急程度</div>
@@ -40,6 +53,12 @@
             <p>紧急</p>
         </div>
     </label>
+</div>
+
+<div id="uploader-demo">
+    <!--用来存放item-->
+    <div id="fileList" class="uploader-list"></div>
+    <div id="filePicker">拍照</div>
 </div>
 
 <div class="weui_cells weui_cells_form">
@@ -70,7 +89,8 @@
             AttnTel: $('#AttnTel').val(),
             Priority: $("input[name='Priority']:checked").val(),
             Content: $('#Content').val(),
-            Remark: $('#Remark').val()
+            Remark: $('#Remark').val(),
+            WorkingLocation: $('#WorkingLocation').val()
         };
 
         doPost('@Url.Action("DoStartOrder", "Order", new { area = "Weixin" })', data, function (jdata) {
@@ -91,8 +111,170 @@
         $('#s11').prop("checked", true);
         $('#Content').val('');
         $('#Remark').val('');
+        $('#WorkingLocation').val('');
     }
 
 
 
+</script>
+
+<script>
+    // 图片上传demo
+    jQuery(function () {
+        var $ = jQuery,
+            $list = $('#fileList'),
+            // 优化retina, 在retina下这个值是2
+            ratio = window.devicePixelRatio || 1,
+
+            // 缩略图大小
+            thumbnailWidth = 100 * ratio,
+            thumbnailHeight = 100 * ratio,
+
+            // Web Uploader实例
+            uploader;
+
+        // 初始化Web Uploader
+        uploader = WebUploader.create({
+
+            // 自动上传。
+            auto: true,
+
+            // swf文件路径
+            swf: 'Content/uploader/Uploader.swf',
+
+            // 文件接收服务端。
+            server: '@Url.Action("UploadPhoto", "Uploader", new { area = "Weixin" })',
+
+            // 是否允许裁剪。
+            crop: false,
+
+            // 选择文件的按钮。可选。
+            // 内部根据当前运行是创建，可能是input元素，也可能是flash.
+            pick: '#filePicker',
+
+            fileNumLimit: 2,
+
+            // 只允许选择文件，可选。
+            accept: {
+                title: 'Images',
+                extensions: 'gif,jpg,jpeg,bmp,png',
+                mimeTypes: 'image/*'
+            }
+        });
+
+        // 当有文件添加进来的时候
+        uploader.on('fileQueued', function (file) {
+            var $li = $(
+                    '<div id="' + file.id + '" class="file-item thumbnail">' +
+                        '<img>' +
+                        //'<div class="info">' + file.name + '</div>' +
+                    '</div>'
+                    ),
+                $img = $li.find('img'),
+                $btns = $('<div class="file-panel">' +
+                    '<span class="cancel">删除</span></div>').appendTo($li);
+
+            $list.append($li);
+
+            // 创建缩略图
+            uploader.makeThumb(file, function (error, src) {
+                if (error) {
+                    $img.replaceWith('<span>不能预览</span>');
+                    return;
+                }
+
+                $img.attr('src', src);
+            }, thumbnailWidth, thumbnailHeight);
+
+            $li.on('mouseenter', function () {
+                $btns.stop().animate({ height: 20 });
+            });
+
+            $li.on('mouseleave', function () {
+                $btns.stop().animate({ height: 20 /*0*/ });
+            });
+
+            $btns.on('click', 'span', function () {
+                alert("删除" + file.name);
+                uploader.removeFile(file, true);
+                return;
+            });
+        });
+
+        // 文件上传过程中创建进度条实时显示。
+        uploader.on('uploadProgress', function (file, percentage) {
+            var $li = $('#' + file.id),
+                $percent = $li.find('.progress span');
+
+            // 避免重复创建
+            if (!$percent.length) {
+                $percent = $('<p class="progress"><span></span></p>')
+                        .appendTo($li)
+                        .find('span');
+            }
+
+            $percent.css('width', percentage * 100 + '%');
+        });
+
+        // 文件上传成功，给item添加成功class, 用样式标记上传成功。
+        uploader.on('uploadSuccess', function (file, response) {
+            $('#' + file.id).addClass('upload-state-done');
+            //返回文件名
+            debugger;
+            //file.name = response.objData.fileName;
+        });
+
+        // 文件上传失败，现实上传出错。
+        uploader.on('uploadError', function (file) {
+            var $li = $('#' + file.id),
+                $error = $li.find('div.error');
+
+            // 避免重复创建
+            if (!$error.length) {
+                $error = $('<div class="error"></div>').appendTo($li);
+            }
+
+            $error.text('上传失败');
+        });
+
+        // 完成上传完了，成功或者失败，先删除进度条。
+        uploader.on('uploadComplete', function (file) {
+            $('#' + file.id).find('.progress').remove();
+        });
+
+        uploader.on('error', function (code) {
+            switch (code) {
+                case 'Q_EXCEED_NUM_LIMIT':
+                    alert("错误：上传文件数量过多！");
+                    break;
+                case 'Q_EXCEED_SIZE_LIMIT':
+                    alert("错误：文件总大小超出限制！");
+                    break;
+                case 'F_EXCEED_SIZE':
+                    alert("错误：文件大小超出限制！");
+                    break;
+                case 'Q_TYPE_DENIED':
+                    alert("错误：禁止上传该类型文件！");
+                    break;
+                case 'F_DUPLICATE':
+                    alert("错误：请勿重复上传该文件！");
+                    break;
+                default:
+                    alert("错误代码：" + typ, "");
+                    break;
+            }
+        });
+
+        //删除图片
+        uploader.on('fileDequeued', function (file) {
+            removeFile(file);
+        });
+    });
+
+    // 负责view的销毁，并删除服务器端文件
+    function removeFile(file) {
+        var $li = $('#' + file.id);
+
+        $li.off().find('.file-panel').off().end().remove();
+    }
 </script>

@@ -131,6 +131,10 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
+    <Content Include="Content\uploader\style.css" />
+    <Content Include="Content\uploader\Uploader.swf" />
+    <Content Include="Content\uploader\webuploader.css" />
+    <Content Include="Content\uploader\webuploader.js" />
     <Content Include="favicon.ico" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>

@@ -43,4 +43,42 @@
         </script>
     </span>
     <label class="iconfont" onclick="refresh()">&#xe727;</label>
+    <i class="iconfont">&#xe729;</i>
+</div>
+
+ <div class="top_choose">
+    <div class="weui_cells_title" style="padding:0">标题标题标题标题标题标题</div>
+    <div class="weui-row">
+        <div class="weui-col-33 now">CDC中国开发者大会</div>
+        <div class="weui-col-33">CDC中国开发者大会</div>
+        <div class="weui-col-33">CDC中国开发者大会</div>
+        <div class="weui-col-33">CDC中国开发者大会</div>
+        <div class="weui-col-33">CDC中国开发者大会</div>
+        <div class="weui-col-33">CDC中国开发者大会</div>
+    </div>
+    <div class="weui_cells_title" style="padding:0">标题标题标题标题标题标题</div>
+    <div class="weui-row">
+        <div class="weui-col-33">CDC中国开发者大会</div>
+        <div class="weui-col-33">CDC中国开发者大会</div>
+        <div class="weui-col-33">CDC中国开发者大会</div>
+        <div class="weui-col-33">CDC中国开发者大会</div>
+        <div class="weui-col-33">CDC中国开发者大会</div>
+        <div class="weui-col-33">CDC中国开发者大会</div>
+    </div>
+    <div class="slide_close iconfont">&#xe79a;</div>
+    <script>
+        $(function () {
+            var w_h2 = $(window).height();
+            $('.top_choose').height(w_h2);
+        });
+        $(function () {
+            $('.top i').click(function () {
+                $('.top_choose').fadeIn(200);
+            });
+            $('.slide_close').click(function () {
+                $('.top_choose').fadeOut(200);
+            });
+
+        });
+    </script>
 </div>
