@@ -106,8 +106,30 @@ namespace OrderSys.Controllers
         [HttpGet]
         public ActionResult MyStartedOrders(int pageIndex, int pageSize)
         {
+            #region 获取参数
+            string sStatus = JSRequest.GetRequestUrlParm("Status", false);
+            string sPriority = JSRequest.GetRequestUrlParm("Priority", false);
+            string sBookingTime = JSRequest.GetRequestUrlParm("BookingTime", false);
+            string sContent = JSRequest.GetRequestUrlParm("Content", false); 
+            #endregion
+
+            #region 验证参数
+            int? status = JSValidator.ValidateInt("工单状态", sStatus);
+            int? priority = JSValidator.ValidateInt("紧急程度", sPriority);
+            DateTime? bookingTime = JSValidator.ValidateDateTime("紧急程度", sBookingTime);
+            string content = JSValidator.ValidateString("工单内容", sContent); 
+            #endregion
+
+            #region 构造搜索条件
+            JSDictionary dic = new JSDictionary();
+            if (status != null) { dic.Add(OrderEntity.FieldStatus, (int)status); }
+            if (priority != null) { dic.Add(OrderEntity.FieldPriority, (int)priority); }
+            if (bookingTime != null) { dic.Add(OrderEntity.FieldBookingTime, bookingTime); }
+            if (!string.IsNullOrEmpty(content)) { dic.Add(OrderEntity.FieldContent, content); } 
+            #endregion
+            
             int count = 0;
-            var list = orderService.GetMyStartedOrders(pageIndex, pageSize, out count);
+            var list = orderService.GetMyStartedOrders(dic, pageIndex, pageSize, out count);
 
             if (list.Rows.Count > 0)
             {

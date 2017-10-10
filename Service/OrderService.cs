@@ -323,7 +323,7 @@ namespace JSNet.Service
         /// 获取我的已发起工单
         /// </summary>
         /// <returns></returns>
-        public DataTable GetMyStartedOrders(int pageIndex,int pageSize,out int count)
+        public DataTable GetMyStartedOrders(JSDictionary dic,int pageIndex,int pageSize,out int count)
         {
             //1.0 构建资源对象
             PermissionService permissionService = new PermissionService();
@@ -331,7 +331,29 @@ namespace JSNet.Service
 
             //2.0 构建where从句
             WhereStatement where = new WhereStatement();
-            where.Add(OrderEntity.FieldStatus, Comparison.NotEquals, (int)OrderStatus.Canceled);
+            if (!dic.ContainsKey(OrderEntity.FieldStatus))
+            {
+                where.Add(OrderEntity.FieldStatus, Comparison.NotEquals, (int)OrderStatus.Canceled);
+                where.Add(OrderEntity.FieldStatus, Comparison.NotEquals, (int)OrderStatus.Finish);
+            }
+            else
+            {
+                where.Add(OrderEntity.FieldStatus, Comparison.Equals, dic[OrderEntity.FieldStatus]);
+            }
+            if (dic.ContainsKey(OrderEntity.FieldPriority))
+            {
+                where.Add(OrderEntity.FieldPriority, Comparison.Equals, dic[OrderEntity.FieldPriority]);
+            }
+            if (dic.ContainsKey(OrderEntity.FieldBookingTime))
+            {
+                where.Add(OrderEntity.FieldBookingTime, Comparison.Equals, dic[OrderEntity.FieldBookingTime]);
+            }
+            if (dic.ContainsKey(OrderEntity.FieldContent))
+            {
+                where.Add(OrderEntity.FieldContent, Comparison.Like, "%" + dic[OrderEntity.FieldContent] + "%");
+            }
+
+
             if (organizeIDs.Count > 0)
             {
                 //显示指定部门的工单

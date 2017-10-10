@@ -14,6 +14,10 @@ Query.prototype = {
     pageSize: 10,
     isLoading: false,
     isEnd: false,
+    status: "",         //工单状态
+    bookingTime: "",    //截止日期
+    priority: "",       //紧急程度
+    content:"",         //内容
 
     setNextPage: function () {
         this.pageIndex++;
@@ -368,6 +372,37 @@ formatDic = function (value, data) {
             return item.v;
         }
     });
+}
+
+getQueryFilters = function () {
+    var filter = new Object();
+    filter.status = $("#filterStatus").children(".now").attr("value");
+    filter.priority = $("#filterPriority").children(".now").attr("value");
+    filter.bookingTime = $("#filterBookingTime").children(".now").text();
+    filter.content = $("#filterContent").children("div").text();
+    return filter;
+}
+
+setQueryFilters = function (query) {
+    debugger;
+    $("#filterStatus").children("div").removeClass("now");
+    $.each($("#filterStatus").children("div"), function (i, n) {
+        //console.log($(this).attr("value"));
+        //debugger;
+        if ($(this).attr("value") == query.status) {
+            $(this).addClass("now");
+        }
+    });
+
+    $("#filterPriority").children("div").removeClass("now");
+    $.each($("#filterPriority").children("div"), function (i, n) {
+        if ($(this).attr("value") == query.priority) {
+            $(this).addClass("now");
+        }
+    })
+
+    $("#filterBookingTime").children("div").text(query.bookingTime);
+    $("#filterContent").children("div").text(query.content);
 }
 
 /*

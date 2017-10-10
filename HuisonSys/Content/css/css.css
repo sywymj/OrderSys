@@ -204,3 +204,27 @@ margin-bottom:16px;
 .weui-col-33.now{border:1px solid #09F; color:#09f;}
 
 .slide_close{width:40px; height:40px; position:absolute; top:0; right:0; text-align:center; line-height:40px; color:#484848;}
+
+/*图片展示*/
+.pic_box {
+        width: 150px;
+        height: 150px;
+        margin-right: 20px;
+        border: 1px solid #dedede;
+        text-align: center;
+        line-height: 150px;
+        overflow: hidden;
+    }
+
+.pic_box img {
+            width: 130px;
+            vertical-align: middle;
+        }
+
+.verticalAlign {
+        vertical-align: middle;
+        display: inline-block;
+        height: 100%;
+        width: 1px;
+        margin-left: -6px;
+    }

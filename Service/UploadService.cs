@@ -13,9 +13,14 @@ namespace JSNet.Service
     public class UploadService
     {
 
-        private string _UploadPath = "/Upload/";
-        private string _AllowExt = "jpg,bmp,jpeg,gif,png,ico";
-        private int _LimitSize = 2 * 1024 * 1024;//2M
+        private static string _UploadPath = "/Upload/";
+        private static string _AllowExt = "jpg,bmp,jpeg,gif,png,ico";
+        private static int _LimitSize = 2 * 1024 * 1024;//2M
+
+        public static string UploadPath
+        {
+            get { return _UploadPath; }
+        }
 
         public void FileSaveAs(HttpPostedFileBase httpPostedFile, out string newFileName)
         {

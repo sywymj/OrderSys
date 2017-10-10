@@ -1,6 +1,7 @@
 ﻿@model System.Data.DataRow
 @using JSNet.Utilities;
 @using JSNet.BaseSys;
+@using JSNet.Service;
 @{
     Layout = "~/Areas/Weixin/Views/Shared/_InnerLayout.cshtml";
 }
@@ -72,6 +73,34 @@
     }
 
 </div>
+@*@{if (!string.IsNullOrEmpty(Model["PhotoPath"].ToString()))
+{
+      @UploadService.UploadPath@Model["PhotoPath"]
+}}
+@{if (!string.IsNullOrEmpty(Model["PhotoPath1"].ToString()))
+{
+    @UploadService.UploadPath@Model["PhotoPath1"]
+}}*@
+<div class="weui_cells_title">图片</div>
+<div class="weui_cells weui_cells_form">
+    <div class="weui_cell">
+        @{if (!string.IsNullOrEmpty(Model["PhotoPath"].ToString()))
+        {
+            <div class="pic_box">
+                <a class="example-image-link" href="@UploadService.UploadPath@Model["PhotoPath"]" data-lightbox="example-set" data-title=""><img src="@UploadService.UploadPath@Model["PhotoPath"]" /></a>
+                <em class="verticalAlign"></em>
+            </div>
+        }}
+        @{if (!string.IsNullOrEmpty(Model["PhotoPath1"].ToString()))
+        {
+            <div class="pic_box">
+                <a class="example-image-link" href="@UploadService.UploadPath@Model["PhotoPath1"]" data-lightbox="example-set" data-title=""><img src="@UploadService.UploadPath@Model["PhotoPath1"]" /></a>
+                <em class="verticalAlign"></em>
+            </div>
+        }}
+
+    </div>
+</div>
 
 <div class="weui_cells_title">紧急程度</div>
 <div class="weui_cells weui_cells_checkbox">
@@ -101,3 +130,19 @@
         @(string.IsNullOrEmpty(Model["Remark"].ToString()) ? "无" : Model["Remark"])
     </div>
 </div>
+
+<!--lightbox-->
+<link rel="stylesheet" href="~/Content/picbox/css/lightbox.css">
+<script src="~/Content/picbox/js/jquery-1.11.0.min.js"></script>
+<script src="~/Content/picbox/js/lightbox.js"></script>
+<script>
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-2196019-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function () {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+</script>

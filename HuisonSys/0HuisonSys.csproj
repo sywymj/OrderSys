@@ -131,6 +131,28 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
+    <Content Include="Content\picbox\css\lightbox.css" />
+    <Content Include="Content\picbox\css\screen.css" />
+    <Content Include="Content\picbox\img\close.png" />
+    <Content Include="Content\picbox\img\demopage\favicon.png" />
+    <Content Include="Content\picbox\img\demopage\image-1.jpg" />
+    <Content Include="Content\picbox\img\demopage\image-2.jpg" />
+    <Content Include="Content\picbox\img\demopage\image-3.jpg" />
+    <Content Include="Content\picbox\img\demopage\image-4.jpg" />
+    <Content Include="Content\picbox\img\demopage\image-5.jpg" />
+    <Content Include="Content\picbox\img\demopage\image-6.jpg" />
+    <Content Include="Content\picbox\img\demopage\thumb-1.jpg" />
+    <Content Include="Content\picbox\img\demopage\thumb-2.jpg" />
+    <Content Include="Content\picbox\img\demopage\thumb-3.jpg" />
+    <Content Include="Content\picbox\img\demopage\thumb-4.jpg" />
+    <Content Include="Content\picbox\img\demopage\thumb-5.jpg" />
+    <Content Include="Content\picbox\img\demopage\thumb-6.jpg" />
+    <Content Include="Content\picbox\img\loading.gif" />
+    <Content Include="Content\picbox\img\next.png" />
+    <Content Include="Content\picbox\img\prev.png" />
+    <Content Include="Content\picbox\js\jquery-1.11.0.min.js" />
+    <Content Include="Content\picbox\js\lightbox.js" />
+    <Content Include="Content\picbox\js\lightbox.min.js" />
     <Content Include="Content\uploader\style.css" />
     <Content Include="Content\uploader\Uploader.swf" />
     <Content Include="Content\uploader\webuploader.css" />
@@ -2994,6 +3016,12 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\Weixin\Views\Home\Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Content\picbox\img\demopage\.DS_Store" />
+    <Content Include="Content\picbox\js\.DS_Store" />
+    <Content Include="Content\picbox\js\jquery-1.11.0.min.map" />
+    <Content Include="Content\picbox\js\lightbox.min.map" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

@@ -43,33 +43,51 @@
         </script>
     </span>
     <label class="iconfont" onclick="refresh()">&#xe727;</label>
-    <i class="iconfont">&#xe729;</i>
+    <i class="iconfont" onclick="initFilter()">&#xe729;</i>
 </div>
 
  <div class="top_choose">
-    <div class="weui_cells_title" style="padding:0">标题标题标题标题标题标题</div>
-    <div class="weui-row">
-        <div class="weui-col-33 now">CDC中国开发者大会</div>
-        <div class="weui-col-33">CDC中国开发者大会</div>
-        <div class="weui-col-33">CDC中国开发者大会</div>
-        <div class="weui-col-33">CDC中国开发者大会</div>
-        <div class="weui-col-33">CDC中国开发者大会</div>
-        <div class="weui-col-33">CDC中国开发者大会</div>
-    </div>
-    <div class="weui_cells_title" style="padding:0">标题标题标题标题标题标题</div>
-    <div class="weui-row">
-        <div class="weui-col-33">CDC中国开发者大会</div>
-        <div class="weui-col-33">CDC中国开发者大会</div>
-        <div class="weui-col-33">CDC中国开发者大会</div>
-        <div class="weui-col-33">CDC中国开发者大会</div>
-        <div class="weui-col-33">CDC中国开发者大会</div>
-        <div class="weui-col-33">CDC中国开发者大会</div>
-    </div>
+    <div class="weui_cells_title" style="padding:0">工单状态</div>
+     <div class="weui-row" id="filterStatus">
+         <div class="weui-col-33" value="1">待委派</div>
+         <div class="weui-col-33" value="2">待受理</div>
+         <div class="weui-col-33 now" value="3">处理中</div>
+         <div class="weui-col-33" value="4">待验收</div>
+         <div class="weui-col-33" value="99">完成</div>
+         <div class="weui-col-33" value="-3">被驳回</div>
+         <div class="weui-col-33" value="0">已撤销</div>
+     </div>
+    <div class="weui_cells_title" style="padding:0">紧急程度</div>
+     <div class="weui-row" id="filterPriority">
+         <div class="weui-col-33 now" value="0">一般</div>
+         <div class="weui-col-33" value="1">紧急</div>
+         
+     </div>
+     <div class="weui_cells_title" style="padding:0">截止日期</div>
+     <div class="weui-row" id="filterBookingTime">
+         <div class="weui-col-33">2017-10-10</div>
+     </div>
+     <div class="weui_cells_title" style="padding:0">内容</div>
+     <div class="weui-row" id="filterContent">
+         <div class="weui-col-33">CDC中国开发者大会</div>
+     </div>
     <div class="slide_close iconfont">&#xe79a;</div>
+     <a class="weui_btn weui_btn_primary" href="javascript:search()" id="search">确定</a>
+
     <script>
         $(function () {
             var w_h2 = $(window).height();
             $('.top_choose').height(w_h2);
+
+            $('#filterStatus').children('div').on('click', function () {
+                $(this).siblings("div").removeClass('now');
+                $(this).addClass('now');
+            })
+
+            $('#filterPriority').children('div').on('click', function () {
+                $(this).siblings("div").removeClass('now');
+                $(this).addClass('now');
+            })
         });
         $(function () {
             $('.top i').click(function () {
@@ -78,7 +96,8 @@
             $('.slide_close').click(function () {
                 $('.top_choose').fadeOut(200);
             });
-
         });
+
+
     </script>
 </div>

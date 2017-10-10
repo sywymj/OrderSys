@@ -31,6 +31,8 @@
         querymystarted();
     })
 
+    
+
     //每个页面必重载的方法
     refresh = function () {
         //定义刷新按钮的调用的方法
@@ -43,12 +45,43 @@
         }
     }
 
+    //每个页面必重载的方法
+    initFilter = function () {
+        //定义展开搜索框按钮的调用的方法
+        var tabID = $(".weui_bar_item_on").attr("id");
+        if (tabID == "query_mystarted_btn") {
+            setQueryFilters(startedQuery);
+        }
+    }
+
+    //每个页面必重载的方法
+    search = function () {
+        //定义搜索按钮的调用的方法
+        debugger;
+        var filter = getQueryFilters();
+        var tabID = $(".weui_bar_item_on").attr("id");
+        if (tabID == "query_mystarted_btn") {
+            startedQuery.pageIndex = 1;
+            startedQuery.status = filter.status || "";
+            startedQuery.priority = filter.priority || "";
+            startedQuery.bookingTime = filter.bookingTime || "";
+            startedQuery.content = filter.content || "";
+            querymystarted();
+        }
+        $('.top_choose').fadeOut(200);
+    }
+
     querymystarted = function () {
         var url = '@Url.Action("MyStartedOrders", "Order", new { area = "Weixin" })';
         var parms = {
             PageIndex: startedQuery.pageIndex,
             PageSize: startedQuery.pageSize,
+            Status: startedQuery.status,
+            Priority: startedQuery.priority,
+            BookingTime: startedQuery.bookingTime,
+            Content: startedQuery.content,
         };
+        debugger;
         doQuery1(startedQuery, url, parms);
     }
 
