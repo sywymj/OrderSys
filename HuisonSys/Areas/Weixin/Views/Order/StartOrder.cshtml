@@ -98,6 +98,7 @@
 
         doPost('@Url.Action("DoStartOrder", "Order", new { area = "Weixin" })', data, function (jdata) {
             if (jdata.Code == "200") {
+                startedQuery = new Query('#mystarted_list');
                 startedQuery.pageIndex = 1;
                 querymystarted();//查询
                 doClearStartForm();

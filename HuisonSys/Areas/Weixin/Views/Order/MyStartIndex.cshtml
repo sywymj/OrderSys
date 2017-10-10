@@ -46,12 +46,13 @@
     }
 
     //每个页面必重载的方法
-    initFilter = function () {
+    showFilter = function () {
         //定义展开搜索框按钮的调用的方法
         var tabID = $(".weui_bar_item_on").attr("id");
         if (tabID == "query_mystarted_btn") {
             setQueryFilters(startedQuery);
         }
+        $('.top_choose').fadeIn(200);
     }
 
     //每个页面必重载的方法
@@ -72,6 +73,7 @@
     }
 
     querymystarted = function () {
+        var q = startedQuery;
         var url = '@Url.Action("MyStartedOrders", "Order", new { area = "Weixin" })';
         var parms = {
             PageIndex: startedQuery.pageIndex,
@@ -103,7 +105,6 @@
             var urlParm = { OrderID: orderID };
             doGet(url, urlParm, function (jdata) {
                 if (jdata.Code == "200") {
-                    //看看要怎么做（若筛选后直接刷新页面就好）
                     $('#startedorder_' + orderID).slideUp("normal");
                 }
             });
@@ -117,7 +118,7 @@
         var urlParm = { OrderID: orderID };
         doGet(url, urlParm, function (jdata) {
             if (jdata.Code == "200") {
-                //看看要怎么做（若筛选后直接刷新页面就好）
+                // TODO 验收后，列表应该怎么显示？ 
                 $('#startedorder_' + orderID).hide("normal");
             }
         });
@@ -132,7 +133,7 @@
                 var urlParm = { OrderID: orderID, Remark: text };
                 doGet(url, urlParm, function (jdata) {
                     if (jdata.Code == "200") {
-                        //看看要怎么做（若筛选后直接刷新页面就好）
+                        // TODO 驳回后，列表应该怎么显示？ 
                         $('#startedorder_' + orderID).hide("normal");
                     }
                 });

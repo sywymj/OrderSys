@@ -42,12 +42,45 @@
         debugger;
         var tabID = $(".weui_bar_item_on").attr("id");
         if (tabID == "query_myappointing_btn") {
+            appointingQuery = new Query('#myappointing_list');
             appointingQuery.pageIndex = 1;
             querymyappointing();
         } else if (tabID == "query_myappointed_btn") {
+            appointedQuery = new Query('#myappointed_list');
             appointedQuery.pageIndex = 1;
             querymyappointed();
         }
+    }
+
+    //每个页面必重载的方法
+    showFilter = function () {
+        //定义展开搜索框按钮的调用的方法
+        var tabID = $(".weui_bar_item_on").attr("id");
+        if (tabID == "query_myappointing_btn") {
+            $.alert("此页面不能筛选！", "警告");
+            return false;
+        } else if (tabID == "query_myappointed_btn") {
+            setQueryFilters(appointedQuery);
+        }
+        $('.top_choose').fadeIn(200);
+    }
+
+    //每个页面必重载的方法
+    search = function () {
+        //定义搜索按钮的调用的方法
+        debugger;
+        var filter = getQueryFilters();
+        var tabID = $(".weui_bar_item_on").attr("id");
+        if (tabID == "query_myappointing_btn") {
+        } else if (tabID == "query_myappointed_btn") {
+            appointedQuery.pageIndex = 1;
+            appointedQuery.status = filter.status || "";
+            appointedQuery.priority = filter.priority || "";
+            appointedQuery.bookingTime = filter.bookingTime || "";
+            appointedQuery.content = filter.content || "";
+            querymyappointed();
+        }
+        $('.top_choose').fadeOut(200);
     }
 
     querymyappointing = function () {
@@ -62,8 +95,12 @@
     querymyappointed = function () {
         var url = '@Url.Action("MyAppointedOrders", "Order", new { area = "Weixin" })';
         var parms = {
-            PageIndex:  appointedQuery.pageIndex,
+            PageIndex: appointedQuery.pageIndex,
             PageSize: appointedQuery.pageSize,
+            Status: appointedQuery.status,
+            Priority: appointedQuery.priority,
+            BookingTime: appointedQuery.bookingTime,
+            Content: appointedQuery.content,
         };
         doQuery1(appointedQuery, url, parms);
     }

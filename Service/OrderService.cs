@@ -334,7 +334,6 @@ namespace JSNet.Service
             if (!dic.ContainsKey(OrderEntity.FieldStatus))
             {
                 where.Add(OrderEntity.FieldStatus, Comparison.NotEquals, (int)OrderStatus.Canceled);
-                where.Add(OrderEntity.FieldStatus, Comparison.NotEquals, (int)OrderStatus.Finish);
             }
             else
             {
@@ -374,8 +373,7 @@ namespace JSNet.Service
             }
 
             OrderByStatement orderby = new OrderByStatement();
-            orderby.Add(OrderEntity.FieldPriority, Sorting.Descending);
-            orderby.Add(OrderEntity.FieldBookingTime, Sorting.Ascending);
+            orderby.Add(OrderEntity.FieldStartTime, Sorting.Descending);
 
             //3.0 获取已发起的数据
             ViewManager manager = new ViewManager("VO_Order");
@@ -397,6 +395,7 @@ namespace JSNet.Service
             //2.0 构建where从句
             WhereStatement where = new WhereStatement();
             where.Add(OrderEntity.FieldStatus, Comparison.Equals, (int)OrderStatus.Appointing);
+
             //显示指定部门的工单
             if (organizeIDs.Count > 0)
             {
@@ -430,7 +429,7 @@ namespace JSNet.Service
         /// 获取我的已委派工单
         /// </summary>
         /// <returns></returns>
-        public DataTable GetMyAppointedOrders(int pageIndex, int pageSize, out int count)
+        public DataTable GetMyAppointedOrders(JSDictionary dic,int pageIndex, int pageSize, out int count)
         {
             //1.0 构建资源对象
             PermissionService permissionService = new PermissionService();
@@ -438,7 +437,35 @@ namespace JSNet.Service
 
             //2.0 构建where从句
             WhereStatement where = new WhereStatement();
-            where.Add(OrderEntity.FieldStatus, Comparison.GreaterOrEquals, (int)OrderStatus.Receving);
+            if (!dic.ContainsKey(OrderEntity.FieldStatus))
+            {
+                where.Add(OrderEntity.FieldStatus, Comparison.GreaterOrEquals, (int)OrderStatus.Receving);
+            }
+            else
+            {
+                //只能搜索已委派的工单
+                if (Convert.ToInt32(dic[OrderEntity.FieldStatus]) >= (int)OrderStatus.Receving)
+                {
+                    where.Add(OrderEntity.FieldStatus, Comparison.Equals, dic[OrderEntity.FieldStatus]);
+                }
+                else
+                {
+                    where.Add("1", Comparison.NotEquals, "0");
+                }
+            }
+            if (dic.ContainsKey(OrderEntity.FieldPriority))
+            {
+                where.Add(OrderEntity.FieldPriority, Comparison.Equals, dic[OrderEntity.FieldPriority]);
+            }
+            if (dic.ContainsKey(OrderEntity.FieldBookingTime))
+            {
+                where.Add(OrderEntity.FieldBookingTime, Comparison.Equals, dic[OrderEntity.FieldBookingTime]);
+            }
+            if (dic.ContainsKey(OrderEntity.FieldContent))
+            {
+                where.Add(OrderEntity.FieldContent, Comparison.Like, "%" + dic[OrderEntity.FieldContent] + "%");
+            }
+
             if (organizeIDs.Count > 0)
             {
                 //显示指定部门的工单

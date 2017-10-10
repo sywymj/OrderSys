@@ -14,7 +14,8 @@
                     <ul>
                         <li class="mypriority">紧急程度：<font color="@EnumExtensions.ToColorStyle((OrderPriority)dr["Priority"])" size="2">@EnumExtensions.ToDescription((OrderPriority)dr["Priority"])</font></li>
                         <div class="clear"></div>
-                        <li>截止日期：@Convert.ToDateTime(dr["BookingTime"]).ToString(BaseSystemInfo.DateFormat)</li>
+                        @*<li>截止日期：@Convert.ToDateTime(dr["BookingTime"]).ToString(BaseSystemInfo.DateFormat)</li>*@
+                        <li>发起时间：@Convert.ToDateTime(dr["StartTime"]).ToString(BaseSystemInfo.DateTimeFormat)</li>
                         <div class="clear"></div>
                         @{if ((int)dr["Status"] == (int)OrderStatus.Finish)
                         {
@@ -23,13 +24,13 @@
                             <div class="clear"></div>
                         }
                         }
-                        @{if ((int)dr["Status"] == (int)OrderStatus.Appointing)
+                        @*@{if ((int)dr["Status"] == (int)OrderStatus.Appointing)
                         {
                             //待委派，显示发起时间
                             <li>发起时间：@Convert.ToDateTime(dr["StartTime"]).ToString(BaseSystemInfo.DateTimeFormat)</li>
                             <div class="clear"></div>
                         }
-                        }
+                        }*@
                         @{if ((int)dr["Status"] == (int)OrderStatus.Checking)
                         {
                             //待验收，显示处理者
@@ -48,16 +49,22 @@
                             <div class="clear"></div>
                         }
                         }
-                        @{if ((int)dr["Status"] == (int)OrderStatus.Receving
-                              || (int)dr["Status"] == (int)OrderStatus.Handling)
+                        @{if ((int)dr["Status"] == (int)OrderStatus.Receving)
                         {
-                            //[待接收][处理中]，显示待办人
+                            //[待接收]，显示待办人
                             <li>待办人：@dr["NextOperaterName"]</li>
                             <li>电话：<a href="tel:@dr["NextOperaterTel"]">@dr["NextOperaterTel"]</a></li>
                             <div class="clear"></div>
                         } 
                         }
-                        
+                        @{if ((int)dr["Status"] == (int)OrderStatus.Handling)
+                        {
+                            //[处理中]，显示处理者
+                            <li>处理者：@dr["NextOperaterName"]</li>
+                            <li>电话：<a href="tel:@dr["NextOperaterTel"]">@dr["NextOperaterTel"]</a></li>
+                            <div class="clear"></div>
+                        }
+                        }
                     </ul>
                 </div>
                 <div class="list_sym_l_in_b">

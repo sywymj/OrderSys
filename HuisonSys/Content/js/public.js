@@ -216,10 +216,10 @@ ajaxTips = function (json, container, callback) {
         return jdata;
     } else if (jdata.RspTypeCode == 5) {
         //没数据
-        container || showEnding(container, jdata.Msg);
+        showEnding(container, jdata.Msg);
     } else if (jdata.RspTypeCode == 6) {
         //数据加载完
-        container || showEnding(container, jdata.Msg);
+        showEnding(container, jdata.Msg);
     }
 
     callback && callback(jdata);
@@ -378,8 +378,8 @@ getQueryFilters = function () {
     var filter = new Object();
     filter.status = $("#filterStatus").children(".now").attr("value");
     filter.priority = $("#filterPriority").children(".now").attr("value");
-    filter.bookingTime = $("#filterBookingTime").children(".now").text();
-    filter.content = $("#filterContent").children("div").text();
+    filter.bookingTime = $("#filterBookingTime").val();
+    filter.content = $("#filterContent").val();
     return filter;
 }
 
@@ -401,8 +401,8 @@ setQueryFilters = function (query) {
         }
     })
 
-    $("#filterBookingTime").children("div").text(query.bookingTime);
-    $("#filterContent").children("div").text(query.content);
+    $("#filterBookingTime").val(query.bookingTime);
+    $("#filterContent").val(query.content);
 }
 
 /*
