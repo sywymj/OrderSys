@@ -71,5 +71,7 @@ namespace JSNet.Utilities
             }
             return enumeration.ToString();
         }
+
+
     }
 }

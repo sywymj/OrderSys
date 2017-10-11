@@ -13,8 +13,8 @@
         <textarea id="remark" rows="2" placeholder="请输入备注"></textarea>
 
         <div class="demos-content-padded" style="margin-top:20px;">
-            <a href="javascript:doAddOrderHandleDetail('@ViewBag.OrderID');" class="weui_btn weui_btn_primary" style="width:46%; height:40px; line-height:40px;  float:left; margin:0; font-size:16px;">增加进度</a>
-            <a href="javascript:doHandled('@ViewBag.OrderID');" class="weui_btn weui_btn_primary" style="width:46%; height:40px; line-height:40px; float:right; margin:0; font-size:16px; ">完成处理</a>
+            <a href="javascript:doAddOrderHandleDetail('@ViewBag.OrderID');" class="weui_btn weui_btn_primary" style="width:46%; height:40px; line-height:40px;  float:left; margin:0; font-size:16px;">确定</a>
+            @*<a href="javascript:doHandled('@ViewBag.OrderID');" class="weui_btn weui_btn_primary" style="width:46%; height:40px; line-height:40px; float:right; margin:0; font-size:16px; ">完成处理</a>*@
             <div class="clear"></div>
         </div>
     </div>
@@ -43,6 +43,12 @@
         var handleType = $('#select1').val();
         var remark = $('#remark').val();
         var orderID = orderID;
+
+        if (handleType == 99) {
+            doHandled(orderID);
+            return true;
+        }
+
 
         $.confirm("您确定添加这条进度?", "确认?", function () {
             var url = '@Url.Action("DoAddHandleDetail", "Order", new { area = "Weixin" })';

@@ -50,6 +50,7 @@
         //定义展开搜索框按钮的调用的方法
         var tabID = $(".weui_bar_item_on").attr("id");
         if (tabID == "query_mystarted_btn") {
+            startedQuery.tabID = 'query_mystarted_btn';
             setQueryFilters(startedQuery);
         }
         $('.top_choose').fadeIn(200);

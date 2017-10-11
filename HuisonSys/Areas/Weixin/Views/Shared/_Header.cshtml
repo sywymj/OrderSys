@@ -3,7 +3,7 @@
 <!--头部-->
 <div class="top">
     <span class="iconfont top_nav">
-        <i>&#xe65b;</i>
+        <i style="left:0px">&#xe65b;</i>
         <div class="top_nav_in">
             <div class="top_nav_in_t">
                 <div class="top_nav_in_avatar circle">
@@ -15,7 +15,7 @@
                 @{foreach (System.Data.DataRow dr in Model.Rows)
                   {
                     <li>
-                        <em class="iconfont">&#xe690;</em><a href="@dr["Url"]">@dr["Title"]</a>
+                        <em class="iconfont"></em><a href="@dr["Url"]">@dr["Title"]</a>
                     </li>
                   }
                 }
@@ -35,85 +35,52 @@
             $('.top_nav i').click(function () {
                 $('.top_nav_in').css('left', '0');
                 $('.top_nav_in2').fadeIn(200);
+                $('body').css({
+                    "overflow-x": "hidden",
+                    "overflow-y": "hidden"
+                });
             });
             $('.top_nav_in2').click(function () {
                 $('.top_nav_in').css('left', '-200px');
                 $('.top_nav_in2').fadeOut(200);
+                $('body').css({
+                    "overflow-x": "auto",
+                    "overflow-y": "auto"
+                });
             });
         </script>
     </span>
     <label class="iconfont" onclick="refresh()">&#xe727;</label>
-    <i class="iconfont" onclick="showFilter()">&#xe729;</i>
+    <i class="iconfont myfliter" onclick="showFilter()">&#xe729;</i>
 </div>
 
  <div class="top_choose">
-    <div class="weui_cells_title" style="padding:0">工单状态</div>
-     <div class="weui-row" id="filterStatus">
-         <div class="weui-col-33" value="1">待委派</div>
-         <div class="weui-col-33" value="2">待受理</div>
-         <div class="weui-col-33" value="3">处理中</div>
-         <div class="weui-col-33" value="4">待验收</div>
-         <div class="weui-col-33" value="99">完成</div>
-         <div class="weui-col-33" value="-3">被驳回</div>
-         <div class="weui-col-33" value="0">已撤销</div>
-     </div>
-    <div class="weui_cells_title" style="padding:0">紧急程度</div>
-     <div class="weui-row" id="filterPriority">
-         <div class="weui-col-33" value="0">一般</div>
-         <div class="weui-col-33" value="1">紧急</div>
-     </div>
-     <div class="weui_cells_title" style="padding:0">截止日期</div>
-     <div class="weui-row">
-         <div class="weui-col-100">
-             <input class="weui_input" id="filterBookingTime" type="date" value="">
-         </div>
-     </div>
-     <div class="weui_cells_title" style="padding:0">内容</div>
-     <div class="weui-row">
-         <div class="weui-col-100">
-             <input class="weui_input" id="filterContent" type="text" placeholder="请输入需要筛选的内容">
-         </div>
-     </div>
+    <div id="filter">
+        <!--筛选器内容-->
+    </div>
     <div class="slide_close iconfont">&#xe79a;</div>
-     <a class="weui_btn weui_btn_primary" href="javascript:search()" id="search">确定</a>
-     <a class="weui_btn weui_btn_primary" href="javascript:reset()" id="reset">重置</a>
-    <script>
-        $(function () {
-            var w_h2 = $(window).height();
-            $('.top_choose').height(w_h2);
+     <script>
+         $(function () {
+             var w_h2 = $(window).height();
+             $('.top_choose').height(w_h2);
+         });
+         $(function () {
+             $('.top .myfilter').click(function () {
+                 $('.top_choose').fadeIn(200);
+                 $('body').css({
+                     "overflow-x": "hidden",
+                     "overflow-y": "hidden"
+                 });
+             });
+             $('.slide_close').click(function () {
+                 $('.top_choose').fadeOut(200);
+                 $('body').css({
+                     "overflow-x": "auto",
+                     "overflow-y": "auto"
+                 });
+             });
 
-            $('#filterStatus').children('div').on('click', function () {
-                $(this).siblings("div").removeClass('now');
-                if ($(this).hasClass('now')) {
-                    $(this).removeClass('now');
-                } else {
-                    $(this).addClass('now');
-                }
-            })
+         });
+     </script>
 
-            $('#filterPriority').children('div').on('click', function () {
-                $(this).siblings("div").removeClass('now');
-                if ($(this).hasClass('now')) {
-                    $(this).removeClass('now');
-                } else {
-                    $(this).addClass('now');
-                }
-            })
-        });
-        $(function () {
-            $('.top i').click(function () {
-                
-            });
-            $('.slide_close').click(function () {
-                $('.top_choose').fadeOut(200);
-            });
-        });
-
-        reset = function () {
-            $("#filterStatus").children("div").removeClass("now")
-            $("#filterPriority").children("div").removeClass("now");
-            $("#filterBookingTime").val('');
-            $("#filterContent").val('');
-        }
-    </script>
 </div>

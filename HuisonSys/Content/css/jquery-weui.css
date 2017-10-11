@@ -856,7 +856,8 @@ body {
   background-size: 100%;
 }
 .weui_tab {
-  overflow: hidden;
+    margin-top: 51px;
+    overflow: hidden;
 }
 .weui_navbar_item {
   color: #888;

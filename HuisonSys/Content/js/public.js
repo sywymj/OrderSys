@@ -18,6 +18,7 @@ Query.prototype = {
     bookingTime: "",    //截止日期
     priority: "",       //紧急程度
     content:"",         //内容
+    tabId: "",
 
     setNextPage: function () {
         this.pageIndex++;
@@ -385,10 +386,11 @@ getQueryFilters = function () {
 
 setQueryFilters = function (query) {
     debugger;
+    var article = new Article('#filter');
+    doGetPartial1(article, '/Weixin/Home/FilterIndex', { tabid: query.tabID });
+
     $("#filterStatus").children("div").removeClass("now");
     $.each($("#filterStatus").children("div"), function (i, n) {
-        //console.log($(this).attr("value"));
-        //debugger;
         if ($(this).attr("value") == query.status) {
             $(this).addClass("now");
         }

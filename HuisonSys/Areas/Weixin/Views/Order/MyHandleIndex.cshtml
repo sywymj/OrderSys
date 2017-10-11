@@ -31,9 +31,6 @@
     </div>
 </div>
 
-@*@Html.Partial("~/Areas/Weixin/Views/Popup/AddhandledetailPopup.cshtml")
-@Html.Partial("~/Areas/Weixin/Views/Popup/WorkflowsPopup.cshtml")*@
-
 <script>
     var handledQuery, handlingQuery, receivingQuery;
 
@@ -63,11 +60,65 @@
         }
     }
 
+    //每个页面必重载的方法
+    showFilter = function () {
+        //定义展开搜索框按钮的调用的方法
+        var tabID = $(".weui_bar_item_on").attr("id");
+        if (tabID == "query_myreciving_btn") {
+            receivingQuery.tabID = 'query_myreciving_btn';
+            setQueryFilters(receivingQuery);
+        }
+        else if (tabID == "query_myhandling_btn") {
+            handlingQuery.tabID = 'query_myhandling_btn';
+            setQueryFilters(handlingQuery);
+        } else if (tabID == "query_myhandled_btn") {
+            handledQuery.tabID = 'query_myhandled_btn';
+            setQueryFilters(handledQuery);
+        }
+        $('.top_choose').fadeIn(200);
+    }
+
+    //每个页面必重载的方法
+    search = function () {
+        //定义搜索按钮的调用的方法
+        debugger;
+        var filter = getQueryFilters();
+        var tabID = $(".weui_bar_item_on").attr("id");
+        if (tabID == "query_myreciving_btn") {
+            receivingQuery.pageIndex = 1;
+            receivingQuery.status = filter.status || "";
+            receivingQuery.priority = filter.priority || "";
+            receivingQuery.bookingTime = filter.bookingTime || "";
+            receivingQuery.content = filter.content || "";
+            querymyreciving();
+        }
+        else if (tabID == "query_myhandling_btn") {
+            handlingQuery.pageIndex = 1;
+            handlingQuery.status = filter.status || "";
+            handlingQuery.priority = filter.priority || "";
+            handlingQuery.bookingTime = filter.bookingTime || "";
+            handlingQuery.content = filter.content || "";
+            querymyhandling();
+        } else if (tabID == "query_myhandled_btn") {
+            handledQuery.pageIndex = 1;
+            handledQuery.status = filter.status || "";
+            handledQuery.priority = filter.priority || "";
+            handledQuery.bookingTime = filter.bookingTime || "";
+            handledQuery.content = filter.content || "";
+            querymyhandled();
+        }
+        $('.top_choose').fadeOut(200);
+    }
+
     querymyreciving = function () {
         var url = '@Url.Action("MyReceivingOrders", "Order", new { area = "Weixin" })';
         var parms = {
             PageIndex: receivingQuery.pageIndex,
             PageSize: receivingQuery.pageSize,
+            Status: receivingQuery.status,
+            Priority: receivingQuery.priority,
+            BookingTime: receivingQuery.bookingTime,
+            Content: receivingQuery.content,
         };
         doQuery1(receivingQuery, url, parms);
     }
@@ -77,6 +128,10 @@
         var parms = {
             PageIndex: handlingQuery.pageIndex,
             PageSize: handlingQuery.pageSize,
+            Status: handlingQuery.status,
+            Priority: handlingQuery.priority,
+            BookingTime: handlingQuery.bookingTime,
+            Content: handlingQuery.content,
         };
         doQuery1(handlingQuery, url, parms);
     }
@@ -86,6 +141,10 @@
         var parms = {
             PageIndex: handledQuery.pageIndex,
             PageSize: handledQuery.pageSize,
+            Status: handledQuery.status,
+            Priority: handledQuery.priority,
+            BookingTime: handledQuery.bookingTime,
+            Content: handledQuery.content,
         };
         doQuery1(handledQuery, url, parms);
     }

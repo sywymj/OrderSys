@@ -37,4 +37,22 @@ namespace JSNet.Utilities
             _text = text;
         }
     }
+
+    public class Visible : Attribute
+    {
+        private bool _isVisible;
+
+        public bool IsVisible
+        {
+            get
+            {
+                return _isVisible;
+            }
+        }
+
+        public Visible(bool isVisible)
+        {
+            _isVisible = isVisible;
+        }
+    }
 }

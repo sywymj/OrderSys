@@ -1,6 +1,6 @@
 
 /*头部*/
-.top{width:100%; height:50px; background:#fff; border-bottom:1px solid #dedede; line-height:50px; text-align:center; position:relative; font-size:18px; z-index:999999999999;}
+.top{width:100%; height:50px; background:#fff; border-bottom:1px solid #dedede; line-height:50px; text-align:center; position:fixed;top:0px; font-size:18px; z-index:999999999999;}
 .top span{display:block; width:50px; height:50px; text-align:center; line-height:50px;  position:absolute; left:0; top:0; color:#999; font-size:24px;z-index:9;}
 .top em{display:block; height:50px; text-align:center; line-height:50px;  position:absolute; left:10px; top:0; color:#999;z-index:9; font-size:16px;}
 .top em a{color:#999;}
@@ -187,7 +187,7 @@ background:url(../images/leader.png);
 /*头部筛选*/
 .top i{display:block; width:50px; height:50px; text-align:center; line-height:50px;  position:absolute; right:30px; top:0; color:#999; font-size:24px; font-size:14px;}
 
-.top_choose{width:96%; position:fixed; top:51px; left:0; z-index:999899; background:#fff; padding:0 2%; display:none;}
+.top_choose{width:96%; position:fixed; top:51px; left:0; z-index:999899; background:#fff; padding:0 2%; display:none;overflow-y:scroll;}
 .weui-row {
 margin-top: 10px;
 }
@@ -195,13 +195,13 @@ margin-top: 10px;
 border: 1px solid #ccc;
 height: 40px;
 line-height: 40px;
-text-align: left;
+text-align: center;
 font-size:12px;
 padding:0 5px;
 overflow:hidden; text-overflow: ellipsis; white-space: nowrap;
 margin-bottom:16px;
 }
-.weui-col-33.now{border:1px solid #09F; color:#09f;}
+.weui-col-50.now{border:1px solid #09F; color:#09f;}
 
 .slide_close{width:40px; height:40px; position:absolute; top:0; right:0; text-align:center; line-height:40px; color:#484848;}
 

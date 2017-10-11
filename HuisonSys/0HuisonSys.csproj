@@ -3023,6 +3023,12 @@
     <Content Include="Content\picbox\js\jquery-1.11.0.min.map" />
     <Content Include="Content\picbox\js\lightbox.min.map" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\Weixin\Views\Shared\_Filter.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\PublishProfiles\1.pubxml" />
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

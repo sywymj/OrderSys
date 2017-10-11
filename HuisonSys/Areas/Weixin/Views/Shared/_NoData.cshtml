@@ -1,7 +1,8 @@
-﻿@{
+﻿@model string
+@{
     Layout = "~/Areas/Weixin/Views/Shared/_InnerLayout.cshtml";
 }
 
 <div class="end">
-    <div class="bottom_load_end"> - 暂无内容 - </div>
+    <div class="bottom_load_end">@(string.IsNullOrEmpty(Model) ? "- 暂无内容 -" : Model)</div>
 </div>
