@@ -110,14 +110,16 @@ namespace OrderSys.Controllers
             string sStatus = JSRequest.GetRequestUrlParm("Status", false);
             string sPriority = JSRequest.GetRequestUrlParm("Priority", false);
             string sBookingTime = JSRequest.GetRequestUrlParm("BookingTime", false);
-            string sContent = JSRequest.GetRequestUrlParm("Content", false); 
+            string sContent = JSRequest.GetRequestUrlParm("Content", false);
+            string sWorkingLocation = JSRequest.GetRequestUrlParm("WorkingLocation", false); 
             #endregion
 
             #region 验证参数
             int? status = JSValidator.ValidateInt("工单状态", sStatus);
             int? priority = JSValidator.ValidateInt("紧急程度", sPriority);
             DateTime? bookingTime = JSValidator.ValidateDateTime("紧急程度", sBookingTime);
-            string content = JSValidator.ValidateString("工单内容", sContent); 
+            string content = JSValidator.ValidateString("工单内容", sContent);
+            string workingLocation = JSValidator.ValidateString("维修地点", sWorkingLocation); 
             #endregion
 
             #region 构造搜索条件
@@ -125,7 +127,8 @@ namespace OrderSys.Controllers
             if (status != null) { dic.Add(OrderEntity.FieldStatus, (int)status); }
             if (priority != null) { dic.Add(OrderEntity.FieldPriority, (int)priority); }
             if (bookingTime != null) { dic.Add(OrderEntity.FieldBookingTime, bookingTime); }
-            if (!string.IsNullOrEmpty(content)) { dic.Add(OrderEntity.FieldContent, content); } 
+            if (!string.IsNullOrEmpty(content)) { dic.Add(OrderEntity.FieldContent, content); }
+            if (!string.IsNullOrEmpty(workingLocation)) { dic.Add(OrderEntity.FieldWorkingLocation, workingLocation); } 
             #endregion
             
             int count = 0;
@@ -158,6 +161,7 @@ namespace OrderSys.Controllers
             string sPriority = JSRequest.GetRequestUrlParm("Priority", false);
             string sBookingTime = JSRequest.GetRequestUrlParm("BookingTime", false);
             string sContent = JSRequest.GetRequestUrlParm("Content", false);
+            string sWorkingLocation = JSRequest.GetRequestUrlParm("WorkingLocation", false);
             #endregion
 
             #region 验证参数
@@ -165,6 +169,7 @@ namespace OrderSys.Controllers
             int? priority = JSValidator.ValidateInt("紧急程度", sPriority);
             DateTime? bookingTime = JSValidator.ValidateDateTime("紧急程度", sBookingTime);
             string content = JSValidator.ValidateString("工单内容", sContent);
+            string workingLocation = JSValidator.ValidateString("维修地点", sWorkingLocation);
             #endregion
 
             #region 构造搜索条件
@@ -173,6 +178,7 @@ namespace OrderSys.Controllers
             if (priority != null) { dic.Add(OrderEntity.FieldPriority, (int)priority); }
             if (bookingTime != null) { dic.Add(OrderEntity.FieldBookingTime, bookingTime); }
             if (!string.IsNullOrEmpty(content)) { dic.Add(OrderEntity.FieldContent, content); }
+            if (!string.IsNullOrEmpty(workingLocation)) { dic.Add(OrderEntity.FieldWorkingLocation, workingLocation); }
             #endregion
 
 
@@ -206,6 +212,7 @@ namespace OrderSys.Controllers
             string sPriority = JSRequest.GetRequestUrlParm("Priority", false);
             string sBookingTime = JSRequest.GetRequestUrlParm("BookingTime", false);
             string sContent = JSRequest.GetRequestUrlParm("Content", false);
+            string sWorkingLocation = JSRequest.GetRequestUrlParm("WorkingLocation", false);
             #endregion
 
             #region 验证参数
@@ -213,6 +220,7 @@ namespace OrderSys.Controllers
             int? priority = JSValidator.ValidateInt("紧急程度", sPriority);
             DateTime? bookingTime = JSValidator.ValidateDateTime("紧急程度", sBookingTime);
             string content = JSValidator.ValidateString("工单内容", sContent);
+            string workingLocation = JSValidator.ValidateString("维修地点", sWorkingLocation);
             #endregion
 
             #region 构造搜索条件
@@ -221,6 +229,7 @@ namespace OrderSys.Controllers
             if (priority != null) { dic.Add(OrderEntity.FieldPriority, (int)priority); }
             if (bookingTime != null) { dic.Add(OrderEntity.FieldBookingTime, bookingTime); }
             if (!string.IsNullOrEmpty(content)) { dic.Add(OrderEntity.FieldContent, content); }
+            if (!string.IsNullOrEmpty(workingLocation)) { dic.Add(OrderEntity.FieldWorkingLocation, workingLocation); }
             #endregion
 
             int count = 0;
@@ -253,6 +262,7 @@ namespace OrderSys.Controllers
             string sPriority = JSRequest.GetRequestUrlParm("Priority", false);
             string sBookingTime = JSRequest.GetRequestUrlParm("BookingTime", false);
             string sContent = JSRequest.GetRequestUrlParm("Content", false);
+            string sWorkingLocation = JSRequest.GetRequestUrlParm("WorkingLocation", false);
             #endregion
 
             #region 验证参数
@@ -260,6 +270,7 @@ namespace OrderSys.Controllers
             int? priority = JSValidator.ValidateInt("紧急程度", sPriority);
             DateTime? bookingTime = JSValidator.ValidateDateTime("紧急程度", sBookingTime);
             string content = JSValidator.ValidateString("工单内容", sContent);
+            string workingLocation = JSValidator.ValidateString("维修地点", sWorkingLocation);
             #endregion
 
             #region 构造搜索条件
@@ -268,6 +279,7 @@ namespace OrderSys.Controllers
             if (priority != null) { dic.Add(OrderEntity.FieldPriority, (int)priority); }
             if (bookingTime != null) { dic.Add(OrderEntity.FieldBookingTime, bookingTime); }
             if (!string.IsNullOrEmpty(content)) { dic.Add(OrderEntity.FieldContent, content); }
+            if (!string.IsNullOrEmpty(workingLocation)) { dic.Add(OrderEntity.FieldWorkingLocation, workingLocation); }
             #endregion
 
             int count = 0;
@@ -300,6 +312,7 @@ namespace OrderSys.Controllers
             string sPriority = JSRequest.GetRequestUrlParm("Priority", false);
             string sBookingTime = JSRequest.GetRequestUrlParm("BookingTime", false);
             string sContent = JSRequest.GetRequestUrlParm("Content", false);
+            string sWorkingLocation = JSRequest.GetRequestUrlParm("WorkingLocation", false);
             #endregion
 
             #region 验证参数
@@ -307,6 +320,7 @@ namespace OrderSys.Controllers
             int? priority = JSValidator.ValidateInt("紧急程度", sPriority);
             DateTime? bookingTime = JSValidator.ValidateDateTime("紧急程度", sBookingTime);
             string content = JSValidator.ValidateString("工单内容", sContent);
+            string workingLocation = JSValidator.ValidateString("维修地点", sWorkingLocation);
             #endregion
 
             #region 构造搜索条件
@@ -315,6 +329,7 @@ namespace OrderSys.Controllers
             if (priority != null) { dic.Add(OrderEntity.FieldPriority, (int)priority); }
             if (bookingTime != null) { dic.Add(OrderEntity.FieldBookingTime, bookingTime); }
             if (!string.IsNullOrEmpty(content)) { dic.Add(OrderEntity.FieldContent, content); }
+            if (!string.IsNullOrEmpty(workingLocation)) { dic.Add(OrderEntity.FieldWorkingLocation, workingLocation); }
             #endregion
 
 
@@ -348,6 +363,7 @@ namespace OrderSys.Controllers
             string sPriority = JSRequest.GetRequestUrlParm("Priority", false);
             string sBookingTime = JSRequest.GetRequestUrlParm("BookingTime", false);
             string sContent = JSRequest.GetRequestUrlParm("Content", false);
+            string sWorkingLocation = JSRequest.GetRequestUrlParm("WorkingLocation", false);
             #endregion
 
             #region 验证参数
@@ -355,6 +371,7 @@ namespace OrderSys.Controllers
             int? priority = JSValidator.ValidateInt("紧急程度", sPriority);
             DateTime? bookingTime = JSValidator.ValidateDateTime("紧急程度", sBookingTime);
             string content = JSValidator.ValidateString("工单内容", sContent);
+            string workingLocation = JSValidator.ValidateString("维修地点", sWorkingLocation);
             #endregion
 
             #region 构造搜索条件
@@ -363,6 +380,7 @@ namespace OrderSys.Controllers
             if (priority != null) { dic.Add(OrderEntity.FieldPriority, (int)priority); }
             if (bookingTime != null) { dic.Add(OrderEntity.FieldBookingTime, bookingTime); }
             if (!string.IsNullOrEmpty(content)) { dic.Add(OrderEntity.FieldContent, content); }
+            if (!string.IsNullOrEmpty(workingLocation)) { dic.Add(OrderEntity.FieldWorkingLocation, workingLocation); }
             #endregion
 
             int count = 0;

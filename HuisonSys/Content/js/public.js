@@ -17,7 +17,8 @@ Query.prototype = {
     status: "",         //工单状态
     bookingTime: "",    //截止日期
     priority: "",       //紧急程度
-    content:"",         //内容
+    content: "",         //内容
+    workingLocation:"",     //维修地点
     tabId: "",
 
     setNextPage: function () {
@@ -298,73 +299,6 @@ setTab = function (m, n) {
     }
 }
 
-//下拉分页，加载分页数据
-//$(document.body).infinite().on("infinite", function () {
-//    return;
-//    //debugger;
-//    if (loading) return;
-//    var tabID = $(".weui_bar_item_on").attr("id");
-//    //修改这里的id名称
-//    if (tabID == "query_mystarted_btn") {
-//        querymystarted();//修改这里的回调函数
-//    } else if (tabID == "query_myappointing_btn") {
-//        querymyappointing();
-//    } else if (tabID == "query_myappointed_btn") {
-//        querymyappointed();
-//    } else if (tabID == "query_myappointed_btn") {
-//        querymyappointed();
-//    } else if (tabID == "query_myappointing_btn") {
-//        querymyappointing();
-//    } else if (tabID == "query_myreciving_btn") {
-//        querymyreciving();
-//    } else if (tabID == "query_myhandling_btn") {
-//        querymyhandling();
-//    } else if (tabID == "query_myhandled_btn") {
-//        querymyhandled();
-//    }
-
-//});
-
-//上拉刷新，重新加载数据
-//$(document.body).pullToRefresh().on("pull-to-refresh", function () {
-//    return;
-//    if (myTop > 0) {
-//        $(document.body).pullToRefreshDone();
-//        return;
-//    }
-//    var tabID = $(".weui_bar_item_on").attr("id");
-//    //修改这里的id名称
-//    if (tabID == "query_mystarted_btn") {
-//        startedQuery.isEnd = false;
-//        startedQuery.pageIndex = 1;
-//        querymystarted();
-//    } else if (tabID == "startemyorder_btn") {
-//        doClearStartForm();
-//    } else if (tabID == "query_myappointing_btn") {
-//        appointingQuery.isEnd = false;
-//        appointingQuery.pageIndex = 1;
-//        querymyappointing();
-//    } else if (tabID == "query_myappointed_btn") {
-//        appointedQuery.isEnd = false;
-//        appointedQuery.pageIndex = 1;
-//        querymyappointed();
-//    } else if (tabID == "query_myreciving_btn") {
-//        recivingQuery.isEnd = false;
-//        recivingQuery.pageIndex = 1;
-//        querymyreciving();
-//    } else if (tabID == "query_myhandling_btn") {
-//        handlingQuery.isEnd = false;
-//        handlingQuery.pageIndex = 1;
-//        querymyhandling();
-//    } else if (tabID == "query_myhandled_btn") {
-//        handledQuery.isEnd = false;
-//        handledQuery.pageIndex = 1;
-//        querymyhandled();
-//    }
-
-//    $(document.body).pullToRefreshDone();
-//});
-
 //此方法没用
 formatDic = function (value, data) {
     var arr = data;
@@ -381,6 +315,7 @@ getQueryFilters = function () {
     filter.priority = $("#filterPriority").children(".now").attr("value");
     filter.bookingTime = $("#filterBookingTime").val();
     filter.content = $("#filterContent").val();
+    filter.workingLocation = $("#filterWorkingLocation").val();
     return filter;
 }
 
@@ -405,6 +340,7 @@ setQueryFilters = function (query) {
 
     $("#filterBookingTime").val(query.bookingTime);
     $("#filterContent").val(query.content);
+    $("#filterWorkingLocation").val(query.workingLocation);
 }
 
 /*

@@ -46,6 +46,11 @@ namespace JSNet.Service
             JSResponse.WriteCookie("AdminPwd", user.Password, 120);
         }
 
+        public void VXLogin(string tel,string openID)
+        {
+            EditUser(tel, openID);
+        }
+
         public void Logout()
         {
             JSResponse.WriteCookie("UID", "");
@@ -274,6 +279,20 @@ namespace JSNet.Service
 
         }
 
+        public void EditUser(string tel,string openID)
+        {
+            EntityManager<StaffEntity> staffManager = new EntityManager<StaffEntity>();
+            StaffEntity staff = staffManager.GetSingle(tel, StaffEntity.FieldTel);
+            if (staff == null)
+            {
+                throw new JSException(JSErrMsg.ERR_CODE_WrongTel, JSErrMsg.ERR_MSG_WrongTel);
+            }
+
+            EntityManager<UserEntity> userManager = new EntityManager<UserEntity>();
+            List<KeyValuePair<string, object>> kvps = new List<KeyValuePair<string, object>>();
+            kvps.Add(new KeyValuePair<string, object>(UserEntity.FieldOpenID, openID));
+            userManager.Update(kvps, staff.UserID);
+        }
         public UserEntity GetUser(int userID)
         {
             EntityManager<UserEntity> manager = new EntityManager<UserEntity>();

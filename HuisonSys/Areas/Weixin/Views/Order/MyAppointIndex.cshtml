@@ -76,6 +76,7 @@
             appointingQuery.priority = filter.priority || "";
             appointingQuery.bookingTime = filter.bookingTime || "";
             appointingQuery.content = filter.content || "";
+            appointingQuery.workingLocation = filter.workingLocation || "";
             querymyappointing();
         } else if (tabID == "query_myappointed_btn") {
             appointedQuery.pageIndex = 1;
@@ -83,6 +84,7 @@
             appointedQuery.priority = filter.priority || "";
             appointedQuery.bookingTime = filter.bookingTime || "";
             appointedQuery.content = filter.content || "";
+            appointedQuery.workingLocation = filter.workingLocation || "";
             querymyappointed();
         }
         $('.top_choose').fadeOut(200);
@@ -97,6 +99,7 @@
             Priority: appointingQuery.priority,
             BookingTime: appointingQuery.bookingTime,
             Content: appointingQuery.content,
+            WorkingLocation: appointingQuery.workingLocation,
         };
         doQuery1(appointingQuery, url, parms);
     }
@@ -110,6 +113,7 @@
             Priority: appointedQuery.priority,
             BookingTime: appointedQuery.bookingTime,
             Content: appointedQuery.content,
+            WorkingLocation: appointedQuery.workingLocation,
         };
         doQuery1(appointedQuery, url, parms);
     }

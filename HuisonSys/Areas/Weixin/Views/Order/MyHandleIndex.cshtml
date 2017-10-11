@@ -90,6 +90,7 @@
             receivingQuery.priority = filter.priority || "";
             receivingQuery.bookingTime = filter.bookingTime || "";
             receivingQuery.content = filter.content || "";
+            receivingQuery.workingLocation = filter.workingLocation || "";
             querymyreciving();
         }
         else if (tabID == "query_myhandling_btn") {
@@ -98,6 +99,7 @@
             handlingQuery.priority = filter.priority || "";
             handlingQuery.bookingTime = filter.bookingTime || "";
             handlingQuery.content = filter.content || "";
+            handlingQuery.workingLocation = filter.workingLocation || "";
             querymyhandling();
         } else if (tabID == "query_myhandled_btn") {
             handledQuery.pageIndex = 1;
@@ -105,6 +107,7 @@
             handledQuery.priority = filter.priority || "";
             handledQuery.bookingTime = filter.bookingTime || "";
             handledQuery.content = filter.content || "";
+            handledQuery.workingLocation = filter.workingLocation || "";
             querymyhandled();
         }
         $('.top_choose').fadeOut(200);
@@ -119,6 +122,7 @@
             Priority: receivingQuery.priority,
             BookingTime: receivingQuery.bookingTime,
             Content: receivingQuery.content,
+            WorkingLocation: receivingQuery.workingLocation,
         };
         doQuery1(receivingQuery, url, parms);
     }
@@ -132,6 +136,7 @@
             Priority: handlingQuery.priority,
             BookingTime: handlingQuery.bookingTime,
             Content: handlingQuery.content,
+            WorkingLocation: handlingQuery.workingLocation,
         };
         doQuery1(handlingQuery, url, parms);
     }
@@ -145,6 +150,7 @@
             Priority: handledQuery.priority,
             BookingTime: handledQuery.bookingTime,
             Content: handledQuery.content,
+            WorkingLocation: handledQuery.workingLocation,
         };
         doQuery1(handledQuery, url, parms);
     }

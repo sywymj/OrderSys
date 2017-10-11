@@ -49,38 +49,33 @@ namespace JSNet.Service
         //委派工作
         public void AppointOrder(Guid orderID, List<OrderHandlerEntity> handlers)
         {
-            //1.0 获取当前员工数据
-            UserService userService = new UserService();
-            EntityManager<OrderFlowEntity> orderflowManager = new EntityManager<OrderFlowEntity>();
-            EntityManager<OrderEntity> orderManager = new EntityManager<OrderEntity>();
-            EntityManager<OrderHandlerEntity> handlerManager = new EntityManager<OrderHandlerEntity>();
-
-            StaffEntity staff = userService.GetCurrentStaff();
-
-            //2.0 修改工单实体
-           
+            //1.0 修改工单实体
             List<KeyValuePair<string,object>> kvps = new List<KeyValuePair<string,object>>();
             kvps.Add(new KeyValuePair<string,object>(OrderEntity.FieldStatus,(int)OrderStatus.Receving));
-            kvps.Add(new KeyValuePair<string,object>(OrderEntity.FieldAppointerID,staff.ID));
+            kvps.Add(new KeyValuePair<string, object>(OrderEntity.FieldAppointerID, CurrentStaff.ID));
+            kvps.Add(new KeyValuePair<string, object>(OrderEntity.FieldOperatorID, CurrentStaff.ID));
             kvps.Add(new KeyValuePair<string, object>(OrderEntity.FieldNextOperatorID, GetLeaderHandlerID(handlers)));
             kvps.Add(new KeyValuePair<string, object>(OrderEntity.FieldOperateTime,DateTime.Now));
+            EntityManager<OrderEntity> orderManager = new EntityManager<OrderEntity>();
             int rows = orderManager.Update(kvps, orderID);
             if (rows == 0)
             {
                 throw new JSException(JSErrMsg.ERR_CODE_DATA_MISSING, string.Format(JSErrMsg.ERR_MSG_DATA_MISSING, "工单实体"));
             }
 
-            //3.0 添加工作流实体
+            //2.0 添加工作流实体
             OrderFlowEntity orderFlow = new OrderFlowEntity();
             orderFlow.OrderID = orderID;
-            orderFlow.OperatorID = staff.ID;
+            orderFlow.OperatorID = CurrentStaff.ID;
             orderFlow.NextOperatorID = GetLeaderHandlerID(handlers);
             orderFlow.Operation = (int)OperationEnum.Appoint;
             orderFlow.OperateTime = DateTime.Now;
             orderFlow.Remark = "";
+            EntityManager<OrderFlowEntity> orderflowManager = new EntityManager<OrderFlowEntity>();
             orderflowManager.Insert(orderFlow);
 
-            //4.0 添加工单处理者
+            //3.0 添加工单处理者
+            EntityManager<OrderHandlerEntity> handlerManager = new EntityManager<OrderHandlerEntity>();
             handlerManager.Insert(handlers);
 
         }
@@ -88,35 +83,32 @@ namespace JSNet.Service
         //受理报障单
         public void ReceiveOrder(Guid orderID)
         {
-            //1.0 获取当前员工数据
-            UserService userService = new UserService();
-            EntityManager<OrderEntity> orderManager = new EntityManager<OrderEntity>();
-            EntityManager<OrderFlowEntity> orderflowManager = new EntityManager<OrderFlowEntity>();
-            StaffEntity staff = userService.GetCurrentStaff();
-
-            //2.0 修改工单实体
+            //1.0 修改工单实体
             List<KeyValuePair<string, object>> kvps = new List<KeyValuePair<string, object>>();
             kvps.Add(new KeyValuePair<string, object>(OrderEntity.FieldStatus, (int)OrderStatus.Handling));
-            kvps.Add(new KeyValuePair<string,object>(OrderEntity.FieldNextOperatorID, staff.ID));
-            kvps.Add(new KeyValuePair<string, object>(OrderEntity.FieldHandlerID, staff.ID));
+            kvps.Add(new KeyValuePair<string, object>(OrderEntity.FieldOperatorID, CurrentStaff.ID));
+            kvps.Add(new KeyValuePair<string, object>(OrderEntity.FieldNextOperatorID, CurrentStaff.ID));
+            kvps.Add(new KeyValuePair<string, object>(OrderEntity.FieldHandlerID, CurrentStaff.ID));
             kvps.Add(new KeyValuePair<string, object>(OrderEntity.FieldOperateTime, DateTime.Now));
+            EntityManager<OrderEntity> orderManager = new EntityManager<OrderEntity>();
             int rows = orderManager.Update(kvps, orderID);
             if (rows == 0)
             {
                 throw new JSException(JSErrMsg.ERR_CODE_DATA_MISSING, string.Format(JSErrMsg.ERR_MSG_DATA_MISSING, "工单实体"));
             }
 
-            //3.0 添加工作流实体
+            //2.0 添加工作流实体
             OrderFlowEntity orderflow = new OrderFlowEntity();
             orderflow.OrderID = orderID;
-            orderflow.OperatorID = staff.ID;
-            orderflow.NextOperatorID = staff.ID;
+            orderflow.OperatorID = CurrentStaff.ID;
+            orderflow.NextOperatorID = CurrentStaff.ID;
             orderflow.Operation = (int)OperationEnum.Receive;
             orderflow.OperateTime = DateTime.Now;
             orderflow.Remark = "";
+            EntityManager<OrderFlowEntity> orderflowManager = new EntityManager<OrderFlowEntity>();
             orderflowManager.Insert(orderflow);
 
-            //4.0 添加处理进度
+            //3.0 添加处理进度
             OrderHandleDetailEntity orderHandleDetail = new OrderHandleDetailEntity();
             orderHandleDetail.OrderID = orderID;
             orderHandleDetail.HandleType = (int)OrderHandleType.Others;
@@ -144,17 +136,43 @@ namespace JSNet.Service
             orderHandleDetailManager.Insert(orderHandleDetail);
         }
 
+        public void AddHandlingOrderDetail(OrderHandleDetailEntity orderHandleDetail)
+        {
+            //1.0 修改工单实体
+            List<KeyValuePair<string, object>> kvps = new List<KeyValuePair<string, object>>();
+            kvps.Add(new KeyValuePair<string, object>(OrderEntity.FieldStatus, (int)OrderStatus.Handling));
+            kvps.Add(new KeyValuePair<string, object>(OrderEntity.FieldOperatorID, CurrentStaff.ID));
+            kvps.Add(new KeyValuePair<string, object>(OrderEntity.FieldNextOperatorID, CurrentStaff.ID));
+            kvps.Add(new KeyValuePair<string, object>(OrderEntity.FieldHandlerID, CurrentStaff.ID));
+            kvps.Add(new KeyValuePair<string, object>(OrderEntity.FieldOperateTime, DateTime.Now));
+            EntityManager<OrderEntity> orderManager = new EntityManager<OrderEntity>();
+            int rows = orderManager.Update(kvps, orderHandleDetail.OrderID);
+            if (rows == 0)
+            {
+                throw new JSException(JSErrMsg.ERR_CODE_DATA_MISSING, string.Format(JSErrMsg.ERR_MSG_DATA_MISSING, "工单实体"));
+            }
+
+            //2.0 添加工作流实体
+            OrderFlowEntity orderflow = new OrderFlowEntity();
+            orderflow.OrderID = orderHandleDetail.OrderID;
+            orderflow.OperatorID = CurrentStaff.ID;
+            orderflow.NextOperatorID = CurrentStaff.ID;
+            orderflow.Operation = (int)OperationEnum.Receive;
+            orderflow.OperateTime = DateTime.Now;
+            orderflow.Remark = "";
+            EntityManager<OrderFlowEntity> orderflowManager = new EntityManager<OrderFlowEntity>();
+            orderflowManager.Insert(orderflow);
+
+            //3.0 添加处理进度
+            AddHandleDetail(orderHandleDetail);
+
+        }
+
         //报障处理完毕
         public void HandledOrder(Guid orderID)
         {
-            UserService userService = new UserService();
-            EntityManager<OrderEntity> orderManager = new EntityManager<OrderEntity>();
-            EntityManager<OrderFlowEntity> orderflowManager = new EntityManager<OrderFlowEntity>();
-
-            //1.0 获取当前员工数据
-            StaffEntity staff = userService.GetCurrentStaff();
-
             //1.1 获取工单实体，以备获取发起人信息
+            EntityManager<OrderEntity> orderManager = new EntityManager<OrderEntity>();
             OrderEntity order = orderManager.GetSingle(orderID);
             if (order == null)
             {
@@ -163,7 +181,7 @@ namespace JSNet.Service
 
             //2.0 修改工单实体
             List<KeyValuePair<string, object>> kvps = new List<KeyValuePair<string, object>>();
-            kvps.Add(new KeyValuePair<string, object>(OrderEntity.FieldOperatorID, staff.ID));
+            kvps.Add(new KeyValuePair<string, object>(OrderEntity.FieldOperatorID, CurrentStaff.ID));
             kvps.Add(new KeyValuePair<string, object>(OrderEntity.FieldNextOperatorID, order.StarterID));
             kvps.Add(new KeyValuePair<string, object>(OrderEntity.FieldStatus, (int)OrderStatus.Checking));
             kvps.Add(new KeyValuePair<string, object>(OrderEntity.FieldOperateTime, DateTime.Now));
@@ -176,44 +194,39 @@ namespace JSNet.Service
             //3.0 添加工作流实体
             OrderFlowEntity orderflow = new OrderFlowEntity();
             orderflow.OrderID = orderID;
-            orderflow.OperatorID = staff.ID;
+            orderflow.OperatorID = CurrentStaff.ID;
             orderflow.NextOperatorID = order.StarterID;//传回发起人验收。
             orderflow.Operation = (int)OperationEnum.Handle;
             orderflow.OperateTime = DateTime.Now;
             orderflow.Remark = "";
+            EntityManager<OrderFlowEntity> orderflowManager = new EntityManager<OrderFlowEntity>();
             orderflowManager.Insert(orderflow);
 
             //4.0 添加处理进度
             OrderHandleDetailEntity orderHandleDetail = new OrderHandleDetailEntity();
             orderHandleDetail.OrderID = orderID;
-            orderHandleDetail.HandleType = (int)OrderHandleType.WanCheng;
-            orderHandleDetail.Remark = "已完成，送检。";
+            orderHandleDetail.HandleType = (int)OrderHandleType.DaiYanShou;
+            orderHandleDetail.Remark = "工单处理完毕，等待验收。";
             AddHandleDetail(orderHandleDetail);
         }
 
         //驳回报障，需继续处理
         public void RejectOrder(Guid orderID,string remark)
         {
-            UserService userService = new UserService();
-            EntityManager<OrderEntity> orderManager = new EntityManager<OrderEntity>();
-            EntityManager<OrderHandlerEntity> orderHandlerManager = new EntityManager<OrderHandlerEntity>();
-            EntityManager<OrderFlowEntity> orderflowManager = new EntityManager<OrderFlowEntity>();
-
-            //1.0 获取当前员工数据
-            StaffEntity staff = userService.GetCurrentStaff();
-
             //1.1 获取工单处理者列表，必备获取领队人的信息
             int count = 0;
             WhereStatement where = new WhereStatement();
             where.Add(OrderHandlerEntity.FieldOrderID, Comparison.Equals, orderID);
+            EntityManager<OrderHandlerEntity> orderHandlerManager = new EntityManager<OrderHandlerEntity>();
             List<OrderHandlerEntity> orderHandlers = orderHandlerManager.GetList(where, out count);
 
             //2.0 修改工单实体
             List<KeyValuePair<string, object>> kvps = new List<KeyValuePair<string, object>>();
-            kvps.Add(new KeyValuePair<string, object>(OrderEntity.FieldOperatorID, staff.ID));
+            kvps.Add(new KeyValuePair<string, object>(OrderEntity.FieldOperatorID, CurrentStaff.ID));
             kvps.Add(new KeyValuePair<string, object>(OrderEntity.FieldNextOperatorID, GetLeaderHandlerID(orderHandlers)));
             kvps.Add(new KeyValuePair<string, object>(OrderEntity.FieldStatus, (int)OrderStatus.Rejected));
             kvps.Add(new KeyValuePair<string, object>(OrderEntity.FieldOperateTime, DateTime.Now));
+            EntityManager<OrderEntity> orderManager = new EntityManager<OrderEntity>();
             int rows = orderManager.Update(kvps, orderID);
             if (rows == 0)
             {
@@ -223,76 +236,79 @@ namespace JSNet.Service
             //3.0 添加工作流实体
             OrderFlowEntity orderflow = new OrderFlowEntity();
             orderflow.OrderID = orderID;
-            orderflow.OperatorID = staff.ID;
+            orderflow.OperatorID = CurrentStaff.ID;
             orderflow.NextOperatorID = GetLeaderHandlerID(orderHandlers);
             orderflow.Operation = (int)OperationEnum.reject;
             orderflow.OperateTime = DateTime.Now;
             orderflow.Remark = remark;
+            EntityManager<OrderFlowEntity> orderflowManager = new EntityManager<OrderFlowEntity>();
             orderflowManager.Insert(orderflow);
 
             OrderHandleDetailEntity orderHandleDetail = new OrderHandleDetailEntity();
             orderHandleDetail.OrderID = orderID;
-            orderHandleDetail.HandleType = (int)OrderHandleType.Others;
-            orderHandleDetail.HandleDetail = "驳回";
-            orderHandleDetail.Remark = remark;
+            orderHandleDetail.HandleType = (int)OrderHandleType.BoHui;
+            orderHandleDetail.HandleDetail = "工单验收不通过，被驳回。";
+            orderHandleDetail.Remark = string.IsNullOrEmpty(remark) ? "" : "驳回原因：" + remark;
             AddHandleDetail(orderHandleDetail);
         }
 
         //报障验收完成
         public void FinishOrder(Guid orderID)
         {
-            UserService userService = new UserService();
-            EntityManager<OrderEntity> orderManager = new EntityManager<OrderEntity>();
-            EntityManager<OrderFlowEntity> orderflowManager = new EntityManager<OrderFlowEntity>();
-
-            //1.0 获取当前员工数据
-            StaffEntity staff = userService.GetCurrentStaff();
-
-            //2.0 修改工单实体
+            //1.0 修改工单实体
             List<KeyValuePair<string, object>> kvps = new List<KeyValuePair<string, object>>();
-            kvps.Add(new KeyValuePair<string, object>(OrderEntity.FieldOperatorID, staff.ID));
+            kvps.Add(new KeyValuePair<string, object>(OrderEntity.FieldOperatorID, CurrentStaff.ID));
             kvps.Add(new KeyValuePair<string, object>(OrderEntity.FieldNextOperatorID, null));
             kvps.Add(new KeyValuePair<string, object>(OrderEntity.FieldStatus, (int)OrderStatus.Finish));
             kvps.Add(new KeyValuePair<string, object>(OrderEntity.FieldFinishTime, DateTime.Now));
             kvps.Add(new KeyValuePair<string, object>(OrderEntity.FieldOperateTime, DateTime.Now));
+            EntityManager<OrderEntity> orderManager = new EntityManager<OrderEntity>();
             int rows = orderManager.Update(kvps, orderID);
             if (rows == 0)
             {
                 throw new JSException(JSErrMsg.ERR_CODE_DATA_MISSING, string.Format(JSErrMsg.ERR_MSG_DATA_MISSING, "工单实体"));
             }
 
-            //3.0 添加工作流实体
+            //2.0 添加工作流实体
             OrderFlowEntity orderflow = new OrderFlowEntity();
             orderflow.OrderID = orderID;
-            orderflow.OperatorID = staff.ID;
+            orderflow.OperatorID = CurrentStaff.ID;
             orderflow.NextOperatorID = 0;
             orderflow.Operation = (int)OperationEnum.Check;
             orderflow.OperateTime = DateTime.Now;
             orderflow.Remark = "";
+            EntityManager<OrderFlowEntity> orderflowManager = new EntityManager<OrderFlowEntity>();
             orderflowManager.Insert(orderflow);
 
-            //4.0 添加进度为完成
+            //3.0 添加进度为完成
             OrderHandleDetailEntity orderHandleDetail = new OrderHandleDetailEntity();
             orderHandleDetail.OrderID = orderID;
-            orderHandleDetail.HandleType = (int)OrderHandleType.Others;
-            orderHandleDetail.HandleDetail = "完成";
-            orderHandleDetail.Remark = "完成，验收通过！";
+            orderHandleDetail.HandleType = (int)OrderHandleType.WanCheng;
+            orderHandleDetail.HandleDetail = "验收通过";
+            orderHandleDetail.Remark = "工单验收通过，流程结束。";
             AddHandleDetail(orderHandleDetail);
         }
 
-        //取消报障单
+        //撤销报障单
         public void CancelOrder(Guid orderID)
         {
-            // TODO 增加判断，只能取消未处理完的工单
-            UserService userService = new UserService();
+            //0.1只能取消受理前的工单
             EntityManager<OrderEntity> orderManager = new EntityManager<OrderEntity>();
-            EntityManager<OrderFlowEntity> orderflowManager = new EntityManager<OrderFlowEntity>();
+            WhereStatement where  = new WhereStatement();
+            where.Add(OrderEntity.FieldID,Comparison.Equals,orderID);
+            List<string> status = orderManager.GetProperties(OrderEntity.FieldStatus, where).ToList();
+            if (status.Count == 0)
+            {
+                throw new JSException(JSErrMsg.ERR_CODE_DATA_MISSING, string.Format(JSErrMsg.ERR_MSG_DATA_MISSING, "工单实体"));
+            }
+            if (Convert.ToInt32(status[0]) >= (int)OrderStatus.Handling)
+            {
+                throw new JSException(JSErrMsg.ERR_CODE_NotAllowCancel, string.Format(JSErrMsg.ERR_MSG_NotAllowCancel));
+            }
 
-            //1.0 获取当前员工数据
-            StaffEntity staff = userService.GetCurrentStaff();
-
-            //2.0 修改工单实体
+            //1.0 修改工单实体
             List<KeyValuePair<string, object>> kvps = new List<KeyValuePair<string, object>>();
+            kvps.Add(new KeyValuePair<string, object>(OrderEntity.FieldOperatorID, CurrentStaff.ID));
             kvps.Add(new KeyValuePair<string, object>(OrderEntity.FieldStatus, (int)OrderStatus.Canceled));
             kvps.Add(new KeyValuePair<string, object>(OrderEntity.FieldOperateTime, DateTime.Now));
             int rows = orderManager.Update(kvps, orderID);
@@ -301,14 +317,15 @@ namespace JSNet.Service
                 throw new JSException(JSErrMsg.ERR_CODE_DATA_MISSING, string.Format(JSErrMsg.ERR_MSG_DATA_MISSING, "工单实体"));
             }
 
-            //3.0 添加工作流实体
+            //2.0 添加工作流实体
             OrderFlowEntity orderflow = new OrderFlowEntity();
             orderflow.OrderID = orderID;
-            orderflow.OperatorID = staff.ID;
+            orderflow.OperatorID = CurrentStaff.ID;
             orderflow.NextOperatorID = 0;
             orderflow.Operation = (int)OperationEnum.Cancel;
             orderflow.OperateTime = DateTime.Now;
             orderflow.Remark = "";
+            EntityManager<OrderFlowEntity> orderflowManager = new EntityManager<OrderFlowEntity>();
             orderflowManager.Insert(orderflow);
         }
 
@@ -350,6 +367,10 @@ namespace JSNet.Service
             if (dic.ContainsKey(OrderEntity.FieldContent))
             {
                 where.Add(OrderEntity.FieldContent, Comparison.Like, "%" + dic[OrderEntity.FieldContent] + "%");
+            }
+            if (dic.ContainsKey(OrderEntity.FieldWorkingLocation))
+            {
+                where.Add(OrderEntity.FieldWorkingLocation, Comparison.Like, "%" + dic[OrderEntity.FieldWorkingLocation] + "%");
             }
 
 
@@ -406,6 +427,10 @@ namespace JSNet.Service
             if (dic.ContainsKey(OrderEntity.FieldContent))
             {
                 where.Add(OrderEntity.FieldContent, Comparison.Like, "%" + dic[OrderEntity.FieldContent] + "%");
+            }
+            if (dic.ContainsKey(OrderEntity.FieldWorkingLocation))
+            {
+                where.Add(OrderEntity.FieldWorkingLocation, Comparison.Like, "%" + dic[OrderEntity.FieldWorkingLocation] + "%");
             }
 
             //显示指定部门的工单
@@ -477,6 +502,10 @@ namespace JSNet.Service
             {
                 where.Add(OrderEntity.FieldContent, Comparison.Like, "%" + dic[OrderEntity.FieldContent] + "%");
             }
+            if (dic.ContainsKey(OrderEntity.FieldWorkingLocation))
+            {
+                where.Add(OrderEntity.FieldWorkingLocation, Comparison.Like, "%" + dic[OrderEntity.FieldWorkingLocation] + "%");
+            }
 
             if (organizeIDs.Count > 0)
             {
@@ -531,6 +560,10 @@ namespace JSNet.Service
             if (dic.ContainsKey(OrderEntity.FieldContent))
             {
                 where.Add(OrderEntity.FieldContent, Comparison.Like, "%" + dic[OrderEntity.FieldContent] + "%");
+            }
+            if (dic.ContainsKey(OrderEntity.FieldWorkingLocation))
+            {
+                where.Add(OrderEntity.FieldWorkingLocation, Comparison.Like, "%" + dic[OrderEntity.FieldWorkingLocation] + "%");
             }
 
             if (organizeIDs.Count > 0)
@@ -604,6 +637,10 @@ namespace JSNet.Service
             if (dic.ContainsKey(OrderEntity.FieldContent))
             {
                 where.Add(OrderEntity.FieldContent, Comparison.Like, "%" + dic[OrderEntity.FieldContent] + "%");
+            }
+            if (dic.ContainsKey(OrderEntity.FieldWorkingLocation))
+            {
+                where.Add(OrderEntity.FieldWorkingLocation, Comparison.Like, "%" + dic[OrderEntity.FieldWorkingLocation] + "%");
             }
 
 
@@ -680,10 +717,10 @@ namespace JSNet.Service
             {
                 where.Add(OrderEntity.FieldContent, Comparison.Like, "%" + dic[OrderEntity.FieldContent] + "%");
             }
-
-
-
-
+            if (dic.ContainsKey(OrderEntity.FieldWorkingLocation))
+            {
+                where.Add(OrderEntity.FieldWorkingLocation, Comparison.Like, "%" + dic[OrderEntity.FieldWorkingLocation] + "%");
+            }
 
             if (organizeIDs.Count > 0)
             {

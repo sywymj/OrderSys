@@ -31,7 +31,8 @@ namespace JSNet.BaseSys
         //6开头的是工单业务问题
         public const string ERR_CODE_NOLEADER = "62";
         public const string ERR_MSG_NOLEADER = "{0}工单没有领队";
-
+        public const string ERR_CODE_NotAllowCancel = "63";
+        public const string ERR_MSG_NotAllowCancel = "只能取消受理前的工单。";
 
         //7开头的是权限业务问题
         public const string ERR_CODE_NotGrantRole = "71";
@@ -46,7 +47,7 @@ namespace JSNet.BaseSys
         public const string ERR_MSG_NotAllowGrantItem = "{0}不允许分配资源明细。";
 
 
-        //8开头的是登陆问题
+        //8开头的是登陆、用户问题
         public const string ERR_CODE_NotAllowLogin = "81";
         public const string ERR_MSG_NotAllowLogin = "当前用户禁止登陆。";
         public const string ERR_CODE_LoginOvertime = "82";
@@ -61,5 +62,8 @@ namespace JSNet.BaseSys
         public const string ERR_MSG_WrongUserID = "RID有误！";
         public const string ERR_CODE_WrongRoleID = "87";
         public const string ERR_MSG_WrongRoleID = "RID有误！";
+        public const string ERR_CODE_WrongTel = "88";
+        public const string ERR_MSG_WrongTel = "手机号码不存在！";
+
     }
 }

@@ -68,7 +68,11 @@
             startedQuery.priority = filter.priority || "";
             startedQuery.bookingTime = filter.bookingTime || "";
             startedQuery.content = filter.content || "";
+            startedQuery.workingLocation = filter.workingLocation || "";
             querymystarted();
+        } else if (tabID == 'startmyorder_btn') {
+            $.alert("此页面不能筛选！");
+            //隐藏筛选按钮
         }
         $('.top_choose').fadeOut(200);
     }
@@ -83,6 +87,7 @@
             Priority: startedQuery.priority,
             BookingTime: startedQuery.bookingTime,
             Content: startedQuery.content,
+            WorkingLocation: startedQuery.workingLocation,
         };
         debugger;
         doQuery1(startedQuery, url, parms);

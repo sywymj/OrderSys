@@ -28,6 +28,12 @@ namespace JSNet.Utilities
             FieldInfo[] fieldinfo = typeof(T).GetFields();
             foreach (FieldInfo item in fieldinfo)
             {
+                Object[] v = item.GetCustomAttributes(typeof(Visible), false);
+                if (v != null && v.Length != 0)
+                {
+                    bool isVisible = ((Visible)v[0]).IsVisible;
+                    if (!isVisible) { continue; }
+                }
                 Object[] obj = item.GetCustomAttributes(typeof(EnumDescription), false);
                 if (obj != null && obj.Length != 0)
                 {
@@ -46,6 +52,12 @@ namespace JSNet.Utilities
             FieldInfo[] fieldinfo = typeof(T).GetFields();
             foreach (FieldInfo item in fieldinfo)
             {
+                Object[] v = item.GetCustomAttributes(typeof(Visible), false);
+                if (v != null && v.Length != 0)
+                {
+                    bool isVisible = ((Visible)v[0]).IsVisible;
+                    if (!isVisible) { continue; }
+                }
                 Object[] obj = item.GetCustomAttributes(typeof(EnumDescription), false);
                 if (obj != null && obj.Length != 0)
                 {
@@ -71,7 +83,5 @@ namespace JSNet.Utilities
             }
             return enumeration.ToString();
         }
-
-
     }
 }

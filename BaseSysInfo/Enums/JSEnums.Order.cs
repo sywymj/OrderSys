@@ -84,6 +84,12 @@ namespace JSNet.BaseSys
         WanCheng = 99,
         [EnumDescription("其他")]
         Others = 9,
+        [EnumDescription("验收中")]
+        [Visible(false)]
+        DaiYanShou = 4,
+        [EnumDescription("驳回")]
+        [Visible(false)]
+        BoHui = 5,
     }
 
     public enum TrueFalse
