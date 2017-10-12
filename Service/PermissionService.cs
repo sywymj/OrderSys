@@ -73,7 +73,7 @@ namespace JSNet.Service
             string[] ids = GetTreeResourceIDs(parentResouceCode);
             if (ids.Length == 0)
             {
-                throw new JSException(JSErrMsg.ERR_CODE_DATA_MISSING, string.Format(JSErrMsg.ERR_MSG_DATA_MISSING, "ResouceCode"));
+                throw new Exception(string.Format(JSErrMsg.ERR_MSG_DATA_MISSING, "ResouceCode为" + parentResouceCode));
             }
 
             WhereStatement where = new WhereStatement();
@@ -161,7 +161,7 @@ namespace JSNet.Service
             string[] ids = GetTreePermissionItemIDs(parentPermissionItemCode);
             if (ids.Length == 0)
             {
-                throw new JSException(JSErrMsg.ERR_CODE_DATA_MISSING, string.Format(JSErrMsg.ERR_MSG_DATA_MISSING, "permissionItemCode"));
+                throw new Exception(string.Format(JSErrMsg.ERR_MSG_DATA_MISSING, "permissionItemCode为" + parentPermissionItemCode));
             }
 
             WhereStatement where = new WhereStatement();

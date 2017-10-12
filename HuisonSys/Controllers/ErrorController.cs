@@ -20,10 +20,12 @@ namespace HuisonSys.Controllers
 
         public ActionResult ShowErrorTips()
         {
-            string message = RouteData.Values["exception"].ToString();
+            string message = RouteData.Values["Exception"].ToString();
+            string errCode = RouteData.Values["ErrorCode"].ToString();
+            string errMessage = RouteData.Values["ErrorMessage"].ToString();
             ContentResult res = new ContentResult()
             {
-                Content = JSON.ToJSON(new JSResponse(message,"500", message), jsonParams)
+                Content = JSON.ToJSON(new JSResponse(message, errCode, errMessage), jsonParams)
             };
             return res;
         }
@@ -39,7 +41,7 @@ namespace HuisonSys.Controllers
         /// <returns>ActionResult.</returns>
         public string Http401()
         {
-            string message = RouteData.Values["exception"].ToString();
+            string message = RouteData.Values["Exception"].ToString();
             bool isAjax = Request.Headers["x-requested-with"] == null ? false : true;//判断是否ajax请求
             if (!isAjax)
             {
@@ -56,7 +58,7 @@ namespace HuisonSys.Controllers
         /// </summary>
         public string Http403()
         {
-            string message = RouteData.Values["exception"].ToString();
+            string message = RouteData.Values["Exception"].ToString();
             bool isAjax = Request.Headers["x-requested-with"] == null ? false : true;//判断是否ajax请求
             if (!isAjax)
             {
@@ -71,7 +73,7 @@ namespace HuisonSys.Controllers
 
         public string VXHttp401()
         {
-            string message = RouteData.Values["exception"].ToString();
+            string message = RouteData.Values["Exception"].ToString();
             bool isAjax = Request.Headers["x-requested-with"] == null ? false : true;//判断是否ajax请求
             if (!isAjax)
             {
@@ -86,7 +88,7 @@ namespace HuisonSys.Controllers
 
         public string VXHttp403()
         {
-            string message = RouteData.Values["exception"].ToString();
+            string message = RouteData.Values["Exception"].ToString();
             bool isAjax = Request.Headers["x-requested-with"] == null ? false : true;//判断是否ajax请求
             if (!isAjax)
             {
@@ -101,7 +103,7 @@ namespace HuisonSys.Controllers
 
         public ActionResult Http500()
         {
-            string message = RouteData.Values["exception"].ToString();
+            string message = RouteData.Values["Exception"].ToString();
             ContentResult res = new ContentResult()
             {
                 Content = JSON.ToJSON(new JSResponse("服务器出错！", "500", message), jsonParams)

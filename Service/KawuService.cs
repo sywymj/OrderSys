@@ -74,8 +74,15 @@ namespace JSNet.Service
         /// <returns></returns>
         public string DecryptData(string pToDecrypt)
         {
-            string json = SecretUtil.KawuDecrypt(pToDecrypt, _KawuSecretKey);
-            return json;
+            try
+            {
+                string json = SecretUtil.KawuDecrypt(pToDecrypt, _KawuSecretKey);
+                return json;
+            }
+            catch
+            {
+                throw new JSException(JSErrMsg.ERR_CODE_APIDecryptFailed, JSErrMsg.ERR_MSG_APIDecryptFailed);
+            }
         }
 
 
@@ -84,10 +91,10 @@ namespace JSNet.Service
         /// </summary>
         /// <param name="pToEncrypt"></param>
         /// <returns></returns>
-        public string EncryptData(string pToEncrypt)
+        public string EncryptData(string pToEncrypt,bool urlEncode = true)
         {
             string json = SecretUtil.KawuEncrypt(pToEncrypt, _KawuSecretKey);
-            return json;
+            return urlEncode ? CommonUtil.UrlEncode(json) : json;
         }
     }
 

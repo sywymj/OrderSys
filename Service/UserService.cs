@@ -192,7 +192,7 @@ namespace JSNet.Service
             StaffEntity staff = manager.GetSingle(CurrentUser.ID, StaffEntity.FieldUserID);
             if (staff == null)
             {
-                throw new JSException(JSErrMsg.ERR_CODE_DATA_MISSING, string.Format(JSErrMsg.ERR_MSG_DATA_MISSING, "员工"));
+                throw new Exception(string.Format(JSErrMsg.ERR_MSG_DATA_MISSING, "用户ID为" + CurrentUser.ID));
             }
 
             return staff;

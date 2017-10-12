@@ -37,7 +37,7 @@ namespace HuisonSys
             context.ClearError();
 
             var routeData = new RouteData();
-            routeData.Values["exception"] = ex.Message;
+            routeData.Values["Exception"] = ex.Message;
 
             Type t = ex.GetType();
             if (t == typeof(HttpException))
@@ -51,13 +51,13 @@ namespace HuisonSys
                         switch (httpException.GetHttpCode())
                         {
                             case 404:
-                                routeData.Values["action"] = "Http404";
+                                routeData.Values["Action"] = "Http404";
                                 break;
                             case 401:  //没有登录
-                                routeData.Values["action"] = "VXHttp401";
+                                routeData.Values["Action"] = "VXHttp401";
                                 break;
                             case 403:  //没有执行的权限
-                                routeData.Values["action"] = "VXHttp403";
+                                routeData.Values["Action"] = "VXHttp403";
                                 break;
                         }
                     }
@@ -66,13 +66,13 @@ namespace HuisonSys
                         switch (httpException.GetHttpCode())
                         {
                             case 404:
-                                routeData.Values["action"] = "Http404";
+                                routeData.Values["Action"] = "Http404";
                                 break;
                             case 401:  //没有登录
-                                routeData.Values["action"] = "Http401";
+                                routeData.Values["Action"] = "Http401";
                                 break;
                             case 403:  //没有执行的权限
-                                routeData.Values["action"] = "Http403";
+                                routeData.Values["Action"] = "Http403";
                                 break;
                         }
                     }
@@ -80,10 +80,13 @@ namespace HuisonSys
             }
             else if (t == typeof(JSException))
             {
-                var oasysException = ex as JSException;
-                if (oasysException != null)
+                var jsException = ex as JSException;
+                if (jsException != null)
                 {
-                    routeData.Values["action"] = "ShowErrorTips";
+                    routeData.Values["ErrorCode"] = jsException.ErrorCode;
+                    routeData.Values["ErrorMsg"] = jsException.ErrorMsg;
+                    routeData.Values["Exception"] = jsException.ErrorMsg;
+                    routeData.Values["Action"] = "ShowErrorTips";
                 }
             }
             else
@@ -91,8 +94,8 @@ namespace HuisonSys
                 var exception = ex;
                 if (exception != null)
                 {
-                    routeData.Values["exception"] = ex.ToString();
-                    routeData.Values["action"] = "Http500";
+                    routeData.Values["Exception"] = ex.ToString();
+                    routeData.Values["Action"] = "Http500";
                 }
             }
 

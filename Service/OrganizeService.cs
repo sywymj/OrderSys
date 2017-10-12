@@ -149,7 +149,7 @@ namespace JSNet.Service
             string[] ids = GetTreeOrganizeIDs(parentOrganizeCode);
             if (ids.Length == 0)
             {
-                throw new JSException(JSErrMsg.ERR_CODE_DATA_MISSING, string.Format(JSErrMsg.ERR_MSG_DATA_MISSING,"OrganizeCode"));
+                throw new Exception(string.Format(JSErrMsg.ERR_MSG_DATA_MISSING, "OrganizeCode为" + parentOrganizeCode));
             }
 
             WhereStatement where = new WhereStatement();

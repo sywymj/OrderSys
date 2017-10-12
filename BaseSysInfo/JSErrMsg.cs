@@ -22,10 +22,8 @@ namespace JSNet.BaseSys
         public const string ERR_CODE_SESSIONKEY_MISSING = "51";
         public const string ERR_MSG_SESSIONKEY_MISSING = "server-error:Missing required session key:{0}";
 
-        //9开头的是数据库问题
-        public const string ERR_CODE_DATA_MISSING = "91";
-        public const string ERR_MSG_DATA_MISSING = "{0}数据库数据丢失。";
-        public const string ERR_CODE_DATA_REPETITION = "92";
+        //这些错误，提示“服务器出错！”
+        public const string ERR_MSG_DATA_MISSING = "{0}的数据丢失。";
         public const string ERR_MSG_DATA_REPETITION = "数据库{0}数据重复。";
 
         //6开头的是工单业务问题
@@ -64,6 +62,10 @@ namespace JSNet.BaseSys
         public const string ERR_MSG_WrongRoleID = "RID有误！";
         public const string ERR_CODE_WrongTel = "88";
         public const string ERR_MSG_WrongTel = "手机号码不存在！";
+
+        //9开头是API错误
+        public const string ERR_CODE_APIDecryptFailed = "91";
+        public const string ERR_MSG_APIDecryptFailed = "参数解密失败。";
 
     }
 }

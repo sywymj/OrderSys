@@ -24,14 +24,18 @@ namespace OrderSys.Controllers
         [HttpGet]
         public string UpdateOrderSysOpenID()
         {
-            string json = service.DecryptData(JSRequest.GetRequestUrlParm("sumbitdata"));
-            UpdateOrderSysOpenID_APIViewModel vmodel = FastJSON.JSON.ToObject<UpdateOrderSysOpenID_APIViewModel>(json);
+            string json = service.DecryptData(JSRequest.GetRequestUrlParm("submitdata"));
+            List<UpdateOrderSysOpenID_APIViewModel> vmodel = FastJSON.JSON.ToObject<List<UpdateOrderSysOpenID_APIViewModel>>(json);
 
-            string tel = JSValidator.ValidateString("手机号码", vmodel.Tel, true);
-            string openID = JSValidator.ValidateString("OPENID", vmodel.OpenID, true);
+            if (vmodel.Count == 0)
+            {
+                throw new JSException("参数有误！");
+            }
+            string tel = JSValidator.ValidateString("手机号码", vmodel[0].Tel, true);
+            string openID = JSValidator.ValidateString("OPENID", vmodel[0].OpenID, true);
 
-            //UserService service = new UserService();
-            //service.EditUser(tel, openID);
+            //UserService usrService = new UserService();
+            //usrService.EditUser(tel, openID);
 
             string re = JSON.ToJSON(new JSResponse(ResponseType.None,"更新成功！"), jsonParams);
             return re;
@@ -46,6 +50,13 @@ namespace OrderSys.Controllers
             return re;
         }
 
+
+        public string TestEncryptData()
+        {
+            string s = service.EncryptData("[{\"tel1\": \"123\",\"openid1\": \"13800138000\"}]");
+            string re = JSON.ToJSON(new JSResponse(data: s), jsonParams);
+            return re;
+        }
 
     }
 }

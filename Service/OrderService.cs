@@ -60,7 +60,7 @@ namespace JSNet.Service
             int rows = orderManager.Update(kvps, orderID);
             if (rows == 0)
             {
-                throw new JSException(JSErrMsg.ERR_CODE_DATA_MISSING, string.Format(JSErrMsg.ERR_MSG_DATA_MISSING, "工单实体"));
+                throw new Exception(string.Format(JSErrMsg.ERR_MSG_DATA_MISSING, "工单ID为" + orderID));
             }
 
             //2.0 添加工作流实体
@@ -94,7 +94,7 @@ namespace JSNet.Service
             int rows = orderManager.Update(kvps, orderID);
             if (rows == 0)
             {
-                throw new JSException(JSErrMsg.ERR_CODE_DATA_MISSING, string.Format(JSErrMsg.ERR_MSG_DATA_MISSING, "工单实体"));
+                throw new Exception(string.Format(JSErrMsg.ERR_MSG_DATA_MISSING, "工单ID为" + orderID));
             }
 
             //2.0 添加工作流实体
@@ -149,7 +149,7 @@ namespace JSNet.Service
             int rows = orderManager.Update(kvps, orderHandleDetail.OrderID);
             if (rows == 0)
             {
-                throw new JSException(JSErrMsg.ERR_CODE_DATA_MISSING, string.Format(JSErrMsg.ERR_MSG_DATA_MISSING, "工单实体"));
+                throw new Exception(string.Format(JSErrMsg.ERR_MSG_DATA_MISSING, "工单ID为" + orderHandleDetail.OrderID));
             }
 
             //2.0 添加工作流实体
@@ -176,7 +176,7 @@ namespace JSNet.Service
             OrderEntity order = orderManager.GetSingle(orderID);
             if (order == null)
             {
-                throw new JSException(JSErrMsg.ERR_CODE_DATA_MISSING, string.Format(JSErrMsg.ERR_MSG_DATA_MISSING, "工单实体"));
+                throw new Exception(string.Format(JSErrMsg.ERR_MSG_DATA_MISSING, "工单ID为" + orderID));
             }
 
             //2.0 修改工单实体
@@ -188,7 +188,7 @@ namespace JSNet.Service
             int rows = orderManager.Update(kvps, orderID);
             if (rows == 0)
             {
-                throw new JSException(JSErrMsg.ERR_CODE_DATA_MISSING, string.Format(JSErrMsg.ERR_MSG_DATA_MISSING, "工单实体"));
+                throw new Exception(string.Format(JSErrMsg.ERR_MSG_DATA_MISSING, "工单ID为" + orderID));
             }
 
             //3.0 添加工作流实体
@@ -230,7 +230,7 @@ namespace JSNet.Service
             int rows = orderManager.Update(kvps, orderID);
             if (rows == 0)
             {
-                throw new JSException(JSErrMsg.ERR_CODE_DATA_MISSING, string.Format(JSErrMsg.ERR_MSG_DATA_MISSING, "工单实体"));
+                throw new Exception(string.Format(JSErrMsg.ERR_MSG_DATA_MISSING, "工单ID为" + orderID));
             }
 
             //3.0 添加工作流实体
@@ -266,7 +266,7 @@ namespace JSNet.Service
             int rows = orderManager.Update(kvps, orderID);
             if (rows == 0)
             {
-                throw new JSException(JSErrMsg.ERR_CODE_DATA_MISSING, string.Format(JSErrMsg.ERR_MSG_DATA_MISSING, "工单实体"));
+                throw new Exception(string.Format(JSErrMsg.ERR_MSG_DATA_MISSING, "工单ID为" + orderID));
             }
 
             //2.0 添加工作流实体
@@ -299,7 +299,7 @@ namespace JSNet.Service
             List<string> status = orderManager.GetProperties(OrderEntity.FieldStatus, where).ToList();
             if (status.Count == 0)
             {
-                throw new JSException(JSErrMsg.ERR_CODE_DATA_MISSING, string.Format(JSErrMsg.ERR_MSG_DATA_MISSING, "工单实体"));
+                throw new Exception(string.Format(JSErrMsg.ERR_MSG_DATA_MISSING, "工单ID为" + orderID));
             }
             if (Convert.ToInt32(status[0]) >= (int)OrderStatus.Handling)
             {
@@ -314,7 +314,7 @@ namespace JSNet.Service
             int rows = orderManager.Update(kvps, orderID);
             if (rows == 0)
             {
-                throw new JSException(JSErrMsg.ERR_CODE_DATA_MISSING, string.Format(JSErrMsg.ERR_MSG_DATA_MISSING, "工单实体"));
+                throw new Exception(string.Format(JSErrMsg.ERR_MSG_DATA_MISSING, "工单ID为" + orderID));
             }
 
             //2.0 添加工作流实体
