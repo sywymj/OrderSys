@@ -339,5 +339,59 @@ namespace JSNet.Utilities
                 return false;
             }
         }
+
+
+        /// <summary>
+        /// 加密
+        /// </summary>
+        /// <param name="pToEncrypt">需要加密的普通字符串</param>
+        /// <param name="sKey">固定的Key</param>
+        /// <returns>返回加密后的字符串</returns>
+        public static string KawuEncrypt(string pToEncrypt, string sKey)
+        {
+            using (DESCryptoServiceProvider des = new DESCryptoServiceProvider())
+            {
+                byte[] inputByteArray = Encoding.UTF8.GetBytes(pToEncrypt);
+                des.Key = ASCIIEncoding.ASCII.GetBytes(sKey);
+                des.IV = ASCIIEncoding.ASCII.GetBytes(sKey);
+                System.IO.MemoryStream ms = new System.IO.MemoryStream();
+                using (CryptoStream cs = new CryptoStream(ms, des.CreateEncryptor(), CryptoStreamMode.Write))
+                {
+                    cs.Write(inputByteArray, 0, inputByteArray.Length);
+                    cs.FlushFinalBlock();
+                    cs.Close();
+                }
+                string str = Convert.ToBase64String(ms.ToArray());
+                ms.Close();
+                return str;
+            }
+        }
+        /// <summary>
+        /// 解密
+        /// </summary>
+        /// <param name="pToDecrypt">被加密的字符串</param>
+        /// <param name="sKey">固定的Key</param>
+        /// <returns>返回解密后的字符串</returns>
+        public static string KawuDecrypt(string pToDecrypt, string sKey)
+        {
+            byte[] inputByteArray = Convert.FromBase64String(pToDecrypt);
+            using (DESCryptoServiceProvider des = new DESCryptoServiceProvider())
+            {
+                des.Key = ASCIIEncoding.ASCII.GetBytes(sKey);
+                des.IV = ASCIIEncoding.ASCII.GetBytes(sKey);
+                System.IO.MemoryStream ms = new System.IO.MemoryStream();
+                using (CryptoStream cs = new CryptoStream(ms, des.CreateDecryptor(), CryptoStreamMode.Write))
+                {
+                    cs.Write(inputByteArray, 0, inputByteArray.Length);
+                    cs.FlushFinalBlock();
+                    cs.Close();
+                }
+                string str = Encoding.UTF8.GetString(ms.ToArray());
+                ms.Close();
+                return str;
+            }
+        }
+
+
     }
 }

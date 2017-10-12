@@ -17,8 +17,7 @@ Query.prototype = {
     status: "",         //工单状态
     bookingTime: "",    //截止日期
     priority: "",       //紧急程度
-    content: "",         //内容
-    workingLocation:"",     //维修地点
+    content:"",         //内容
     tabId: "",
 
     setNextPage: function () {
@@ -299,6 +298,73 @@ setTab = function (m, n) {
     }
 }
 
+//下拉分页，加载分页数据
+//$(document.body).infinite().on("infinite", function () {
+//    return;
+//    //debugger;
+//    if (loading) return;
+//    var tabID = $(".weui_bar_item_on").attr("id");
+//    //修改这里的id名称
+//    if (tabID == "query_mystarted_btn") {
+//        querymystarted();//修改这里的回调函数
+//    } else if (tabID == "query_myappointing_btn") {
+//        querymyappointing();
+//    } else if (tabID == "query_myappointed_btn") {
+//        querymyappointed();
+//    } else if (tabID == "query_myappointed_btn") {
+//        querymyappointed();
+//    } else if (tabID == "query_myappointing_btn") {
+//        querymyappointing();
+//    } else if (tabID == "query_myreciving_btn") {
+//        querymyreciving();
+//    } else if (tabID == "query_myhandling_btn") {
+//        querymyhandling();
+//    } else if (tabID == "query_myhandled_btn") {
+//        querymyhandled();
+//    }
+
+//});
+
+//上拉刷新，重新加载数据
+//$(document.body).pullToRefresh().on("pull-to-refresh", function () {
+//    return;
+//    if (myTop > 0) {
+//        $(document.body).pullToRefreshDone();
+//        return;
+//    }
+//    var tabID = $(".weui_bar_item_on").attr("id");
+//    //修改这里的id名称
+//    if (tabID == "query_mystarted_btn") {
+//        startedQuery.isEnd = false;
+//        startedQuery.pageIndex = 1;
+//        querymystarted();
+//    } else if (tabID == "startemyorder_btn") {
+//        doClearStartForm();
+//    } else if (tabID == "query_myappointing_btn") {
+//        appointingQuery.isEnd = false;
+//        appointingQuery.pageIndex = 1;
+//        querymyappointing();
+//    } else if (tabID == "query_myappointed_btn") {
+//        appointedQuery.isEnd = false;
+//        appointedQuery.pageIndex = 1;
+//        querymyappointed();
+//    } else if (tabID == "query_myreciving_btn") {
+//        recivingQuery.isEnd = false;
+//        recivingQuery.pageIndex = 1;
+//        querymyreciving();
+//    } else if (tabID == "query_myhandling_btn") {
+//        handlingQuery.isEnd = false;
+//        handlingQuery.pageIndex = 1;
+//        querymyhandling();
+//    } else if (tabID == "query_myhandled_btn") {
+//        handledQuery.isEnd = false;
+//        handledQuery.pageIndex = 1;
+//        querymyhandled();
+//    }
+
+//    $(document.body).pullToRefreshDone();
+//});
+
 //此方法没用
 formatDic = function (value, data) {
     var arr = data;
@@ -315,7 +381,6 @@ getQueryFilters = function () {
     filter.priority = $("#filterPriority").children(".now").attr("value");
     filter.bookingTime = $("#filterBookingTime").val();
     filter.content = $("#filterContent").val();
-    filter.workingLocation = $("#filterWorkingLocation").val();
     return filter;
 }
 
@@ -340,12 +405,103 @@ setQueryFilters = function (query) {
 
     $("#filterBookingTime").val(query.bookingTime);
     $("#filterContent").val(query.content);
-    $("#filterWorkingLocation").val(query.workingLocation);
 }
 
-/*
-*   根据习惯：ending,loading都是放在container div 后面（数据、内容部分）
-*   部分页面的代码里，不要再次引用jquery，否则会导致其他文件出错
-*
-*/
+$.smartScroll = function (container, selectorScrollable) {
+    // 如果没有滚动容器选择器，或者已经绑定了滚动时间，忽略
+    if (!selectorScrollable || container.data('isBindScroll')) {
+        return;
+    }
+
+    // 是否是搓浏览器
+    // 自己在这里添加判断和筛选
+    var isSBBrowser;
+
+    var data = {
+        posY: 0,
+        maxscroll: 0
+    };
+
+    // 事件处理
+    container.on({
+        touchstart: function (event) {
+            var events = event.touches[0] || event;
+
+            // 先求得是不是滚动元素或者滚动元素的子元素
+            var elTarget = $(event.target);
+
+            if (!elTarget.length) {
+                return;
+            }
+
+            var elScroll;
+
+            // 获取标记的滚动元素，自身或子元素皆可
+            if (elTarget.is(selectorScrollable)) {
+                elScroll = elTarget;
+            } else if ((elScroll = elTarget.parents(selectorScrollable)).length == 0) {
+                elScroll = null;
+            }
+
+            if (!elScroll) {
+                return;
+            }
+
+            // 当前滚动元素标记
+            data.elScroll = elScroll;
+
+            // 垂直位置标记
+            data.posY = events.pageY;
+            data.scrollY = elScroll.scrollTop();
+            // 是否可以滚动
+            data.maxscroll = elScroll[0].scrollHeight - elScroll[0].clientHeight;
+        },
+        touchmove: function () {
+            // 如果不足于滚动，则禁止触发整个窗体元素的滚动
+            if (data.maxscroll <= 0 || isSBBrowser) {
+                // 禁止滚动
+                event.preventDefault();
+            }
+            // 滚动元素
+            var elScroll = data.elScroll;
+            // 当前的滚动高度
+            var scrollTop = elScroll.scrollTop();
+
+            // 现在移动的垂直位置，用来判断是往上移动还是往下
+            var events = event.touches[0] || event;
+            // 移动距离
+            var distanceY = events.pageY - data.posY;
+
+            if (isSBBrowser) {
+                elScroll.scrollTop(data.scrollY - distanceY);
+                elScroll.trigger('scroll');
+                return;
+            }
+
+            // 上下边缘检测
+            if (distanceY > 0 && scrollTop == 0) {
+                // 往上滑，并且到头
+                // 禁止滚动的默认行为
+                event.preventDefault();
+                return;
+            }
+
+            // 下边缘检测
+            if (distanceY < 0 && (scrollTop + 1 >= data.maxscroll)) {
+                // 往下滑，并且到头
+                // 禁止滚动的默认行为
+                event.preventDefault();
+                return;
+            }
+        },
+        touchend: function () {
+            data.maxscroll = 0;
+        }
+    });
+
+    // 防止多次重复绑定
+    container.data('isBindScroll', true);
+};
+
+
 

@@ -75,7 +75,8 @@ namespace HuisonSys.Controllers
             bool isAjax = Request.Headers["x-requested-with"] == null ? false : true;//判断是否ajax请求
             if (!isAjax)
             {
-                Response.Redirect("/Login.html");
+                //https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxba12ba5cb2571169&redirect_uri=http://weixin.huison.com/weixin/wxcallback.aspx&response_type=code&scope=snsapi_base&state=my#wechat_redirect 
+                Response.Redirect("/login.html");
                 Response.End();
             }
 

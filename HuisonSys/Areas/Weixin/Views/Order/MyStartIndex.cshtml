@@ -53,7 +53,7 @@
             startedQuery.tabID = 'query_mystarted_btn';
             setQueryFilters(startedQuery);
         }
-        $('.top_choose').fadeIn(200);
+        fadeInFilter()
     }
 
     //每个页面必重载的方法
@@ -74,7 +74,7 @@
             $.alert("此页面不能筛选！");
             //隐藏筛选按钮
         }
-        $('.top_choose').fadeOut(200);
+        fadeOutFilter();
     }
 
     querymystarted = function () {

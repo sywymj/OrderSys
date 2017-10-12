@@ -61,7 +61,7 @@
             appointedQuery.tabID = 'query_myappointed_btn';
             setQueryFilters(appointedQuery);
         }
-        $('.top_choose').fadeIn(200);
+        fadeInFilter();
     }
 
     //每个页面必重载的方法
@@ -87,7 +87,7 @@
             appointedQuery.workingLocation = filter.workingLocation || "";
             querymyappointed();
         }
-        $('.top_choose').fadeOut(200);
+        fadeOutFilter();
     }
 
     querymyappointing = function () {

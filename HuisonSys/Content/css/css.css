@@ -17,9 +17,9 @@
 .top_nav_in_t{width:100%; padding:16px 0; background:#b2cefb; margin-bottom:10px;}
 .top_nav_in_avatar{width:80px; height:80px; margin:0 auto; margin-bottom:10px; overflow:hidden;}
 .top_nav_in_name{color:#fff; font-size:16px; line-height:20px;}
-.top_nav_in ul li{width:80%; height:50px; line-height:50px; padding-left:20%; color:#fff; font-size:18px; text-align:left; position:relative;}
+.top_nav_in ul li{width:100%; height:50px; line-height:50px; color:#fff; font-size:18px; text-align:left; position:relative;}
 .top_nav_in ul li em{margin-right:16px; font-size:24px; font-style:normal;}
-.top_nav_in ul li a{color:#fff;}
+.top_nav_in ul li a{color:#fff; display:block; padding-left:20%;}
 
 
 /*列表*/
@@ -185,9 +185,10 @@ background:url(../images/leader.png);
 .weui_dialog{z-index:9999999999999;}
 
 /*头部筛选*/
-.top i{display:block; width:50px; height:50px; text-align:center; line-height:50px;  position:absolute; right:30px; top:0; color:#999; font-size:24px; font-size:14px;}
+.top i{display:block; width:50px; height:50px; text-align:center; line-height:50px;  position:absolute; top:0; color:#999; font-size:30px;}
+.top i.myfliter{font-size:20px; right:54px;}
 
-.top_choose{width:96%; position:fixed; top:51px; left:0; z-index:999899; background:#fff; padding:0 2%; display:none;overflow-y:scroll;}
+.top_choose{width:96%; position:fixed; top:0px; left:0; z-index:99999999; background:#fff; padding:0 2%; display:none;overflow-y:scroll; z-index:9999999999999999;}
 .weui-row {
 margin-top: 10px;
 }
@@ -228,3 +229,18 @@ margin-bottom:16px;
         width: 1px;
         margin-left: -6px;
     }
+	
+
+/*2017.10.11*/
+#filePicker label{width:62px; height:44px; display:block;}
+#filterBookingTime{height:inherit;}
+#filterContent{height:inherit;}
+.fltct{height:inherit;}
+
+.noscroll,
+.noscroll body {
+    overflow: hidden;
+}
+.noscroll body {
+    position: relative;
+}

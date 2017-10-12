@@ -75,7 +75,7 @@
             handledQuery.tabID = 'query_myhandled_btn';
             setQueryFilters(handledQuery);
         }
-        $('.top_choose').fadeIn(200);
+        fadeInFilter();
     }
 
     //每个页面必重载的方法
@@ -110,7 +110,7 @@
             handledQuery.workingLocation = filter.workingLocation || "";
             querymyhandled();
         }
-        $('.top_choose').fadeOut(200);
+        fadeOutFilter();
     }
 
     querymyreciving = function () {

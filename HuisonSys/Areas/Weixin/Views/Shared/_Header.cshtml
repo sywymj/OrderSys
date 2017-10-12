@@ -39,6 +39,7 @@
                     "overflow-x": "hidden",
                     "overflow-y": "hidden"
                 });
+                $("body").on("touchmove", function (event) { event.preventDefault; }, false);
             });
             $('.top_nav_in2').click(function () {
                 $('.top_nav_in').css('left', '-200px');
@@ -47,6 +48,7 @@
                     "overflow-x": "auto",
                     "overflow-y": "auto"
                 });
+                $("body").off("touchmove");
             });
         </script>
     </span>
@@ -55,31 +57,39 @@
 </div>
 
  <div class="top_choose">
-    <div id="filter">
-        <!--筛选器内容-->
-    </div>
+     <div id="filter" style="overflow: scroll;">
+         <!--筛选器内容-->
+     </div>
     <div class="slide_close iconfont">&#xe79a;</div>
      <script>
          $(function () {
              var w_h2 = $(window).height();
              $('.top_choose').height(w_h2);
          });
-         $(function () {
-             $('.top .myfilter').click(function () {
-                 $('.top_choose').fadeIn(200);
-                 $('body').css({
-                     "overflow-x": "hidden",
-                     "overflow-y": "hidden"
-                 });
-             });
-             $('.slide_close').click(function () {
-                 $('.top_choose').fadeOut(200);
-                 $('body').css({
-                     "overflow-x": "auto",
-                     "overflow-y": "auto"
-                 });
-             });
 
+         fadeInFilter = function () {
+             $('.top_nav_in2').fadeIn(200);
+             $('.top_choose').fadeIn(200);
+             $('body').css({
+                 "overflow-x": "hidden",
+                 "overflow-y": "hidden"
+             });
+             $.smartScroll($('#filter'), '#filter');
+             $('html').addClass('noscroll');
+         }
+
+         fadeOutFilter = function () {
+             $('.top_nav_in2').fadeOut(200);
+             $('.top_choose').fadeOut(200);
+             $('body').css({
+                 "overflow-x": "auto",
+                 "overflow-y": "auto"
+             });
+             $('html').removeClass('noscroll');
+         }
+
+         $('.slide_close').click(function () {
+             fadeOutFilter();
          });
      </script>
 

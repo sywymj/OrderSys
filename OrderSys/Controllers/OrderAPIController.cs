@@ -1,6 +1,8 @@
 ﻿using FastJSON;
 using JSNet.BaseSys;
 using JSNet.Service;
+using JSNet.Utilities;
+using OrderSys.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +15,7 @@ namespace OrderSys.Controllers
     {
         //
         // GET: /OrderAPI/
-
+        KawuService service = new KawuService();
         public ActionResult Index()
         {
             return View();
@@ -22,16 +24,16 @@ namespace OrderSys.Controllers
         [HttpGet]
         public string UpdateOrderSysOpenID()
         {
-            string sTel = JSRequest.GetRequestUrlParm("tel");
-            string sOpen = JSRequest.GetRequestUrlParm("openid");
+            string json = service.DecryptData(JSRequest.GetRequestUrlParm("sumbitdata"));
+            UpdateOrderSysOpenID_APIViewModel vmodel = FastJSON.JSON.ToObject<UpdateOrderSysOpenID_APIViewModel>(json);
 
-            string tel = JSValidator.ValidateString("手机号码", sTel, true);
-            string openID = JSValidator.ValidateString("OPENID", sOpen, true);
+            string tel = JSValidator.ValidateString("手机号码", vmodel.Tel, true);
+            string openID = JSValidator.ValidateString("OPENID", vmodel.OpenID, true);
 
-            UserService service = new UserService();
-            service.EditUser(tel, openID);
+            //UserService service = new UserService();
+            //service.EditUser(tel, openID);
 
-            string re = JSON.ToJSON(new JSResponse("更新成功！"), jsonParams);
+            string re = JSON.ToJSON(new JSResponse(ResponseType.None,"更新成功！"), jsonParams);
             return re;
         }
 
@@ -40,8 +42,10 @@ namespace OrderSys.Controllers
         {
             //todo
 
-            string re = JSON.ToJSON(new JSResponse("更新成功！"), jsonParams);
+            string re = JSON.ToJSON(new JSResponse(ResponseType.None, "注销成功！"), jsonParams);
             return re;
         }
+
+
     }
 }

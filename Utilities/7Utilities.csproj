@@ -67,6 +67,7 @@
     <Compile Include="FastJson\JsonSerializer.cs" />
     <Compile Include="FastJson\Reflection.cs" />
     <Compile Include="FastJson\SafeDictionary.cs" />
+    <Compile Include="WebUtilDemo.cs" />
     <Compile Include="JsonUtil.cs" />
     <Compile Include="SortUtil.cs" />
     <Compile Include="Paging\IPaging.cs" />
@@ -89,6 +90,7 @@
     <Compile Include="Utilities\VerifyCodeImage.cs" />
     <Compile Include="Utilities\WatermarkHelper.cs" />
     <Compile Include="Validate\Validate.cs" />
+    <Compile Include="WebUtils.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

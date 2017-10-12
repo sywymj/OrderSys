@@ -55,7 +55,7 @@
     </label>
 </div>
 
-<div id="uploader-demo">
+<div id="uploader-demo" class="wu-example">
     <!--用来存放item-->
     <div id="fileList" class="uploader-list"></div>
     <div id="filePicker">拍照</div>
@@ -82,6 +82,13 @@
 </div>
 
 <script>
+
+    $(function () {
+        //更改拍照按钮 div 大小
+        $('#filePicker label').parent().css('height', '44px');
+        $('#filePicker label').parent().css('width', '62px');
+    });
+
     doStartOrder = function () {
         var filesName = getFilesName();
         var data = {
