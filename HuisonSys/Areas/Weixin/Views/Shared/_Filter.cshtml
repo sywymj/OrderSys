@@ -1,54 +1,53 @@
 ﻿@model Dictionary<string,Dictionary<int,string>>
-@{
-    Layout = "~/Areas/Weixin/Views/Shared/_InnerLayout.cshtml";
-}
 
-@{if (Model.ContainsKey("filterStatus"))
-  {
-    <div class="weui_cells_title filter_title" style="padding:0">工单状态</div>
-    <div class="weui-row" id="filterStatus">
-        @{foreach (var kvp in Model["filterStatus"])
+<div>
+    @{if (Model.ContainsKey("filterStatus"))
+    {
+        <div class="weui_cells_title filter_title" style="padding:0">工单状态</div>
+        <div class="weui-row" id="filterStatus">
+            @{foreach (var kvp in Model["filterStatus"])
           {
-              <div class="weui-col-50" value="@kvp.Key">@kvp.Value</div>
+        <div class="weui-col-50" value="@kvp.Key">@kvp.Value</div>
           }
-        }
+            }
+        </div>
+    }
+    }
+    <div class="weui_cells_title filter_title" style="padding:0">紧急程度</div>
+    <div class="weui-row" id="filterPriority">
+        <div class="weui-col-50" value="0">一般</div>
+        <div class="weui-col-50" value="1">紧急</div>
     </div>
-  }
-}
+    <div class="weui_cells_title filter_title" style="padding:0">截止日期</div>
+    <div class="weui-row">
+        <div class="weui-col-100">
+            <input class="weui_input" id="filterBookingTime" type="date" value="">
+        </div>
+    </div>
+    <div class="weui_cells_title filter_title" style="padding:0">维修地点</div>
+    <div class="weui-row">
+        <div class="weui-col-100">
+            <input class="weui_input fltct" id="filterWorkingLocation" type="text" placeholder="请输入需要筛选的维修地点">
+        </div>
+    </div>
+    <div class="weui_cells_title filter_title" style="padding:0">内容</div>
+    <div class="weui-row">
+        <div class="weui-col-100">
+            <input class="weui_input fltct" id="filterContent" type="text" placeholder="请输入需要筛选的内容">
+        </div>
+    </div>
 
-<div class="weui_cells_title filter_title" style="padding:0">紧急程度</div>
-<div class="weui-row" id="filterPriority">
-    <div class="weui-col-50" value="0">一般</div>
-    <div class="weui-col-50" value="1">紧急</div>
-</div>
-<div class="weui_cells_title filter_title" style="padding:0">截止日期</div>
-<div class="weui-row">
-    <div class="weui-col-100">
-        <input class="weui_input" id="filterBookingTime" type="date" value="">
-    </div>
-</div>
-<div class="weui_cells_title filter_title" style="padding:0">维修地点</div>
-<div class="weui-row">
-    <div class="weui-col-100">
-        <input class="weui_input fltct" id="filterWorkingLocation" type="text" placeholder="请输入需要筛选的维修地点">
-    </div>
-</div>
-<div class="weui_cells_title filter_title" style="padding:0">内容</div>
-<div class="weui-row">
-    <div class="weui-col-100">
-        <input class="weui_input fltct" id="filterContent" type="text" placeholder="请输入需要筛选的内容">
+
+    <div class="weui-row">
+        <div class="weui-col-50" style="border:none;height:42px">
+            <a class="weui_btn weui_btn_primary" href="javascript:search()" id="search">确定</a>
+        </div>
+        <div class="weui-col-50" style="border:none;height:42px">
+            <a class="weui_btn weui_btn_primary" href="javascript:reset()" id="reset">重置</a>
+        </div>
     </div>
 </div>
 
-
-<div class="weui-row">
-    <div class="weui-col-50" style="border:none;height:42px">
-        <a class="weui_btn weui_btn_primary" href="javascript:search()" id="search">确定</a>
-    </div>
-    <div class="weui-col-50" style="border:none;height:42px">
-        <a class="weui_btn weui_btn_primary" href="javascript:reset()" id="reset">重置</a>
-    </div>
-</div>
 
 <script>
     $(function () {

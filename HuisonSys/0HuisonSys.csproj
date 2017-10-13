@@ -131,6 +131,22 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
+    <Content Include="Content\js\zepto.min.js" />
+    <Content Include="Content\phone_scroll\css\css.css" />
+    <Content Include="Content\phone_scroll\css\style.css" />
+    <Content Include="Content\phone_scroll\iconfont\demo.css" />
+    <Content Include="Content\phone_scroll\iconfont\demo_fontclass.html" />
+    <Content Include="Content\phone_scroll\iconfont\demo_symbol.html" />
+    <Content Include="Content\phone_scroll\iconfont\demo_unicode.html" />
+    <Content Include="Content\phone_scroll\iconfont\iconfont.css" />
+    <Content Include="Content\phone_scroll\iconfont\iconfont.js" />
+    <Content Include="Content\phone_scroll\iconfont\iconfont.svg" />
+    <Content Include="Content\phone_scroll\ie-css3.htc" />
+    <Content Include="Content\phone_scroll\index.html" />
+    <Content Include="Content\phone_scroll\index3.html" />
+    <Content Include="Content\phone_scroll\js\DD_belatedPNG_0.0.8a.js" />
+    <Content Include="Content\phone_scroll\js\iscroll.js" />
+    <Content Include="Content\phone_scroll\js\jquery-1.9.1.min.js" />
     <Content Include="Content\picbox\css\lightbox.css" />
     <Content Include="Content\picbox\css\screen.css" />
     <Content Include="Content\picbox\img\close.png" />
@@ -2867,6 +2883,7 @@
     <Folder Include="Areas\Admin\Script\miniui\themes\metro\images\button\" />
     <Folder Include="Areas\Admin\Script\miniui\themes\pure\images\button\" />
     <Folder Include="Content\fonts\" />
+    <Folder Include="Content\phone_scroll\images\" />
     <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
@@ -3027,6 +3044,9 @@
     <Content Include="Areas\Weixin\Views\Shared\_Filter.cshtml" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\phone_scroll\iconfont\iconfont.eot" />
+    <Content Include="Content\phone_scroll\iconfont\iconfont.ttf" />
+    <Content Include="Content\phone_scroll\iconfont\iconfont.woff" />
     <None Include="Properties\PublishProfiles\1.pubxml" />
   </ItemGroup>
   <PropertyGroup>

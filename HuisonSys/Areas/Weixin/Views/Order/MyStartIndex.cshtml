@@ -12,7 +12,7 @@
             已发起
         </li>
     </div>
-    <div class="weui_tab_bd" id="tablist1">
+    <div class="weui_tab_bd nr1" id="tablist1">
         <div class="tablist">
             <div id="startorder">@Html.Partial("~/Areas/Weixin/Views/Order/StartOrder.cshtml") </div>
         </div>
@@ -93,18 +93,6 @@
         doQuery1(startedQuery, url, parms);
     }
 
-    checkOrder = function (orderID) {
-        $.modal({
-            title: "",
-            text: "请选择验收操作。",
-            buttons: [
-            { text: "通过", onClick: function () { doCheckOrder(orderID); } },
-            { text: "驳回", onClick: function () { doRejectOrder(orderID); } },
-            { text: "取消", className: "default" },
-            ]
-        });
-    }
-
     doCancelOrder = function (orderID) {
         $.confirm("您确定要撤销这条工单吗?", "确认撤销?", function () {
             var url = '@Url.Action("CancelOrder", "Order", new { area = "Weixin" })';
@@ -116,6 +104,18 @@
             });
         }, function () {
             //取消操作
+        });
+    }
+
+    checkOrder = function (orderID) {
+        $.modal({
+            title: "",
+            text: "请选择验收操作。",
+            buttons: [
+            { text: "通过", onClick: function () { doCheckOrder(orderID); } },
+            { text: "驳回", onClick: function () { doRejectOrder(orderID); } },
+            { text: "取消", className: "default" },
+            ]
         });
     }
 

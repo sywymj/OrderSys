@@ -22,6 +22,8 @@ namespace JSNet.BaseSys
         public JSException(string message)
             : base(message)
         {
+            this.errorCode = "";
+            this.errorMsg = "";
         }
 
         protected JSException(SerializationInfo info, StreamingContext context)

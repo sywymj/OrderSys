@@ -56,41 +56,58 @@
     <i class="iconfont myfliter" onclick="showFilter()">&#xe729;</i>
 </div>
 
- <div class="top_choose">
-     <div id="filter" style="overflow: scroll;">
-         <!--筛选器内容-->
-     </div>
+ <div class="top_choose nr2">
+    <div id="filter" class="scrollable1">
+        <!--筛选器内容-->
+    </div>
     <div class="slide_close iconfont">&#xe79a;</div>
-     <script>
-         $(function () {
-             var w_h2 = $(window).height();
-             $('.top_choose').height(w_h2);
-         });
 
-         fadeInFilter = function () {
-             $('.top_nav_in2').fadeIn(200);
-             $('.top_choose').fadeIn(200);
-             $('body').css({
-                 "overflow-x": "hidden",
-                 "overflow-y": "hidden"
-             });
-             $.smartScroll($('#filter'), '#filter');
-             $('html').addClass('noscroll');
-         }
+     <script src="/Content/phone_scroll/js/iscroll.js"></script>
+    <script>
+        //$(function () {
+        //    var w_h2 = $(window).height();
+        //    $('.top_choose').height(w_h2);
+        //});
 
-         fadeOutFilter = function () {
-             $('.top_nav_in2').fadeOut(200);
-             $('.top_choose').fadeOut(200);
-             $('body').css({
-                 "overflow-x": "auto",
-                 "overflow-y": "auto"
-             });
-             $('html').removeClass('noscroll');
-         }
+        $(function () {
+            var w_h = $(document).height();
+            $('.nr2').height(w_h);
+            $('#filter').height(w_h);
+        });
 
-         $('.slide_close').click(function () {
-             fadeOutFilter();
-         });
-     </script>
+
+        fadeInFilter = function () {
+            $('.top_nav_in2').fadeIn(200);
+            $('.top_choose').fadeIn(200);
+            $('.bg').on('touchmove', function (e) { e.preventDefault(); }, false);//弹出层的背景层阻止默认滑动事件
+            new IScroll('#filter');
+            //$('body').css({
+            //    "overflow-x": "hidden",
+            //    "overflow-y": "hidden"
+            //});
+            //$.smartScroll($('#filter'), '#filter');
+            //$('html').addClass('noscroll');
+            //$('html').css({ "height": "100%", "overflow": "hidden" });
+            //$('body').css({ "height": "100%", "overflow": "hidden" });
+
+        }
+
+        fadeOutFilter = function () {
+            $('.top_nav_in2').fadeOut(200);
+            $('.top_choose').fadeOut(200);
+            //$('body').css({
+            //    "overflow-x": "auto",
+            //    "overflow-y": "auto"
+            //});
+            //$('html').removeClass('noscroll');
+            //$('html').css({ "height": "auto", "overflow": "auto" });
+            //$('body').css({ "height": "auto", "overflow": "auto" });
+
+        }
+
+        $('.slide_close').click(function () {
+            fadeOutFilter();
+        });
+    </script>
 
 </div>

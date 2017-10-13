@@ -838,6 +838,10 @@ namespace JSNet.Service
         private int GetLeaderHandlerID(List<OrderHandlerEntity> orderHandlers)
         {
             int leaderID = 0;
+            if (orderHandlers.Count == 0)
+            {
+                throw new JSException(JSErrMsg.ERR_CODE_NOHANDLERS, JSErrMsg.ERR_MSG_NOHANDLERS);
+            }
             foreach (OrderHandlerEntity orderHandler in orderHandlers)
             {
                 if (orderHandler.IsLeader == (int)TrueFalse.True)

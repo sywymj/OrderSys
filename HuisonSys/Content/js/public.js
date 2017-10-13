@@ -408,6 +408,7 @@ setQueryFilters = function (query) {
 }
 
 $.smartScroll = function (container, selectorScrollable) {
+
     // 如果没有滚动容器选择器，或者已经绑定了滚动时间，忽略
     if (!selectorScrollable || container.data('isBindScroll')) {
         return;
@@ -424,9 +425,9 @@ $.smartScroll = function (container, selectorScrollable) {
 
     // 事件处理
     container.on({
-        touchstart: function (event) {
+        touchstart: function () {
             var events = event.touches[0] || event;
-
+            
             // 先求得是不是滚动元素或者滚动元素的子元素
             var elTarget = $(event.target);
 
@@ -457,6 +458,8 @@ $.smartScroll = function (container, selectorScrollable) {
             data.maxscroll = elScroll[0].scrollHeight - elScroll[0].clientHeight;
         },
         touchmove: function () {
+            return;
+            debugger;
             // 如果不足于滚动，则禁止触发整个窗体元素的滚动
             if (data.maxscroll <= 0 || isSBBrowser) {
                 // 禁止滚动

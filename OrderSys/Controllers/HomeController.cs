@@ -15,9 +15,11 @@ namespace OrderSys.Controllers
     {
         //
         // GET: /Home/
-
-        public ActionResult Index()
+        [HttpGet]
+        public ActionResult Index(string openID)
         {
+            UserService userService = new UserService();
+            userService.VXLogin(openID);
             return View();
         }
 

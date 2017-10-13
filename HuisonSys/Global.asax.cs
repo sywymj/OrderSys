@@ -85,7 +85,7 @@ namespace HuisonSys
                 {
                     routeData.Values["ErrorCode"] = jsException.ErrorCode;
                     routeData.Values["ErrorMsg"] = jsException.ErrorMsg;
-                    routeData.Values["Exception"] = jsException.ErrorMsg;
+                    routeData.Values["Exception"] = jsException.Message;
                     routeData.Values["Action"] = "ShowErrorTips";
                 }
             }

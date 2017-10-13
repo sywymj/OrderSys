@@ -204,7 +204,7 @@ margin-bottom:16px;
 }
 .weui-col-50.now{border:1px solid #09F; color:#09f;}
 
-.slide_close{width:40px; height:40px; position:absolute; top:0; right:0; text-align:center; line-height:40px; color:#484848;}
+.slide_close{width:40px; height:40px; position:absolute; top:0; right:0; text-align:center; line-height:40px; color:#484848;z-index:999999;}
 
 /*图片展示*/
 .pic_box {
@@ -244,3 +244,38 @@ margin-bottom:16px;
 .noscroll body {
     position: relative;
 }
+
+.bottom_btn1{
+    position: fixed;
+    width: 96%;
+    bottom: 20px;
+    left: 50%;
+    margin-left: -48%;
+}
+
+.scrollable{
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/*弹框阻止body滑动*/
+
+.bg{
+    width:100%;
+    height:100%;
+    background-color: rgba(0,0,0,0.5);
+    position:absolute;
+    top:0;
+    left:0;
+}
+#filter{
+width:94%;
+height:100%;
+padding:0 3%;
+margin:0 auto;
+overflow:hidden;
+position:absolute;
+left:0;
+top:0;
+z-index:99999;
+}

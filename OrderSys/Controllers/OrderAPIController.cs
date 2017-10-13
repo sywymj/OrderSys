@@ -31,11 +31,11 @@ namespace OrderSys.Controllers
             {
                 throw new JSException("参数有误！");
             }
-            string tel = JSValidator.ValidateString("手机号码", vmodel[0].Tel, true);
-            string openID = JSValidator.ValidateString("OPENID", vmodel[0].OpenID, true);
+            string tel = JSValidator.ValidateString("参数Tel", vmodel[0].Tel, true);
+            string openID = JSValidator.ValidateString("参数OPENID", vmodel[0].OpenID, true);
 
-            //UserService usrService = new UserService();
-            //usrService.EditUser(tel, openID);
+            UserService usrService = new UserService();
+            usrService.EditUser(tel, openID);
 
             string re = JSON.ToJSON(new JSResponse(ResponseType.None,"更新成功！"), jsonParams);
             return re;
@@ -50,11 +50,20 @@ namespace OrderSys.Controllers
             return re;
         }
 
-
+        [HttpGet]
         public string TestEncryptData()
         {
             string s = service.EncryptData("[{\"tel1\": \"123\",\"openid1\": \"13800138000\"}]");
             string re = JSON.ToJSON(new JSResponse(data: s), jsonParams);
+            return re;
+        }
+
+        [HttpGet]
+        public string TestAddWeixinUser()
+        {
+            string mess = "";
+            bool b = service.AddWeixinUser("13620834810", "曹操", out mess);
+            string re = JSON.ToJSON(new JSResponse(mess), jsonParams);
             return re;
         }
 

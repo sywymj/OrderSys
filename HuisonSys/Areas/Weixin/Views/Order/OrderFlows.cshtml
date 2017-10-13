@@ -2,6 +2,7 @@
 @using JSNet.Utilities;
 @using JSNet.BaseSys;
 @using OrderSys.Model;
+@using JSNet.Service;
 
 @{
     Layout = "~/Areas/Weixin/Views/Shared/_InnerLayout.cshtml";
@@ -86,6 +87,24 @@
     <em class="triangle_up"></em>
     <span>@EnumExtensions.ToDescription(ViewBag.OrderStatus)</span>
 </div>
+@{if (ViewBag.OrderStatus == OrderStatus.Appointing
+      && new PermissionService().IsButtonAuthorizedByRole("OrderSys_VX.MyAppointIndex.Appoint"))
+{
+    <a class="weui_btn weui_btn_primary bottom_btn1" href="@Url.Action("AppointOrder", "Order", new { area = "Weixin", OrderID = ViewBag.OrderID })">委派</a>
+}
+}
+@{if (ViewBag.OrderStatus == OrderStatus.Checking
+    && new PermissionService().IsButtonAuthorizedByRole("OrderSys_VX.MyStartIndex.Check"))
+{
+    <a class="weui_btn weui_btn_primary bottom_btn1" href="javascript:checkOrder('@ViewBag.OrderID');">验收</a>
+}
+}
+@{if (ViewBag.OrderStatus == OrderStatus.Receving
+      && new PermissionService().IsButtonAuthorizedByRole("OrderSys_VX.MyHandleIndex.Receive"))
+{
+    <a class="weui_btn weui_btn_primary bottom_btn1" onclick="doReceiveOrder('@ViewBag.OrderID')">接单</a>
+}
+}
 
 <script>
     setOrderStatus = function () {
@@ -100,7 +119,56 @@
         setOrderStatus();
     });
 
+    checkOrder = function (orderID) {
+        $.modal({
+            title: "",
+            text: "请选择验收操作。",
+            buttons: [
+            { text: "通过", onClick: function () { doCheckOrder(orderID); } },
+            { text: "驳回", onClick: function () { doRejectOrder(orderID); } },
+            { text: "取消", className: "default" },
+            ]
+        });
+    }
 
+    doCheckOrder = function (orderID) {
+        var url = '@Url.Action("FinishOrder", "Order", new { area = "Weixin" })';
+        var urlParm = { OrderID: orderID };
+        doGet(url, urlParm, function (jdata) {
+            if (jdata.Code == "200") {
+            }
+        });
+    }
+
+    doRejectOrder = function (orderID) {
+        $.prompt({
+            text: "请输入驳回的原因。",
+            title: "",
+            onOK: function (text) {
+                var url = '@Url.Action("RejectOrder", "Order", new { area = "Weixin" })';
+                var urlParm = { OrderID: orderID, Remark: text };
+                doGet(url, urlParm, function (jdata) {
+                    if (jdata.Code == "200") {
+                    }
+                });
+            },
+            onCancel: function () {
+            },
+        });
+    }
+
+    doReceiveOrder = function (orderID) {
+        $.confirm("您确定要开始处理这条工单吗?", "确认?", function () {
+            var url = '@Url.Action("DoReceiveOrder", "Order", new { area = "Weixin" })';
+            var urlParm = { OrderID: orderID };
+            doGet(url, urlParm, function (jdata) {
+                if (jdata.Code == "200") {
+                }
+            });
+        }, function () {
+            //取消操作
+        });
+    }
 
 </script>
 

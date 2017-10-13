@@ -1,5 +1,6 @@
 ﻿using CodeEngine.Framework.QueryBuilder;
 using CodeEngine.Framework.QueryBuilder.Enums;
+using FastJSON;
 using JSNet.BaseSys;
 using JSNet.DbUtilities;
 using JSNet.Manager;
@@ -56,6 +57,13 @@ namespace JSNet.Service
                 return _currentStaff;
             }
         }
+
+        protected JSONParameters jsonParams = new JSONParameters()
+        {
+            UseUTCDateTime = false,
+            UsingGlobalTypes = false,
+            UseExtensions = false,
+        };
 
         public Sorting ConvertToSort(string sortOrder)
         {

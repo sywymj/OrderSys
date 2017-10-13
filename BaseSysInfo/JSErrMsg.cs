@@ -28,8 +28,10 @@ namespace JSNet.BaseSys
 
         //6开头的是工单业务问题
         public const string ERR_CODE_NOLEADER = "62";
-        public const string ERR_MSG_NOLEADER = "{0}工单没有领队";
-        public const string ERR_CODE_NotAllowCancel = "63";
+        public const string ERR_MSG_NOLEADER = "{0}工单没有领队。";
+        public const string ERR_CODE_NOHANDLERS = "63";
+        public const string ERR_MSG_NOHANDLERS = "工单至少要有一个处理者。";
+        public const string ERR_CODE_NotAllowCancel = "64";
         public const string ERR_MSG_NotAllowCancel = "只能取消受理前的工单。";
 
         //7开头的是权限业务问题

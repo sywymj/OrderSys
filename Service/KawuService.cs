@@ -1,4 +1,5 @@
-﻿using JSNet.BaseSys;
+﻿using FastJSON;
+using JSNet.BaseSys;
 using JSNet.Utilities;
 using System;
 using System.Collections.Generic;
@@ -10,59 +11,80 @@ namespace JSNet.Service
     public class KawuService:BaseService
     {
         private WebUtils webUtil = new WebUtils();
-        private string _KawuAPIUrl = "/OrderPost.ashx";
+        private string _KawuAPIUrl = "http://ecard.huison.com/OrderSys/OrderPost.ashx";
         private string _KawuSecretKey = "huison88";
 
         /// <summary>
         /// 增加卡务系统微信用户
         /// </summary>
-        public bool AddWeixinUser(string tel,string userName,out string message)
+        public bool AddWeixinUser(string tel, string userName, out string errMessage)
         {
-            message = string.Empty;
-            string sumbitdata = FastJSON.JSON.ToJSON(new
+            errMessage = string.Empty;
+            LoginResponse reponse = CallKawuAPI<LoginResponse>(new LoginRequest
             {
                 type = "login",
                 mobile = tel,
                 username = userName,
-            });
-            Dictionary<string,string> dic = new Dictionary<string,string>();
-            dic.Add("sumbitdata", EncryptData(sumbitdata));
-            string json = webUtil.DoGet(_KawuAPIUrl, dic);
+            }, "get");
 
-            LoginResponse reponse = FastJSON.JSON.ToObject<LoginResponse>(json);
             if (reponse.Status == 1)
             {
                 return true;
             }
             else
             {
-                message = reponse.Message;
+                // TODO 失败记录log
+                errMessage = reponse.Message;
                 return false;
             }
         }
 
-        public bool ChangeUserData(string tel,string newTel,string userName,out string message)
+        /// <summary>
+        /// 修改用户资料
+        /// </summary>
+        /// <param name="tel"></param>
+        /// <param name="newTel"></param>
+        /// <param name="userName"></param>
+        /// <param name="errMessage"></param>
+        /// <returns></returns>
+        public bool ChangeUserData(string tel, string newTel, string userName, out string errMessage)
         {
-            message = string.Empty;
-            string sumbitdata = FastJSON.JSON.ToJSON(new
+            errMessage = string.Empty;
+            ChangeResponse reponse = CallKawuAPI<ChangeResponse>(new ChangeRequest
             {
                 type = "change",
                 mobile = tel,
                 newmobile = newTel,
                 username = userName,
-            });
-            Dictionary<string, string> dic = new Dictionary<string, string>();
-            dic.Add("sumbitdata", EncryptData(sumbitdata));
-            string json = webUtil.DoGet(_KawuAPIUrl, dic);
+            }, "get");
 
-            ChangeResponse reponse = FastJSON.JSON.ToObject<ChangeResponse>(json);
             if (reponse.Status == 1)
             {
                 return true;
             }
             else
             {
-                message = reponse.Message;
+                // TODO 失败记录log
+                errMessage = reponse.Message;
+                return false;
+            }
+        }
+
+        public bool WeixinPushMessage(out string errMessage)
+        {
+            errMessage = string.Empty;
+            ChangeResponse reponse = CallKawuAPI<ChangeResponse>(new
+            {
+                type = "change",
+            }, "get");
+
+            if (reponse.Status == 1)
+            {
+                return true;
+            }
+            else
+            {
+                errMessage = reponse.Message;
                 return false;
             }
         }
@@ -79,12 +101,11 @@ namespace JSNet.Service
                 string json = SecretUtil.KawuDecrypt(pToDecrypt, _KawuSecretKey);
                 return json;
             }
-            catch
+            catch(Exception e)
             {
-                throw new JSException(JSErrMsg.ERR_CODE_APIDecryptFailed, JSErrMsg.ERR_MSG_APIDecryptFailed);
+                throw new JSException(JSErrMsg.ERR_CODE_APIDecryptFailed, e.Message);
             }
         }
-
 
         /// <summary>
         /// 加密
@@ -96,8 +117,67 @@ namespace JSNet.Service
             string json = SecretUtil.KawuEncrypt(pToEncrypt, _KawuSecretKey);
             return urlEncode ? CommonUtil.UrlEncode(json) : json;
         }
+
+        private T CallKawuAPI<T>(object sumbitdata, string httpMethod)
+            where T : KawuResponse, new()
+        {
+            string sumbitjson = FastJSON.JSON.ToJSON(sumbitdata, jsonParams);
+            Dictionary<string, string> dic = new Dictionary<string, string>();
+            dic.Add("sumbitdata", EncryptData(sumbitjson, false));
+
+            string reponseJson;
+            try
+            {
+                switch (httpMethod.ToUpper())
+                {
+                    case "POST":
+                        reponseJson = webUtil.DoPost(_KawuAPIUrl, dic);
+                        break;
+                    case "GET":
+                        reponseJson = webUtil.DoGet(_KawuAPIUrl, dic);
+                        break;
+                    default:
+                        throw new Exception(httpMethod + "，参数httpMethod有误，必须是post或get");
+                }
+            }
+            catch(Exception ex)
+            {
+                throw new Exception("请求地址：" + _KawuAPIUrl + "出错，错误内容：" + ex.Message);
+            }
+            if (string.IsNullOrEmpty(reponseJson))
+            {
+                throw new Exception("请求地址：" + _KawuAPIUrl + "出错，返回内容为空。");
+            }
+            
+            T reponse = FastJSON.JSON.ToObject<T>(reponseJson);
+            return reponse;
+        }
+
+
     }
 
+    #region KawuRequest
+    public class KawuRequest
+    {
+        public string type { get; set; }
+    }
+
+    public class LoginRequest : KawuRequest
+    {
+        public string mobile { get; set; }
+        public string username { get; set; }
+    }
+
+    public class ChangeRequest : KawuRequest
+    {
+        public string mobile { get; set; }
+        public string newmobile { get; set; }
+        public string username { get; set; }
+    } 
+    #endregion
+
+
+    #region KawuResponse
     public class KawuResponse
     {
         public int Status { get; set; }
@@ -107,13 +187,16 @@ namespace JSNet.Service
         public string Message { get; set; }
     }
 
-    public class LoginResponse:KawuResponse
+    public class LoginResponse : KawuResponse
     {
         public string Mobile { get; set; }
     }
 
-    public class ChangeResponse:KawuResponse
+    public class ChangeResponse : KawuResponse
     {
         public string UserId { get; set; }
-    }
+    } 
+    #endregion
+
+
 }

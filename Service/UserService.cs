@@ -46,9 +46,35 @@ namespace JSNet.Service
             JSResponse.WriteCookie("AdminPwd", user.Password, 120);
         }
 
-        public void VXLogin(string tel,string openID)
+        public void VXLogin(string openID)
         {
-            EditUser(tel, openID);
+            UserEntity user = GetUser(openID);
+            if (user == null)
+            {
+                throw new JSException(JSErrMsg.ERR_MSG_LoginOvertime);
+            }
+            if (user.IsEnable == (int)TrueFalse.False)
+            {
+                throw new JSException(JSErrMsg.ERR_MSG_LoginOvertime);
+            }
+            if (user.IsLogin == (int)TrueFalse.False)
+            {
+                throw new JSException(JSErrMsg.ERR_MSG_LoginOvertime);
+            }
+
+            string rid = SecretUtil.Decrypt(JSRequest.GetCookie("RID", true));
+            MyRoleService roleService = new MyRoleService();
+            RoleEntity role = string.IsNullOrEmpty(rid) ?
+                roleService.GetRole(openID) :
+                roleService.GetRole(Convert.ToInt32(rid));
+            if (role == null)
+            {
+                throw new JSException(JSErrMsg.ERR_MSG_LoginOvertime);
+            }
+
+            //写入cookie
+            JSResponse.WriteCookie("OpenID", SecretUtil.Encrypt(user.OpenID), 120);
+            JSResponse.WriteCookie("RID", SecretUtil.Encrypt(rid), 120);
         }
 
         public void Logout()
@@ -110,10 +136,11 @@ namespace JSNet.Service
 
         public void ChkVXLogin(out UserEntity user, out RoleEntity role)
         {
-            string openID = JSRequest.GetCookie("OpenID", true);
+            string openID = SecretUtil.Decrypt(JSRequest.GetCookie("OpenID", true));
             string rid = SecretUtil.Decrypt(JSRequest.GetCookie("RID", true));
 
-            if (string.IsNullOrEmpty(openID))
+            if (string.IsNullOrEmpty(openID)
+                || string.IsNullOrEmpty(rid))
             {
                 throw new JSException(JSErrMsg.ERR_MSG_LoginOvertime);
             }
@@ -133,9 +160,7 @@ namespace JSNet.Service
             }
 
             MyRoleService roleService = new MyRoleService();
-            role = string.IsNullOrEmpty(rid) ?
-                roleService.GetRole(openID) :
-                roleService.GetRole(Convert.ToInt32(rid));
+            role = roleService.GetRole(Convert.ToInt32(rid));
 
             if (role == null)
             {
@@ -143,7 +168,7 @@ namespace JSNet.Service
             }
 
             //写入cookie
-            JSResponse.WriteCookie("OpenID", user.OpenID, 120);
+            JSResponse.WriteCookie("OpenID", SecretUtil.Encrypt(user.OpenID), 120);
             JSResponse.WriteCookie("RID", SecretUtil.Encrypt(rid), 120);
         }
 

@@ -17,7 +17,7 @@ namespace HuisonSys
             context.MapRoute(
                 "Weixin_default",
                 "Weixin/{controller}/{action}/{id}",
-                new { action = "Index", id = UrlParameter.Optional },
+                new { controller = "Home" , action = "Index", id = UrlParameter.Optional },
                 new string[] { "OrderSys.Controllers" }
             );
         }
