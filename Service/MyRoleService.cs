@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
+using System.Web;
 
 namespace JSNet.Service
 {
@@ -19,13 +20,13 @@ namespace JSNet.Service
             string rid = SecretUtil.Decrypt(JSRequest.GetCookie("RID", true));
             if (string.IsNullOrEmpty(rid))
             {
-                throw new JSException(JSErrMsg.ERR_MSG_LoginOvertime);
+                throw new HttpException(401,JSErrMsg.ERR_MSG_LoginOvertime);
             }
 
             RoleEntity role = GetRole(Convert.ToInt32(rid));
             if (role == null)
             {
-                throw new JSException(JSErrMsg.ERR_MSG_LoginOvertime);
+                throw new HttpException(401,JSErrMsg.ERR_MSG_NotGrantRole);
             }
             return role;
         }

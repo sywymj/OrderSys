@@ -43,6 +43,7 @@
   <ItemGroup>
     <Compile Include="BaseService.cs" />
     <Compile Include="KawuService.cs" />
+    <Compile Include="LoginService.cs" />
     <Compile Include="LogService.cs" />
     <Compile Include="MyRoleService.cs" />
     <Compile Include="OrderService.cs" />

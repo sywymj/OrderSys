@@ -187,7 +187,7 @@ ajaxTips = function (json, container, callback) {
         if (jdata.ErrCode == "401") {
             debugger;
             $.alert(jdata.ErrMsg, "警告", function () {
-                top.location.href = "/Login.html";
+                top.location.href = jdata.Data;//"/Login.html";
             });
         } else if (jdata.ErrCode == "403") {
             $.alert(jdata.ErrMsg, "警告", function () {

@@ -42,12 +42,24 @@ namespace JSNet.BaseSys
         }
 
         /// <summary>
-        /// 返回错误提示，返回码默认500，返回消息默认空
+        /// 返回错误提示，返回码默认500，返回消息为errmsg
         /// </summary>
         /// <param name="errcode"></param>
         /// <param name="errmsg"></param>
         public JSResponse(string errcode, string errmsg)
-            : this("服务器繁忙，请重试！", errcode, errmsg)
+            : this(errmsg, errcode, errmsg)
+        {
+
+        }
+
+        public JSResponse(string errcode, string errmsg,object data)
+            : this(errmsg, errcode, errmsg, data)
+        {
+
+        }
+
+        public JSResponse(string msg, string errcode, string errmsg,object data)
+            : this("500", msg, errcode, errmsg,data)
         {
 
         }
@@ -64,7 +76,11 @@ namespace JSNet.BaseSys
 
         }
 
+        public JSResponse(string code, string msg, string errcode, string errmsg,object data)
+            : this(ResponseType.Error, code, msg, errcode, errmsg, data)
+        {
 
+        }
 
         /// <summary>
         /// 返回错误提示

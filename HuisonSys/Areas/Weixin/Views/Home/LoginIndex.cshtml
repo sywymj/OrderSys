@@ -1,0 +1,25 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>LoginIndex</title>
+
+    <link rel="stylesheet" href="/Content/lib/weui.min.css">
+    <link rel="stylesheet" href="/Content/css/jquery-weui.css">
+    <script src="/Content/lib/jquery-2.1.4.js"></script>
+    <script src="/Content/js/jquery-weui.js"></script>
+    <script src="/Content/js/ExWeui.js"></script>
+</head>
+<body>
+    <script>
+        $.alert('@ViewBag.ErrMsg ', '警告', function () {
+            top.location.href = '@ViewBag.Url ';
+        });
+    </script>
+</body>
+</html>

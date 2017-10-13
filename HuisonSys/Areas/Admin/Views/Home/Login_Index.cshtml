@@ -40,8 +40,8 @@
     var form = new mini.Form("Login-Form");
 
     if (window.top !== window) {
-        alert("登陆超时，请重新登陆！");
-        top.location.href = "/Admin/Home/LoginIndex";
+        alert('@ViewBag.ErrMsg');
+        top.location.href = '@ViewBag.Url';
     }
     LoginWindow.show();
 

@@ -18,11 +18,12 @@ namespace OrderSys.Controllers
         [HttpGet]
         public ActionResult Index(string openID)
         {
-            UserService userService = new UserService();
-            userService.VXLogin(openID);
+            LoginService loginService = new LoginService();
+            loginService.VXLogin(openID);
             return View();
         }
 
+        [ManagerAuthorize(Roles="Public")]
         [HttpGet]
         public ActionResult GetHeader()
         {
@@ -108,6 +109,19 @@ namespace OrderSys.Controllers
             }
 
             return PartialView("/Areas/Weixin/Views/Shared/_Filter.cshtml", dic);
+        }
+
+        [HttpGet]
+        public ActionResult LoginIndex(string errMsg,string url)
+        {
+            if (string.IsNullOrEmpty(errMsg))
+            {
+                errMsg = "超时请重新登陆！";
+            }
+            ViewBag.ErrMsg = errMsg;
+            ViewBag.Url = url;
+
+            return View();
         }
     }
 }

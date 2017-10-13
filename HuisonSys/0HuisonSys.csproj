@@ -3047,6 +3047,7 @@
     <Content Include="Content\phone_scroll\iconfont\iconfont.eot" />
     <Content Include="Content\phone_scroll\iconfont\iconfont.ttf" />
     <Content Include="Content\phone_scroll\iconfont\iconfont.woff" />
+    <Content Include="Areas\Weixin\Views\Home\LoginIndex.cshtml" />
     <None Include="Properties\PublishProfiles\1.pubxml" />
   </ItemGroup>
   <PropertyGroup>

@@ -45,36 +45,17 @@ namespace HuisonSys
                 var httpException = ex as HttpException;
                 if (httpException != null)
                 {
-                    if (httpException.ErrorCode == 1001)
+                    switch (httpException.GetHttpCode())
                     {
-                        //微信端
-                        switch (httpException.GetHttpCode())
-                        {
-                            case 404:
-                                routeData.Values["Action"] = "Http404";
-                                break;
-                            case 401:  //没有登录
-                                routeData.Values["Action"] = "VXHttp401";
-                                break;
-                            case 403:  //没有执行的权限
-                                routeData.Values["Action"] = "VXHttp403";
-                                break;
-                        }
-                    }
-                    else
-                    {
-                        switch (httpException.GetHttpCode())
-                        {
-                            case 404:
-                                routeData.Values["Action"] = "Http404";
-                                break;
-                            case 401:  //没有登录
-                                routeData.Values["Action"] = "Http401";
-                                break;
-                            case 403:  //没有执行的权限
-                                routeData.Values["Action"] = "Http403";
-                                break;
-                        }
+                        case 404:
+                            routeData.Values["Action"] = "Http404";
+                            break;
+                        case 401:  //没有登录
+                            routeData.Values["Action"] = "Http401";
+                            break;
+                        case 403:  //没有执行的权限
+                            routeData.Values["Action"] = "Http403";
+                            break;
                     }
                 }
             }
@@ -83,9 +64,9 @@ namespace HuisonSys
                 var jsException = ex as JSException;
                 if (jsException != null)
                 {
-                    routeData.Values["ErrorCode"] = jsException.ErrorCode;
-                    routeData.Values["ErrorMsg"] = jsException.ErrorMsg;
-                    routeData.Values["Exception"] = jsException.Message;
+                    routeData.Values["ErrorCode"] = jsException.ErrorCode == null ? "" : jsException.ErrorCode;
+                    routeData.Values["ErrorMsg"] = jsException.ErrorMsg == null ? "" : jsException.ErrorMsg;
+                    routeData.Values["Exception"] = jsException.Message == null ? "" : jsException.Message;
                     routeData.Values["Action"] = "ShowErrorTips";
                 }
             }

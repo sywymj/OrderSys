@@ -36,7 +36,7 @@ namespace JSNet.BaseSys
 
         //7开头的是权限业务问题
         public const string ERR_CODE_NotGrantRole = "71";
-        public const string ERR_MSG_NotGrantRole = "没有分配角色。";
+        public const string ERR_MSG_NotGrantRole = "当前用户没分配角色，请联系管理员分配角色！";
         public const string ERR_CODE_NotGrantPermissionScope = "73";
         public const string ERR_MSG_NotGrantPermissionScope = "没有分配资源权限";
         public const string ERR_CODE_NotGrantMenuResource = "74";
@@ -57,9 +57,9 @@ namespace JSNet.BaseSys
         public const string ERR_CODE_WrongPwd = "84";
         public const string ERR_MSG_WrongPwd = "用户名或密码错误。";
         public const string ERR_CODE_WrongOpenID = "85";
-        public const string ERR_MSG_WrongOpenID = "用户名OpenID有误！";
+        public const string ERR_MSG_WrongOpenID = "登陆失败，用户OpenID有误！";
         public const string ERR_CODE_WrongUserID = "86";
-        public const string ERR_MSG_WrongUserID = "RID有误！";
+        public const string ERR_MSG_WrongUserID = "UID有误！";
         public const string ERR_CODE_WrongRoleID = "87";
         public const string ERR_MSG_WrongRoleID = "RID有误！";
         public const string ERR_CODE_WrongTel = "88";
