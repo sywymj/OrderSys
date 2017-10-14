@@ -1,5 +1,6 @@
 ﻿using FastJSON;
 using JSNet.BaseSys;
+using JSNet.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,9 +21,9 @@ namespace HuisonSys.Controllers
 
         public string ShowErrorTips()
         {
-            string message = RouteData.Values["Exception"].ToString();
             string errCode = RouteData.Values["ErrorCode"].ToString();
             string errMessage = RouteData.Values["ErrorMsg"].ToString();
+            string message = RouteData.Values["Tips"].ToString() == "" ? errMessage : RouteData.Values["Tips"].ToString();//错误消息
 
             string re = JSON.ToJSON(new JSResponse(message, errCode, errMessage), jsonParams);
             return re;
@@ -58,7 +59,7 @@ namespace HuisonSys.Controllers
                 Response.End();
             }
 
-            string message = RouteData.Values["Exception"].ToString();
+            string message = RouteData.Values["Tips"].ToString();
             string re = JSON.ToJSON(new JSResponse("403", message), jsonParams);
             return re;
         }
@@ -67,7 +68,8 @@ namespace HuisonSys.Controllers
         {
             bool isAjax = Request.Headers["x-requested-with"] == null ? false : true;//判断是否ajax请求
             string area = Request.RequestContext.RouteData.DataTokens["area"] == null ? "" : Request.RequestContext.RouteData.DataTokens["area"].ToString().ToLower();
-            string message = RouteData.Values["Exception"].ToString();
+            
+            string message = RouteData.Values["Tips"].ToString();
 
             string url = "/Login.html";
             string redirectUrl = "";
@@ -97,7 +99,7 @@ namespace HuisonSys.Controllers
 
         public string Http500()
         {
-            string message = RouteData.Values["Exception"].ToString();
+            string message = RouteData.Values["Tips"].ToString();
             string re = JSON.ToJSON(new JSResponse("服务器出错！", "500", message), jsonParams);
             return re;
         }

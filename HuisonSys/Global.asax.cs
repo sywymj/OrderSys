@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Routing;
+using JSNet.Utilities;
 
 namespace HuisonSys
 {
@@ -25,6 +26,12 @@ namespace HuisonSys
 
             //获取配置文件配置项
             BaseConfiguration.GetSetting();
+
+            //Log4net配置
+            string configPath = Server.MapPath("~/XML/Log4Net.xml");//指定配置文件路径
+            Log4NetUtil.Init(configPath, "SystemLog");//初始化指定的logger
+            Log4NetUtil.SetConnString("AdoNetAppender_SQLServer", BaseSystemInfo.CenterDbConnectionString, "SystemLog");//配置数据库路径
+            Log4NetUtil.SetDefatultLog("SystemLog");//配置默认的logger
         }
 
         protected void Application_Error(object sender, EventArgs e)
@@ -37,7 +44,7 @@ namespace HuisonSys
             context.ClearError();
 
             var routeData = new RouteData();
-            routeData.Values["Exception"] = ex.Message;
+            routeData.Values["Tips"] = ex.Message;
 
             Type t = ex.GetType();
             if (t == typeof(HttpException))
@@ -66,7 +73,7 @@ namespace HuisonSys
                 {
                     routeData.Values["ErrorCode"] = jsException.ErrorCode == null ? "" : jsException.ErrorCode;
                     routeData.Values["ErrorMsg"] = jsException.ErrorMsg == null ? "" : jsException.ErrorMsg;
-                    routeData.Values["Exception"] = jsException.Message == null ? "" : jsException.Message;
+                    routeData.Values["Tips"] = jsException.Message == null ? "" : jsException.Message;
                     routeData.Values["Action"] = "ShowErrorTips";
                 }
             }
@@ -75,7 +82,8 @@ namespace HuisonSys
                 var exception = ex;
                 if (exception != null)
                 {
-                    routeData.Values["Exception"] = ex.ToString();
+                    Log4NetUtil.Error(ex.ToString());//使用default logger
+                    routeData.Values["Tips"] = ex.ToString();
                     routeData.Values["Action"] = "Http500";
                 }
             }

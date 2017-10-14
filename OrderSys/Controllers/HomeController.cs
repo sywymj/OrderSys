@@ -11,10 +11,12 @@ using System.Web.Mvc;
 
 namespace OrderSys.Controllers
 {
+    
     public class HomeController : WeixinBaseController
     {
         //
         // GET: /Home/
+        [AllowAnonymous]
         [HttpGet]
         public ActionResult Index(string openID)
         {
@@ -23,7 +25,7 @@ namespace OrderSys.Controllers
             return View();
         }
 
-        [ManagerAuthorize(Roles="Public")]
+        [ManagerAuthorize(Roles="public")]
         [HttpGet]
         public ActionResult GetHeader()
         {
@@ -40,6 +42,7 @@ namespace OrderSys.Controllers
             return PartialView("_Header", re);
         }
 
+        [AllowAnonymous]
         [HttpGet]
         public ActionResult GetOrderStatus()
         {
@@ -50,6 +53,7 @@ namespace OrderSys.Controllers
             return res;
         }
 
+        [AllowAnonymous]
         [HttpGet]
         public ActionResult GetOrderHandleType()
         {
@@ -64,6 +68,7 @@ namespace OrderSys.Controllers
             //return PartialView("AddHandleDetail", dic);
         }
 
+        [AllowAnonymous]
         [HttpGet]
         public ActionResult FilterIndex(string tabid)
         {
@@ -111,6 +116,7 @@ namespace OrderSys.Controllers
             return PartialView("/Areas/Weixin/Views/Shared/_Filter.cshtml", dic);
         }
 
+        [AllowAnonymous]
         [HttpGet]
         public ActionResult LoginIndex(string errMsg,string url)
         {

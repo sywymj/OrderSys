@@ -20,13 +20,17 @@ namespace JSNet.Service
         public UserEntity GetCurrentUser()
         {
             string uid = SecretUtil.Decrypt(JSRequest.GetCookie("UID", true));
-            if (string.IsNullOrEmpty(uid))
+            UserEntity user = null;
+            if(string.IsNullOrEmpty(uid))
             {
-                GetCurrentVXUser();
+                //UID 空拿OPENID
+               user =  GetCurrentVXUser();
             }
-
-            EntityManager<UserEntity> manager = new EntityManager<UserEntity>();
-            UserEntity user = manager.GetSingle(Convert.ToInt32(uid));
+            else
+            {
+                EntityManager<UserEntity> manager = new EntityManager<UserEntity>();
+                user = manager.GetSingle(Convert.ToInt32(uid));
+            }
 
             if (user == null)
             {
@@ -70,6 +74,14 @@ namespace JSNet.Service
         #region User
         public void AddUser(UserEntity entity, StaffEntity staff, int[] roleIDs)
         {
+            string errMessage = "";
+            KawuService kawuService = new KawuService();
+            bool b = kawuService.AddWeixinUser(staff.Tel, entity.UserName, out errMessage);
+            if (!b)
+            {
+                throw new JSException(JSErrMsg.ERR_CODE_APIFailed, errMessage);
+            }
+
             //添加user
             if (string.IsNullOrEmpty(entity.Password))
             {

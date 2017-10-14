@@ -39,7 +39,7 @@ namespace OrderSys
 
         public override void OnAuthorization(AuthorizationContext filterContext)
         {
-            //base.OnAuthorization(filterContext);
+            base.OnAuthorization(filterContext);
             //string status = filterContext.HttpContext.Response.StatusDescription;
             //if (status == PermissionStatus.NoLogin.ToString())
             //{

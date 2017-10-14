@@ -7,7 +7,7 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
-    <title>LoginIndex</title>
+    <title>登录</title>
 
     <link rel="stylesheet" href="/Content/lib/weui.min.css">
     <link rel="stylesheet" href="/Content/css/jquery-weui.css">
@@ -17,9 +17,9 @@
 </head>
 <body>
     <script>
-        $.alert('@ViewBag.ErrMsg ', '警告', function () {
-            top.location.href = '@ViewBag.Url ';
-        });
+    $.alert('@ViewBag.ErrMsg', '警告', function () {
+        top.location.href = '@Html.Raw(ViewBag.Url)';
+    });
     </script>
 </body>
 </html>

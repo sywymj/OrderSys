@@ -66,8 +66,12 @@ namespace JSNet.BaseSys
         public const string ERR_MSG_WrongTel = "手机号码不存在！";
 
         //9开头是API错误
-        public const string ERR_CODE_APIDecryptFailed = "91";
+        public const string ERR_CODE_APIDecryptFailed = "90001";
         public const string ERR_MSG_APIDecryptFailed = "参数解密失败。";
+
+        //91开头，调用接口失败
+        public const string ERR_CODE_APIFailed = "91001";
+
 
     }
 }

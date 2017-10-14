@@ -65,9 +65,13 @@ namespace JSNet.Service
 
             string rid = SecretUtil.Decrypt(JSRequest.GetCookie("RID", true));
             MyRoleService roleService = new MyRoleService();
-            RoleEntity role = string.IsNullOrEmpty(rid) ?
-                roleService.GetRole(openID) :
-                roleService.GetRole(Convert.ToInt32(rid));
+            RoleEntity role = roleService.GetRole(openID);
+
+            //TODO 从cookie记录之前登录的角色：（有bug，需要判断rid是否为当前用户的，否则会存在跨角色访问）
+            //RoleEntity role = string.IsNullOrEmpty(rid) ?
+            //    roleService.GetRole(openID) :
+            //    roleService.GetRole(Convert.ToInt32(rid));
+
             if (role == null)
             {
                 throw new JSException(JSErrMsg.ERR_MSG_LoginOvertime);
@@ -75,6 +79,7 @@ namespace JSNet.Service
 
             //写入cookie
             JSResponse.WriteCookie("OpenID", user.OpenID, 120);
+            //JSResponse.WriteCookie("UID", SecretUtil.Encrypt(user.ID.ToString()), 120);
             JSResponse.WriteCookie("RID", SecretUtil.Encrypt(role.ID.ToString()), 120);
         }
 
@@ -131,7 +136,7 @@ namespace JSNet.Service
 
         public void ChkVXLogin(out UserEntity user, out RoleEntity role)
         {
-            string openID = SecretUtil.Decrypt(JSRequest.GetCookie("OpenID", true));
+            string openID = JSRequest.GetCookie("OpenID", true);
             string rid = SecretUtil.Decrypt(JSRequest.GetCookie("RID", true));
 
             if (string.IsNullOrEmpty(openID)
@@ -156,8 +161,12 @@ namespace JSNet.Service
                 throw new HttpException(401, JSErrMsg.ERR_MSG_NotAllowLogin);
             }
 
+            //切换用户时，
+
+
             MyRoleService roleService = new MyRoleService();
             role = roleService.GetRole(Convert.ToInt32(rid));
+
             if (role == null)
             {
                 throw new HttpException(401, JSErrMsg.ERR_MSG_NotGrantRole);
@@ -165,6 +174,7 @@ namespace JSNet.Service
 
             //写入cookie
             JSResponse.WriteCookie("OpenID", user.OpenID, 120);
+            //JSResponse.WriteCookie("UID", SecretUtil.Encrypt(user.ID.ToString()), 120);
             JSResponse.WriteCookie("RID", SecretUtil.Encrypt(role.ID.ToString()), 120);
         }
 
