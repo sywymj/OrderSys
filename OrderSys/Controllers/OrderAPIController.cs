@@ -62,7 +62,7 @@ namespace OrderSys.Controllers
         public string TestAddWeixinUser()
         {
             string mess = "";
-            bool b = service.AddWeixinUser("13620834810", "曹操", out mess);
+            bool b = service.AddWeixinUser("13620834810", "曹操");
             string re = JSON.ToJSON(new JSResponse(mess), jsonParams);
             return re;
         }

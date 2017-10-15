@@ -16,7 +16,7 @@ namespace HuisonSys.Controllers
 
         public ActionResult Index()
         {
-            return View();
+            return View("/Views/Shared/Error.cshtml");
         }
 
         public string ShowErrorTips()
@@ -99,7 +99,28 @@ namespace HuisonSys.Controllers
 
         public string Http500()
         {
+            bool isAjax = Request.Headers["x-requested-with"] == null ? false : true;//判断是否ajax请求
+            string area = Request.RequestContext.RouteData.DataTokens["area"] == null ? "" : Request.RequestContext.RouteData.DataTokens["area"].ToString().ToLower();
+
             string message = RouteData.Values["Tips"].ToString();
+
+            string url = Url.Action("Index", "Error");
+            switch (area)
+            {
+                case "weixin":
+                    break;
+                case "admin":
+                    break;
+                default:
+                    break;
+            }
+
+            if (!isAjax)
+            {
+                Response.Redirect(url);
+                Response.End();
+            }
+
             string re = JSON.ToJSON(new JSResponse("服务器出错！", "500", message), jsonParams);
             return re;
         }

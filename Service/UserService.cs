@@ -74,13 +74,8 @@ namespace JSNet.Service
         #region User
         public void AddUser(UserEntity entity, StaffEntity staff, int[] roleIDs)
         {
-            string errMessage = "";
             KawuService kawuService = new KawuService();
-            bool b = kawuService.AddWeixinUser(staff.Tel, entity.UserName, out errMessage);
-            if (!b)
-            {
-                throw new JSException(JSErrMsg.ERR_CODE_APIFailed, errMessage);
-            }
+            kawuService.AddWeixinUser(staff.Tel, entity.UserName);
 
             //添加user
             if (string.IsNullOrEmpty(entity.Password))

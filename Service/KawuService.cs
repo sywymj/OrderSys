@@ -17,26 +17,15 @@ namespace JSNet.Service
         /// <summary>
         /// 增加卡务系统微信用户
         /// </summary>
-        public bool AddWeixinUser(string tel, string userName, out string errMessage)
+        public bool AddWeixinUser(string tel, string userName)
         {
-            errMessage = string.Empty;
             LoginResponse reponse = CallKawuAPI<LoginResponse>(new LoginRequest
             {
                 type = "login",
                 mobile = tel,
                 username = userName,
             }, "get");
-
-            if (reponse.Status == 1)
-            {
-                return true;
-            }
-            else
-            {
-                // TODO 失败记录log
-                errMessage = reponse.Message;
-                return false;
-            }
+            return true;
         }
 
         /// <summary>
@@ -47,9 +36,8 @@ namespace JSNet.Service
         /// <param name="userName"></param>
         /// <param name="errMessage"></param>
         /// <returns></returns>
-        public bool ChangeUserData(string tel, string newTel, string userName, out string errMessage)
+        public bool ChangeUserData(string tel, string newTel, string userName)
         {
-            errMessage = string.Empty;
             ChangeResponse reponse = CallKawuAPI<ChangeResponse>(new ChangeRequest
             {
                 type = "change",
@@ -57,36 +45,16 @@ namespace JSNet.Service
                 newmobile = newTel,
                 username = userName,
             }, "get");
-
-            if (reponse.Status == 1)
-            {
-                return true;
-            }
-            else
-            {
-                // TODO 失败记录log
-                errMessage = reponse.Message;
-                return false;
-            }
+            return true;
         }
 
-        public bool WeixinPushMessage(out string errMessage)
+        public bool WeixinPushMessage()
         {
-            errMessage = string.Empty;
             ChangeResponse reponse = CallKawuAPI<ChangeResponse>(new
             {
                 type = "change",
             }, "get");
-
-            if (reponse.Status == 1)
-            {
-                return true;
-            }
-            else
-            {
-                errMessage = reponse.Message;
-                return false;
-            }
+            return true;
         }
 
         /// <summary>
@@ -121,9 +89,9 @@ namespace JSNet.Service
         private T CallKawuAPI<T>(object sumbitdata, string httpMethod)
             where T : KawuResponse, new()
         {
-            string sumbitjson = FastJSON.JSON.ToJSON(sumbitdata, jsonParams);
+            string sumbitjson = EncryptData(FastJSON.JSON.ToJSON(sumbitdata, jsonParams), false);
             Dictionary<string, string> dic = new Dictionary<string, string>();
-            dic.Add("sumbitdata", EncryptData(sumbitjson, false));
+            dic.Add("sumbitdata",sumbitjson );
 
             string reponseJson;
             try
@@ -142,14 +110,31 @@ namespace JSNet.Service
             }
             catch(Exception ex)
             {
-                throw new Exception("请求地址：" + _KawuAPIUrl + "出错，错误内容：" + ex.Message);
+                // TODO log
+                throw new JSException(
+                    JSErrMsg.ERR_MSG_APIFailed, 
+                    JSErrMsg.ERR_Code_APIFailedReason, 
+                    string.Format(JSErrMsg.ERR_MSG_APIFailedReason, _KawuAPIUrl + "?sumbitdata=" + sumbitjson, ex.ToString()));
             }
             if (string.IsNullOrEmpty(reponseJson))
             {
-                throw new Exception("请求地址：" + _KawuAPIUrl + "出错，返回内容为空。");
+                // TODO log
+                throw new JSException(
+                    JSErrMsg.ERR_MSG_APIFailed,
+                    JSErrMsg.ERR_Code_APIFailedReason,
+                    string.Format(JSErrMsg.ERR_MSG_APIFailedReason, _KawuAPIUrl + "?sumbitdata=" + sumbitjson, "接口返回空！"));
             }
             
             T reponse = FastJSON.JSON.ToObject<T>(reponseJson);
+            if (reponse.Status == -1)
+            {
+                // TODO log
+                throw new JSException(
+                    JSErrMsg.ERR_MSG_APIFailed,
+                    JSErrMsg.ERR_Code_APIFailedReason,
+                    string.Format(JSErrMsg.ERR_MSG_APIFailedReason, _KawuAPIUrl + "?sumbitdata=" + sumbitjson, reponse.Message));
+            }
+
             return reponse;
         }
 

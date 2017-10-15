@@ -15,12 +15,12 @@ namespace HuisonSys
         {
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
-            //routes.MapRoute(
-            //    name: "Default",
-            //    url: "{controller}/{action}/{id}",
-            //    defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional },
-            //    namespaces: new string[] { "HuisonSys.Controllers" }
-            //);
+            routes.MapRoute(
+                name: "Default",
+                url: "{controller}/{action}/{id}",
+                defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional },
+                namespaces: new string[] { "HuisonSys.Controllers" }
+            );
 
             //routes.MapRoute(
             //    name: "Default_area",

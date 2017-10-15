@@ -28,7 +28,7 @@ namespace HuisonSys
             BaseConfiguration.GetSetting();
 
             //Log4net配置
-            string configPath = Server.MapPath("~/XML/Log4Net.xml");//指定配置文件路径
+            string configPath = Server.MapPath("~/Xml/Log4Net.xml");//指定配置文件路径
             Log4NetUtil.Init(configPath, "SystemLog");//初始化指定的logger
             Log4NetUtil.SetConnString("AdoNetAppender_SQLServer", BaseSystemInfo.CenterDbConnectionString, "SystemLog");//配置数据库路径
             Log4NetUtil.SetDefatultLog("SystemLog");//配置默认的logger
@@ -82,7 +82,7 @@ namespace HuisonSys
                 var exception = ex;
                 if (exception != null)
                 {
-                    Log4NetUtil.Error(ex.ToString());//使用default logger
+                    Log4NetUtil.Error("出错了！",ex);//使用default logger
                     routeData.Values["Tips"] = ex.ToString();
                     routeData.Values["Action"] = "Http500";
                 }

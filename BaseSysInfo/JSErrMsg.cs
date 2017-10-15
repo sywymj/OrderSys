@@ -48,6 +48,7 @@ namespace JSNet.BaseSys
 
 
         //8开头的是登陆、用户问题
+        public const string ERR_MSG_LoginFaile = "登录失败，请重新登录！";
         public const string ERR_CODE_NotAllowLogin = "81";
         public const string ERR_MSG_NotAllowLogin = "当前用户禁止登陆。";
         public const string ERR_CODE_LoginOvertime = "82";
@@ -66,11 +67,14 @@ namespace JSNet.BaseSys
         public const string ERR_MSG_WrongTel = "手机号码不存在！";
 
         //9开头是API错误
-        public const string ERR_CODE_APIDecryptFailed = "90001";
+        public const string ERR_MSG_APIFailed = "调用接口出错！";
+        public const string ERR_Code_APIFailedReason = "90001";
+        public const string ERR_MSG_APIFailedReason = "错误地址：{0}，错误原因：{1}";
+        public const string ERR_CODE_APIDecryptFailed = "90002";
         public const string ERR_MSG_APIDecryptFailed = "参数解密失败。";
 
         //91开头，调用接口失败
-        public const string ERR_CODE_APIFailed = "91001";
+        //public const string ERR_CODE_APIFailed = "91001";
 
 
     }
