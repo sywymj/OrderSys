@@ -251,7 +251,7 @@ namespace JSNet.Service
         public List<StaffEntity> GetStaffsByRole(RoleEntity role)
         {
             PermissionService permissionService = new PermissionService();
-            List<string> organizeIDs = permissionService.GetAuthorizeOrganizeIDByRole(role,"OrderSys_Data.User");
+            List<string> organizeIDs = permissionService.GetAuthorizeOrganizeIDByRole(role, "OrderSys_Data.WorkingStaff");
 
             WhereStatement where = new WhereStatement();
             where.Add(StaffEntity.FieldIsEnable, Comparison.Equals, (int)TrueFalse.True);

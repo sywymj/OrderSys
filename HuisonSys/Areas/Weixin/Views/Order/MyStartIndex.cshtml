@@ -31,7 +31,12 @@
         querymystarted();
     })
 
-    
+    $('#startmyorder_btn').on('click', function () {
+        debugger;
+        //更改拍照按钮 div 大小
+        $('#filePicker label').parent().css('height', '44px');
+        $('#filePicker label').parent().css('width', '62px');
+    })
 
     //每个页面必重载的方法
     refresh = function () {

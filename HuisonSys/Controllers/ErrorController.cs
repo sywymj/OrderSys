@@ -14,9 +14,10 @@ namespace HuisonSys.Controllers
         //
         // GET: /Error/
 
-        public ActionResult Index()
+        [AcceptVerbs(HttpVerbs.Post)]
+        public ActionResult Index(string errMsg)
         {
-            return View("/Views/Shared/Error.cshtml");
+            return View("/Views/Shared/Error.cshtml", errMsg);
         }
 
         public string ShowErrorTips()

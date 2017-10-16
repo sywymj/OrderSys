@@ -36,6 +36,7 @@
     ////////////////////
     //标准方法接口定义
     function SetData(data) {
+        debugger;
         if (data.action == "edit") {
             //跨页面传递的数据对象，克隆后才可以安全使用
             data = mini.clone(data);
@@ -43,6 +44,7 @@
             var parms = { RoleID: data.ID };
 
             doGet(url, parms, function (jdata) {
+                debugger;
                 var o = jdata.Data
                 debugger;
                 form.setData(o);

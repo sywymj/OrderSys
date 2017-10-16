@@ -9,6 +9,7 @@ using System.Linq;
 using System.Web;
 using System.Web.ApplicationServices;
 using System.Web.Mvc;
+using System.Data;
 
 namespace OrderSys.Admin.Controllers
 {
@@ -27,13 +28,11 @@ namespace OrderSys.Admin.Controllers
         }
 
         [HttpGet]
-        public string GetRoleListByPage(int pageIndex, int pageSize, string sortField, string sortOrder)
+        public string GetRoleDT()
         {
-            int count = 0;
-            Paging paging = new Paging(pageIndex, pageSize, sortField, sortOrder);
-            List<RoleEntity> re = service.GetRoleListByRole(service.CurrentRole, paging, out count);
+            DataTable dt = service.GetTreeRoleDTByRole(service.CurrentRole);
 
-            string s = JSON.ToJSON(new JSResponse(new ListData<RoleEntity>(re, count)), jsonParams);
+            string s = JSON.ToJSON(new JSResponse(new DataTableData(dt)), jsonParams);
             return s;
         } 
         #endregion

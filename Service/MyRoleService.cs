@@ -143,6 +143,36 @@ namespace JSNet.Service
             return list;
         }
 
+        public DataTable GetTreeRoleDTByRole(RoleEntity role)
+        {
+            PermissionService permissionService = new PermissionService();
+            List<string> organizeIDs = permissionService.GetAuthorizeOrganizeIDByRole(role, "OrderSys_Data.Role");
+
+            WhereStatement where = new WhereStatement();
+            if (organizeIDs.Count > 0)
+            {
+                where.Add("Organize_ID", Comparison.In, organizeIDs.ToArray());
+            }
+            else
+            {
+                if (role.ID == 1)
+                {
+                    //超级管理员，显示所有内容
+                    where.Add("1", Comparison.Equals, "1");
+                }
+                else
+                {
+                    //非超级管理员，不显示内容
+                    where.Add("1", Comparison.Equals, "0");
+                }
+            }
+
+            int count = 0;
+            ViewManager vmanager = new ViewManager("VR_RoleOrganize");
+            DataTable dt = vmanager.GetDataTable(where, out count);
+            return dt;
+        }
+
         #region Grant_Role
         public void GrantRole(int userID, int[] roleIDs)
         {
