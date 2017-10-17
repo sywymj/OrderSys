@@ -686,6 +686,43 @@ namespace JSNet.Service
             return s;
         } 
 
+        //171017 new 
+        /// <summary>
+        /// 根据角色，获取已分配给该角色的数据资源
+        /// </summary>
+        /// <param name="role"></param>
+        /// <returns></returns>
+        public DataTable GetGrantedDataResourceByRole(RoleEntity role)
+        {
+            string[] dataResourcecIDs = GetGrantedDataResourceIDsByRole(role);
+
+            WhereStatement where = new WhereStatement();
+            where.Add("Resource_ID",Comparison.In,dataResourcecIDs);
+
+            int count = 0;
+            ViewManager vmanager = new ViewManager("VP_Resource");
+            DataTable dt = vmanager.GetDataTable(where, out count);
+            return dt;
+        }
+
+        /// <summary>
+        /// 根据角色，获取已分配给该角色的数据资源ID
+        /// </summary>
+        /// <param name="role"></param>
+        /// <returns></returns>
+        private string[] GetGrantedDataResourceIDsByRole(RoleEntity role)
+        {
+            IDbHelper dbHelper = DbHelperFactory.GetHelper(BaseSystemInfo.CenterDbConnectionString);
+            IDbDataParameter[] dbParameters = new IDbDataParameter[] { dbHelper.MakeParameter("Role_ID", role.ID) };
+
+            string sqlQuery = @"select Resource_ID from [DB_OrderSys].[dbo].[VP_RoleScope]
+                    where Role_ID = " + dbHelper.GetParameter("Role_ID") + @"
+                    group by Resource_ID";
+            DataTable dt = dbHelper.Fill(sqlQuery, dbParameters);
+            return DataTableUtil.FieldToArray(dt, "ID");
+        }
+
+
         #endregion
 
         public bool ChkResourceCodeExist(string resourceCode, string resourceID)

@@ -24,15 +24,11 @@ namespace OrderSys.Controllers
         [HttpGet]
         public string UpdateOrderSysOpenID()
         {
-            string json = service.DecryptData(JSRequest.GetRequestUrlParm("submitdata"));
-            List<UpdateOrderSysOpenID_APIViewModel> vmodel = FastJSON.JSON.ToObject<List<UpdateOrderSysOpenID_APIViewModel>>(json);
+            string json = service.DecryptData(JSRequest.GetRequestUrlParm("submitdata").Replace(' ', '+'));
+            UpdateOrderSysOpenID_APIViewModel vmodel = FastJSON.JSON.ToObject<UpdateOrderSysOpenID_APIViewModel>(json);
 
-            if (vmodel.Count == 0)
-            {
-                throw new JSException("参数有误！");
-            }
-            string tel = JSValidator.ValidateString("参数Tel", vmodel[0].Tel, true);
-            string openID = JSValidator.ValidateString("参数OPENID", vmodel[0].OpenID, true);
+            string tel = JSValidator.ValidateString("参数Tel", vmodel.Tel, true);
+            string openID = JSValidator.ValidateString("参数OPENID", vmodel.OpenID, true);
 
             UserService usrService = new UserService();
             usrService.EditUser(tel, openID);
@@ -44,7 +40,12 @@ namespace OrderSys.Controllers
         [HttpGet]
         public string LogoutOrderSys()
         {
-            //todo
+            string json = service.DecryptData(JSRequest.GetRequestUrlParm("submitdata").Replace(' ', '+'));
+            UpdateOrderSysOpenID_APIViewModel vmodel = FastJSON.JSON.ToObject<UpdateOrderSysOpenID_APIViewModel>(json);
+
+            string tel = JSValidator.ValidateString("参数Tel", vmodel.Tel, true);
+            string openID = JSValidator.ValidateString("参数OPENID", vmodel.OpenID, true);
+
 
             string re = JSON.ToJSON(new JSResponse(ResponseType.None, "注销成功！"), jsonParams);
             return re;
@@ -53,7 +54,7 @@ namespace OrderSys.Controllers
         [HttpGet]
         public string TestEncryptData()
         {
-            string s = service.EncryptData("[{\"tel1\": \"123\",\"openid1\": \"13800138000\"}]");
+            string s = service.EncryptData("{\"type\": \"orderaccepted\",\"openid\": \"1234567890\",\"first\": \"您好，你的维修单已处理完成，请您对本次服务进行评价\",\"remark\": \"点击评价，非常感谢\",\"orderno\": \"工单号\",\"treatment\": \"处理方案\"}");
             string re = JSON.ToJSON(new JSResponse(data: s), jsonParams);
             return re;
         }
@@ -63,6 +64,16 @@ namespace OrderSys.Controllers
         {
             string mess = "";
             bool b = service.AddWeixinUser("13620834810", "曹操");
+            string re = JSON.ToJSON(new JSResponse(mess), jsonParams);
+            return re;
+        }
+
+        public string TestCallKawuApi()
+        {
+            string mess = "";
+            KawuService service = new KawuService();
+            bool b = service.AcceptOrder_VXPushMsg();
+
             string re = JSON.ToJSON(new JSResponse(mess), jsonParams);
             return re;
         }

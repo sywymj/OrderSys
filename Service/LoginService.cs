@@ -92,6 +92,11 @@ namespace JSNet.Service
             JSResponse.WriteCookie("AdminPwd", "");
         }
 
+        public void VXLogout()
+        {
+
+        }
+
         public void ChkLogin(out UserEntity user, out RoleEntity role)
         {
             string rid = SecretUtil.Decrypt(JSRequest.GetCookie("RID", true));
