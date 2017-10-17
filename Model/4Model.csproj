@@ -42,6 +42,7 @@
     <Compile Include="BaseEntity\BaseEntity.cs" />
     <Compile Include="BaseEntity\IBaseEntity.cs" />
     <Compile Include="BaseEntity\ViewEntity.cs" />
+    <Compile Include="ApiLogEntity.cs" />
     <Compile Include="OrderEntity.cs" />
     <Compile Include="OrderFlowEntity.cs" />
     <Compile Include="OrderHandleDetailEntity.cs" />

@@ -19,7 +19,7 @@ namespace OrderSys.Controllers
         [HttpGet]
         public ActionResult GetAllStaffs()
         {
-            var list = userService.GetStaffsByRole(userService.CurrentRole);
+            var list = userService.GetWorkingStaffsByRole(userService.CurrentRole);
             if (list.Count > 0)
             {
                 return View("Staffs", list);

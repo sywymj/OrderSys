@@ -248,7 +248,7 @@ namespace JSNet.Service
             return entity;
         }
 
-        public List<StaffEntity> GetStaffsByRole(RoleEntity role)
+        public List<StaffEntity> GetWorkingStaffsByRole(RoleEntity role)
         {
             PermissionService permissionService = new PermissionService();
             List<string> organizeIDs = permissionService.GetAuthorizeOrganizeIDByRole(role, "OrderSys_Data.WorkingStaff");

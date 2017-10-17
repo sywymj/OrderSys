@@ -44,6 +44,8 @@ namespace JSNet.Service
             orderFlow.Remark = "";
             EntityManager<OrderFlowEntity> orderflowManager = new EntityManager<OrderFlowEntity>();
             orderflowManager.Insert(orderFlow);
+
+            //3.0微信推送
         }
 
         //委派工作
@@ -77,6 +79,16 @@ namespace JSNet.Service
             //3.0 添加工单处理者
             EntityManager<OrderHandlerEntity> handlerManager = new EntityManager<OrderHandlerEntity>();
             handlerManager.Insert(handlers);
+
+            //4.0 微信推送
+            ViewManager vmanager = new ViewManager("VO_Order");
+            DataRow dr = vmanager.GetSingle(orderID,"ID");
+
+            UserService userService = new UserService();
+            UserEntity nextUser = userService.GetUser((int)orderFlow.NextOperatorID);
+
+            KawuService kawuService = new KawuService();
+            kawuService.CommonOrder_VXPushMsg(nextUser.OpenID, "您有一条新工单，请及时处理！", dr);
 
         }
 

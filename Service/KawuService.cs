@@ -3,6 +3,7 @@ using JSNet.BaseSys;
 using JSNet.Utilities;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 
@@ -82,20 +83,20 @@ namespace JSNet.Service
             return true;
         }
 
-        public bool CommonOrder_VXPushMsg()
+        public bool CommonOrder_VXPushMsg(string openID,string title,DataRow orderDR)
         {
             PushVXMsgResponse reponse = CallKawuAPI<PushVXMsgResponse>(new OrderCommon_PushVXMsgRequest
             {
                 type = "notice",
                 noticetype = "dormitoryrepair",
-                openid = "o4xxqwOiP_DDyRBHcC68NZdcgV4I",
-                first = "您好，有新的报修任务！",
-                remark = "请维修人员在维修前打电话确认宿舍是否方便上门维修！",
-                orderno = "201710170001",
-                reportperson = "曹操",
-                repairaddress = "学校正门",
-                orderdetail = "湖南江华发现一株宋朝时期珍稀青檀树 树龄近千岁 ---10月16日,湖南省江华瑶族自治县农林部门考察人员在该县涔天河镇会合社区发现一株宋朝时期种植的",
-                reporttime = "2017-10-17 19:10:10",
+                openid = openID,
+                first = title,
+                remark = string.IsNullOrEmpty(orderDR["Remark"].ToString()) ? "无" : orderDR["Remark"].ToString(),
+                orderno = orderDR["OrderNo"].ToString(),
+                reportperson = orderDR["StarterName"].ToString(),
+                repairaddress = string.IsNullOrEmpty(orderDR["WorkingLocation"].ToString()) ? "无" : orderDR["WorkingLocation"].ToString(),
+                orderdetail = orderDR["Content"].ToString(),
+                reporttime = orderDR["StartTime"].ToString(),
             }, "get");
             return true;
         }
@@ -144,14 +145,15 @@ namespace JSNet.Service
             return urlEncode ? CommonUtil.UrlEncode(json) : json;
         }
 
-        private T CallKawuAPI<T>(object sumbitdata, string httpMethod)
+        private T CallKawuAPI<T>(object sumbitdata, string httpMethod, bool ignoreException = true)
             where T : KawuResponse, new()
         {
             string sumbitjson = EncryptData(FastJSON.JSON.ToJSON(sumbitdata, jsonParams), false);
             Dictionary<string, string> dic = new Dictionary<string, string>();
-            dic.Add("submitdata",sumbitjson );
+            dic.Add("submitdata", sumbitjson);
 
-            string reponseJson;
+            string requestUrl = WebUtils.BuildRequestUrl(_KawuAPIUrl,dic);
+            string reponseJson = string.Empty;
             try
             {
                 switch (httpMethod.ToUpper())
@@ -165,35 +167,48 @@ namespace JSNet.Service
                     default:
                         throw new Exception(httpMethod + "，参数httpMethod有误，必须是post或get");
                 }
-            }
-            catch(Exception ex)
-            {
-                // TODO log
-                throw new JSException(
-                    JSErrMsg.ERR_MSG_APIFailed, 
-                    JSErrMsg.ERR_Code_APIFailedReason,
-                    string.Format(JSErrMsg.ERR_MSG_APIFailedReason, _KawuAPIUrl + "?submitdata=" + sumbitjson, ex.ToString()));
-            }
-            if (string.IsNullOrEmpty(reponseJson))
-            {
-                // TODO log
-                throw new JSException(
-                    JSErrMsg.ERR_MSG_APIFailed,
-                    JSErrMsg.ERR_Code_APIFailedReason,
-                    string.Format(JSErrMsg.ERR_MSG_APIFailedReason, _KawuAPIUrl + "?sumbitdata=" + sumbitjson, "接口返回内容为空！"));
-            }
-            
-            T reponse = FastJSON.JSON.ToObject<T>(reponseJson);
-            if (reponse.Status == -1)
-            {
-                // TODO log
-                throw new JSException(
-                    JSErrMsg.ERR_MSG_APIFailed,
-                    JSErrMsg.ERR_Code_APIFailedReason,
-                    string.Format(JSErrMsg.ERR_MSG_APIFailedReason, _KawuAPIUrl + "?sumbitdata=" + sumbitjson, reponse.Message));
-            }
+                if (string.IsNullOrEmpty(reponseJson))
+                {
+                    throw new JSException(
+                        JSErrMsg.ERR_MSG_APIFailed,
+                        JSErrMsg.ERR_Code_APIFailedReason,
+                        string.Format(JSErrMsg.ERR_MSG_APIFailedReason, requestUrl, "接口返回内容为空！"));
+                }
 
-            return reponse;
+                T response = FastJSON.JSON.ToObject<T>(reponseJson);
+                if (response.Status == -1)
+                {
+                    throw new JSException(
+                        JSErrMsg.ERR_MSG_APIFailed,
+                        JSErrMsg.ERR_Code_APIFailedReason,
+                        string.Format(JSErrMsg.ERR_MSG_APIFailedReason, requestUrl, response.Message));
+                }
+                return response;
+            }
+            catch (JSException ex)
+            {
+                LogService logService = new LogService();
+                logService.AddKawuApiLog(ex, requestUrl, reponseJson, sumbitdata.ToString());
+                if (!ignoreException)
+                {
+                    throw ex;
+                }
+            }
+            catch (Exception e)
+            {
+                JSException ex = new JSException(
+                        JSErrMsg.ERR_MSG_APIFailed,
+                        JSErrMsg.ERR_Code_APIFailedReason,
+                        string.Format(JSErrMsg.ERR_MSG_APIFailedReason, requestUrl, e.ToString()));
+
+                LogService logService = new LogService();
+                logService.AddKawuApiLog(ex, requestUrl, reponseJson, sumbitdata.ToString());
+                if (!ignoreException)
+                {
+                    throw ex;
+                }
+            }
+            return null;
         }
 
 
