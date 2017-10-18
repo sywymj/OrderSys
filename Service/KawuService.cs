@@ -1,5 +1,6 @@
 ﻿using FastJSON;
 using JSNet.BaseSys;
+using JSNet.Model;
 using JSNet.Utilities;
 using System;
 using System.Collections.Generic;
@@ -49,69 +50,89 @@ namespace JSNet.Service
             return true;
         }
 
-        public bool FinishOrder_VXPushMsg()
+        public bool FinishOrder_VXPushMsg(int staffid, string title, DataRow orderDR)
         {
+            UserService userService = new UserService();
+            StaffEntity staff = userService.GetStaff(staffid);
+            UserEntity user = userService.GetUser((int)staff.UserID);
+
             PushVXMsgResponse reponse = CallKawuAPI<PushVXMsgResponse>(new OrderFinish_PushVXMsgRequest
             {
                 type = "notice",
                 noticetype ="ordercompleted",
-                openid = "o4xxqwOiP_DDyRBHcC68NZdcgV4I",
-                first = "您好，您已完成工单任务",
+                openid = user.OpenID,
+                first = title,
                 remark = "感谢您的使用。",
-                jobdescription = "湖南江华发现一株宋朝时期珍稀青檀树 树龄近千岁 ---10月16日,湖南省江华瑶族自治县农林部门考察人员在该县涔天河镇会合社区发现一株宋朝时期种植的",
-                station="正门",
-                jobstarttime = "2017-10-10 16:55:12",
-                jobendtime = "2017-10-17 16:55:12",
-                collaborator = "李白,杜甫"
+                url = "http://ordersys.huison.com/Weixin/Order/OrderFlows?OrderID=" + orderDR["ID"],
+                jobdescription =orderDR["Content"].ToString() ,
+                station = orderDR["WorkingLocation"].ToString(),
+                jobstarttime = orderDR["StartTime"].ToString(),
+                jobendtime = orderDR["FinishTime"].ToString(),
+                collaborator = orderDR["HandlerName"].ToString(),
             }, "get");
             return true;
         }
 
-        public bool AcceptOrder_VXPushMsg()
+        public bool AcceptOrder_VXPushMsg(int staffid,string title,DataRow orderDR)
         {
+            UserService userService = new UserService();
+            StaffEntity staff = userService.GetStaff(staffid);
+            UserEntity user = userService.GetUser((int)staff.UserID);
+
             PushVXMsgResponse reponse = CallKawuAPI<PushVXMsgResponse>(new OrderAccept_PushVXMsgRequest
             {
                 type = "notice",
                 noticetype = "orderaccepted",
-                openid = "o4xxqwOiP_DDyRBHcC68NZdcgV4I",
-                first = "尊敬的用户您好",
-                remark = "已接受您的请求。我们会立即帮您查看您的问题。",
-                ordername = "湖南江华发现一株宋朝时期珍稀青檀树 树龄近千岁 ---10月16日,湖南省江华瑶族自治县农林部门考察人员在该县涔天河镇会合社区发现一株宋朝时期种植的湖南江华发现一株宋朝时期珍稀青檀树 树龄近千岁 ---10月16日,湖南省江华瑶族自治县农林部门考察人员在该县涔天河镇会合社区发现一株宋朝时期种植的湖南江华发现一株宋朝时期珍稀青檀树 树龄近千岁 ---10月16日,湖南省江华瑶族自治县农林部门考察人员在该县涔天河镇会合社区发现一株宋朝时期种植的湖南江华发现一株宋朝时期珍稀青檀树 树龄近千岁 ---10月16日,湖南省江华瑶族自治县农林部门考察人员在该县涔天河镇会合社区发现一株宋朝时期种植的",
-                acceptanceengineer = "李白,杜甫",
-                accepttime = "2017-10-17 19:10:10",
+                openid = user.OpenID,
+                first = title,                                                  //标题
+                remark = "已受理您的工单。我们会及时解决您的问题。",            //备注
+                url = "http://ordersys.huison.com/Weixin/Order/OrderFlows?OrderID=" + orderDR["ID"],
+                ordername = orderDR["Content"].ToString(),                      //工单内容
+                acceptanceengineer = orderDR["HandlerName"].ToString(),         //受理人
+                accepttime = orderDR["OperateTime"].ToString(),                 //受理时间
             }, "get");
             return true;
         }
 
-        public bool CommonOrder_VXPushMsg(string openID,string title,DataRow orderDR)
+        public bool CommonOrder_VXPushMsg(int staffid, string title, DataRow orderDR)
         {
+            UserService userService = new UserService();
+            StaffEntity staff = userService.GetStaff(staffid);
+            UserEntity user = userService.GetUser((int)staff.UserID);
+
             PushVXMsgResponse reponse = CallKawuAPI<PushVXMsgResponse>(new OrderCommon_PushVXMsgRequest
             {
                 type = "notice",
                 noticetype = "dormitoryrepair",
-                openid = openID,
+                openid = user.OpenID,
                 first = title,
-                remark = string.IsNullOrEmpty(orderDR["Remark"].ToString()) ? "无" : orderDR["Remark"].ToString(),
-                orderno = orderDR["OrderNo"].ToString(),
-                reportperson = orderDR["StarterName"].ToString(),
-                repairaddress = string.IsNullOrEmpty(orderDR["WorkingLocation"].ToString()) ? "无" : orderDR["WorkingLocation"].ToString(),
-                orderdetail = orderDR["Content"].ToString(),
-                reporttime = orderDR["StartTime"].ToString(),
+                remark = string.IsNullOrEmpty(orderDR["Remark"].ToString()) ? "无" : orderDR["Remark"].ToString(),                               //备注
+                url = "http://ordersys.huison.com/Weixin/Order/OrderFlows?OrderID=" + orderDR["ID"],
+                orderno = orderDR["OrderNo"].ToString(),                                                                                         //工单号
+                reportperson = orderDR["StarterName"].ToString(),                                                                                //发起人
+                repairaddress = string.IsNullOrEmpty(orderDR["WorkingLocation"].ToString()) ? "无" : orderDR["WorkingLocation"].ToString(),      //工作地点
+                orderdetail = orderDR["Content"].ToString(),                                                                                     //工单内容
+                reporttime = orderDR["StartTime"].ToString(),                                                                                    //发起时间
             }, "get");
             return true;
         }
 
-        public bool CheckOrder_VXPushMsg()
+        public bool CheckOrder_VXPushMsg(int staffid, string title, DataRow orderDR)
         {
+            UserService userService = new UserService();
+            StaffEntity staff = userService.GetStaff(staffid);
+            UserEntity user = userService.GetUser((int)staff.UserID);
+
             PushVXMsgResponse reponse = CallKawuAPI<PushVXMsgResponse>(new OrderCheck_PushVXMsgRequest
             {
                 type = "notice",
                 noticetype = "maintenanceserviceevaluation",
-                openid = "o4xxqwOiP_DDyRBHcC68NZdcgV4I",
-                first = "您好，你的维修单已处理完成，请您对本次服务进行评价",
-                remark = "点击评价，非常感谢",
-                orderno = "201701120002",
-                treatment = "简单处理。"
+                openid = user.OpenID,
+                first = title,
+                remark = "点击验收，非常感谢",
+                url = "http://ordersys.huison.com/Weixin/Order/OrderFlows?OrderID=" + orderDR["ID"],
+                orderno = orderDR["OrderNo"].ToString(),
+                treatment = "点击查看",
             }, "get");
             return true;
         }
@@ -239,6 +260,7 @@ namespace JSNet.Service
         public string openid { get; set; }
         public string first { get; set; }
         public string remark { get; set; }
+        public string url { get; set; }
     }
     public class OrderFinish_PushVXMsgRequest : PushVXMsgRequest
     {

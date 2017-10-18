@@ -96,7 +96,7 @@ namespace OrderSys.Admin.Controllers
             MyRoleService roleService = new MyRoleService();
 
             UserEntity user = service.GetUser(userID);
-            StaffEntity staff = service.GetStaff((int)user.ID);
+            StaffEntity staff = service.GetStaffByUserID((int)user.ID);
             int[] roleIDs = roleService.GetGrantedRoleIDs((int)user.ID);
 
             user.CopyTo(viewModel);

@@ -84,11 +84,8 @@ namespace JSNet.Service
             ViewManager vmanager = new ViewManager("VO_Order");
             DataRow dr = vmanager.GetSingle(orderID,"ID");
 
-            UserService userService = new UserService();
-            UserEntity nextUser = userService.GetUser((int)orderFlow.NextOperatorID);
-
             KawuService kawuService = new KawuService();
-            kawuService.CommonOrder_VXPushMsg(nextUser.OpenID, "您有一条新工单，请及时处理！", dr);
+            kawuService.CommonOrder_VXPushMsg((int)orderFlow.NextOperatorID, "您有一条新工单，请及时受理！", dr);
 
         }
 
@@ -127,6 +124,23 @@ namespace JSNet.Service
             orderHandleDetail.HandleDetail = "受理";
             orderHandleDetail.Remark = "已受理，准备处理。";
             AddHandleDetail(orderHandleDetail);
+
+            //4.0 微信推送
+            ViewManager vmanager = new ViewManager("VO_Order");
+            DataRow dr = vmanager.GetSingle(orderID, "ID");
+
+            //获取协助者
+            List<OrderHandlerEntity> handlers = GetOrderHandlers(orderID,true);
+
+            //推送给协助者
+            KawuService kawuService = new KawuService();
+            foreach(OrderHandlerEntity handler in handlers)
+            {
+                kawuService.CommonOrder_VXPushMsg((int)handler.HandlerID, "您有新的工单，请及时处理！", dr);
+            }
+
+            //推送给发起人
+            kawuService.AcceptOrder_VXPushMsg(Convert.ToInt32(dr["StarterID"].ToString()), "您发起的工单已受理！", dr);
         }
 
         //增加处理明细
@@ -220,6 +234,14 @@ namespace JSNet.Service
             orderHandleDetail.HandleType = (int)OrderHandleType.DaiYanShou;
             orderHandleDetail.Remark = "工单处理完毕，等待验收。";
             AddHandleDetail(orderHandleDetail);
+
+            //4.0 微信推送
+            ViewManager vmanager = new ViewManager("VO_Order");
+            DataRow dr = vmanager.GetSingle(orderID, "ID");
+
+            //推送给发起人
+            KawuService kawuService = new KawuService();
+            kawuService.CheckOrder_VXPushMsg(Convert.ToInt32(dr["StarterID"].ToString()), "您发起的工单已处理完成，请及时验收！", dr);
         }
 
         //驳回报障，需继续处理
@@ -262,6 +284,20 @@ namespace JSNet.Service
             orderHandleDetail.HandleDetail = "工单验收不通过，被驳回。";
             orderHandleDetail.Remark = string.IsNullOrEmpty(remark) ? "" : "驳回原因：" + remark;
             AddHandleDetail(orderHandleDetail);
+
+            //4.0 微信推送
+            ViewManager vmanager = new ViewManager("VO_Order");
+            DataRow dr = vmanager.GetSingle(orderID, "ID");
+
+            //获取协助者
+            List<OrderHandlerEntity> handlers = GetOrderHandlers(orderID, true);
+
+            //推送给所有处理者
+            KawuService kawuService = new KawuService();
+            foreach (OrderHandlerEntity handler in handlers)
+            {
+                kawuService.CommonOrder_VXPushMsg((int)handler.HandlerID, "您处理的工单验收不通过，请重新处理！", dr);
+            }
         }
 
         //报障验收完成
@@ -299,6 +335,21 @@ namespace JSNet.Service
             orderHandleDetail.HandleDetail = "验收通过";
             orderHandleDetail.Remark = "工单验收通过，流程结束。";
             AddHandleDetail(orderHandleDetail);
+
+            //4.0 微信推送
+            ViewManager vmanager = new ViewManager("VO_Order");
+            DataRow dr = vmanager.GetSingle(orderID, "ID");
+
+            //推送给委托人
+            KawuService kawuService = new KawuService();
+            kawuService.FinishOrder_VXPushMsg(Convert.ToInt32(dr["AppointerID"].ToString()), "您委派的工单已处理完成！", dr);
+
+            ////推送给所有处理人
+            List<OrderHandlerEntity> handlers = GetOrderHandlers(orderID, true);
+            foreach (OrderHandlerEntity handler in handlers)
+            {
+                kawuService.CommonOrder_VXPushMsg((int)handler.HandlerID, "您处理的工单已验收通过！", dr);
+            }
         }
 
         //撤销报障单
@@ -814,7 +865,7 @@ namespace JSNet.Service
             return dr;
         }
 
-        public DataTable GetOrderHandlers(Guid orderID)
+        public DataTable GetOrderHandlerDT(Guid orderID)
         {
             //只能查视图
             ViewManager manager = new ViewManager("VO_OrderHandlers");
@@ -828,6 +879,22 @@ namespace JSNet.Service
             int count = 0;
             DataTable dt = manager.GetDataTable(where, out count, orderby);
             return dt;
+        }
+
+        public List<OrderHandlerEntity> GetOrderHandlers(Guid orderID, bool onlyHelper = false)
+        {
+            WhereStatement where = new WhereStatement();
+            where.Add(OrderHandlerEntity.FieldOrderID,Comparison.Equals,orderID);
+            if (onlyHelper)
+            {
+                where.Add(OrderHandlerEntity.FieldIsLeader, Comparison.Equals, (int)TrueFalse.False);
+            }
+
+            int count = 0;
+            EntityManager<OrderHandlerEntity> manager = new EntityManager<OrderHandlerEntity>();
+            List<OrderHandlerEntity> handlers = manager.GetList(where,out count);
+
+            return handlers;
         }
 
         private int GetLeaderHandlerID(int[] orderHandlerIDs)

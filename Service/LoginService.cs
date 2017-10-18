@@ -92,9 +92,13 @@ namespace JSNet.Service
             JSResponse.WriteCookie("AdminPwd", "");
         }
 
-        public void VXLogout()
+        public void VXLogout(string openID)
         {
+            UserService userService = new UserService();
+            userService.ClearUserOpenID(openID);
 
+            JSResponse.WriteCookie("OpenID", "");
+            JSResponse.WriteCookie("RID", "");
         }
 
         public void ChkLogin(out UserEntity user, out RoleEntity role)

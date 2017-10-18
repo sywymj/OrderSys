@@ -70,7 +70,7 @@ namespace OrderSys.Controllers
         [HttpGet]
         public ActionResult OrderDetail(Guid orderID)
         {
-            var handlers = orderService.GetOrderHandlers(orderID);
+            var handlers = orderService.GetOrderHandlerDT(orderID);
             ViewBag.Handlers = handlers;
 
 

@@ -31,7 +31,7 @@ namespace OrderSys.Controllers
             string openID = JSValidator.ValidateString("参数OPENID", vmodel.OpenID, true);
 
             UserService usrService = new UserService();
-            usrService.EditUser(tel, openID);
+            usrService.EditUserOpenID(tel, openID);
 
             string re = JSON.ToJSON(new JSResponse(ResponseType.None,"更新成功！"), jsonParams);
             return re;
@@ -46,6 +46,8 @@ namespace OrderSys.Controllers
             string tel = JSValidator.ValidateString("参数Tel", vmodel.Tel, true);
             string openID = JSValidator.ValidateString("参数OPENID", vmodel.OpenID, true);
 
+            LoginService loginService = new LoginService();
+            loginService.VXLogout(openID);
 
             string re = JSON.ToJSON(new JSResponse(ResponseType.None, "注销成功！"), jsonParams);
             return re;
@@ -71,8 +73,15 @@ namespace OrderSys.Controllers
         public string TestCallKawuApi()
         {
             string mess = "";
-            KawuService service = new KawuService();
-            bool b = service.AcceptOrder_VXPushMsg();
+            //KawuService service = new KawuService();
+            //bool b = service.AcceptOrder_VXPushMsg();
+
+            //LogService logService = new LogService();
+            //JSException ex = new JSException("message", "errorcode", "errormsg");
+            //logService.AddKawuApiLog(ex, "reqUrl", "resJson", "apitype");
+
+            LoginService loginService = new LoginService();
+            loginService.VXLogout("5");
 
             string re = JSON.ToJSON(new JSResponse(mess), jsonParams);
             return re;

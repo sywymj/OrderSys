@@ -119,7 +119,7 @@ namespace JSNet.Service
         {
             //如何处理管理员情况
             UserService userService = new UserService();
-            StaffEntity staff = userService.GetStaff((int)user.ID);
+            StaffEntity staff = userService.GetStaffByUserID((int)user.ID);
 
             int deep = 0;
             if (user.ID == 1)

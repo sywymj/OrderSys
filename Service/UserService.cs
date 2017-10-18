@@ -153,7 +153,7 @@ namespace JSNet.Service
 
         }
 
-        public void EditUser(string tel,string openID)
+        public void EditUserOpenID(string tel,string openID)
         {
             EntityManager<StaffEntity> staffManager = new EntityManager<StaffEntity>();
             StaffEntity staff = staffManager.GetSingle(tel, StaffEntity.FieldTel);
@@ -166,6 +166,15 @@ namespace JSNet.Service
             List<KeyValuePair<string, object>> kvps = new List<KeyValuePair<string, object>>();
             kvps.Add(new KeyValuePair<string, object>(UserEntity.FieldOpenID, openID));
             userManager.Update(kvps, staff.UserID);
+        }
+
+        public void ClearUserOpenID(string openID)
+        {
+            List<KeyValuePair<string, object>> kvps = new List<KeyValuePair<string, object>>();
+            kvps.Add(new KeyValuePair<string, object>(UserEntity.FieldOpenID, ""));
+
+            EntityManager<UserEntity> userManager = new EntityManager<UserEntity>();
+            userManager.Update(kvps, openID, UserEntity.FieldOpenID);
         }
         public UserEntity GetUser(int userID)
         {
@@ -241,10 +250,17 @@ namespace JSNet.Service
             return manager.Insert(entity);
         }
 
-        public StaffEntity GetStaff(int userID)
+        public StaffEntity GetStaffByUserID(int userID)
         {
             EntityManager<StaffEntity> manager = new EntityManager<StaffEntity>();
             StaffEntity entity = manager.GetSingle(userID, StaffEntity.FieldUserID);
+            return entity;
+        }
+
+        public StaffEntity GetStaff(int staffID)
+        {
+            EntityManager<StaffEntity> manager = new EntityManager<StaffEntity>();
+            StaffEntity entity = manager.GetSingle(staffID, StaffEntity.FieldID);
             return entity;
         }
 
