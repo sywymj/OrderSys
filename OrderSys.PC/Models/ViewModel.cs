@@ -54,6 +54,16 @@ namespace OrderSys.Admin
     
     }
 
+    public class ViewDataResource : ResourceEntity
+    {
+        public List<ViewPermissionScopeEntity> PermissionScopes { get; set; }
+    }
+
+    public class ViewPermissionScopeEntity:PermissionScopeEntity
+    {
+        public string Title { get; set; }
+    }
+
     //ListData ViewModel
     public class DataTableData
     {

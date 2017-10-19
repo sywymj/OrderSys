@@ -341,6 +341,38 @@ namespace OrderSys.Admin.Controllers
             return s;
         }
 
+        public string GetGrantDataResourceList()
+        {
+            DataTable dt = service.GetGrantedDataResourceByRole(service.CurrentRole);
+            List<ViewDataResource> dataResources = new List<ViewDataResource>();
+
+            foreach(DataRow dr in dt.Rows)
+            {
+                ViewDataResource dataResource = dataResources.FirstOrDefault(r => (int)r.ID == Convert.ToInt32(dr["Resource_ID"]));
+                if (dataResource == null)
+                {
+                    dataResource = new ViewDataResource
+                    {
+                        ID = Convert.ToInt32(dr["Resource_ID"].ToString()),
+                        FullName = dr["Resource_FullName"].ToString(),
+                    };
+                    dataResources.Add(dataResource);
+                }
+                else
+                {
+                    ViewPermissionScopeEntity permissionScope = new ViewPermissionScopeEntity()
+                    {
+                        ID = Convert.ToInt32(dr["PermissionScope_ID"]),
+                        Title = dr["PermissionScope_ID"].ToString(),
+                    };
+                    dataResource.PermissionScopes.Add(permissionScope);
+                }
+            }
+
+            string s = JSON.ToJSON(new JSResponse(dataResources), jsonParams);
+            return s;
+        }
+
         [HttpGet]
         public string GrantPermissionScope()
         {
