@@ -45,7 +45,7 @@ namespace JSNet.Service
             EntityManager<OrderFlowEntity> orderflowManager = new EntityManager<OrderFlowEntity>();
             orderflowManager.Insert(orderFlow);
 
-            //3.0微信推送
+            //3.0 微信推送
         }
 
         //委派工作

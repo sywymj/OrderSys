@@ -70,18 +70,28 @@ namespace OrderSys.Controllers
             return re;
         }
 
+        public string TestSubmitDataDecrypt()
+        {
+
+            string submitData = "/sBtPXbXE0B0YXFu7z/yJTgLnoD58l1bqbctZ0qeDL7yew1xPgqo1Lvw6BH3eOwY/ClHMupgyYWP+ZZdnDiOl77mP/JV5dGtcBJpu8wojmpTpf4j69cGMbMrliJ74R7vYWBl7VXc0c/Urt1lby82hsGNNfeTcs6+RrAftsomuVl2sMqvCu8r0ThXB8kUBHEHSAbYhsq8BKjcezkQ/BtRiBgc3fhspM/VbQkzjuLkjqsowKzkqb+laO0UtirMo7yhI34Dszbp4H17EHZu73RjmhlcXyHqSHACRadwumWo8DWhM7ooGg1kmOsMLzHczK3wNSb3MXv1PH/4nQBwZa/LUa9ZUhrglajVkc8bkYbMncR00hmnyRYr2gUq6bZd4Cv0fmKyRfkT6BrTwgzj93+lopdWfhFfOpSeZ/qaN3eoI4++pWFrIQHfT21gmtMlODkuFm60RYordCT5O7j5gbRcRujKjoOAUS+TYssDL3+lKfZ0hh40xiCyNkSMEMmXiGq1dmr/SiAAOVDkIXimhz5LDsjSeyajUJt/5kWbNhsoTPzPRUF/kLhdcA==";
+            //string submitData = "/sBtPXbXE0BCF7D+gYX5Z+Dxbd5s34YUGtcvwArJaG2mz2tMt8qAw9ykJ/jB34WH2uhD8KDsQmprT8c6SWvNHHecsyE1OCF3Mw1M1Y9BqIjYt80J4aOacfqVoJp3pF+9SLCEq6BZWCDjoNJQj+RJTD4M2Nfiq98Hbx2BVw3j6aqSsRjqUOO4Ga3e7iCXSGfqwIPJ9t1ErzsS26tKfe3NS+dVuRpBPlGzRh7j/tSpnATE4s+qHj0UVFNFAomHzHx5cj1C0NJ07L4EKOGSPdPREt5dVGsoeW1rBuLRghHjNqUruOcOyc6Bhdrn2l6A4z3uugGn+9XKxscptTkQjeYBVwAw5vk//pZVKq0alVZI991Gx0ZrzLePgo6phJetd6OrY1XupTI2wMVA4mv+HtEsseqeNTBBThgMJcHhsZfJ+/UzkMauvA9fRt+ACd+RQssmJLiZ2T30WmUVFbiDU7gB5uk3MIjktsKOu2gccUmxlyC/JNQ5ayXIAQ==";
+            KawuService service = new KawuService();
+            string json = service.DecryptData(submitData);
+            return json;
+        }
+
         public string TestCallKawuApi()
         {
             string mess = "";
-            //KawuService service = new KawuService();
-            //bool b = service.AcceptOrder_VXPushMsg();
+            KawuService service = new KawuService();
+            bool b = service.Test_VXPushMsg();
 
             //LogService logService = new LogService();
             //JSException ex = new JSException("message", "errorcode", "errormsg");
             //logService.AddKawuApiLog(ex, "reqUrl", "resJson", "apitype");
 
-            LoginService loginService = new LoginService();
-            loginService.VXLogout("5");
+            //LoginService loginService = new LoginService();
+            //loginService.VXLogout("5");
 
             string re = JSON.ToJSON(new JSResponse(mess), jsonParams);
             return re;

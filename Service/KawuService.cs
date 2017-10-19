@@ -94,6 +94,24 @@ namespace JSNet.Service
             return true;
         }
 
+        public bool Test_VXPushMsg()
+        {
+
+            PushVXMsgResponse reponse = CallKawuAPI<PushVXMsgResponse>(new OrderAccept_PushVXMsgRequest
+            {
+                type = "notice",
+                noticetype = "orderaccepted",
+                openid = "o4xxqwOiP_DDyRBHcC68NZdcgV4I",
+                first = "标题",                                                  //标题
+                remark = "已受理您的工单。我们会及时解决您的问题。",            //备注
+                url = "http://ordersys.huison.com/Weixin/Order/OrderFlows",
+                ordername = "工单内容",                      //工单内容
+                acceptanceengineer = "受理人",         //受理人
+                accepttime = "受理时间",                 //受理时间
+            }, "get");
+            return true;
+        }
+
         public bool CommonOrder_VXPushMsg(int staffid, string title, DataRow orderDR)
         {
             UserService userService = new UserService();
