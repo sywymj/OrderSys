@@ -341,35 +341,56 @@ namespace OrderSys.Admin.Controllers
             return s;
         }
 
+        [HttpGet]
         public string GetGrantDataResourceList()
         {
-            DataTable dt = service.GetGrantedDataResourceByRole(service.CurrentRole);
-            List<ViewDataResource> dataResources = new List<ViewDataResource>();
+            string sRoleID = JSRequest.GetRequestUrlParm("RoleID", true);
+            int roleID = (int)JSValidator.ValidateInt("角色ID", sRoleID, true);
 
+            DataTable dt = service.GetGrantedDataResourceByRole(service.CurrentRole);
+            int[] permissionScopeIDs = service.GetGrantedPermissionScopeIDs(roleID);//获取该角色已分配的资源对象
+
+            List<ViewDataResource> dataResources = new List<ViewDataResource>();
             foreach(DataRow dr in dt.Rows)
             {
-                ViewDataResource dataResource = dataResources.FirstOrDefault(r => (int)r.ID == Convert.ToInt32(dr["Resource_ID"]));
+                ViewDataResource dataResource = dataResources.FirstOrDefault(r => r.ID == dr["Resource_ID"].ToString());
                 if (dataResource == null)
                 {
                     dataResource = new ViewDataResource
                     {
-                        ID = Convert.ToInt32(dr["Resource_ID"].ToString()),
-                        FullName = dr["Resource_FullName"].ToString(),
+                        ID = dr["Resource_ID"].ToString(),
+                        ParentID = dr["Resource_ParentID"].ToString(),
+                        Title = dr["Resource_FullName"].ToString(),
                     };
                     dataResources.Add(dataResource);
                 }
-                else
+                if (dataResource.Expands == null)
                 {
-                    ViewPermissionScopeEntity permissionScope = new ViewPermissionScopeEntity()
-                    {
-                        ID = Convert.ToInt32(dr["PermissionScope_ID"]),
-                        Title = dr["PermissionScope_ID"].ToString(),
-                    };
-                    dataResource.PermissionScopes.Add(permissionScope);
+                    dataResource.Expands = new List<ViewPermissionScopeEntity>();
                 }
+                //添加扩展内容
+                ViewPermissionScopeEntity permissionScope = dataResource.Expands.FirstOrDefault(ps => ps.ID == dr["PermissionScope_ID"].ToString());
+                if (permissionScope == null)
+                {
+                    if (string.IsNullOrEmpty(dr["PermissionScope_ID"].ToString()))
+                    {
+                        continue;
+                    }
+                    permissionScope = new ViewPermissionScopeEntity()
+                    {
+                        ID = dr["PermissionScope_ID"].ToString(),
+                        Title = dr["Organize_FullName"].ToString(),
+                    };
+
+                    if (permissionScopeIDs.Contains(Convert.ToInt32(dr["PermissionScope_ID"].ToString())))
+                    {
+                        permissionScope.Checked = true;
+                    };
+                    dataResource.Expands.Add(permissionScope);
+                };
             }
 
-            string s = JSON.ToJSON(new JSResponse(dataResources), jsonParams);
+            string s = JSON.ToNiceJSON(new JSResponse(dataResources), jsonParams);
             return s;
         }
 

@@ -665,10 +665,10 @@ namespace JSNet.Service
             manager.Insert(entitys);
         }
 
-        public int[] GetGrantedPermissionScopeIDs(int roleID)
+        public int[] GetGrantedPermissionScopeIDs(int roleId)
         {
             WhereStatement where = new WhereStatement();
-            where.Add(RolePermissionScopeEntity.FieldRoleID, Comparison.Equals, roleID);
+            where.Add(RolePermissionScopeEntity.FieldRoleID, Comparison.Equals, roleId);
 
             EntityManager<RolePermissionScopeEntity> manager = new EntityManager<RolePermissionScopeEntity>();
             string[] sIDs = manager.GetProperties(RolePermissionScopeEntity.FieldPermissionScopeID, where);
@@ -694,14 +694,21 @@ namespace JSNet.Service
         /// <returns></returns>
         public DataTable GetGrantedDataResourceByRole(RoleEntity role)
         {
-            string[] dataResourcecIDs = GetGrantedDataResourceIDsByRole(role);
+            int count = 0;
+            DataTable dt = new DataTable();
+            if (role.ID == 1)
+            {
+                //超级用户默认获取所有的资源对象
+                ViewManager vmanager1 = new ViewManager("VP_PermissionScope");
+                dt = vmanager1.GetDataTable(new WhereStatement(), out count);
+                return dt;
+            }
 
             WhereStatement where = new WhereStatement();
-            where.Add("Resource_ID",Comparison.In,dataResourcecIDs);
+            where.Add("Role_ID", Comparison.Equals, role.ID);
 
-            int count = 0;
-            ViewManager vmanager = new ViewManager("VP_Resource");
-            DataTable dt = vmanager.GetDataTable(where, out count);
+            ViewManager vmanager = new ViewManager("VP_RoleScope");
+            dt = vmanager.GetDataTable(where, out count);
             return dt;
         }
 

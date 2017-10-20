@@ -7,7 +7,7 @@
 @Html.Partial("~/Areas/Admin/Views/Shared/_Header.cshtml", Request.Url.AbsolutePath)
 <div class="mini-fit">
     <div id="RoleID" class="mini-hidden"></div>
-    <div id="Scope-datagrid" class="mini-treegrid" ajaxoptions="{type : 'get'}" style="width:100%;height:100%" autoload="false"
+    @*<div id="Scope-datagrid" class="mini-treegrid" ajaxoptions="{type : 'get'}" style="width:100%;height:100%" autoload="false"
          url="@Url.Action("GetGrantPermissionScopeDT", "Permission", new { area = "Admin" })" showtreeicon="false" resultastree="false" expandonload="1" multiselect="false" showcheckbox="true" showfoldercheckbox="false"
          treecolumn="treename" idfield="Resource_ID" parentfield="Resource_ParentID" datafield="Data.DT.JSNet">
         <div property="columns">
@@ -19,7 +19,21 @@
             <div field="OrganizeCategory_FullName" width="120" headeralign="center" align="center" allowsort="true">资源对象类别</div>
             <div field="OrganizeCategory_Code" width="120" headeralign="center" align="center" allowsort="true">资源对象类别标识码</div>
         </div>
+    </div>*@
+
+    <div id="Scope-datagrid" class="mini-treegrid" ajaxoptions="{type : 'get'}" style="width:100%;height:100%;" autoload="false"
+         url="@Url.Action("GetGrantDataResourceList", "Permission", new { area = "Admin" })"
+         treecolumn="treename" idfield="ID" parentfield="ParentID" datafield="Data"
+         resultastree="false" allowresize="true" expandonload="true" showtreeicon="false"
+         allowselect="false" allowcellselect="false" enablehottrack="false"
+         ondrawcell="ondrawcell">
+        <div property="columns">
+            <div type="indexcolumn"></div>
+            <div name="treename" field="Title" width="120">数据资源</div>
+            <div field="PermissionScopes" width="100%" style="overflow: auto; white-space: normal; text-overflow:initial">数据对象</div>
+        </div>
     </div>
+
 </div>
 <div class="mini-toolbar" style="text-align:center;padding-top:8px;padding-bottom:8px;" borderstyle="border:0;">
     <a class="mini-button" style="width:60px;" onclick="onOk()">确定</a>
@@ -34,39 +48,68 @@
     ////////////////////
     //标准方法接口定义
     function SetGridData(data) {
+        debugger;
         //跨页面传递的数据对象，克隆后才可以安全使用
         data = mini.clone(data);
         mini.get("RoleID").setValue(data.ID);
 
         Scope_grid.load({
+            RoleID: data.ID
         }, function (re) {
             var jdata = ajaxTips(re.text);
-            debugger;
-            if (jdata.Code == "200") {
-                //check已配置的资源明细
-                var url = '@Url.Action("GetGrantedPermissionScopeIDs", "Permission", new { area = "Admin" })';
-                var parms = {
-                    RoleID: data.ID
-                };
-                
-                doGetSync(url, parms, function (jdata) {
-                    if (jdata.Code == "200") {
-                        var array = jdata.Data.split(',');
-                        var rows = Scope_grid.getAllChildNodes();
-                        for (var i = 0, l = rows.length; i < l; i++) {
-                            if (rows[i].PermissionScope_ID != null && $.inArray(rows[i].PermissionScope_ID.toString(), array) > -1) {
-                                Scope_grid.checkNode(rows[i]);
-                            }
-                            if (rows[i].PermissionScope_ID == null) {
-                                Scope_grid.disableNode(rows[i]);
-                            }
-                        }
-                    }
-                })
-            }
         }, function (re) {
         })
     }
+
+    function ondrawcell(e) {
+        var tree = e.sender,
+            record = e.record,
+            column = e.column,
+            field = e.field,
+            ID = record[tree.getIdField()],
+            Expands = record.Expands;
+        
+
+        function createCheckboxs(expands) {
+            if (!expands) return "";
+            var html = "";
+            for (var i = 0, l = expands.length; i < l; i++) {
+                var expand = expands[i];
+                var clickFn = 'checkExp(\'' + ID + '\',\'' + expand.ID + '\', this.checked)';
+                var checked = expand.Checked ? 'checked' : '';
+                html += '<label class="function-item"><input onclick="' + clickFn + '" ' + checked + ' type="checkbox" name="'
+                        + expand.ID + '" hideFocus/>' + expand.Title + '</label>';
+            }
+            return html;
+        }
+
+        if (field == 'PermissionScopes') {
+            e.cellHtml = createCheckboxs(Expands);
+        }
+    }
+
+    function checkExp(id, expandid, checked) {
+        debugger;
+        var record = Scope_grid.getRecord(id);
+        if (!record) return;
+        var expands = record.Expands;
+        if (!expands) return;
+        function getexpandid(expandid) {
+            for (var i = 0, l = expands.length; i < l; i++) {
+                var o = expands[i];
+                if (o.ID == expandid) return o;
+            }
+        }
+        var obj = getexpandid(expandid);
+        if (!obj) return;
+        obj.Checked = checked;
+    }
+
+    function getExpData() {
+        var data = Scope_grid.getData();
+        return data;
+    }
+
 
     //////////////////////////////////
     function CloseWindow(action) {
@@ -75,17 +118,30 @@
     }
 
     function onOk() {
+
         var RoleID = mini.get("RoleID").getValue();
         var ScopeIDs;
 
-        var rows = Scope_grid.getCheckedNodes(false);
+        //var ids = [];
+        //var rows = Scope_grid.getCheckedNodes(false);
+        //for (var i = 0, l = rows.length; i < l; i++) {
+        //    var row = rows[i];
+        //    ids.push(row.PermissionScope_ID);
+        //}
 
         var ids = [];
-        for (var i = 0, l = rows.length; i < l; i++) {
-            var row = rows[i];
-            ids.push(row.PermissionScope_ID);
+        var expData = getExpData();
+        for (var i = 0, l = expData.length; i < l; i++) {
+            var expands = expData[i].Expands;
+            if (!expands) continue;
+            for (var j = 0, jl = expands.length; j < jl; j++) {
+                if (expands[j].Checked == true) {
+                    ids.push(expands[j].ID);
+                }
+            }
         }
         ScopeIDs = ids.join(",");
+        console.log(ScopeIDs);
 
         var url = "@Url.Action("GrantPermissionScope", "Permission", new { area = "Admin" })";
         var data = {
