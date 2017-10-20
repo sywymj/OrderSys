@@ -89,7 +89,6 @@
     }
 
     function checkExp(id, expandid, checked) {
-        debugger;
         var record = Scope_grid.getRecord(id);
         if (!record) return;
         var expands = record.Expands;
@@ -106,7 +105,7 @@
     }
 
     function getExpData() {
-        var data = Scope_grid.getData();
+        var data = Scope_grid.getList();
         return data;
     }
 

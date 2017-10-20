@@ -203,7 +203,7 @@ namespace JSNet.Utilities
         /// </summary>
         /// <param name="ids">字符类型主键</param>
         /// <returns>数值型主键数组</returns>
-        public static int[] ConvertToIntArry(string[] ids)
+        public static int[] ConvertToIntArry(this string[] ids)
         {
             List<int> keys = new List<int>();
             foreach (var key in ids)
