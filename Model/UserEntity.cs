@@ -120,6 +120,15 @@ namespace JSNet.Model
             set { _deletionstatecode = value; }
         }
         /// <summary>
+        /// AddedVXUser
+        /// </summary>		
+        private int? _addedvxuser;
+        public int? AddedVXUser
+        {
+            get { return _addedvxuser; }
+            set { _addedvxuser = value; }
+        }
+        /// <summary>
         /// CreateOn
         /// </summary>		
         private DateTime? _createon;
@@ -240,6 +249,13 @@ namespace JSNet.Model
             get { return "DeletionStateCode"; }
         }
         /// <summary>
+        /// FiledName:AddedVXUser
+        /// </summary>		
+        public static string FieldAddedVXUser
+        {
+            get { return "AddedVXUser"; }
+        }
+        /// <summary>
         /// FiledName:CreateOn
         /// </summary>		
         public static string FieldCreateOn
@@ -295,6 +311,7 @@ namespace JSNet.Model
             entity.OrganizeID = CommonUtil.ConvertToInt(dataRow[FieldOrganizeID]);
             entity.Description = CommonUtil.ConvertToString(dataRow[FieldDescription]);
             entity.DeletionStateCode = CommonUtil.ConvertToInt(dataRow[FieldDeletionStateCode]);
+            entity.AddedVXUser = CommonUtil.ConvertToInt(dataRow[FieldAddedVXUser]);
             entity.CreateOn = CommonUtil.ConvertToDateTime(dataRow[FieldCreateOn]);
             entity.CreateUserId = CommonUtil.ConvertToString(dataRow[FieldCreateUserId]);
             entity.CreateBy = CommonUtil.ConvertToString(dataRow[FieldCreateBy]);
@@ -317,6 +334,7 @@ namespace JSNet.Model
             entity.OrganizeID = CommonUtil.ConvertToInt(dataReader[FieldOrganizeID]);
             entity.Description = CommonUtil.ConvertToString(dataReader[FieldDescription]);
             entity.DeletionStateCode = CommonUtil.ConvertToInt(dataReader[FieldDeletionStateCode]);
+            entity.AddedVXUser = CommonUtil.ConvertToInt(dataReader[FieldAddedVXUser]);
             entity.CreateOn = CommonUtil.ConvertToDateTime(dataReader[FieldCreateOn]);
             entity.CreateUserId = CommonUtil.ConvertToString(dataReader[FieldCreateUserId]);
             entity.CreateBy = CommonUtil.ConvertToString(dataReader[FieldCreateBy]);
@@ -336,6 +354,7 @@ namespace JSNet.Model
             sqlBuilder.SetValue(FieldOrganizeID, entity.OrganizeID);
             sqlBuilder.SetValue(FieldDescription, entity.Description);
             sqlBuilder.SetValue(FieldDeletionStateCode, entity.DeletionStateCode);
+            sqlBuilder.SetValue(FieldAddedVXUser, entity.AddedVXUser);
             sqlBuilder.SetValue(FieldCreateOn, entity.CreateOn);
             sqlBuilder.SetValue(FieldCreateUserId, entity.CreateUserId);
             sqlBuilder.SetValue(FieldCreateBy, entity.CreateBy);

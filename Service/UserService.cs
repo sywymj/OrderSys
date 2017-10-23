@@ -83,6 +83,7 @@ namespace JSNet.Service
                 entity.Password = "123456";// TODO 加盐转MD5加密保存
             }
             entity.OpenID = null;
+            entity.AddedVXUser = (int)TrueFalse.True;
             entity.IsEnable = (int)TrueFalse.True;
             entity.OrganizeID = staff.OrganizeID;
             entity.DeletionStateCode = (int)TrueFalse.False;
@@ -101,8 +102,33 @@ namespace JSNet.Service
             roleService.GrantRole(Convert.ToInt32(userID), roleIDs);
         }
 
+        public void AddWeiXinUser(int[] userIDs)
+        {
+            List<UserEntity> users = GetUserList(userIDs);
+
+            KawuService kawuService = new KawuService();
+            foreach(UserEntity user in users)
+            {
+                if(user.AddedVXUser == (int)TrueFalse.False)
+                {
+                    //增加微信用户
+                    StaffEntity staff = GetStaffByUserID((int)user.ID);
+                    kawuService.AddWeixinUser(staff.Tel, user.UserName);
+
+                    //修改用户状态为 已增加微信用户
+                    user.AddedVXUser = (int)TrueFalse.True;
+                    EditUserVXUserStatus(user);
+                }
+            }
+        }
+
         public void EditUser(UserEntity entity, StaffEntity staff, int[] roleIDs)
         {
+            //0.0 修改卡务对应的手机号码
+            StaffEntity originalStaff = GetStaffByUserID((int)entity.ID);
+            KawuService kawuService = new KawuService();
+            kawuService.ChangeUserData(originalStaff.Tel, staff.Tel, entity.UserName);
+
             //1.0 修改用户信息
             EntityManager<UserEntity> userManager = new EntityManager<UserEntity>();
             List<KeyValuePair<string, object>> userTargetKVPs = new List<KeyValuePair<string, object>>();
@@ -168,6 +194,15 @@ namespace JSNet.Service
             userManager.Update(kvps, staff.UserID);
         }
 
+        public void EditUserVXUserStatus(UserEntity user)
+        {
+            List<KeyValuePair<string, object>> kvps = new List<KeyValuePair<string, object>>();
+            kvps.Add(new KeyValuePair<string, object>(UserEntity.FieldAddedVXUser, user.AddedVXUser));
+
+            EntityManager<UserEntity> userManager = new EntityManager<UserEntity>();
+            userManager.Update(kvps, user.ID);
+        }
+
         public void ClearUserOpenID(string openID)
         {
             List<KeyValuePair<string, object>> kvps = new List<KeyValuePair<string, object>>();
@@ -176,6 +211,7 @@ namespace JSNet.Service
             EntityManager<UserEntity> userManager = new EntityManager<UserEntity>();
             userManager.Update(kvps, openID, UserEntity.FieldOpenID);
         }
+
         public UserEntity GetUser(int userID)
         {
             EntityManager<UserEntity> manager = new EntityManager<UserEntity>();
@@ -192,13 +228,26 @@ namespace JSNet.Service
 
         public UserEntity GetUser(string userName, string pwd)
         {
-            EntityManager<UserEntity> manager = new EntityManager<UserEntity>();
+            int count = 0;
+
             WhereStatement where = new WhereStatement();
             where.Add(UserEntity.FieldUserName, Comparison.Equals, userName);
             where.Add(UserEntity.FieldPassword, Comparison.Equals, pwd);
-            int count = 0;
+            
+            EntityManager<UserEntity> manager = new EntityManager<UserEntity>();
             List<UserEntity> ls = manager.GetList(where, out count);
             return ls.FirstOrDefault();
+        }
+
+        public List<UserEntity> GetUserList(int[] userIDs)
+        {
+            int count = 0;
+            WhereStatement where = new WhereStatement();
+            where.Add(UserEntity.FieldID,Comparison.In,userIDs);
+
+            EntityManager<UserEntity> manager = new EntityManager<UserEntity>();
+            List<UserEntity> list = manager.GetList(where, out count);
+            return list;
         }
 
         public DataTable GetUserDTByRole(RoleEntity role, Paging paging, out int count)
@@ -234,6 +283,7 @@ namespace JSNet.Service
             DataTable dt = vmanager.GetDataTableByPage(where, out count, paging.PageIndex, paging.PageSize, orderby);
             return dt;
         }
+
         #endregion
 
         #region Staff

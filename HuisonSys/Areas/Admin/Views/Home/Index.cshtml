@@ -35,11 +35,10 @@
         <div class="header" region="north" height="70" showsplit="false" showheader="false">
             <h1 style="margin:0;padding:15px;cursor:default;font-family:微软雅黑,黑体,宋体;">报障系统 V1.0</h1>
             <div style="position:absolute;top:18px;right:10px;">
-                <a class="mini-button mini-button-iconTop" iconcls="icon-add" onclick="onQuickClick" plain="true">快捷</a>
-                <a class="mini-button mini-button-iconTop" iconcls="icon-edit" onclick="onClick" plain="true">首页</a>
-                <a class="mini-button mini-button-iconTop" iconcls="icon-date" onclick="onClick" plain="true">消息</a>
-                <a class="mini-button mini-button-iconTop" iconcls="icon-edit" onclick="onClick" plain="true">设置</a>
-                <a class="mini-button mini-button-iconTop" iconcls="icon-close" onclick="onClick" plain="true">关闭</a>
+                <span class="mini-button mini-button-iconTop" iconcls="icon-user" plain="true">用户：@ViewBag.StaffName</span>
+                <span class="mini-button mini-button-iconTop" iconcls="icon-user" plain="true" onclick="onShowChangeRoleWindow">角色：<label id="roleName">@ViewBag.RoleName</label></span>
+                <a class="mini-button mini-button-iconTop" iconcls="icon-add" onclick="changeRole" plain="true">切换角色</a>
+                <a class="mini-button mini-button-iconTop" iconcls="icon-close" onclick="logout" plain="true">安全退出</a>
             </div>
 
         </div>
@@ -68,64 +67,132 @@
         </div>
     </div>
 
+    <div id="changeRole-Window" class="mini-window" title="切换角色" style="width:300px;display: none;"
+         showmodal="true" allowresize="false" allowdrag="false" showclosebutton="true">
+        <div id="form">
+            <table>
+                <tr>
+                    <td>
+                        <label>请选择角色：</label>
+                    </td>
+                    <td>
+                        <input name="RoleID" id="RoleDDL" shownullitem="false" class="mini-combobox" textfield="Title" valuefield="ID" />
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="mini-toolbar" style="text-align:center;padding-top:8px;padding-bottom:8px;" borderstyle="border:0;">
+            <a class="mini-button" style="width:60px;" onclick="confirmChange()">确定</a>
+            <span style="display:inline-block;width:25px;"></span>
+            <a class="mini-button" style="width:60px;" onclick="closeChangeRoleWindow()">取消</a>
+        </div>
+    </div>
+
     <script type="text/javascript">
-        mini.parse();
+    mini.parse();
 
-        var iframe = document.getElementById("mainframe");
-        var tree = mini.get("leftTree");
+    var iframe = document.getElementById("mainframe");
+    var tree = mini.get("leftTree");
+    var changeRoleWindow = mini.get("changeRole-Window");
 
-        $(function () {
-            loadNav();
+    $(function () {
+        loadNav();
+    })
+
+    function loadNav() {
+        var url = '@Url.Action("GetLeftTree", "Home", new { area = "Admin" })';
+
+        doGet(url, null, function (jdata) {
+            if (jdata.Code == '200') {
+                tree.loadList(jdata.Data.JSNet);
+            }
         })
+    }
 
-        function loadNav() {
-            var url = '@Url.Action("GetLeftTree", "Home", new { area = "Admin" })';
+    function showTab(node) {
+        var tabs = mini.get("mainTabs");
 
-            doGet(url, null, function (jdata) {
-                if (jdata.Code == '200') {
-                    tree.loadList(jdata.Data.JSNet);
-                }
-            })
+        var id = "tab$" + node.ID;
+        var tab = tabs.getTab(id);
+        if (!tab) {
+            tab = {};
+            tab._nodeid = node.ID;
+            tab.name = id;
+            tab.title = node.Title;
+            tab.url = node.Url;
+            tab.showCloseButton = true;
+
+            tabs.addTab(tab);
         }
+        tabs.activeTab(tab);
+    }
 
-        function showTab(node) {
-            var tabs = mini.get("mainTabs");
+    function onNodeSelect(e) {
+        var node = e.node;
+        var isLeaf = e.isLeaf;
 
-            var id = "tab$" + node.ID;
-            var tab = tabs.getTab(id);
-            if (!tab) {
-                tab = {};
-                tab._nodeid = node.ID;
-                tab.name = id;
-                tab.title = node.Title;
-                tab.url = node.Url;
-                tab.showCloseButton = true;
-
-                tabs.addTab(tab);
-            }
-            tabs.activeTab(tab);
+        if (isLeaf) {
+            showTab(node);
         }
+    }
 
-        function onNodeSelect(e) {
-            var node = e.node;
-            var isLeaf = e.isLeaf;
+    function onTabsActiveChanged(e) {
+        var tabs = e.sender;
+        var tab = tabs.getActiveTab();
+        if (tab && tab._nodeid) {
 
-            if (isLeaf) {
-                showTab(node);
-            }
-        }
-
-        function onTabsActiveChanged(e) {
-            var tabs = e.sender;
-            var tab = tabs.getActiveTab();
-            if (tab && tab._nodeid) {
-
-                var node = tree.getNode("'" + tab._nodeid + "'");
-                if (node && !tree.isSelectedNode(node)) {
-                    tree.selectNode(node);
-                }
+            var node = tree.getNode("'" + tab._nodeid + "'");
+            if (node && !tree.isSelectedNode(node)) {
+                tree.selectNode(node);
             }
         }
+    }
+
+    function logout() {
+        var url = '@Url.Action("Logout", "Home", new { area = "Admin" })';
+        doGet(url, null);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////
+    function onShowChangeRoleWindow() {
+
+        var url = '@Url.Action("GetMyRolesDDL", "Role", new { area = "Admin" })';
+        doGet(url, null, function (jdata) {
+            if (jdata.Code == '200') {
+                var roleDDL = new mini.get("RoleDDL");
+                roleDDL.setData(jdata.Data);
+                var rid = getCookie("RID");//这是加密了的数据，应该从后台获取
+                debugger;
+                roleDDL.setValue(rid);//选中当前使用中的角色
+                changeRoleWindow.show();
+            }
+        })
+    }
+
+    function closeChangeRoleWindow() {
+        changeRoleWindow.hide();
+    }
+
+    function confirmChange() {
+        var form = new mini.Form("#form");
+        var o = form.getData();
+        var url = '@Url.Action("ChangeMyCurrentRole", "Role")';
+
+        doGet(url, { RoleID: o.RoleID }, function (jdata) {
+            if (jdata.Code == '200') {
+                loadNav();
+                closeAllTabs();
+                var roleDDL = new mini.get("RoleDDL");
+                $("#roleName").text(roleDDL.getText());
+            }
+        });
+    }
+
+    function closeAllTabs() {
+        var tabs = mini.get("mainTabs");
+        var but = tabs.getTab(0);
+        tabs.removeAll(but);
+    }
     </script>
 
 </body>

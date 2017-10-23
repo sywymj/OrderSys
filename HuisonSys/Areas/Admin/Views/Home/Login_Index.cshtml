@@ -40,8 +40,11 @@
     var form = new mini.Form("Login-Form");
 
     if (window.top !== window) {
-        alert('@ViewBag.ErrMsg');
-        top.location.href = '@ViewBag.Url';
+        var errMsg = '@ViewBag.ErrMsg';
+        if (errMsg != '') {
+            alert(errMsg);
+            top.location.href = '@ViewBag.Url';
+        }
     }
     LoginWindow.show();
 

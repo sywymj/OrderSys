@@ -22,6 +22,8 @@ namespace OrderSys.Admin.Controllers
         [HttpGet]
         public ActionResult Index()
         {
+            ViewBag.StaffName = permissionService.CurrentStaff.Name;
+            ViewBag.RoleName = permissionService.CurrentRole.FullName;
             return View("~/Areas/Admin/Views/Home/Index.cshtml");
         }
 
@@ -55,10 +57,6 @@ namespace OrderSys.Admin.Controllers
         [HttpGet]
         public ViewResult LoginIndex(string errMsg,string url)
         {
-            if (string.IsNullOrEmpty(errMsg))
-            {
-                errMsg = "超时请重新登陆！";
-            }
             ViewBag.ErrMsg = errMsg;
             ViewBag.Url = url;
 
@@ -95,8 +93,9 @@ namespace OrderSys.Admin.Controllers
             LoginService loginService = new LoginService();
             loginService.Logout();
 
-            string s = JSON.ToJSON(new JSResponse(ResponseType.Remind, "登出成功！"), jsonParams);
-            return s;
+            string url = Url.Action("LoginIndex", "Home", new { area = "Admin" });
+            string re = JSON.ToJSON(new JSResponse(ResponseType.Redict, "登出成功！", data: url));
+            return re;
         }
         
     }

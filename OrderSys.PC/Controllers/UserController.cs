@@ -107,6 +107,16 @@ namespace OrderSys.Admin.Controllers
         } 
         #endregion
 
+        [HttpGet]
+        public string AddWeixinUser()
+        {
+            string sUserIDs = JSRequest.GetRequestUrlParm("UserIDs");
+            int[] userIDs = JSValidator.ValidateStrings("用户ID",sUserIDs,true);
+
+            service.AddWeiXinUser(userIDs);
+            return JSON.ToJSON(new JSResponse(ResponseType.Remind, "操作成功！"), jsonParams);
+        }
+
         #region VERIFY
         [HttpGet]
         public string VerifyUserName(string userName, string userID)

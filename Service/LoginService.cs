@@ -188,5 +188,10 @@ namespace JSNet.Service
         }
 
         #endregion
+
+        public void ChangeMyCurrentRole(int roleID)
+        {
+            JSResponse.WriteCookie("RID", SecretUtil.Encrypt(roleID.ToString()), 120);
+        }
     }
 }

@@ -95,6 +95,36 @@ namespace OrderSys.Admin.Controllers
         } 
         #endregion
 
+        [AllowAnonymous]
+        [HttpGet]
+        public string GetMyRolesDDL()
+        {
+            List<RoleEntity> list = service.GetRoleListByUser(service.CurrentUser);
+            var re = list.Select(l =>
+                new ViewRoleDDL()
+                {
+                    ID = SecretUtil.Encrypt(l.ID.ToString()),//需要加密
+                    Title = l.FullName
+                }).ToList();
+
+            string s = JSON.ToJSON(new JSResponse(re), jsonParams);
+            return s;
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        public string ChangeMyCurrentRole()
+        {
+            string sRoleID = SecretUtil.Decrypt(JSRequest.GetRequestUrlParm("RoleID"));
+            int roleID = (int)JSValidator.ValidateInt("角色ID", sRoleID, true);
+
+            LoginService login = new LoginService();
+            login.ChangeMyCurrentRole(roleID);
+
+            string s = JSON.ToJSON(new JSResponse("操作成功！"), jsonParams);
+            return s;
+        }
+
         [HttpGet]
         public string GetRoleDDL()
         {

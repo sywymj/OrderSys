@@ -213,7 +213,7 @@ ajaxTips = function (json, container, callback) {
         //$.toptip(jdata.Msg, 'success');
     } else if (jdata.RspTypeCode == 4) {
         //跳转页面
-        window.location.href = jdata.data;
+        window.location.href = jdata.Data;
         return jdata;
     } else if (jdata.RspTypeCode == 5) {
         //没数据

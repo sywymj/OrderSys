@@ -41,6 +41,12 @@ namespace JSNet.BaseSys
 
         }
 
+        public JSResponse(ResponseType resType, string msg, object data)
+            : this(resType, "200", msg, "", "", data)
+        {
+
+        }
+
         /// <summary>
         /// 返回错误提示，返回码默认500，返回消息为errmsg
         /// </summary>

@@ -61,6 +61,23 @@ namespace JSNet.Service
             return roles;
         }
 
+        public List<RoleEntity> GetRoleListByUser(UserEntity user)
+        {
+            WhereStatement where = new WhereStatement();
+            where.Add(UserRoleEntity.FieldUserID, Comparison.Equals, user.ID);
+
+            EntityManager<UserRoleEntity> manager = new EntityManager<UserRoleEntity>();
+            int[] roleIDs = manager.GetProperties(UserRoleEntity.FieldRoleID, where).ConvertToIntArry();
+
+            WhereStatement where1 = new WhereStatement();
+            where1.Add(RoleEntity.FieldID, Comparison.In, roleIDs);
+
+            int count = 0;
+            EntityManager<RoleEntity> manager1 = new EntityManager<RoleEntity>();
+            List<RoleEntity> roles = manager1.GetList(where1, out count);
+            return roles;
+        }
+
         public void AddRole(RoleEntity entity)
         {
             //获取系统名称
