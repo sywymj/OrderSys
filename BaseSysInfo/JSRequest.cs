@@ -82,7 +82,7 @@ namespace JSNet.BaseSys
         /// <returns></returns>
         public static string GetCookie(string key, bool returnDefatult = false)
         {
-            string s = CommonUtil.GetCookie(BaseSystemInfo.SoftName, key);
+            string s = CommonUtil.GetCookie(key);
             if (string.IsNullOrEmpty(s))
             {
                 if (returnDefatult)

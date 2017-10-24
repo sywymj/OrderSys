@@ -10,16 +10,15 @@
         <div property="columns">
             <div type="checkcolumn"></div>
             <div type="indexcolumn" headeralign="center">序号</div>
-            <div field="Role_ID" width="120" headeralign="center" allowsort="true" visible="false">Role_ID</div>
             <div field="Staff_ID" width="120" headeralign="center" allowsort="true" visible="false">Staff_ID</div>
             <div field="Organize_ID" width="120" headeralign="center" allowsort="true" visible="false">Organize_ID</div>
             <div field="User_ID" width="120" headeralign="center" align="center" allowsort="true" visible="false">User_ID</div>
-            <div field="Staff_Name" width="120" headeralign="center" align="center" allowsort="true">姓名</div>
-            <div field="User_UserName" width="120" headeralign="center" align="center" allowsort="true">用户名</div>
-            <div field="User_AddedVXUser" width="120" headeralign="center" align="center" allowsort="true" renderer="onAddedVXUserRenderer">已添加微信用户</div>
-            <div field="Staff_Tel" width="120" headeralign="center" align="center" allowsort="true">电话</div>
+            <div field="Staff_Name" width="60" headeralign="center" align="center" allowsort="true">姓名</div>
+            <div field="User_UserName" width="60" headeralign="center" align="center" allowsort="true">用户名</div>
+            <div field="User_AddedVXUser" width="30" headeralign="center" align="center" allowsort="true" renderer="onAddedVXUserRenderer">微信用户</div>
+            <div field="Staff_Tel" width="60" headeralign="center" align="center" allowsort="true">电话</div>
             <div field="Organize_FullName" width="120" headeralign="center" align="center" allowsort="true">部门</div>
-            <div field="Role_FullName" width="120" headeralign="center" align="center" allowsort="true">已分配的角色</div>
+            <div field="Role_FullNames" width="240" headeralign="center" align="center" allowsort="true">已分配的角色</div>
         </div>
     </div>
 </div>
@@ -31,7 +30,7 @@
     staff_grid.load({
         pageIndex: 0,
         pageSize: 50,
-        sortField: "Role_ID",//排序字段必需要，不然没法分页
+        sortField: "Staff_ID",//排序字段必需要，不然没法分页
         sortOrder: "DESC",//排序字段必需要，不然没法分页
     }, function (data) {
         ajaxTips(data.text);
@@ -99,7 +98,7 @@
     //////////////////////////////////////////////////
     function onAddedVXUserRenderer(e) {
         if (e.value == 1) return "已添加";
-        else return "否";
+        else return "未添加";
     }
 
 </script>

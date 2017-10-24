@@ -37,7 +37,6 @@
             <div style="position:absolute;top:18px;right:10px;">
                 <span class="mini-button mini-button-iconTop" iconcls="icon-user" plain="true">用户：@ViewBag.StaffName</span>
                 <span class="mini-button mini-button-iconTop" iconcls="icon-user" plain="true" onclick="onShowChangeRoleWindow">角色：<label id="roleName">@ViewBag.RoleName</label></span>
-                <a class="mini-button mini-button-iconTop" iconcls="icon-add" onclick="changeRole" plain="true">切换角色</a>
                 <a class="mini-button mini-button-iconTop" iconcls="icon-close" onclick="logout" plain="true">安全退出</a>
             </div>
 
@@ -184,6 +183,7 @@
                 closeAllTabs();
                 var roleDDL = new mini.get("RoleDDL");
                 $("#roleName").text(roleDDL.getText());
+                changeRoleWindow.hide();
             }
         });
     }

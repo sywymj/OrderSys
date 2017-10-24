@@ -177,12 +177,12 @@ namespace JSNet.BaseSys
 
         public static void WriteCookie(string key, string strValue)
         {
-            CommonUtil.WriteCookie(BaseSystemInfo.SoftName, key, strValue);
+            CommonUtil.WriteCookie(key, strValue);
         }
 
         public static void WriteCookie(string key, string strValue, int expires)
         {
-            CommonUtil.WriteCookie(BaseSystemInfo.SoftName, key, strValue,expires);
+            CommonUtil.WriteCookie(key, strValue,expires);
         }
     }
 
