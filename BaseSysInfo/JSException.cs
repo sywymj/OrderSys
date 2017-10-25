@@ -35,7 +35,7 @@ namespace JSNet.BaseSys
         }
 
         public JSException(string errorCode, string errorMsg)
-            : base(string.Format("{0}，错误码：{1}", errorMsg, errorCode))
+            :base("")
         {
             this.errorCode = errorCode;
             this.errorMsg = errorMsg;

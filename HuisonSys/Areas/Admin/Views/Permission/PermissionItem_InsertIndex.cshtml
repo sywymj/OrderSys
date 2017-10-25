@@ -4,52 +4,52 @@
     <div style="padding-left:11px;padding-bottom:5px;">
         <table style="table-layout:fixed;">
             <tr>
-                <td style="width:70px;">父级元素：</td>
-                <td style="width:150px;">
-                    @Html.Partial("~/Areas/Admin/Views/Permission/PermissionItem_TreeDDL.cshtml")
-                </td>
-                <td style="width:70px;">系统类型：</td>
-                <td style="width:150px;">
-                    @Html.Partial("~/Areas/Admin/Views/Permission/SysCategory_DDL.cshtml")
-                </td>
-            </tr>
-            <tr>
-                <td style="width:70px;">标题：</td>
-                <td style="width:150px;">
-                    <input name="FullName" class="mini-textbox" required="true" emptytext="请输入标题"/>
-                </td>
-                <td style="width:70px;">标识码：</td>
-                <td style="width:150px;">
+                <td style="width: 70px; text-align: right;">标识码：</td>
+                <td style="width:150px;" colspan="3">
                     @Html.Partial("~/Areas/Admin/Views/Permission/PermissionItemCode_DDL.cshtml", "onExistPermissionItemCodeValidation")
                 </td>
             </tr>
             <tr>
-                <td style="width:70px;">Controller：</td>
+                <td style="width: 70px; text-align: right;">父级元素：</td>
+                <td style="width:150px;">
+                    @Html.Partial("~/Areas/Admin/Views/Permission/PermissionItem_TreeDDL.cshtml")
+                </td>
+                <td style="width: 70px; text-align: right;">标题：</td>
+                <td style="width:150px;">
+                    <input name="FullName" class="mini-textbox" required="true" emptytext="请输入标题" />
+                </td>
+            </tr>
+            <tr>
+                <td style="width: 70px; text-align: right;">Controller：</td>
                 <td style="width:150px;">
                     <input name="Controller" class="mini-textbox" required="true" emptytext="请输入Controller" />
                 </td>
-                <td style="width:70px;">Action：</td>
+                <td style="width: 70px; text-align: right;">Action：</td>
                 <td style="width:150px;">
                     <input name="ActionName" class="mini-textbox" required="true" emptytext="请输入Action" />
                 </td>
             </tr>
             <tr>
-                <td style="width:70px;">ActionParameter：</td>
+                <td style="width: 70px; text-align: right;">系统类型：</td>
                 <td style="width:150px;">
-                    <input name="ActionParameter" class="mini-textbox" required="false" emptytext="请输入ActionParameter（可选）" />
+                    @Html.Partial("~/Areas/Admin/Views/Permission/SysCategory_DDL.cshtml")
                 </td>
                 <td></td>
                 <td></td>
+                @*<td style="width: 70px; text-align: right;">ActionParameter：</td>
+                <td style="width:150px;">
+                    <input name="ActionParameter" class="mini-textbox" required="false" emptytext="请输入ActionParameter（可选）" />
+                </td>*@
             </tr>
             <tr>
-                <td style="width:70px;">是否公共：</td>
+                <td style="width: 70px; text-align: right;">是否公共：</td>
                 <td>
                     <select name="IsPublic" class="mini-radiobuttonlist" value="0">
                         <option value="1">是</option>
                         <option value="0">否</option>
                     </select>
                 </td>
-                <td style="width:70px;">是否可用：</td>
+                <td style="width: 70px; text-align: right;">是否可用：</td>
                 <td>
                     <select name="IsEnable" class="mini-radiobuttonlist" value="1">
                         <option value="1">是</option>
@@ -58,7 +58,7 @@
                 </td>
             </tr>
             <tr>
-                <td style="width:70px;">排序：</td>
+                <td style="width: 70px; text-align: right;">排序：</td>
                 <td style="width:150px;">
                     <input name="SortCode" class="mini-textbox" required="true" value="100" emptytext="请输入排序号" />
                 </td>
@@ -66,9 +66,9 @@
                 <td></td>
             </tr>
             <tr>
-                <td style="width:70px;">备注：</td>
+                <td style="width: 70px; text-align: right;">备注：</td>
                 <td style="width:150px" colspan="3">
-                    <input name="Description" class="mini-textarea" required="false" emptytext="请输入备注内容（可选）" />
+                    <input name="Description" class="mini-textarea" required="false" emptytext="请输入备注内容（可选）" width="100%"/>
                 </td>
             </tr>
         </table>
@@ -99,8 +99,11 @@
                 form.setChanged(false);
 
                 mini.get("PermissionItemDDL").setValue(o.ParentID);
+                mini.get("PermissionItemDDL").SelectedValue = o.ParentID;//这种写法是防止ddl的数据加载慢了，不能用setvalue设置选中值。
                 mini.get("SysCategoryDDL").setValue(o.SysCategory);
+                mini.get("SysCategoryDDL").SelectedValue = o.SysCategory;//这种写法是防止ddl的数据加载慢了，不能用setvalue设置选中值。
                 mini.get("PermissionItemCodeDDL").setValue(o.Code);
+                mini.get("PermissionItemCodeDDL").SelectedValue = o.Code;//这种写法是防止ddl的数据加载慢了，不能用setvalue设置选中值。
             })
         }
     }

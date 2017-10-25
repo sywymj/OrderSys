@@ -40,7 +40,7 @@
     function add() {
         mini.open({
             url: "@Url.Action("InsertIndex", "User", new { area = "Admin" })",
-            title: "新增员工", width: 600, height: 400,
+            title: "新增员工", width: 500, height: 350,
             onload: function () {
                 debugger;
                 var iframe = this.getIFrameEl();
@@ -58,7 +58,7 @@
         if (row) {
             mini.open({
                 url: "@Url.Action("EditIndex", "User", new { area = "Admin" })",
-                title: "编辑员工", width: 600, height: 400,
+                title: "编辑员工", width: 500, height: 350,
                 onload: function () {
                     var iframe = this.getIFrameEl();
                     var data = { action: "edit", ID: row.User_ID };

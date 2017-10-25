@@ -3,8 +3,8 @@
     Layout = null;
 }
 
-<input id="PermissionItemCodeDDL" class="mini-combobox" popupheight="150"
-       valuefield="ID" textfield="Title"
+<input id="PermissionItemCodeDDL" class="mini-combobox" popupheight="150" width="100%"
+       valuefield="ID" textfield="Title" data-options="{SelectedValue:''}"
        multiselect="false" valuefromselect="false" allowinput="true" required="true" shownullitem="false" emptytext="请选择..."
        onvalidation="@Model" />
 
@@ -18,8 +18,8 @@
         var url = '@Url.Action("GetPermissionItemCodeDDL", "Permission", new { area = "Admin" })';
         doGet(url, null, function (jdata) {
             if (jdata.Code == '200') {
-                debugger;
                 PermissionItemCodeDDL.setData(jdata.Data);
+                PermissionItemCodeDDL.setValue(PermissionItemCodeDDL.SelectedValue);
             }
         })
     }

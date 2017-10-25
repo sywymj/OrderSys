@@ -2,8 +2,8 @@
     Layout = null;
 }
 
-<input id="OrganizeCategoryDDL" class="mini-combobox" popupheight="150"
-       valuefield="ID" textfield="Title"
+<input id="OrganizeCategoryDDL" class="mini-combobox" popupheight="150" width="100%"
+       valuefield="ID" textfield="Title" data-options="{SelectedValue:''}"
        multiselect="false" valuefromselect="true" allowinput="true" required="true" shownullitem="false" emptytext="请选择..." />
 
 <script>
@@ -17,8 +17,8 @@
         var url = '@Url.Action("GetOrganizeCategoryDDL", "Organize", new { area = "Admin" })';
         doGet(url, null, function (jdata) {
             if (jdata.Code == '200') {
-                debugger;
                 OrganizeCategoryDDL.setData(jdata.Data);
+                OrganizeCategoryDDL.setValue(OrganizeCategoryDDL.SelectedValue);
             }
         })
     }

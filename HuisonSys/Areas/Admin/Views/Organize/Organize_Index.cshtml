@@ -11,10 +11,10 @@
         <div property="columns">
             <div name="treename" field="Organize_FullName" width="180" headeralign="center" align="left" allowsort="true">标题</div>
             <div field="Organize_Code" width="180" headeralign="center" align="left" allowsort="true">标识码</div>
-            <div field="OrganizeCategory_FullName" width="120" headeralign="center" align="center" allowsort="true">机构类别</div>
+            <div field="OrganizeCategory_FullName" width="60" headeralign="center" align="center" allowsort="true">机构类别</div>
             <div field="OrganizeCategory_Code" width="120" headeralign="center" align="center" allowsort="true">类别标识码</div>
+            <div field="Organize_SortCode" width="60" headeralign="center" align="center" allowsort="true">排序</div>
             <div field="Organize_Description" width="120" headeralign="center" align="center" allowsort="true">机构描述</div>
-            <div field="Organize_SortCode" width="120" headeralign="center" align="center" allowsort="true">排序</div>
         </div>
     </div>
 </div>
@@ -34,7 +34,7 @@
     function add() {
         mini.open({
             url: "@Url.Action("InsertOrganizeIndex", "Organize", new { area = "Admin" })",
-            title: "新增组织机构", width: 600, height: 400,
+            title: "新增组织机构", width: 500, height: 380,
             onload: function () {
                 debugger;
                 var iframe = this.getIFrameEl();
@@ -52,7 +52,7 @@
         if (row) {
             mini.open({
                 url: "@Url.Action("EditOrganizeIndex", "Organize", new { area = "Admin" })",
-                title: "编辑组织机构", width: 600, height: 400,
+                title: "编辑组织机构", width: 500, height: 380,
                 onload: function () {
                     var iframe = this.getIFrameEl();
                     var data = { action: "edit", ID: row.Organize_ID };

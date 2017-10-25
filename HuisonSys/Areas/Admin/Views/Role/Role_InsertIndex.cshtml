@@ -4,19 +4,19 @@
     <div style="padding-left:11px;padding-bottom:5px;">
         <table style="table-layout:fixed;">
             <tr>
-                <td style="width:70px;">标题：</td>
+                <td style="width: 70px; text-align: right; ">标题：</td>
                 <td style="width:150px;">
                     <input name="FullName" class="mini-textbox" required="true" emptytext="请输入标题" />
                 </td>
             </tr>
             <tr>
-                <td style="width:70px;">所属机构：</td>
+                <td style="width: 70px; text-align: right; ">所属机构：</td>
                 <td style="width:150px;">
                     @Html.Partial("~/Areas/Admin/Views/Organize/OrganizeDDL.cshtml")
                 </td>
             </tr>
             <tr>
-                <td style="width:70px;">备注：</td>
+                <td style="width: 70px; text-align: right; ">备注：</td>
                 <td style="width:150px" colspan="3">
                     <input name="Description" class="mini-textarea" required="false" emptytext="请输入备注内容（可选）" />
                 </td>
@@ -44,12 +44,12 @@
             var parms = { RoleID: data.ID };
 
             doGet(url, parms, function (jdata) {
-                debugger;
                 var o = jdata.Data
-                debugger;
                 form.setData(o);
                 form.setChanged(false);
-                mini.get("OrganizeDDL").setValue(o.OrganizeID.toString());
+
+                mini.get("OrganizeDDL").setValue(o.OrganizeID);
+                mini.get("OrganizeDDL").SelectedValue = o.OrganizeID;//这种写法是防止ddl的数据加载慢了，不能用setvalue设置选中值。
             })
         }
     }

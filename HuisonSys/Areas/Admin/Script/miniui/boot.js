@@ -30,12 +30,13 @@ mini_debugger = true;
 document.write('<script src="' + bootPATH + 'miniui.js" type="text/javascript" ></sc' + 'ript>');
 document.write('<link href="' + bootPATH + 'themes/default/miniui.css" rel="stylesheet" type="text/css" />');
 document.write('<link href="' + bootPATH + 'themes/icons.css" rel="stylesheet" type="text/css" />');
-
+document.write('<link href="' + bootPATH + 'themes/blue/skin.css" rel="stylesheet" type="text/css" />');
 
 //mode
 var mode = getCookie("miniuiMode");
 if (mode) {
     document.write('<link href="' + bootPATH + 'themes/default/' + mode + '-mode.css" rel="stylesheet" type="text/css" />');
+    //document.write('<link href="' + bootPATH + 'themes/blue2010/skin.css" rel="stylesheet" type="text/css" />');
 }
 
 

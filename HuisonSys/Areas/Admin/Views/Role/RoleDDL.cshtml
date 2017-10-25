@@ -2,8 +2,8 @@
     Layout = null;
 }
 
-<input id="RoleDDL" class="mini-combobox" popupheight="150"
-       valuefield="ID" textfield="Title"
+<input id="RoleDDL" class="mini-combobox" popupheight="150" width="100%"
+       valuefield="ID" textfield="Title" data-options="{SelectedValue:''}"
        multiselect="true" valuefromselect="true" allowinput="true" required="true" shownullitem="false" emptytext="请选择..." />
 
 <script>
@@ -13,12 +13,11 @@
     load_roleDDL();
 
     function load_roleDDL() {
-
         var url = '@Url.Action("GetRoleDDL", "Role", new { area = "Admin" })';
         doGet(url, null, function (jdata) {
             if (jdata.Code == '200') {
-                debugger;
                 roleDDL.setData(jdata.Data);
+                roleDDL.setValue(roleDDL.SelectedValue);
             }
         })
     }

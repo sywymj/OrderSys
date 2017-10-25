@@ -77,7 +77,7 @@ namespace JSNet.BaseSys
         /// <param name="errcode">错误代码</param>
         /// <param name="errmsg">错误消息</param>
         public JSResponse(string msg, string errcode, string errmsg)
-            : this("500", msg, errcode, errmsg)
+            : this("500", msg == "" ? string.Format("{0}(错误码：{1})", errmsg, errcode) : errmsg, errcode, errmsg)
         {
 
         }

@@ -10,14 +10,15 @@
          url="@Url.Action("GetGrantItemDT", "Permission", new { area = "Admin" })" showtreeicon="false" resultastree="false" expandonload="1" multiselect="false" showcheckbox="true" showfoldercheckbox="false"
          treecolumn="treename" idfield="PermissionItem_ID" parentfield="PermissionItem_ParentID" datafield="Data.DT.JSNet">
         <div property="columns">
-            <div name="treename" field="PermissionItem_FullName" width="180" headeralign="center" align="left" allowsort="true">标题</div>
-            <div field="PermissionItem_Code" width="180" headeralign="center" align="left" allowsort="true">标识码</div>
-            <div field="PermissionItem_SysCategory" width="120" headeralign="center" align="center" allowsort="true">系统类型</div>
-            <div field="PermissionItem_Controller" width="120" headeralign="center" align="center" allowsort="true">Controller</div>
-            <div field="PermissionItem_ActionName" width="120" headeralign="center" align="center" allowsort="true">ActionName</div>
-            <div field="PermissionItem_ActionParameter" width="120" headeralign="center" align="center" allowsort="true">ActionParameter</div>
+            <div name="treename" field="PermissionItem_FullName" width="210" headeralign="center" align="left" allowsort="true">标题</div>
+            <div field="PermissionItem_Code" width="210" headeralign="center" align="left" allowsort="true">标识码</div>
+            <div field="PermissionItem_SysCategory" width="60" headeralign="center" align="center" allowsort="true">系统类型</div>
+            <div field="PermissionItem_Controller" width="120" headeralign="center" align="left" allowsort="true">Controller</div>
+            <div field="PermissionItem_ActionName" width="120" headeralign="center" align="left" allowsort="true">ActionName</div>
+            @*<div field="PermissionItem_ActionParameter" width="120" headeralign="center" align="center" allowsort="true">ActionParameter</div>*@
+            <div field="PermissionItem_SortCode" width="60" headeralign="center" align="center" allowsort="true">排序</div>
             <div field="PermissionItem_Description" width="120" headeralign="center" align="center" allowsort="true">明细描述</div>
-            <div field="PermissionItem_SortCode" width="120" headeralign="center" align="center" allowsort="true">排序</div>
+            
         </div>
     </div>
 </div>

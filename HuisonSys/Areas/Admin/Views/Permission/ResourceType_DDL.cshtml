@@ -2,8 +2,8 @@
     Layout = null;
 }
 
-<input id="ResourceTypeDDL" class="mini-combobox" popupheight="150"
-       valuefield="ID" textfield="Title"
+<input id="ResourceTypeDDL" class="mini-combobox" popupheight="150" width="100%"
+       valuefield="ID" textfield="Title" data-options="{SelectedValue:''}"
        multiselect="false" valuefromselect="true" allowinput="true" required="true" shownullitem="false" emptytext="请选择..." />
 
 <script>
@@ -17,8 +17,8 @@
         var url = '@Url.Action("GetResourceTypeDDL", "Permission", new { area = "Admin" })';
         doGet(url, null, function (jdata) {
             if (jdata.Code == '200') {
-                debugger;
                 ResourceTypeDDL.setData(jdata.Data);
+                ResourceTypeDDL.setValue(ResourceTypeDDL.SelectedValue);
             }
         })
     }

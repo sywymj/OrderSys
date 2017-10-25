@@ -2,23 +2,22 @@
     Layout = null;
 }
 
-<input id="OrganizeDDL" class="mini-treeselect" popupheight="150"
-       valuefield="ID" parentfield="ParentID" textfield="Title"
+<input id="OrganizeDDL" class="mini-treeselect" popupheight="150" width="100%"
+       valuefield="ID" parentfield="ParentID" textfield="Title" data-options="{SelectedValue:''}"
        valuefromselect="true" allowinput="true" required="true" showtreeicon="false" expandonload="0" shownullitem="false" emptytext="请选择..." /> 
 
 <script>
     mini.parse();
 
-    var organizeDDL = mini.get("OrganizeDDL");
-    load_organizeDDL();
+    var OrganizeDDL = mini.get("OrganizeDDL");
+    load_OrganizeDDL();
 
-    function load_organizeDDL() {
-
+    function load_OrganizeDDL() {
         var url = '@Url.Action("GetOrganizeDDL", "Organize", new { area = "Admin" })';
         doGet(url, null, function (jdata) {
             if (jdata.Code == '200') {
-                debugger;
-                organizeDDL.loadList(jdata.Data);
+                OrganizeDDL.loadList(jdata.Data);
+                OrganizeDDL.setValue(OrganizeDDL.SelectedValue);
             }
         })
     }

@@ -1,20 +1,20 @@
 ﻿
-<form id="user-form" method="post" style="">
+<form id="user-form" method="post">
     <input name="ID" class="mini-hidden" />
     <div style="padding-left:11px;padding-bottom:5px;">
         <table style="table-layout:fixed;">
             <tr>
-                <td style="width:70px;">账号：</td>
+                <td style="width: 70px; text-align: right">账号：</td>
                 <td style="width:150px;">
                     <input name="UserName" class="mini-textbox" required="true" emptytext="请输入帐号" onvalidation="onExistUserNameValidation" />
                 </td>
-                <td style="width:70px;">密码：</td>
+                <td style="width: 70px; text-align: right; ">密码：</td>
                 <td style="width:150px;">
                     <input name="Password" class="mini-password" required="false" emptytext="请输入密码" />
                 </td>
             </tr>
             <tr>
-                <td style="width:70px;">允许登录：</td>
+                <td style="width: 70px; text-align: right; ">允许登录：</td>
                 <td>
                     <select name="IsLogin" class="mini-radiobuttonlist">
                         <option value="1">允许</option>
@@ -25,12 +25,10 @@
                 <td></td>
             </tr>
             <tr>
-                <td style="width:70px;">分配角色：</td>
-                <td style="width:150px;">
+                <td style="width: 70px; text-align: right; ">分配角色：</td>
+                <td style="width:150px;" colspan="2">
                     @Html.Partial("~/Areas/Admin/Views/Role/RoleDDL.cshtml")
                 </td>
-                <td></td>
-                <td></td>
             </tr>
         </table>
     </div>
@@ -39,25 +37,23 @@
         <div style="padding:5px;">
             <table style="table-layout:fixed;">
                 <tr>
-                    <td style="width:70px;">姓名：</td>
+                    <td style="width: 70px; text-align: right; ">姓名：</td>
                     <td style="width:150px;">
                         <input name="Staff.Name" class="mini-textbox" required="true" emptytext="请输入姓名" />
                     </td>
-                    <td style="width:70px;">手机号码：</td>
+                    <td style="width: 70px; text-align: right; ">手机号码：</td>
                     <td style="width:150px;">
                         <input name="Staff.Tel" class="mini-textbox" required="true" emptytext="请输入手机号码" />
                     </td>
                 </tr>
                 <tr>
-                    <td style="width:70px;">地址：</td>
-                    <td style="width:150px;">
-                        <input name="Staff.Addr" class="mini-textbox" required="false" emptytext="请输入地址" />
+                    <td style="width: 70px; text-align: right; ">地址：</td>
+                    <td style="width:150px;" colspan="3">
+                        <input name="Staff.Addr" class="mini-textbox" required="false" emptytext="请输入地址" width="100%" />
                     </td>
-                    <td></td>
-                    <td></td>
                 </tr>
                 <tr>
-                    <td style="width:70px;">性别：</td>
+                    <td style="width: 70px; text-align: right; ">性别：</td>
                     <td>
                         <select name="Staff.Sex" class="mini-radiobuttonlist">
                             <option value="1">男</option>
@@ -68,15 +64,13 @@
                     <td></td>
                 </tr>
                 <tr>
-                    <td>所属部门：</td>
-                    <td>
+                    <td style="width: 70px; text-align: right; ">所属部门：</td>
+                    <td style="width:150px;" colspan="2">
                         @Html.Partial("~/Areas/Admin/Views/Organize/OrganizeDDL.cshtml")
                     </td>
-                    <td></td>
-                    <td></td>
                 </tr>
                 <tr>
-                    <td style="width:70px;">是否在职：</td>
+                    <td style="width: 70px; text-align: right; ">是否在职：</td>
                     <td>
                         <select name="Staff.IsOnJob" class="mini-radiobuttonlist">
                             <option value="1">是</option>
@@ -103,6 +97,9 @@
     //标准方法接口定义
     function SetData(data) {
         if (data.action == "edit") {
+            //不能修改用户名
+            mini.getByName("UserName").disable();
+
             //跨页面传递的数据对象，克隆后才可以安全使用
             data = mini.clone(data);
             var url = '@Url.Action("GetSingle", "User", new { area = "Admin" })';
@@ -114,8 +111,10 @@
                 form.setData(o);
                 form.setChanged(false);
 
-                mini.get("RoleDDL").setValue(o.RoleIDs.toString());
                 mini.get("OrganizeDDL").setValue(o.Staff.OrganizeID.toString());
+                mini.get("OrganizeDDL").SelectedValue = o.Staff.OrganizeID.toString();//这种写法是防止ddl的数据加载慢了，不能用setvalue设置选中值。
+                mini.get("RoleDDL").setValue(o.RoleIDs.toString());
+                mini.get("RoleDDL").SelectedValue = o.RoleIDs.toString();//这种写法是防止ddl的数据加载慢了，不能用setvalue设置选中值。
             })
         }
     }

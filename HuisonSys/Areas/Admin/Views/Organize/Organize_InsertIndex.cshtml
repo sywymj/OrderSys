@@ -4,65 +4,63 @@
     <div style="padding-left:11px;padding-bottom:5px;">
         <table style="table-layout:fixed;">
             <tr>
-                <td style="width:70px;">父级元素：</td>
-                <td style="width:150px;">
-                    @Html.Partial("~/Areas/Admin/Views/Organize/Organize_TreeDDL.cshtml")
-                </td>
-                <td></td>
-                <td></td>
-            </tr>
-            <tr>
-                <td style="width:70px;">机构类别：</td>
-                <td style="width:150px;">
-                    @Html.Partial("~/Areas/Admin/Views/Organize/OrganizeCategory_DDL.cshtml")
-                </td>
-                <td style="width:70px;">标识码：</td>
-                <td style="width:150px;">
+                <td style="width: 70px; text-align: right; ">标识码：</td>
+                <td style="width:150px;" colspan="3">
                     @Html.Partial("~/Areas/Admin/Views/Organize/OrganizeCode_DDL.cshtml", "onExistOrganizeCodeValidation")
                 </td>
             </tr>
             <tr>
-                <td style="width:70px;">标题：</td>
+                <td style="width: 70px; text-align: right; ">父级元素：</td>
+                <td style="width:150px;">
+                    @Html.Partial("~/Areas/Admin/Views/Organize/Organize_TreeDDL.cshtml")
+                </td>
+                <td style="width: 70px; text-align: right; ">机构类别：</td>
+                <td style="width:150px;">
+                    @Html.Partial("~/Areas/Admin/Views/Organize/OrganizeCategory_DDL.cshtml")
+                </td>
+            </tr>
+            <tr>
+                <td style="width: 70px; text-align: right; ">标题：</td>
                 <td style="width:150px;">
                     <input name="FullName" class="mini-textbox" required="true" emptytext="请输入标题" />
                 </td>
-                <td style="width:70px;">副标题：</td>
+                <td style="width: 70px; text-align: right; ">副标题：</td>
                 <td style="width:150px;">
                     <input name="ShortName" class="mini-textbox" required="false" emptytext="请输入副标题（可选）" />
                 </td>
             </tr>
             <tr>
-                <td style="width:70px;">外线电话：</td>
+                <td style="width: 70px; text-align: right; ">外线电话：</td>
                 <td style="width:150px;">
                     <input name="OuterPhone" class="mini-textbox" required="false" emptytext="请输入外线电话（可选）" />
                 </td>
-                <td style="width:70px;">内线电话：</td>
+                <td style="width: 70px; text-align: right; ">内线电话：</td>
                 <td style="width:150px;">
                     <input name="InnerPhone" class="mini-textbox" required="false" emptytext="请输入内线电话（可选）" />
                 </td>
             </tr>
             <tr>
-                <td style="width:70px;">传真：</td>
+                <td style="width: 70px; text-align: right; ">传真：</td>
                 <td style="width:150px;">
                     <input name="Fax" class="mini-textbox" required="false" emptytext="请输入传真（可选）" />
                 </td>
-                <td style="width:70px;">邮箱：</td>
+                <td style="width: 70px; text-align: right; ">邮箱：</td>
                 <td style="width:150px;">
                     <input name="Email" class="mini-textbox" required="false" emptytext="请输入邮箱（可选）" />
                 </td>
             </tr>
             <tr>
-                <td style="width:70px;">邮编：</td>
+                <td style="width: 70px; text-align: right; ">邮编：</td>
                 <td style="width:150px;">
                     <input name="Postalcode" class="mini-textbox" required="false" emptytext="请输入邮编（可选）" />
                 </td>
-                <td style="width:70px;">通讯地址：</td>
+                <td style="width: 70px; text-align: right; ">通讯地址：</td>
                 <td style="width:150px;">
                     <input name="Address" class="mini-textbox" required="false" emptytext="请输入地址（可选）" />
                 </td>
             </tr>
             <tr>
-                <td style="width:70px;">网址：</td>
+                <td style="width: 70px; text-align: right; ">网址：</td>
                 <td style="width:150px;">
                     <input name="Web" class="mini-textbox" required="false" emptytext="请输入网址（可选）" />
                 </td>
@@ -70,11 +68,11 @@
                 <td></td>
             </tr>
             <tr>
-                <td style="width:70px;">排序号：</td>
+                <td style="width: 70px; text-align: right; ">排序号：</td>
                 <td style="width:150px;">
                     <input name="SortCode" class="mini-textbox" required="false" value="100" emptytext="请输入排序号（可选）" />
                 </td>
-                <td style="width:70px;">是否可见：</td>
+                <td style="width: 70px; text-align: right; ">是否可见：</td>
                 <td>
                     <select name="IsVisible" class="mini-radiobuttonlist" value="1">
                         <option value="1">是</option>
@@ -83,9 +81,9 @@
                 </td>
             </tr>
             <tr>
-                <td style="width:70px;">备注：</td>
+                <td style="width: 70px; text-align: right; ">备注：</td>
                 <td style="width:150px" colspan="3">
-                    <input name="Description" class="mini-textarea" required="false" emptytext="请输入备注内容（可选）" />
+                    <input name="Description" class="mini-textarea" required="false" emptytext="请输入备注内容（可选）" width="100%"/>
                 </td>
             </tr>
         </table>
@@ -116,8 +114,11 @@
                 form.setChanged(false);
 
                 mini.get("OrganizeTreeDDL").setValue(o.ParentID);
+                mini.get("OrganizeTreeDDL").SelectedValue = o.ParentID;//这种写法是防止ddl的数据加载慢了，不能用setvalue设置选中值。
                 mini.get("OrganizeCategoryDDL").setValue(o.OrganizeCategoryID);
+                mini.get("OrganizeCategoryDDL").SelectedValue = o.OrganizeCategoryID;//这种写法是防止ddl的数据加载慢了，不能用setvalue设置选中值。
                 mini.get("OrganizeCodeDDL").setValue(o.Code);
+                mini.get("OrganizeCodeDDL").SelectedValue = o.Code;//这种写法是防止ddl的数据加载慢了，不能用setvalue设置选中值。
             })
         }
     }

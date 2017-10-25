@@ -9,12 +9,12 @@
          showtreeicon="false" resultastree="false" expandonload="1"
          treecolumn="resourcename" idfield="Resource_ID" parentfield="Resource_ParentID" datafield="Data.DT.JSNet">
         <div property="columns">
-            <div name="resourcename" field="Resource_FullName" width="180" headeralign="center" align="left" allowsort="true">标题</div>
-            <div field="Resource_Code" width="180" headeralign="center" align="left" allowsort="true">标识码</div>
-            <div field="Resource_ResourceType" width="120" headeralign="center" align="center" allowsort="true">资源类型</div>
-            <div field="Resource_Target" width="120" headeralign="center" align="center" allowsort="true">资源</div>
-            <div field="Resource_NavigateUrl" width="120" headeralign="center" align="center" allowsort="true">Url地址</div>
-            <div field="Resource_SortCode" width="120" headeralign="center" align="center" allowsort="true">排序</div>
+            <div name="resourcename" field="Resource_FullName" width="210" headeralign="center" align="left" allowsort="true">标题</div>
+            <div field="Resource_Code" width="210" headeralign="center" align="left" allowsort="true">标识码</div>
+            <div field="Resource_ResourceType" width="60" headeralign="center" align="center" allowsort="true">资源类型</div>
+            <div field="Resource_Target" width="60" headeralign="center" align="center" allowsort="true">资源</div>
+            <div field="Resource_NavigateUrl" width="150" headeralign="center" align="left" allowsort="true">Url地址</div>
+            <div field="Resource_SortCode" width="60" headeralign="center" align="center" allowsort="true">排序</div>
             <div field="Resource_Description" width="120" headeralign="center" align="center" allowsort="true">资源描述</div>
         </div>
     </div>
@@ -34,7 +34,7 @@
     function add() {
         mini.open({
             url: "@Url.Action("InsertResourceIndex", "Permission", new { area = "Admin" })",
-            title: "新增资源", width: 600, height: 400,
+            title: "新增资源", width: 500, height: 350,
             onload: function () {
                 debugger;
                 var iframe = this.getIFrameEl();
@@ -52,7 +52,7 @@
         if (row) {
             mini.open({
                 url: "@Url.Action("EditResourceIndex", "Permission", new { area = "Admin" })",
-                title: "编辑资源", width: 600, height: 400,
+                title: "编辑资源", width: 500, height: 350,
                 onload: function () {
                     var iframe = this.getIFrameEl();
                     var data = { action: "edit", ID: row.Resource_ID };
@@ -73,7 +73,7 @@
         if (row) {
             mini.open({
                 url: "@Url.Action("GrantItemIndex", "Permission", new { area = "Admin" })",
-                title: "配置资源明细", width: 800, height: 600,
+                title: "配置资源明细", width: 1000, height: 600,
                 onload: function () {
                     var iframe = this.getIFrameEl();
                     var data = {

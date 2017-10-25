@@ -23,7 +23,7 @@ namespace HuisonSys.Controllers
         {
             string errCode = RouteData.Values["ErrorCode"].ToString();
             string errMessage = RouteData.Values["ErrorMsg"].ToString();
-            string message = RouteData.Values["Tips"].ToString() == "" ? errMessage : RouteData.Values["Tips"].ToString();//错误消息
+            string message = RouteData.Values["Tips"].ToString();
 
             string re = JSON.ToJSON(new JSResponse(message, errCode, errMessage), jsonParams);
             return re;

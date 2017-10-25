@@ -1,5 +1,5 @@
 ﻿doGet = function (url, urlParmsObj, callback) {
-    showLoading();
+    //showLoading();
     $.ajax({
         type: "GET", //GET或POST,
         async: true, //默认设置为true，所有请求均为异步请求。
@@ -14,13 +14,13 @@
         error: function (XMLHttpRequest, textStatus, errorThrown) {
         },
         complete: function () {
-            hideLoading();
+            //hideLoading();
         }
     });
 }
 
 doGetSync = function (url, urlParmsObj, callback) {
-    showLoading();
+    //showLoading();
     $.ajax({
         type: "GET", //GET或POST,
         async: false, //默认设置为true，所有请求均为异步请求。
@@ -34,13 +34,13 @@ doGetSync = function (url, urlParmsObj, callback) {
         error: function (XMLHttpRequest, textStatus, errorThrown) {
         },
         complete: function () {
-            hideLoading();
+            //hideLoading();
         }
     });
 }
 
 doPost = function (url, urlParmsObj, callback) {
-    showLoading();
+    //showLoading();
     $.ajax({
         type: "Post", //GET或POST,
         async: true, //默认设置为true，所有请求均为异步请求。
@@ -54,7 +54,7 @@ doPost = function (url, urlParmsObj, callback) {
         error: function (XMLHttpRequest, textStatus, errorThrown) {
         },
         complete: function () {
-            hideLoading();
+            //hideLoading();
         }
     });
 }

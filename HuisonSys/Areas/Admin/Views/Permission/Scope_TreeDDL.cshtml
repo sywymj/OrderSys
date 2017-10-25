@@ -2,8 +2,8 @@
     Layout = null;
 }
 
-<input id="ScopeDDL" class="mini-treeselect" popupheight="150"
-       valuefield="ID" parentfield="ParentID" textfield="Title"
+<input id="ScopeDDL" class="mini-treeselect" popupheight="150" width="100%"
+       valuefield="ID" parentfield="ParentID" textfield="Title" data-options="{SelectedValue:''}"
        valuefromselect="true" allowinput="true" required="true" showtreeicon="false" expandonload="0" shownullitem="false" multiselect="true" showfoldercheckbox="true" emptytext="请选择..." />
 
 <script>
@@ -17,8 +17,8 @@
         var url = '@Url.Action("GetScopeTreeDDL", "Permission", new { area = "Admin" })';
         doGet(url, null, function (jdata) {
             if (jdata.Code == '200') {
-                debugger;
                 ScopeDDL.loadList(jdata.Data);
+                ScopeDDL.setValue(ScopeDDL.SelectedValue);
             }
         })
     }

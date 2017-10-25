@@ -11,8 +11,8 @@
          treecolumn="treename" idfield="Organize_ID" parentfield="Organize_ParentID" datafield="Data.DT.JSNet">
         <div property="columns">
             <div field="Role_ID" width="180" headeralign="center" align="center" allowsort="true" visible="false">角色ID</div>
-            <div name="treename" field="Organize_FullName" width="180" headeralign="center" align="left" allowsort="true">所属机构</div>
-            <div field="Role_FullName" width="180" headeralign="center" align="center" allowsort="true">角色名称</div>
+            <div name="treename" field="Organize_FullName" width="90" headeralign="center" align="left" allowsort="true">所属机构</div>
+            <div field="Role_FullName" width="180" headeralign="center" align="left" allowsort="true">角色名称</div>
             <div field="Role_Description" width="120" headeralign="center" align="left" allowsort="true">角色描述</div>
         </div>
     </div>
@@ -33,7 +33,7 @@
     function add() {
         mini.open({
             url: "@Url.Action("InsertRoleIndex", "Role", new { area = "Admin" })",
-            title: "新增角色", width: 500, height: 600,
+            title: "新增角色", width: 250, height: 200,
             onload: function () {
                 debugger;
                 var iframe = this.getIFrameEl();
@@ -51,7 +51,7 @@
         if (row) {
             mini.open({
                 url: "@Url.Action("EditRoleIndex", "Role", new { area = "Admin" })",
-                title: "编辑角色", width: 500, height: 600,
+                title: "编辑角色", width: 250, height: 200,
                 onload: function () {
                     var iframe = this.getIFrameEl();
                     debugger;
@@ -73,7 +73,7 @@
         if (row) {
             mini.open({
                 url: "@Url.Action("GrantPermissionModuleIndex", "Permission", new { area = "Admin" })",
-                title: "配置角色模块", width: 800, height: 600,
+                title: "配置角色模块", width: 1000, height: 600,
                 onload: function () {
                     var iframe = this.getIFrameEl();
                     var data = {
@@ -96,7 +96,7 @@
         if (row) {
             mini.open({
                 url: "@Url.Action("GrantPermissionScopeIndex", "Permission", new { area = "Admin" })",
-                title: "配置角色资源", width: 800, height: 600,
+                title: "配置角色资源", width: 1000, height: 600,
                 onload: function () {
                     var iframe = this.getIFrameEl();
                     var data = {

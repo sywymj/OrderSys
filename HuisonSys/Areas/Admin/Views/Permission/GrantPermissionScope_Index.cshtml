@@ -7,20 +7,6 @@
 @Html.Partial("~/Areas/Admin/Views/Shared/_Header.cshtml", Request.Url.AbsolutePath)
 <div class="mini-fit">
     <div id="RoleID" class="mini-hidden"></div>
-    @*<div id="Scope-datagrid" class="mini-treegrid" ajaxoptions="{type : 'get'}" style="width:100%;height:100%" autoload="false"
-         url="@Url.Action("GetGrantPermissionScopeDT", "Permission", new { area = "Admin" })" showtreeicon="false" resultastree="false" expandonload="1" multiselect="false" showcheckbox="true" showfoldercheckbox="false"
-         treecolumn="treename" idfield="Resource_ID" parentfield="Resource_ParentID" datafield="Data.DT.JSNet">
-        <div property="columns">
-            <div name="treename" field="Resource_FullName" width="180" headeralign="center" align="left" allowsort="true">资源标题</div>
-            <div field="PermissionScope_ID" width="180" headeralign="center" align="left" allowsort="true" visible="false">资源对象ID</div>
-            <div field="Resource_Code" width="180" headeralign="center" align="left" allowsort="true">资源标识码</div>
-            <div field="Organize_FullName" width="120" headeralign="center" align="center" allowsort="true">资源对象</div>
-            <div field="Organize_Code" width="120" headeralign="center" align="center" allowsort="true">资源对象标识码</div>
-            <div field="OrganizeCategory_FullName" width="120" headeralign="center" align="center" allowsort="true">资源对象类别</div>
-            <div field="OrganizeCategory_Code" width="120" headeralign="center" align="center" allowsort="true">资源对象类别标识码</div>
-        </div>
-    </div>*@
-
     <div id="Scope-datagrid" class="mini-treegrid" ajaxoptions="{type : 'get'}" style="width:100%;height:100%;" autoload="false"
          url="@Url.Action("GetGrantDataResourceList", "Permission", new { area = "Admin" })"
          treecolumn="treename" idfield="ID" parentfield="ParentID" datafield="Data"
@@ -29,7 +15,7 @@
          ondrawcell="ondrawcell">
         <div property="columns">
             <div type="indexcolumn"></div>
-            <div name="treename" field="Title" width="120">数据资源</div>
+            <div name="treename" field="Title" width="210">数据资源</div>
             <div field="PermissionScopes" width="100%" style="overflow: auto; white-space: normal; text-overflow:initial">数据对象</div>
         </div>
     </div>
