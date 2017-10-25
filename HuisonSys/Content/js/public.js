@@ -182,44 +182,24 @@ ajaxTips = function (json, container, callback) {
         jdata = eval('(' + json + ')');
     }
     
-    if (jdata.RspTypeCode == -1) {
-        //错误消息提示
-        if (jdata.ErrCode == "401") {
-            debugger;
-            $.alert(jdata.ErrMsg, "警告", function () {
-                top.location.href = jdata.Data;//"/Login.html";
-            });
-        } else if (jdata.ErrCode == "403") {
-            $.alert(jdata.ErrMsg, "警告", function () {
-                callback && callback(jdata);
-            });
-        } else {
-            //错误消息提示
-            console.log(jdata.ErrCode + ":" + jdata.ErrMsg);
-            $.alert(jdata.Msg, "警告", function () {
-                callback && callback(jdata);
-            });
-        }
+    if (jdata.RspTypeCode == -1) {//错误消息提示
+        console.log(jdata.ErrCode + ":" + jdata.ErrMsg);
+        $.alert(jdata.Msg, "警告", function () {
+            callback && callback(jdata);
+        });
         return jdata;
-    } else if (jdata.RspTypeCode == 1) {
-        //提示信息提示
+    } else if (jdata.RspTypeCode == 1) {//提示信息提示
         $.alert(jdata.Msg, '成功', function () {
             callback && callback(jdata);
         });
         return jdata;
-        //$.toast("操作成功", function () {
-        //    console.log('close');
-        //});
-        //$.toptip(jdata.Msg, 'success');
-    } else if (jdata.RspTypeCode == 4) {
-        //跳转页面
-        window.location.href = jdata.Data;
-        return jdata;
-    } else if (jdata.RspTypeCode == 5) {
-        //没数据
+    } else if (jdata.RspTypeCode == 4) {//跳转页面
+        $.alert(jdata.Msg, "警告", function () {
+            top.location.href = jdata.Data;//"/Login.html";
+        });
+    } else if (jdata.RspTypeCode == 5) {//没数据
         showEnding(container, jdata.Msg);
-    } else if (jdata.RspTypeCode == 6) {
-        //数据加载完
+    } else if (jdata.RspTypeCode == 6) {//数据加载完
         showEnding(container, jdata.Msg);
     }
 

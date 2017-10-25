@@ -73,25 +73,12 @@ ajaxTips = function (json, container, callback) {
     //通过这种方法可将字符串转换为对象
     var jdata = eval('(' + json + ')');
     if (jdata.RspTypeCode == -1) {
-        if (jdata.ErrCode == "401") {
-            debugger;
-            mini.alert(jdata.ErrMsg, "警告", function () {
-                top.location.href = jdata.Data;
-            });
-        } else if (jdata.ErrCode == "403") {
-            mini.alert(jdata.ErrMsg, "警告", function () {
-                callback && callback(jdata);
-            });
-        } else {
-            //错误消息提示
-            console.log(jdata.ErrCode + ":" + jdata.ErrMsg);
-            mini.alert(jdata.Msg, "警告", function () {
-                callback && callback(jdata);
-            });
-        }
+        console.log(jdata.ErrCode + ":" + jdata.ErrMsg);
+        mini.alert(jdata.Msg, "警告", function () {
+            callback && callback(jdata);
+        });
         return jdata;
-    } else if (jdata.RspTypeCode == 1) {
-        //提示信息提示
+    } else if (jdata.RspTypeCode == 1) {//提示信息提示
         mini.showTips({
             content: jdata.Msg,
             state: 'success',
@@ -99,8 +86,7 @@ ajaxTips = function (json, container, callback) {
             y: 'top',
             timeout: 3000
         });
-    } else if (jdata.RspTypeCode == 2) {
-        //提示信息提示
+    } else if (jdata.RspTypeCode == 2) {//提示信息提示
         mini.showTips({
             content: jdata.Msg,
             state: 'success',
@@ -108,14 +94,13 @@ ajaxTips = function (json, container, callback) {
             y: 'top',
             timeout: 3000
         });
-    }else if (jdata.RspTypeCode == 4) {
-        //跳转页面
-        window.location.href = jdata.Data;
+    } else if (jdata.RspTypeCode == 4) {//跳转页面
+        mini.alert(jdata.Msg, "警告", function () {
+            top.location.href = jdata.Data;
+        });
         return jdata;
-    } else if (jdata.RspTypeCode == 5) {
-        //没数据
-    } else if (jdata.RspTypeCode == 6) {
-        //数据加载完
+    } else if (jdata.RspTypeCode == 5) {//没数据
+    } else if (jdata.RspTypeCode == 6) {//数据加载完 
     }
 
     callback && callback(jdata);

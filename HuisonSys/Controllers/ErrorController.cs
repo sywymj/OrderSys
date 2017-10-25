@@ -55,12 +55,11 @@ namespace HuisonSys.Controllers
             
             if (!isAjax)
             {
-                Response.Redirect(url);
-                Response.End();
+                Response.Redirect(url, true);
             }
 
             string message = RouteData.Values["Tips"].ToString();
-            string re = JSON.ToJSON(new JSResponse("403", message), jsonParams);
+            string re = JSON.ToJSON(new JSResponse(ResponseType.Redict, message, data: url), jsonParams);
             return re;
         }
 
@@ -71,17 +70,17 @@ namespace HuisonSys.Controllers
             
             string message = RouteData.Values["Tips"].ToString();
 
-            string url = "/Login.html";
-            string redirectUrl = "";
+            string middleurl = "";//用来提示超时信息的中间页面。
+            string loginurl = "";
             switch (area)
             {
                 case "weixin":
-                    redirectUrl = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxba12ba5cb2571169&redirect_uri=http://weixin.huison.com/weixin/wxcallback.aspx&response_type=code&scope=snsapi_base&state=my#wechat_redirect";
-                    url = Url.Action("LoginIndex", "Home", new { area = "Weixin", errMsg = message, url = redirectUrl });
+                    loginurl = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxba12ba5cb2571169&redirect_uri=http://weixin.huison.com/weixin/wxcallback.aspx&response_type=code&scope=snsapi_base&state=my#wechat_redirect";
+                    middleurl = Url.Action("LoginIndex", "Home", new { area = "Weixin", msg = message, url = loginurl });
                     break;
                 case "admin":
-                    redirectUrl = Url.Action("LoginIndex", "Home", new { area = "Admin" });
-                    url = Url.Action("LoginIndex", "Home", new { area = "Admin", errMsg = message, url = redirectUrl });
+                    loginurl = Url.Action("LoginIndex", "Home", new { area = "Admin" });
+                    middleurl = Url.Action("LoginIndex", "Home", new { area = "Admin", msg = message, url = loginurl });
                     break;
                 default:
                     break;
@@ -89,11 +88,11 @@ namespace HuisonSys.Controllers
 
             if (!isAjax)
             {
-                Response.Redirect(url);
-                Response.End();
+                //当用url访问出现无权限时，需要先跳转到一个中间页面来提示登录超时，再跳转到登录页面
+                Response.Redirect(middleurl, true);
             }
 
-            string re = JSON.ToJSON(new JSResponse("401", message, data: url), jsonParams);
+            string re = JSON.ToJSON(new JSResponse(ResponseType.Redict, message, data: loginurl), jsonParams);
             return re;
         }
 

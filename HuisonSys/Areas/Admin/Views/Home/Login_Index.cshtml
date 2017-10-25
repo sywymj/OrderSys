@@ -40,13 +40,17 @@
     var form = new mini.Form("Login-Form");
 
     if (window.top !== window) {
-        var errMsg = '@ViewBag.ErrMsg';
+        debugger;
+        var errMsg = '@ViewBag.Msg';
         if (errMsg != '') {
-            alert(errMsg);
-            top.location.href = '@ViewBag.Url';
+            mini.alert(errMsg, "警告", function () {
+                top.location.href = '@Html.Raw(ViewBag.Url)';
+            });
         }
+    } else {
+        LoginWindow.show();
     }
-    LoginWindow.show();
+    
 
     function onLoginClick(e) {
 

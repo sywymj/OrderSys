@@ -40,17 +40,6 @@ namespace OrderSys
         public override void OnAuthorization(AuthorizationContext filterContext)
         {
             base.OnAuthorization(filterContext);
-            //string status = filterContext.HttpContext.Response.StatusDescription;
-            //if (status == PermissionStatus.NoLogin.ToString())
-            //{
-            //    //没登录直接报错，返回json前端处理
-            //    throw new HttpException(401, "登录超时请重新登录！", 1001);
-            //}
-            //else if (status == PermissionStatus.NoRight.ToString())
-            //{
-            //    //无权限，返回json前端处理
-            //    throw new HttpException(403, "没有操作权限！",1001);
-            //}
         }
         protected override void HandleUnauthorizedRequest(AuthorizationContext filterContext)
         {

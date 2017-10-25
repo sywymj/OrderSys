@@ -17,7 +17,7 @@
 </head>
 <body>
     <script>
-    $.alert('@ViewBag.ErrMsg', '警告', function () {
+    $.alert('@ViewBag.Msg', '警告', function () {
         top.location.href = '@Html.Raw(ViewBag.Url)';
     });
     </script>

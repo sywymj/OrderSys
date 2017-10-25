@@ -118,13 +118,13 @@ namespace OrderSys.Controllers
 
         [AllowAnonymous]
         [HttpGet]
-        public ActionResult LoginIndex(string errMsg,string url)
+        public ActionResult LoginIndex(string msg,string url)
         {
-            if (string.IsNullOrEmpty(errMsg))
+            if (string.IsNullOrEmpty(msg))
             {
-                errMsg = "超时请重新登陆！";
+                msg = "超时请重新登陆！";
             }
-            ViewBag.ErrMsg = errMsg;
+            ViewBag.ErrMsg = msg;
             ViewBag.Url = url;
 
             return View();

@@ -55,9 +55,9 @@ namespace OrderSys.Admin.Controllers
 
         [AllowAnonymous]
         [HttpGet]
-        public ViewResult LoginIndex(string errMsg,string url)
+        public ViewResult LoginIndex(string msg, string url)
         {
-            ViewBag.ErrMsg = errMsg;
+            ViewBag.Msg = msg;
             ViewBag.Url = url;
 
             return View("~/Areas/Admin/Views/Home/Login_Index.cshtml");
