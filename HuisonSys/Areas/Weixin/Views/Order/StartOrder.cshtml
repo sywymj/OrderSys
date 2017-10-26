@@ -1,4 +1,4 @@
-﻿
+﻿@model JSNet.Model.OrderEntity
 <!--引入UICSS-->
 <link rel="stylesheet" type="text/css" href="/Content/uploader/style.css">
 <!--引入CSS-->
@@ -10,19 +10,19 @@
     <div class="weui_cell">
         <div class="weui_cell_hd"><label for="" class="weui_label">截止日期</label></div>
         <div class="weui_cell_bd weui_cell_primary">
-            <input class="weui_input" id="BookingTime" type="date" value="">
+            <input class="weui_input" id="BookingTime" type="date" value="请选择截止日期（选填）">
         </div>
     </div>
     <div class="weui_cell">
         <div class="weui_cell_hd"><label class="weui_label">联系人</label></div>
         <div class="weui_cell_bd weui_cell_primary">
-            <input class="weui_input" id="Attn" type="text" placeholder="不填默认发单人">
+            <input class="weui_input" id="Attn" type="text" placeholder="不填默认发单人" value="@Model.Attn">
         </div>
     </div>
     <div class="weui_cell">
         <div class="weui_cell_hd"><label class="weui_label">联系电话</label></div>
         <div class="weui_cell_bd weui_cell_primary">
-            <input class="weui_input" id="AttnTel" type="text" placeholder="不填默认发单人电话">
+            <input class="weui_input" id="AttnTel" type="text" placeholder="不填默认发单人电话" value="@Model.AttnTel">
         </div>
     </div>
     <div class="weui_cell">
@@ -64,7 +64,7 @@
 <div class="weui_cells weui_cells_form">
     <div class="weui_cell">
         <div class="weui_cell_bd weui_cell_primary">
-            <textarea class="weui_textarea" id="Content" placeholder="请输入报账单内容" rows="3"></textarea>
+            <textarea class="weui_textarea" id="Content" placeholder="请输入报账单内容（必填）" rows="3"></textarea>
         </div>
     </div>
 </div>
@@ -72,7 +72,7 @@
 <div class="weui_cells weui_cells_form">
     <div class="weui_cell">
         <div class="weui_cell_bd weui_cell_primary">
-            <textarea class="weui_textarea" id="Remark" placeholder="请输入备注" rows="2"></textarea>
+            <textarea class="weui_textarea" id="Remark" placeholder="请输入备注（选填）" rows="2"></textarea>
         </div>
     </div>
 </div>
@@ -200,9 +200,9 @@
             });
 
             $btns.on('click', 'span', function () {
-                alert("删除" + file.name);
-                uploader.removeFile(file, true);
-                return;
+                $.alert("是否确定移除这张图片？", "警告", function () {
+                    uploader.removeFile(file, true);
+                });
             });
         });
 

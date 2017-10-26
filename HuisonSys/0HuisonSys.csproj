@@ -131,6 +131,8 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
+    <Content Include="404.html" />
+    <Content Include="Content\images\404.jpg" />
     <Content Include="Content\js\zepto.min.js" />
     <Content Include="Content\phone_scroll\css\css.css" />
     <Content Include="Content\phone_scroll\css\style.css" />

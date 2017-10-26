@@ -41,6 +41,12 @@ namespace JSNet.BaseSys
 
         }
 
+        public JSResponse(ResponseType resType,string code, string msg)
+            : this(resType, code, msg, "", "", null)
+        {
+
+        }
+
         public JSResponse(ResponseType resType, string msg, object data)
             : this(resType, "200", msg, "", "", data)
         {

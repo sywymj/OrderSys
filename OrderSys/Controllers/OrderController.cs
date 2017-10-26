@@ -26,7 +26,10 @@ namespace OrderSys.Controllers
         [HttpGet]
         public ActionResult MyStartIndex()
         {
-            return View();
+            OrderEntity order = new OrderEntity();
+            order.Attn = orderService.CurrentStaff.Name;
+            order.AttnTel = orderService.CurrentStaff.Tel;
+            return View(order);
         }
 
         [HttpGet]

@@ -21,17 +21,46 @@ namespace HuisonSys.Controllers
 
         public string ShowErrorTips()
         {
+            
             string errCode = RouteData.Values["ErrorCode"].ToString();
             string errMessage = RouteData.Values["ErrorMsg"].ToString();
             string message = RouteData.Values["Tips"].ToString();
 
-            string re = JSON.ToJSON(new JSResponse(message, errCode, errMessage), jsonParams);
+            string re = "";
+            if (string.IsNullOrEmpty(errCode) || string.IsNullOrEmpty(errMessage))
+            {
+                re = JSON.ToJSON(new JSResponse(ResponseType.Error, "500", message), jsonParams);
+                return re;
+            }
+
+            re = JSON.ToJSON(new JSResponse(message, errCode, errMessage), jsonParams);
             return re;
         }
 
         public string Http404()
         {
-            return "貌似URL不在~~";
+            bool isAjax = Request.Headers["x-requested-with"] == null ? false : true;//判断是否ajax请求
+
+            string url = "/404.html";
+            string area = Request.RequestContext.RouteData.DataTokens["area"] == null ? "" : Request.RequestContext.RouteData.DataTokens["area"].ToString().ToLower();
+            switch (area)
+            {
+                case "weixin":
+                    break;
+                case "admin":
+                    break;
+                default:
+                    break;
+            }
+
+            if (!isAjax)
+            {
+                Response.Redirect(url, true);
+            }
+
+            string message = RouteData.Values["Tips"].ToString();
+            string re = JSON.ToJSON(new JSResponse("404"), jsonParams);
+            return re;
         }
 
         /// <summary>
