@@ -29,7 +29,8 @@ namespace OrderSys.Admin
     public class ViewSysCategoryDDL : BaseViewDDL { }
     public class ViewOrganizeCategoryDDL : BaseViewDDL { }
     public class ViewOrganizeCodeDDL : BaseViewDDL { }
-
+    public class ViewOrderWokingLocationDDL : BaseViewDDL { }
+    public class OrderWorkingLocationDDL : BaseViewDDL { }
     //ViewModel
     public class ViewUser : UserEntity
     {
@@ -69,6 +70,8 @@ namespace OrderSys.Admin
 
         public bool Checked { get; set; }
     }
+
+    public class ViewOrderWorkingLocation : OrderWorkingLocationEntity { }
 
     //ListData ViewModel
     public class DataTableData

@@ -3,8 +3,8 @@
     Layout = null;
 }
 
-<input id="DemoDDL" class="mini-combobox" popupheight="150"
-       valuefield="ID" textfield="Title"
+<input id="DemoDDL" class="mini-combobox" popupheight="150" width="100%"
+       valuefield="ID" textfield="Title" data-options="{SelectedValue:''}"
        multiselect="false" valuefromselect="true" allowinput="true" required="true" shownullitem="false" emptytext="请选择..."
        onvalidation="@Model" />
 
@@ -19,8 +19,8 @@
         var url = '@Url.Action("GetDemoDDL", "Demo", new { area = "Admin" })';
         doGet(url, null, function (jdata) {
             if (jdata.Code == '200') {
-                debugger;
                 DemoDDL.setData(jdata.Data);
+                DemoDDL.setValue(DemoDDL.SelectedValue);
             }
         })
     }

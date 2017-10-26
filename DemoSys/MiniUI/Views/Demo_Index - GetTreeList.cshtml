@@ -4,7 +4,7 @@
     Layout = "~/Areas/Admin/Views/Shared/_InnerLayout.cshtml";
 }
 
-@RenderPage("~/Areas/Admin/Views/Shared/_Header.cshtml")
+@Html.Partial("~/Areas/Admin/Views/Shared/_Header.cshtml", Request.Url.AbsolutePath)
 <div class="mini-fit">
     <div id="Demo-datagrid" class="mini-treegrid" ajaxoptions="{type : 'get'}" style="width:100%;height:100%" autoload="false"
          url="@Url.Action("GetDemoList", "Demo", new { area = "XXX" })" showtreeicon="false" resultastree="false" expandonload="1" multiselect="false" showcheckbox="false" showfoldercheckbox="false"

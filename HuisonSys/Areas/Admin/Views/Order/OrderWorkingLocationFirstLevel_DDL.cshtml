@@ -1,0 +1,28 @@
+﻿@model string
+@{
+    Layout = null;
+}
+
+<input id="OrderWorkingLocationFirstLevelDDL" class="mini-combobox" popupheight="150" width="100%"
+       valuefield="ID" textfield="Title" data-options="{SelectedValue:''}"
+       multiselect="false" valuefromselect="false" allowinput="true" required="true" shownullitem="false" emptytext="请选择..."
+       onvalidation="@Model" />
+
+<script>
+    mini.parse();
+
+    var OrderWorkingLocationFirstLevelDDL = mini.get("OrderWorkingLocationFirstLevelDDL");
+    load_OrderWorkingLocationFirstLevelDDL();
+
+    function load_OrderWorkingLocationFirstLevelDDL() {
+
+        var url = '@Url.Action("GetOrderWorkingLocationFirstLevelDDL", "Order", new { area = "Admin" })';
+        doGet(url, null, function (jdata) {
+            if (jdata.Code == '200') {
+                OrderWorkingLocationFirstLevelDDL.setData(jdata.Data);
+                OrderWorkingLocationFirstLevelDDL.setValue(OrderWorkingLocationFirstLevelDDL.SelectedValue);
+            }
+        })
+    }
+
+</script>

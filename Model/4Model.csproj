@@ -47,6 +47,7 @@
     <Compile Include="OrderFlowEntity.cs" />
     <Compile Include="OrderHandleDetailEntity.cs" />
     <Compile Include="OrderHandlerEntity.cs" />
+    <Compile Include="OrderWorkingLocationEntity.cs" />
     <Compile Include="OrganizeEntity.cs" />
     <Compile Include="OrganizeCategoryEntity.cs" />
     <Compile Include="PermissionEntity.cs" />

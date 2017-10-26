@@ -76,8 +76,8 @@
                 form.setData(o);
                 form.setChanged(false);
 
-                mini.get("DemoDDL").setValue(o.ParentID);
-                mini.get("DemoCodeDDL").setValue(o.Code);
+                mini.get("DemoDDL").setValue(o.Code);
+                mini.get("DemoDDL").SelectedValue = o.Code;//这种写法是防止ddl的数据加载慢了，不能用setvalue设置选中值。
             })
         }
     }

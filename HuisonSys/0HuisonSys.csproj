@@ -3050,6 +3050,9 @@
     <Content Include="Content\phone_scroll\iconfont\iconfont.ttf" />
     <Content Include="Content\phone_scroll\iconfont\iconfont.woff" />
     <Content Include="Areas\Weixin\Views\Home\LoginIndex.cshtml" />
+    <Content Include="Areas\Admin\Views\Order\OrderWorkingLocation_Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Order\OrderWorkingLocation_InsertIndex.cshtml" />
+    <Content Include="Areas\Admin\Views\Order\OrderWorkingLocationFirstLevel_DDL.cshtml" />
     <None Include="Properties\PublishProfiles\1.pubxml" />
   </ItemGroup>
   <PropertyGroup>

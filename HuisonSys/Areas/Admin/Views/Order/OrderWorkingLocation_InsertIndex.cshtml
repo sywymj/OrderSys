@@ -1,0 +1,110 @@
+﻿
+<form id="OrderWorkingLocation-form" method="post" style="">
+    <input name="ID" class="mini-hidden" />
+    <div style="padding-left:11px;padding-bottom:5px;">
+        <table style="table-layout:fixed;">
+            <tr>
+                <td style="width: 70px; text-align: right; ">一级分类：</td>
+                <td style="width:210px;">
+                    @Html.Partial("~/Areas/Admin/Views/Order/OrderWorkingLocationFirstLevel_DDL.cshtml")
+                </td>
+            </tr>
+            <tr>
+                <td style="width: 70px; text-align: right; ">二级分类：</td>
+                <td style="width:210px;">
+                    <input name="ScecondLevel" class="mini-textbox" required="false" emptytext="请输入二级分类（如房号）" />
+                </td>
+            </tr>
+            <tr>
+                <td style="width: 70px; text-align: right; ">所属机构：</td>
+                <td style="width:210px;">
+                    @Html.Partial("~/Areas/Admin/Views/Organize/OrganizeDDL.cshtml")
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div style="text-align:center;padding:10px;">
+        <a class="mini-button" onclick="onOk" style="width:60px;margin-right:20px;">确定</a>
+        <a class="mini-button" onclick="onCancel" style="width:60px;">取消</a>
+    </div>
+</form>
+
+<script>
+    mini.parse();
+    var form = new mini.Form("OrderWorkingLocation-form");
+
+    ////////////////////
+    //标准方法接口定义
+    function SetData(data) {
+        if (data.action == "edit") {
+            //跨页面传递的数据对象，克隆后才可以安全使用
+            data = mini.clone(data);
+            var url = '@Url.Action("GetSingleOrderWorkingLocation", "Order", new { area = "Admin" })';
+            var parms = { OrderWorkingLocationID: data.ID };
+
+            doGet(url, parms, function (jdata) {
+                var o = jdata.Data
+                debugger;
+                form.setData(o);
+                form.setChanged(false);
+
+                mini.get("OrderWorkingLocationFirstLevelDDL").setValue(o.FirstLevel);
+                mini.get("OrderWorkingLocationFirstLevelDDL").SelectedValue = o.FirstLevel;//这种写法是防止ddl的数据加载慢了，不能用setvalue设置选中值。
+                mini.get("OrganizeDDL").setValue(o.OrganizeID);
+                mini.get("OrganizeDDL").SelectedValue = o.OrganizeID;//这种写法是防止ddl的数据加载慢了，不能用setvalue设置选中值。
+            })
+        }
+    }
+
+    /////////////////
+    ///保存数据
+    function SaveData() {
+
+        var o = form.getData();
+        o.FirstLevel = mini.get("OrderWorkingLocationFirstLevelDDL").getValue();
+        o.OrganizeID = mini.get("OrganizeDDL").getValue();
+        debugger;
+        //将空的属性转为null
+        if (o.ID == "") {
+            o.ID = null;
+        }
+
+        form.validate();
+        if (form.isValid() == false) return;
+
+        var url;
+        if (o.ID == null) {
+            url = '@Url.Action("AddOrderWorkingLocation", "Order", new { area = "Admin"})';
+        } else {
+            url = '@Url.Action("EditOrderWorkingLocation", "Order", new { area = "Admin" })';
+        }
+        var json = mini.encode(o);
+        var data = { ViewModel: json };
+        doPost(url, data, function (jdata) {
+            CloseWindow("save");
+        })
+    }
+
+    /////////////////
+    ///按钮方法
+    function onOk(e) {
+        SaveData();
+    }
+    function onCancel(e) {
+        CloseWindow("cancel");
+    }
+
+
+    function CloseWindow(action) {
+        if (action == "close" && form.isChanged()) {
+            if (confirm("数据被修改了，是否先保存？")) {
+                return false;
+            }
+        }
+        if (window.CloseOwnerWindow) return window.CloseOwnerWindow(action);
+        else window.close();
+    }
+
+
+</script>
+

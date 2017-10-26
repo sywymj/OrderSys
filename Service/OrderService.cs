@@ -881,6 +881,13 @@ namespace JSNet.Service
             return dt;
         }
 
+        public OrderWorkingLocationEntity GetOrderWorkingLocation(int orderWorkingLocationID)
+        {
+            EntityManager<OrderWorkingLocationEntity> manager = new EntityManager<OrderWorkingLocationEntity>();
+            OrderWorkingLocationEntity model = manager.GetSingle(orderWorkingLocationID);
+            return model;
+        } 
+
         public List<OrderHandlerEntity> GetOrderHandlers(Guid orderID, bool onlyHelper = false)
         {
             WhereStatement where = new WhereStatement();
@@ -895,6 +902,101 @@ namespace JSNet.Service
             List<OrderHandlerEntity> handlers = manager.GetList(where,out count);
 
             return handlers;
+        }
+
+        public DataTable GetOrderWorkingLocationDTByRole(RoleEntity role, Paging paging, out int count)
+        {
+            PermissionService permissionService = new PermissionService();
+            List<string> list = permissionService.GetAuthorizeOrganizeIDByRole(role, "OrderSys_Data.OrderWorkingLocation");
+
+            WhereStatement where = new WhereStatement();
+            if (list.Count > 0)
+            {
+                where.Add("Organize_ID", Comparison.In, list.ToArray());
+            }
+            else
+            {
+                if (role.ID == 1)
+                {
+                    //超级管理员，显示所有内容
+                    where.Add("1", Comparison.Equals, "1");
+                }
+                else
+                {
+                    //非超级管理员，不显示内容
+                    where.Add("1", Comparison.Equals, "0");
+                }
+            }
+
+            OrderByStatement orderby = new OrderByStatement();
+            orderby.Add(paging.SortField, ConvertToSort(paging.SortOrder));
+
+            ViewManager vmanager = new ViewManager("VO_OrderWorkingLocation");
+            DataTable dt = vmanager.GetDataTableByPage(where, out count, paging.PageIndex, paging.PageSize, orderby);
+            return dt;
+        }
+
+        public List<OrderWorkingLocationEntity> GetOrderWorkingLocationListByRole(RoleEntity role)
+        {
+            PermissionService permissionService = new PermissionService();
+            List<string> list = permissionService.GetAuthorizeOrganizeIDByRole(role, "OrderSys_Data.OrderWorkingLocation");
+
+            WhereStatement where = new WhereStatement();
+            if (list.Count > 0)
+            {
+                where.Add("Organize_ID", Comparison.In, list.ToArray());
+            }
+            else
+            {
+                if (role.ID == 1)
+                {
+                    //超级管理员，显示所有内容
+                    where.Add("1", Comparison.Equals, "1");
+                }
+                else
+                {
+                    //非超级管理员，不显示内容
+                    where.Add("1", Comparison.Equals, "0");
+                }
+            }
+
+            int count = 0;
+            EntityManager<OrderWorkingLocationEntity> manager = new EntityManager<OrderWorkingLocationEntity>();
+            List<OrderWorkingLocationEntity> re = manager.GetList(where, out count);
+            return re;
+        }
+
+        public void AddOrderWorkingLocation(OrderWorkingLocationEntity entity)
+        {
+            EntityManager<OrderWorkingLocationEntity> manager = new EntityManager<OrderWorkingLocationEntity>();
+            manager.Insert(entity);
+        }
+
+        public void EditOrderWorkingLocation(OrderWorkingLocationEntity entity)
+        {
+            List<KeyValuePair<string, object>> kvps = new List<KeyValuePair<string, object>>();
+            kvps.Add(new KeyValuePair<string, object>(OrderWorkingLocationEntity.FieldFirstLevel, entity.FirstLevel));
+            kvps.Add(new KeyValuePair<string, object>(OrderWorkingLocationEntity.FieldScecondLevel, entity.ScecondLevel));
+            kvps.Add(new KeyValuePair<string, object>(OrderWorkingLocationEntity.FieldOrganizeID, entity.OrganizeID));
+
+            EntityManager<OrderWorkingLocationEntity> orderManager = new EntityManager<OrderWorkingLocationEntity>();
+            int rows = orderManager.Update(kvps, entity.ID);
+        }
+
+        public void DeleteOrderWorkingLocation(int[] orderWorkingLocationIDs)
+        {
+            WhereStatement where = new WhereStatement();
+            where.Add(OrderWorkingLocationEntity.FieldID, Comparison.In, orderWorkingLocationIDs);
+
+            EntityManager<OrderWorkingLocationEntity> orderManager = new EntityManager<OrderWorkingLocationEntity>();
+            int rows = orderManager.Delete(where);
+        }
+
+        public List<string> GetOrderWorkingLocationFirstLevelList(RoleEntity role)
+        {
+            List<OrderWorkingLocationEntity> list = GetOrderWorkingLocationListByRole(role);
+            var re = list.GroupBy(x => x.FirstLevel).Select(x => x.First().FirstLevel).ToList();
+            return re;
         }
 
         private int GetLeaderHandlerID(int[] orderHandlerIDs)
@@ -952,6 +1054,10 @@ namespace JSNet.Service
             string orderNo = outDbParameters.FirstOrDefault(p => p.ParameterName == dbHelper.GetParameter("sn")).Value.ToString();
             return orderNo;
         }
+
+
+
+
 
     }
 }

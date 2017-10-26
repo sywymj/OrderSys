@@ -4,7 +4,7 @@
     Layout = "~/Areas/Admin/Views/Shared/_InnerLayout.cshtml";
 }
 
-@RenderPage("~/Areas/Admin/Views/Shared/_Header.cshtml")
+@Html.Partial("~/Areas/Admin/Views/Shared/_Header.cshtml", Request.Url.AbsolutePath)
 <div class="mini-fit">
     <div id="Demo-datagrid" class="mini-datagrid" idfield="User_ID" ajaxoptions="{type : 'get'}" style="width:100%;height:100%" autoload="false"
          url="@Url.Action("GetDemoDTByPage", "Demo", new { area = "XXX" })" datafield="Data.DT.JSNet" totalfield="Data.Count">
