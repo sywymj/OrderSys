@@ -25,10 +25,16 @@
             <input class="weui_input" id="AttnTel" type="text" placeholder="不填默认发单人电话" value="@Model.AttnTel">
         </div>
     </div>
-    <div class="weui_cell">
+    @*<div class="weui_cell">
         <div class="weui_cell_hd"><label class="weui_label">报障地点</label></div>
         <div class="weui_cell_bd weui_cell_primary">
             <input class="weui_input" id="WorkingLocation" type="text" placeholder="请输入报障地点">
+        </div>
+    </div>*@
+    <div class="weui_cell weui_cell_select">
+        <div class="weui_cell_bd weui_cell_primary">
+            <select class="weui_select" id="FirstLevelDDL">
+            </select>
         </div>
     </div>
 </div>
@@ -83,6 +89,11 @@
 
 <script>
 
+    $(function () {
+        getOrderWorkingLocationFirstLevel();
+    })
+
+
     doStartOrder = function () {
         var filesName = getFilesName();
         var data = {
@@ -119,7 +130,45 @@
         $('#WorkingLocation').val('');
     }
 
+    getOrderWorkingLocationFirstLevel = function () {
+        var url = '@Url.Action("GetOrderWorkingLocationFirstLevelDDL", "Order", new { area = "Weixin" })';
+        $.ajax({
+            type: "GET", //GET或POST,
+            async: true, //默认设置为true，所有请求均为异步请求。
+            url: url,
+            data: null,
+            dataType: "text", //xml、html、script、jsonp、text
+            beforeSend: function () { },
+            success: function (data) {
+                var jdata = ajaxTips(data);
+                if (jdata.Code == "200") {
+                    initFirstLevelDDL(jdata.Data);
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+            },
+            complete: function () {
+            }
+        });
+    }
 
+    getOrderWorkingLocationSecondLevel = function () {
+
+    }
+
+    initFirstLevelDDL = function (data) {
+        var FirstLevelDDL = $('#FirstLevelDDL');
+        $.each(data,function(i,n){
+            FirstLevelDDL.append('<option value="' + n.ID + '">' + n.Title + '</option>');
+        })
+    }
+
+    initSecondLevelDDL = function (data) {
+        var SecondLevelDDL = $('#SecondLevelDDL');
+        $.each(data, function (i, n) {
+            SecondLevelDDL.append('<option value="' + n.ID + '">' + n.Title + '</option>');
+        })
+    }
 
 </script>
 
