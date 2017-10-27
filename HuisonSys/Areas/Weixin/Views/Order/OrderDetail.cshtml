@@ -16,7 +16,7 @@
     <div class="weui_cell">
         <div class="weui_cell_hd"><label for="" class="weui_label">截止日期</label></div>
         <div class="weui_cell_bd weui_cell_primary">
-            @Convert.ToDateTime(Model["BookingTime"]).ToString(BaseSystemInfo.DateFormat)
+            @(string.IsNullOrEmpty(Model["BookingTime"].ToString())? "无" : Convert.ToDateTime(Model["BookingTime"]).ToString(BaseSystemInfo.DateFormat))   
         </div>
     </div>
     <div class="weui_cell">

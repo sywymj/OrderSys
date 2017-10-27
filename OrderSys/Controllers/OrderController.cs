@@ -3,6 +3,7 @@ using JSNet.BaseSys;
 using JSNet.Model;
 using JSNet.Service;
 using JSNet.Utilities;
+using OrderSys.Models;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -407,6 +408,42 @@ namespace OrderSys.Controllers
                 return res;
             }
         }
+
+        [HttpGet]
+        public string GetOrderWorkingLocationFirstLevelDDL()
+        {
+            List<string> list = orderService.GetOrderWorkingLocationFirstLevelList(orderService.CurrentRole);
+            var re = list.Select(l =>
+                new DDLViewModel()
+                {
+                    ID = l,
+                    Title = l
+                }).ToList();
+
+            string s = JSON.ToJSON(new JSResponse(re), jsonParams);
+            return s;
+        }
+
+        [HttpGet]
+        public string GetOrderWorkingLocationSecondLevelDDL()
+        {
+            string sFirstLevel = JSRequest.GetRequestUrlParm("FirstLevel");
+            string firstLevel = JSValidator.ValidateString("一级选项",sFirstLevel);
+
+            List<string> list = orderService.GetOrderWorkingLocationSecondLevelList(orderService.CurrentRole, firstLevel);
+            var re = list.Select(l =>
+                new DDLViewModel()
+                {
+                    ID = l,
+                    Title = l
+                }).ToList();
+
+            string s = JSON.ToJSON(new JSResponse(re), jsonParams);
+            return s;
+        }
+
+
+
         #endregion
 
         #region DoAction
@@ -414,7 +451,7 @@ namespace OrderSys.Controllers
         public ActionResult DoStartOrder()
         {
             //获取参数
-            string sBookingTime = JSRequest.GetRequestFormParm(OrderEntity.FieldBookingTime);
+            string sBookingTime = JSRequest.GetRequestFormParm(OrderEntity.FieldBookingTime,false);
             string sAttn = JSRequest.GetRequestFormParm(OrderEntity.FieldAttn, false);
             string sAttnTel = JSRequest.GetRequestFormParm(OrderEntity.FieldAttnTel, false);
             string sPriority = JSRequest.GetRequestFormParm(OrderEntity.FieldPriority);
@@ -426,7 +463,7 @@ namespace OrderSys.Controllers
 
             //参数验证
             OrderEntity order = new OrderEntity();
-            order.BookingTime = JSValidator.ValidateDateTime(OrderEntity.FieldBookingTime, sBookingTime, true);
+            order.BookingTime = JSValidator.ValidateDateTime(OrderEntity.FieldBookingTime, sBookingTime, false);
             order.Attn = JSValidator.ValidateString(OrderEntity.FieldAttn, sAttn, false);
             order.AttnTel = JSValidator.ValidateString(OrderEntity.FieldAttnTel, sAttnTel, false);
             order.Priority = JSValidator.ValidateInt(OrderEntity.FieldPriority, sPriority, true);

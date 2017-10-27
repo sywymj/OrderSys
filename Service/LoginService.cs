@@ -31,18 +31,17 @@ namespace JSNet.Service
                 throw new JSException(JSErrMsg.ERR_MSG_NotAllowLogin);
             }
 
-            MyRoleService roleService = new MyRoleService();
-            RoleEntity role = roleService.GetGrantedRole(user);
+            RoleEntity role = GetLoginRole(user);
             if (role == null)
             {
                 throw new JSException(JSErrMsg.ERR_MSG_NotGrantRole);
             }
 
-            JSResponse.WriteCookie("UID", SecretUtil.Encrypt(user.ID.ToString()), 120);
-            JSResponse.WriteCookie("RID", SecretUtil.Encrypt(role.ID.ToString()), 120);
-            JSResponse.WriteCookie("OpenID", user.OpenID, 120);
-            JSResponse.WriteCookie("AdminName", user.UserName, 120);
-            JSResponse.WriteCookie("AdminPwd", user.Password, 120);
+            JSResponse.WriteCookie("UID", SecretUtil.Encrypt(user.ID.ToString()));
+            JSResponse.WriteCookie("RID", SecretUtil.Encrypt(role.ID.ToString()));
+            JSResponse.WriteCookie("OpenID", user.OpenID);
+            JSResponse.WriteCookie("AdminName", user.UserName);
+            JSResponse.WriteCookie("AdminPwd", user.Password);
         }
 
         public void VXLogin(string openID)
@@ -63,24 +62,14 @@ namespace JSNet.Service
                 throw new HttpException(401, JSErrMsg.ERR_MSG_NotAllowLogin);
             }
 
-            string rid = SecretUtil.Decrypt(JSRequest.GetCookie("RID", true));
-            MyRoleService roleService = new MyRoleService();
-            RoleEntity role = roleService.GetRole(openID);
-
-            //TODO 从cookie记录之前登录的角色：（有bug，需要判断rid是否为当前用户的，否则会存在跨角色访问）
-            //RoleEntity role = string.IsNullOrEmpty(rid) ?
-            //    roleService.GetRole(openID) :
-            //    roleService.GetRole(Convert.ToInt32(rid));
-
+            RoleEntity role = GetLoginRole(user);
             if (role == null)
             {
-                throw new JSException(JSErrMsg.ERR_MSG_LoginOvertime);
+                throw new HttpException(401, JSErrMsg.ERR_MSG_NotGrantRole);
             }
-
             //写入cookie
-            JSResponse.WriteCookie("OpenID", user.OpenID, 120);
-            //JSResponse.WriteCookie("UID", SecretUtil.Encrypt(user.ID.ToString()), 120);
-            JSResponse.WriteCookie("RID", SecretUtil.Encrypt(role.ID.ToString()), 120);
+            JSResponse.WriteCookie("OpenID", user.OpenID);
+            JSResponse.WriteCookie("RID", SecretUtil.Encrypt(role.ID.ToString()));
         }
 
         public void Logout()
@@ -101,13 +90,49 @@ namespace JSNet.Service
             JSResponse.WriteCookie("RID", "");
         }
 
+        /// <summary>
+        /// 获取登陆时的角色对象
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="defatult">若cookie里面的role正确，是否返回当前用户的第一个角色</param>
+        /// <returns></returns>
+        public RoleEntity GetLoginRole(UserEntity user, bool defatult = true)
+        {
+            RoleEntity role = null;
+            MyRoleService roleService = new MyRoleService();
+            List<RoleEntity> roles = roleService.GetRoleListByUser(user);
+            if (roles.Count == 0)
+            {
+                return null;
+            }
+
+            int rid = 0;
+            if (!Int32.TryParse(SecretUtil.Decrypt(JSRequest.GetCookie("RID", true)), out rid))
+            {
+                if (defatult)
+                    return roles[0];
+                else
+                    return null;
+            }
+
+            if (roles.Count(r => r.ID == rid) == 0)
+            {
+                //cookie里的rid不属于当前用户。
+                if (defatult)
+                    return roles[0];
+                else
+                    return null;
+            }
+            
+            role = roles.FirstOrDefault(r => r.ID == rid);
+            return role;
+        }
+
         public void ChkLogin(out UserEntity user, out RoleEntity role)
         {
-            string rid = SecretUtil.Decrypt(JSRequest.GetCookie("RID", true));
             string uid = SecretUtil.Decrypt(JSRequest.GetCookie("UID", true));
 
-            if (string.IsNullOrEmpty(uid)
-                || string.IsNullOrEmpty(rid))
+            if (string.IsNullOrEmpty(uid))
             {
                 throw new HttpException(401, JSErrMsg.ERR_MSG_LoginOvertime);
             }
@@ -131,25 +156,21 @@ namespace JSNet.Service
                 throw new HttpException(401, JSErrMsg.ERR_MSG_UserUnable);
             }
 
-            MyRoleService roleService = new MyRoleService();
-            role = roleService.GetRole(Convert.ToInt32(rid));
+            role = GetLoginRole(user, false);
             if (role == null)
             {
-                throw new HttpException(401, JSErrMsg.ERR_MSG_NotGrantRole);
+                throw new HttpException(401, JSErrMsg.ERR_MSG_UserEdited);
             }
 
             //写入cookie
-            JSResponse.WriteCookie("UID", SecretUtil.Encrypt(uid), 120);
-            JSResponse.WriteCookie("RID", SecretUtil.Encrypt(rid), 120);
+            JSResponse.WriteCookie("UID", SecretUtil.Encrypt(uid));
+            JSResponse.WriteCookie("RID", SecretUtil.Encrypt(role.ID.ToString()));
         }
 
         public void ChkVXLogin(out UserEntity user, out RoleEntity role)
         {
             string openID = JSRequest.GetCookie("OpenID", true);
-            string rid = SecretUtil.Decrypt(JSRequest.GetCookie("RID", true));
-
-            if (string.IsNullOrEmpty(openID)
-                || string.IsNullOrEmpty(rid))
+            if (string.IsNullOrEmpty(openID))
             {
                 throw new HttpException(401, JSErrMsg.ERR_MSG_LoginOvertime);
             }
@@ -170,28 +191,22 @@ namespace JSNet.Service
                 throw new HttpException(401, JSErrMsg.ERR_MSG_NotAllowLogin);
             }
 
-            //切换用户时，
-
-
-            MyRoleService roleService = new MyRoleService();
-            role = roleService.GetRole(Convert.ToInt32(rid));
-
+            role = GetLoginRole(user, false);
             if (role == null)
             {
-                throw new HttpException(401, JSErrMsg.ERR_MSG_NotGrantRole);
+                throw new HttpException(401, JSErrMsg.ERR_MSG_UserEdited);
             }
 
             //写入cookie
-            JSResponse.WriteCookie("OpenID", user.OpenID, 120);
-            //JSResponse.WriteCookie("UID", SecretUtil.Encrypt(user.ID.ToString()), 120);
-            JSResponse.WriteCookie("RID", SecretUtil.Encrypt(role.ID.ToString()), 120);
+            JSResponse.WriteCookie("OpenID", user.OpenID);
+            JSResponse.WriteCookie("RID", SecretUtil.Encrypt(role.ID.ToString()));
         }
 
         #endregion
 
         public void ChangeMyCurrentRole(int roleID)
         {
-            JSResponse.WriteCookie("RID", SecretUtil.Encrypt(roleID.ToString()), 120);
+            JSResponse.WriteCookie("RID", SecretUtil.Encrypt(roleID.ToString()));
         }
     }
 }

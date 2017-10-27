@@ -14,8 +14,8 @@
                     <ul>
                         <li>紧急程度：<font color="@EnumExtensions.ToColorStyle((OrderPriority)dr["Priority"])" size="2">@EnumExtensions.ToDescription((OrderPriority)dr["Priority"])</font></li>
                         <div class="clear"></div>
-                        <li>截止日期：@Convert.ToDateTime(dr["BookingTime"]).ToString(BaseSystemInfo.DateFormat)</li>
-                        <div class="clear"></div>
+                        @*<li>截止日期：@Convert.ToDateTime(dr["BookingTime"]).ToString(BaseSystemInfo.DateFormat)</li>
+                        <div class="clear"></div>*@
                         @{if (Math.Abs((int)dr["Status"]) == (int)OrderStatus.Finish)
                         {
                             <li>验收时间：@Convert.ToDateTime(dr["FinishTime"]).ToString(BaseSystemInfo.DateTimeFormat)</li>

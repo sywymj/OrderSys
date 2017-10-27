@@ -65,6 +65,8 @@ namespace JSNet.BaseSys
         public const string ERR_MSG_WrongRoleID = "RID有误！";
         public const string ERR_CODE_WrongTel = "88";
         public const string ERR_MSG_WrongTel = "手机号码不存在！";
+        public const string ERR_CODE_UserEditedl = "89";
+        public const string ERR_MSG_UserEdited = "用户验证失败，请重新登陆！";
 
         //9开头是API错误
         public const string ERR_MSG_APIFailed = "调用接口出错！";

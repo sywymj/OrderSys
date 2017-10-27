@@ -17,16 +17,16 @@ namespace JSNet.Service
     {
         public RoleEntity GetCurrentRole()
         {
-            string rid = SecretUtil.Decrypt(JSRequest.GetCookie("RID", true));
-            if (string.IsNullOrEmpty(rid))
+            int rid = 0;
+            if (!Int32.TryParse(SecretUtil.Decrypt(JSRequest.GetCookie("RID", true)), out rid))
             {
-                throw new HttpException(401,JSErrMsg.ERR_MSG_LoginOvertime);
+                throw new HttpException(401, JSErrMsg.ERR_MSG_LoginOvertime);
             }
 
-            RoleEntity role = GetRole(Convert.ToInt32(rid));
+            RoleEntity role = GetRole(rid);
             if (role == null)
             {
-                throw new HttpException(401,JSErrMsg.ERR_MSG_NotGrantRole);
+                throw new HttpException(401, JSErrMsg.ERR_MSG_LoginOvertime);
             }
             return role;
         }

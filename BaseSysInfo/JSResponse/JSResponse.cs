@@ -183,12 +183,13 @@ namespace JSNet.BaseSys
 
         public static void WriteCookie(string key, string strValue)
         {
-            CommonUtil.WriteCookie(key, strValue);
+            CommonUtil.WriteCookie(key, strValue, DateTime.MaxValue);
         }
 
         public static void WriteCookie(string key, string strValue, int expires)
         {
-            CommonUtil.WriteCookie(key, strValue,expires);
+            DateTime dt = DateTime.Now.AddMinutes(expires);
+            CommonUtil.WriteCookie(key, strValue, dt);
         }
     }
 

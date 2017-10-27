@@ -586,23 +586,8 @@ namespace JSNet.Utilities
         #endregion
 
         #region 读取或写入cookie
-        /// <summary>
-        /// 写cookie值
-        /// </summary>
-        /// <param name="strName">名称</param>
-        /// <param name="strValue">值</param>
-        public static void WriteCookie(string strName, string strValue)
-        {
-            HttpCookie cookie = HttpContext.Current.Request.Cookies[strName];
-            if (cookie == null)
-            {
-                cookie = new HttpCookie(strName);
-            }
-            cookie.Value = UrlEncode(strValue);
-            HttpContext.Current.Response.AppendCookie(cookie);
-        }
 
-        public static void WriteCookie(string strName, string strValue,int expires)
+        public static void WriteCookie(string strName, string strValue,DateTime expires)
         {
             HttpCookie cookie = HttpContext.Current.Request.Cookies[strName];
             if (cookie == null)
@@ -610,8 +595,8 @@ namespace JSNet.Utilities
                 cookie = new HttpCookie(strName);
             }
             cookie.Value = UrlEncode(strValue);
-            cookie.Expires = DateTime.Now.AddMinutes(expires);
-            HttpContext.Current.Response.AppendCookie(cookie);
+            cookie.Expires = expires;
+            HttpContext.Current.Response.Cookies.Add(cookie);
         }
 
         /// <summary>

@@ -999,6 +999,13 @@ namespace JSNet.Service
             return re;
         }
 
+        public List<string> GetOrderWorkingLocationSecondLevelList(RoleEntity role, string firstLevelList)
+        {
+            List<OrderWorkingLocationEntity> list = GetOrderWorkingLocationListByRole(role);
+            var re = list.Where(x => x.FirstLevel == firstLevelList).Select(x => x.ScecondLevel).ToList();
+            return re;
+        }
+
         private int GetLeaderHandlerID(int[] orderHandlerIDs)
         {
             int count = 0;

@@ -163,6 +163,7 @@
     <Compile Include="Models\APIViewModel.cs" />
     <Compile Include="Models\BackViewModel.cs" />
     <Compile Include="Models\HeaderViewModel.cs" />
+    <Compile Include="Models\ViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WeixinAreaRegistration.cs" />
   </ItemGroup>
