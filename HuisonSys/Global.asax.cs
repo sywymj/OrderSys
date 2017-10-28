@@ -83,7 +83,7 @@ namespace HuisonSys
                 if (exception != null)
                 {
                     Log4NetUtil.Error("出错了！",ex);//使用default logger
-                    routeData.Values["Tips"] = ex.ToString();
+                    routeData.Values["Tips"] = ex.Message;
                     routeData.Values["Action"] = "Http500";
                 }
             }

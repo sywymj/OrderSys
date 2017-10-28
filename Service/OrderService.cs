@@ -944,7 +944,7 @@ namespace JSNet.Service
             WhereStatement where = new WhereStatement();
             if (list.Count > 0)
             {
-                where.Add("Organize_ID", Comparison.In, list.ToArray());
+                where.Add(OrderWorkingLocationEntity.FieldOrganizeID, Comparison.In, list.ToArray());
             }
             else
             {

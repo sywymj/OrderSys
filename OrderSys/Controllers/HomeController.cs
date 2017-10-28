@@ -2,6 +2,7 @@
 using JSNet.BaseSys;
 using JSNet.Service;
 using JSNet.Utilities;
+using OrderSys.Models;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -124,10 +125,47 @@ namespace OrderSys.Controllers
             {
                 msg = "超时请重新登陆！";
             }
-            ViewBag.ErrMsg = msg;
+            ViewBag.Msg = msg;
             ViewBag.Url = url;
 
             return View();
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        public string GetOrderWorkingLocationFirstLevelDDL()
+        {
+            OrderService orderService = new OrderService();
+            List<string> list = orderService.GetOrderWorkingLocationFirstLevelList(orderService.CurrentRole);
+            var re = list.Select(l =>
+                new DDLViewModel()
+                {
+                    ID = l,
+                    Title = l
+                }).ToList();
+
+            string s = JSON.ToJSON(new JSResponse(re), jsonParams);
+            return s;
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        public string GetOrderWorkingLocationSecondLevelDDL()
+        {
+            OrderService orderService = new OrderService();
+            string sFirstLevel = JSRequest.GetRequestUrlParm("FirstLevel");
+            string firstLevel = JSValidator.ValidateString("一级选项", sFirstLevel);
+
+            List<string> list = orderService.GetOrderWorkingLocationSecondLevelList(orderService.CurrentRole, firstLevel);
+            var re = list.Select(l =>
+                new DDLViewModel()
+                {
+                    ID = l,
+                    Title = l
+                }).ToList();
+
+            string s = JSON.ToJSON(new JSResponse(re), jsonParams);
+            return s;
         }
     }
 }

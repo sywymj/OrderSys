@@ -409,41 +409,6 @@ namespace OrderSys.Controllers
             }
         }
 
-        [HttpGet]
-        public string GetOrderWorkingLocationFirstLevelDDL()
-        {
-            List<string> list = orderService.GetOrderWorkingLocationFirstLevelList(orderService.CurrentRole);
-            var re = list.Select(l =>
-                new DDLViewModel()
-                {
-                    ID = l,
-                    Title = l
-                }).ToList();
-
-            string s = JSON.ToJSON(new JSResponse(re), jsonParams);
-            return s;
-        }
-
-        [HttpGet]
-        public string GetOrderWorkingLocationSecondLevelDDL()
-        {
-            string sFirstLevel = JSRequest.GetRequestUrlParm("FirstLevel");
-            string firstLevel = JSValidator.ValidateString("一级选项",sFirstLevel);
-
-            List<string> list = orderService.GetOrderWorkingLocationSecondLevelList(orderService.CurrentRole, firstLevel);
-            var re = list.Select(l =>
-                new DDLViewModel()
-                {
-                    ID = l,
-                    Title = l
-                }).ToList();
-
-            string s = JSON.ToJSON(new JSResponse(re), jsonParams);
-            return s;
-        }
-
-
-
         #endregion
 
         #region DoAction

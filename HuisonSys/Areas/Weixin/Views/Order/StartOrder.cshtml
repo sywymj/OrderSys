@@ -25,16 +25,24 @@
             <input class="weui_input" id="AttnTel" type="text" placeholder="不填默认发单人电话" value="@Model.AttnTel">
         </div>
     </div>
-    @*<div class="weui_cell">
-        <div class="weui_cell_hd"><label class="weui_label">报障地点</label></div>
-        <div class="weui_cell_bd weui_cell_primary">
-            <input class="weui_input" id="WorkingLocation" type="text" placeholder="请输入报障地点">
-        </div>
-    </div>*@
+    <div class="weui_cells_title">报障地点</div>
     <div class="weui_cell weui_cell_select">
         <div class="weui_cell_bd weui_cell_primary">
             <select class="weui_select" id="FirstLevelDDL">
+                <option value="其它">其它</option>
             </select>
+        </div>
+    </div>
+    <div class="weui_cell weui_cell_select">
+        @*<div class="weui_cell_hd"><label class="weui_label">联系电话2</label></div>*@
+        <div class="weui_cell_bd weui_cell_primary">
+            <select class="weui_select" id="SecondLevelDDL"></select>
+        </div>
+    </div>
+    <div class="weui_cell">
+        <div class="weui_cell_hd"><label class="weui_label">详细地址</label></div>
+        <div class="weui_cell_bd">
+            <input class="weui_input" id="SecondLevel" type="text" placeholder="请输入详细地址">
         </div>
     </div>
 </div>
@@ -91,6 +99,7 @@
 
     $(function () {
         getOrderWorkingLocationFirstLevel();
+        $('#SecondLevelDDL').parents('.weui_cell').hide();
     })
 
 
@@ -103,11 +112,11 @@
             Priority: $("input[name='Priority']:checked").val(),
             Content: $('#Content').val(),
             Remark: $('#Remark').val(),
-            WorkingLocation: $('#WorkingLocation').val(),
+            WorkingLocation: getOrderWorkingLocation(),
             PhotoPath: filesName[0] || "",
             PhotoPath1: filesName[1] || "",
         };
-
+        debugger;
         doPost('@Url.Action("DoStartOrder", "Order", new { area = "Weixin" })', data, function (jdata) {
             if (jdata.Code == "200") {
                 startedQuery = new Query('#mystarted_list');
@@ -122,16 +131,52 @@
 
     doClearStartForm = function () {
         $('#BookingTime').val('');
-        $('#Attn').val('');
-        $('#AttnTel').val('');
+        $('#Attn').val('@Model.Attn');
+        $('#AttnTel').val('@Model.AttnTel');
         $('#s11').prop("checked", true);
         $('#Content').val('');
         $('#Remark').val('');
-        $('#WorkingLocation').val('');
+        $("#FirstLevelDDL option:first").prop("selected", 'selected');
+        $('#SecondLevelDDL').parents('.weui_cell').hide();
+        $('#SecondLevel').parents('.weui_cell').show();
+    }
+
+    $('#FirstLevelDDL').on('change', function () {
+        $('#SecondLevel').val('');
+        var selected =$(this).find('option:selected').val();
+
+        if (selected == '其它') {
+            //显示文本框
+            $('#SecondLevelDDL').parents('.weui_cell').hide();
+            $('#SecondLevel').parents('.weui_cell').show();
+        } else {
+            //显示选择框
+            $('#SecondLevel').parents('.weui_cell').hide();
+            $('#SecondLevelDDL').parents('.weui_cell').show();
+            getOrderWorkingLocationSecondLevel(selected);
+        }
+    })
+
+    //$('#SecondLevelDDL').on('change', function () {
+    //    var selected = $(this).find('option:selected').val();
+    //    $('#SecondLevel').val('');
+    //    $('#SecondLevel').val(selected);
+    //})
+
+    getOrderWorkingLocation = function () {
+        debugger;
+        var workinglocation;
+        var selected = $('#FirstLevelDDL').find('option:selected').val();
+        if (selected == '其它') {
+            workinglocation = selected + ' - ' + $('#SecondLevel').val();
+        } else {
+            workinglocation = selected + ' - ' + $('#SecondLevelDDL').find('option:selected').val();
+        }
+        return workinglocation;
     }
 
     getOrderWorkingLocationFirstLevel = function () {
-        var url = '@Url.Action("GetOrderWorkingLocationFirstLevelDDL", "Order", new { area = "Weixin" })';
+        var url = '@Url.Action("GetOrderWorkingLocationFirstLevelDDL", "Home", new { area = "Weixin" })';
         $.ajax({
             type: "GET", //GET或POST,
             async: true, //默认设置为true，所有请求均为异步请求。
@@ -142,7 +187,10 @@
             success: function (data) {
                 var jdata = ajaxTips(data);
                 if (jdata.Code == "200") {
-                    initFirstLevelDDL(jdata.Data);
+                    var contain = $('#FirstLevelDDL');
+                    $.each(jdata.Data, function (i, n) {
+                        contain.append('<option value="' + n.ID + '">' + n.Title + '</option>');
+                    })
                 }
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -152,22 +200,35 @@
         });
     }
 
-    getOrderWorkingLocationSecondLevel = function () {
-
+    getOrderWorkingLocationSecondLevel = function (data) {
+        var url = '@Url.Action("GetOrderWorkingLocationSecondLevelDDL", "Home", new { area = "Weixin" })';
+        $.ajax({
+            type: "GET", //GET或POST,
+            async: true, //默认设置为true，所有请求均为异步请求。
+            url: url,
+            data: { FirstLevel: data },
+            dataType: "text", //xml、html、script、jsonp、text
+            beforeSend: function () { },
+            success: function (data) {
+                var jdata = ajaxTips(data);
+                if (jdata.Code == "200") {
+                    var contain = $('#SecondLevelDDL');
+                    contain.text('');
+                    $.each(jdata.Data, function (i, n) {
+                        contain.append('<option value="' + n.ID + '">' + n.Title + '</option>');
+                    })
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+            },
+            complete: function () {
+            }
+        });
     }
 
-    initFirstLevelDDL = function (data) {
-        var FirstLevelDDL = $('#FirstLevelDDL');
-        $.each(data,function(i,n){
-            FirstLevelDDL.append('<option value="' + n.ID + '">' + n.Title + '</option>');
-        })
-    }
+    initDDL = function (contain,data) {
+        var ddl = contain;
 
-    initSecondLevelDDL = function (data) {
-        var SecondLevelDDL = $('#SecondLevelDDL');
-        $.each(data, function (i, n) {
-            SecondLevelDDL.append('<option value="' + n.ID + '">' + n.Title + '</option>');
-        })
     }
 
 </script>
@@ -249,8 +310,9 @@
             });
 
             $btns.on('click', 'span', function () {
-                $.alert("是否确定移除这张图片？", "警告", function () {
+                $.confirm("是否确定移除这张图片？", "警告", function () {
                     uploader.removeFile(file, true);
+                }, function () {
                 });
             });
         });
