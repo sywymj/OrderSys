@@ -133,6 +133,7 @@
     <Compile Include="Controllers\ErrorController.cs" />
     <Content Include="404.html" />
     <Content Include="Content\images\404.jpg" />
+    <Content Include="Content\images\indx_bg_b.jpg" />
     <Content Include="Content\js\zepto.min.js" />
     <Content Include="Content\phone_scroll\css\css.css" />
     <Content Include="Content\phone_scroll\css\style.css" />
@@ -2825,7 +2826,7 @@
     <Content Include="Content\tinyselect\js\tinyselect.js" />
     <Content Include="Global.asax" />
     <Content Include="Login.html" />
-    <Content Include="NoRight.html" />
+    <Content Include="403.html" />
     <Content Include="test.txt" />
     <Content Include="tree_grid_demo.txt" />
     <Content Include="Xml\Config.xml" />

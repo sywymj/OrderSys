@@ -2704,7 +2704,8 @@
                     existing = this._map[ file.id ];
     
                 if ( existing ) {
-                    delete this._map[ file.id ];
+                    delete this._map[file.id];
+                    this._delFile(file);
                     file.destroy();
                     this.stats.numofDeleted++;
                 }
@@ -2720,6 +2721,16 @@
                     file.on( 'statuschange', function( cur, pre ) {
                         me._onFileStatusChange( cur, pre );
                     });
+                }
+            },
+
+            // addby jsnet
+            _delFile: function (file) {
+                for (var i = this._queue.length - 1 ; i >= 0 ; i--) {
+                    if (this._queue[i] == file) {
+                        this._queue.splice(i, 1);
+                        break;
+                    }
                 }
             },
     

@@ -25,7 +25,10 @@
             <input class="weui_input" id="AttnTel" type="text" placeholder="不填默认发单人电话" value="@Model.AttnTel">
         </div>
     </div>
-    <div class="weui_cells_title">报障地点</div>
+</div>
+
+<div class="weui_cells_title">报障地点</div>
+<div class="weui_cells weui_cells_form">
     <div class="weui_cell weui_cell_select">
         <div class="weui_cell_bd weui_cell_primary">
             <select class="weui_select" id="FirstLevelDDL">
@@ -34,7 +37,6 @@
         </div>
     </div>
     <div class="weui_cell weui_cell_select">
-        @*<div class="weui_cell_hd"><label class="weui_label">联系电话2</label></div>*@
         <div class="weui_cell_bd weui_cell_primary">
             <select class="weui_select" id="SecondLevelDDL"></select>
         </div>
@@ -116,7 +118,10 @@
             PhotoPath: filesName[0] || "",
             PhotoPath1: filesName[1] || "",
         };
-        debugger;
+
+        var b = doValidate(data);
+        if (!b) { return false;}
+
         doPost('@Url.Action("DoStartOrder", "Order", new { area = "Weixin" })', data, function (jdata) {
             if (jdata.Code == "200") {
                 startedQuery = new Query('#mystarted_list');
@@ -129,6 +134,16 @@
         });
     };
 
+    doValidate = function (o) {
+        if (o.Content == "") {
+            $.alert("请填写工单内容！", "提示", function () {
+                $('#Content').focus();
+            });
+            return false;
+        }
+        return true;
+    }
+
     doClearStartForm = function () {
         $('#BookingTime').val('');
         $('#Attn').val('@Model.Attn');
@@ -139,6 +154,7 @@
         $("#FirstLevelDDL option:first").prop("selected", 'selected');
         $('#SecondLevelDDL').parents('.weui_cell').hide();
         $('#SecondLevel').parents('.weui_cell').show();
+        resetUploader();
     }
 
     $('#FirstLevelDDL').on('change', function () {
@@ -157,14 +173,7 @@
         }
     })
 
-    //$('#SecondLevelDDL').on('change', function () {
-    //    var selected = $(this).find('option:selected').val();
-    //    $('#SecondLevel').val('');
-    //    $('#SecondLevel').val(selected);
-    //})
-
     getOrderWorkingLocation = function () {
-        debugger;
         var workinglocation;
         var selected = $('#FirstLevelDDL').find('option:selected').val();
         if (selected == '其它') {
@@ -224,11 +233,6 @@
             complete: function () {
             }
         });
-    }
-
-    initDDL = function (contain,data) {
-        var ddl = contain;
-
     }
 
 </script>
@@ -335,9 +339,7 @@
         // 文件上传成功，给item添加成功class, 用样式标记上传成功。
         uploader.on('uploadSuccess', function (file, response) {
             $('#' + file.id).addClass('upload-state-done');
-            debugger;
             ajaxTips(response, function (jdata) {
-                debugger;
                 if (jdata.Code == "200") {
                     file.name = jdata.Data;
                 } else {
@@ -404,10 +406,15 @@
             var files = uploader.getFiles();
             var filesName = [];
             $.each(files, function (i, n) {
-                debugger;
                 filesName.push(n.name);
             })
             return filesName;
+        }
+
+        resetUploader = function () {
+            uploader.reset();
+            var $files = $('.file-item');
+            $files.remove();
         }
     });
 

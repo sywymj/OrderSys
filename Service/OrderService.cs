@@ -130,7 +130,7 @@ namespace JSNet.Service
             DataRow dr = vmanager.GetSingle(orderID, "ID");
 
             //获取协助者
-            List<OrderHandlerEntity> handlers = GetOrderHandlers(orderID,true);
+            List<OrderHandlerEntity> handlers = GetOrderHandlers(orderID);
 
             //推送给协助者
             KawuService kawuService = new KawuService();
@@ -146,12 +146,8 @@ namespace JSNet.Service
         //增加处理明细
         public void AddHandleDetail(OrderHandleDetailEntity orderHandleDetail)
         {
-            //1.0 获取当前员工数据
-            UserService userService = new UserService();
-            StaffEntity currentStaff = userService.GetCurrentStaff();
-
             //2.0 添加工作处理明细实体
-            orderHandleDetail.HandlerID = currentStaff.ID;
+            orderHandleDetail.HandlerID = CurrentStaff.ID;
             orderHandleDetail.HandleTime = DateTime.Now;
             if (string.IsNullOrEmpty(orderHandleDetail.HandleDetail))
             {
@@ -289,8 +285,8 @@ namespace JSNet.Service
             ViewManager vmanager = new ViewManager("VO_Order");
             DataRow dr = vmanager.GetSingle(orderID, "ID");
 
-            //获取协助者
-            List<OrderHandlerEntity> handlers = GetOrderHandlers(orderID, true);
+            //获取处理所有处理者
+            List<OrderHandlerEntity> handlers = GetOrderHandlers(orderID);
 
             //推送给所有处理者
             KawuService kawuService = new KawuService();
@@ -345,7 +341,7 @@ namespace JSNet.Service
             kawuService.FinishOrder_VXPushMsg(Convert.ToInt32(dr["AppointerID"].ToString()), "您委派的工单已处理完成！", dr);
 
             ////推送给所有处理人
-            List<OrderHandlerEntity> handlers = GetOrderHandlers(orderID, true);
+            List<OrderHandlerEntity> handlers = GetOrderHandlers(orderID);
             foreach (OrderHandlerEntity handler in handlers)
             {
                 kawuService.CommonOrder_VXPushMsg((int)handler.HandlerID, "您处理的工单已验收通过！", dr);

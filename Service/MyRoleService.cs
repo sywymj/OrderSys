@@ -20,14 +20,10 @@ namespace JSNet.Service
             int rid = 0;
             if (!Int32.TryParse(SecretUtil.Decrypt(JSRequest.GetCookie("RID", true)), out rid))
             {
-                throw new HttpException(401, JSErrMsg.ERR_MSG_LoginOvertime);
+                return null;
             }
 
             RoleEntity role = GetRole(rid);
-            if (role == null)
-            {
-                throw new HttpException(401, JSErrMsg.ERR_MSG_LoginOvertime);
-            }
             return role;
         }
 

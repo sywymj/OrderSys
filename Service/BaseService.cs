@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
+using System.Web;
 
 namespace JSNet.Service
 {
@@ -24,7 +25,19 @@ namespace JSNet.Service
                 if(_currentUser==null)
                 {
                     UserService userService = new UserService();
-                    _currentUser =  userService.GetCurrentUser();
+                    //先拿openid
+                    UserEntity user = null;
+                    user = userService.GetCurrentVXUser();
+                    if (user == null)
+                    {
+                        // 再拿uid
+                        user = userService.GetCurrentUser();
+                    }
+                    if (user == null)
+                    {
+                        throw new HttpException(401, JSErrMsg.ERR_MSG_LoginOvertime);
+                    }
+                    _currentUser = user;
                 }
                 return _currentUser;
             }
@@ -38,7 +51,12 @@ namespace JSNet.Service
                 if (_currentUser == null)
                 {
                     MyRoleService roleService = new MyRoleService();
-                    _currentRole = roleService.GetCurrentRole();
+                    RoleEntity role = roleService.GetCurrentRole();
+                    if (role == null)
+                    {
+                        throw new HttpException(401, JSErrMsg.ERR_MSG_LoginOvertime);
+                    }
+                    _currentRole = role;
                 }
                 return _currentRole;
             }
@@ -52,7 +70,12 @@ namespace JSNet.Service
                 if(_currentStaff==null)
                 {
                     UserService userService = new UserService();
-                    _currentStaff = userService.GetCurrentStaff();
+                    StaffEntity staff = userService.GetCurrentStaff();
+                    if (staff == null)
+                    {
+                        throw new HttpException(401, JSErrMsg.ERR_MSG_LoginOvertime);
+                    }
+                    _currentStaff = staff;
                 }
                 return _currentStaff;
             }

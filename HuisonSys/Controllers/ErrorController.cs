@@ -55,7 +55,8 @@ namespace HuisonSys.Controllers
 
             if (!isAjax)
             {
-                Response.Redirect(url, true);
+                Response.Redirect(url);
+                Response.End();
             }
 
             string message = RouteData.Values["Tips"].ToString();
@@ -71,12 +72,19 @@ namespace HuisonSys.Controllers
             bool isAjax = Request.Headers["x-requested-with"] == null ? false : true;//判断是否ajax请求
             string area = Request.RequestContext.RouteData.DataTokens["area"] == null ? "" : Request.RequestContext.RouteData.DataTokens["area"].ToString().ToLower();
 
-            string url = "/NoRight.html";
+            var controllername = Request.RequestContext.RouteData.Values["controller"].ToString().ToLower();
+            var actionname = Request.RequestContext.RouteData.Values["action"].ToString().ToLower();
+
+            string url = "/403.html";
+            string message = RouteData.Values["Tips"].ToString();
+            string re = string.Empty;
             switch (area)
             {
                 case "weixin":
+                    re = JSON.ToJSON(new JSResponse(ResponseType.Redict, message, data: url), jsonParams);
                     break;
                 case "admin":
+                    re = JSON.ToJSON(new JSResponse(message, "403", string.Format("controller:{0},action:{1}", controllername, actionname)), jsonParams);
                     break;
                 default:
                     break;
@@ -84,11 +92,10 @@ namespace HuisonSys.Controllers
             
             if (!isAjax)
             {
-                Response.Redirect(url, true);
+                Response.Redirect(url);
+                Response.End();
             }
 
-            string message = RouteData.Values["Tips"].ToString();
-            string re = JSON.ToJSON(new JSResponse(ResponseType.Redict, message, data: url), jsonParams);
             return re;
         }
 
@@ -118,7 +125,8 @@ namespace HuisonSys.Controllers
             if (!isAjax)
             {
                 //当用url访问出现无权限时，需要先跳转到一个中间页面来提示登录超时，再跳转到登录页面
-                Response.Redirect(middleurl, true);
+                Response.Redirect(middleurl);
+                Response.End();
             }
 
             string re = JSON.ToJSON(new JSResponse(ResponseType.Redict, message, data: loginurl), jsonParams);

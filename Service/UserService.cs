@@ -19,24 +19,14 @@ namespace JSNet.Service
         #region Current
         public UserEntity GetCurrentUser()
         {
-            string uid = SecretUtil.Decrypt(JSRequest.GetCookie("UID", true));
-            UserEntity user = null;
-            if(string.IsNullOrEmpty(uid))
+            int uid = 0;
+            if (!Int32.TryParse(SecretUtil.Decrypt(JSRequest.GetCookie("UID", true)), out uid))
             {
-                //UID 空拿OPENID
-               user =  GetCurrentVXUser();
-            }
-            else
-            {
-                EntityManager<UserEntity> manager = new EntityManager<UserEntity>();
-                user = manager.GetSingle(Convert.ToInt32(uid));
+                return null;
             }
 
-            if (user == null)
-            {
-                throw new HttpException(401, JSErrMsg.ERR_MSG_LoginOvertime);
-            }
-
+            EntityManager<UserEntity> manager = new EntityManager<UserEntity>();
+            UserEntity user = manager.GetSingle(uid);
             return user;
         }
 
@@ -45,15 +35,10 @@ namespace JSNet.Service
             string openID = JSRequest.GetCookie("OpenID", true);
             if (string.IsNullOrEmpty(openID))
             {
-                throw new HttpException(401,JSErrMsg.ERR_MSG_LoginOvertime);
+                return null;
             }
 
             UserEntity user = GetUser(openID);
-            if (user == null)
-            {
-                throw new HttpException(401,JSErrMsg.ERR_MSG_WrongOpenID);
-            }
-
             return user;
         }
 
@@ -61,11 +46,6 @@ namespace JSNet.Service
         {
             EntityManager<StaffEntity> manager = new EntityManager<StaffEntity>();
             StaffEntity staff = manager.GetSingle(CurrentUser.ID, StaffEntity.FieldUserID);
-            if (staff == null)
-            {
-                throw new Exception(string.Format(JSErrMsg.ERR_MSG_DATA_MISSING, "用户ID为" + CurrentUser.ID));
-            }
-
             return staff;
         }
 
