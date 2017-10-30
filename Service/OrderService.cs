@@ -51,6 +51,10 @@ namespace JSNet.Service
         //委派工作
         public void AppointOrder(Guid orderID, List<OrderHandlerEntity> handlers)
         {
+            //验证流程
+            OrderEntity sourceOrder = GetOrderEntity(orderID);
+            ValidateOrderFlows((OrderStatus)sourceOrder.Status, OrderStatus.Receving);
+
             //1.0 修改工单实体
             List<KeyValuePair<string,object>> kvps = new List<KeyValuePair<string,object>>();
             kvps.Add(new KeyValuePair<string,object>(OrderEntity.FieldStatus,(int)OrderStatus.Receving));
@@ -92,6 +96,10 @@ namespace JSNet.Service
         //受理报障单
         public void ReceiveOrder(Guid orderID)
         {
+            //验证流程
+            OrderEntity sourceOrder = GetOrderEntity(orderID);
+            ValidateOrderFlows((OrderStatus)sourceOrder.Status, OrderStatus.Handling);
+
             //1.0 修改工单实体
             List<KeyValuePair<string, object>> kvps = new List<KeyValuePair<string, object>>();
             kvps.Add(new KeyValuePair<string, object>(OrderEntity.FieldStatus, (int)OrderStatus.Handling));
@@ -130,7 +138,7 @@ namespace JSNet.Service
             DataRow dr = vmanager.GetSingle(orderID, "ID");
 
             //获取协助者
-            List<OrderHandlerEntity> handlers = GetOrderHandlers(orderID);
+            List<OrderHandlerEntity> handlers = GetOrderHandlers(orderID,true);
 
             //推送给协助者
             KawuService kawuService = new KawuService();
@@ -193,20 +201,17 @@ namespace JSNet.Service
         //报障处理完毕
         public void HandledOrder(Guid orderID)
         {
-            //1.1 获取工单实体，以备获取发起人信息
-            EntityManager<OrderEntity> orderManager = new EntityManager<OrderEntity>();
-            OrderEntity order = orderManager.GetSingle(orderID);
-            if (order == null)
-            {
-                throw new Exception(string.Format(JSErrMsg.ERR_MSG_DATA_MISSING, "工单ID为" + orderID));
-            }
+            //1.1 //验证流程
+            OrderEntity sourceOrder = GetOrderEntity(orderID);
+            ValidateOrderFlows((OrderStatus)sourceOrder.Status, OrderStatus.Checking);
 
             //2.0 修改工单实体
             List<KeyValuePair<string, object>> kvps = new List<KeyValuePair<string, object>>();
             kvps.Add(new KeyValuePair<string, object>(OrderEntity.FieldOperatorID, CurrentStaff.ID));
-            kvps.Add(new KeyValuePair<string, object>(OrderEntity.FieldNextOperatorID, order.StarterID));
+            kvps.Add(new KeyValuePair<string, object>(OrderEntity.FieldNextOperatorID, sourceOrder.StarterID));
             kvps.Add(new KeyValuePair<string, object>(OrderEntity.FieldStatus, (int)OrderStatus.Checking));
             kvps.Add(new KeyValuePair<string, object>(OrderEntity.FieldOperateTime, DateTime.Now));
+            EntityManager<OrderEntity> orderManager = new EntityManager<OrderEntity>();
             int rows = orderManager.Update(kvps, orderID);
             if (rows == 0)
             {
@@ -217,19 +222,26 @@ namespace JSNet.Service
             OrderFlowEntity orderflow = new OrderFlowEntity();
             orderflow.OrderID = orderID;
             orderflow.OperatorID = CurrentStaff.ID;
-            orderflow.NextOperatorID = order.StarterID;//传回发起人验收。
+            orderflow.NextOperatorID = sourceOrder.StarterID;//传回发起人验收。
             orderflow.Operation = (int)OperationEnum.Handle;
             orderflow.OperateTime = DateTime.Now;
             orderflow.Remark = "";
             EntityManager<OrderFlowEntity> orderflowManager = new EntityManager<OrderFlowEntity>();
             orderflowManager.Insert(orderflow);
 
-            //4.0 添加处理进度
+            //4.1 添加处理进度
             OrderHandleDetailEntity orderHandleDetail = new OrderHandleDetailEntity();
             orderHandleDetail.OrderID = orderID;
-            orderHandleDetail.HandleType = (int)OrderHandleType.DaiYanShou;
-            orderHandleDetail.Remark = "工单处理完毕，等待验收。";
+            orderHandleDetail.HandleType = (int)OrderHandleType.WanCheng;
+            orderHandleDetail.Remark = "工单处理完毕。";
             AddHandleDetail(orderHandleDetail);
+
+            //4.2 添加处理进度
+            OrderHandleDetailEntity orderHandleDetail1 = new OrderHandleDetailEntity();
+            orderHandleDetail1.OrderID = orderID;
+            orderHandleDetail1.HandleType = (int)OrderHandleType.DaiYanShou;
+            orderHandleDetail1.Remark = "等待验收。";
+            AddHandleDetail(orderHandleDetail1);
 
             //4.0 微信推送
             ViewManager vmanager = new ViewManager("VO_Order");
@@ -243,6 +255,10 @@ namespace JSNet.Service
         //驳回报障，需继续处理
         public void RejectOrder(Guid orderID,string remark)
         {
+            //验证流程
+            OrderEntity sourceOrder = GetOrderEntity(orderID);
+            ValidateOrderFlows((OrderStatus)sourceOrder.Status, OrderStatus.Rejected);
+
             //1.1 获取工单处理者列表，必备获取领队人的信息
             int count = 0;
             WhereStatement where = new WhereStatement();
@@ -299,6 +315,10 @@ namespace JSNet.Service
         //报障验收完成
         public void FinishOrder(Guid orderID)
         {
+            //验证流程
+            OrderEntity sourceOrder = GetOrderEntity(orderID);
+            ValidateOrderFlows((OrderStatus)sourceOrder.Status, OrderStatus.Finish);
+
             //1.0 修改工单实体
             List<KeyValuePair<string, object>> kvps = new List<KeyValuePair<string, object>>();
             kvps.Add(new KeyValuePair<string, object>(OrderEntity.FieldOperatorID, CurrentStaff.ID));
@@ -352,24 +372,28 @@ namespace JSNet.Service
         public void CancelOrder(Guid orderID)
         {
             //0.1只能取消受理前的工单
-            EntityManager<OrderEntity> orderManager = new EntityManager<OrderEntity>();
-            WhereStatement where  = new WhereStatement();
-            where.Add(OrderEntity.FieldID,Comparison.Equals,orderID);
-            List<string> status = orderManager.GetProperties(OrderEntity.FieldStatus, where).ToList();
-            if (status.Count == 0)
-            {
-                throw new Exception(string.Format(JSErrMsg.ERR_MSG_DATA_MISSING, "工单ID为" + orderID));
-            }
-            if (Convert.ToInt32(status[0]) >= (int)OrderStatus.Handling)
-            {
-                throw new JSException(JSErrMsg.ERR_CODE_NotAllowCancel, string.Format(JSErrMsg.ERR_MSG_NotAllowCancel));
-            }
+            //EntityManager<OrderEntity> orderManager = new EntityManager<OrderEntity>();
+            //WhereStatement where  = new WhereStatement();
+            //where.Add(OrderEntity.FieldID,Comparison.Equals,orderID);
+            //List<string> status = orderManager.GetProperties(OrderEntity.FieldStatus, where).ToList();
+            //if (status.Count == 0)
+            //{
+            //    throw new Exception(string.Format(JSErrMsg.ERR_MSG_DATA_MISSING, "工单ID为" + orderID));
+            //}
+            //if (Convert.ToInt32(status[0]) >= (int)OrderStatus.Handling)
+            //{
+            //    throw new JSException(JSErrMsg.ERR_CODE_NotAllowCancel, string.Format(JSErrMsg.ERR_MSG_NotAllowCancel));
+            //}
+            //验证流程
+            OrderEntity sourceOrder = GetOrderEntity(orderID);
+            ValidateOrderFlows((OrderStatus)sourceOrder.Status, OrderStatus.Canceled);
 
             //1.0 修改工单实体
             List<KeyValuePair<string, object>> kvps = new List<KeyValuePair<string, object>>();
             kvps.Add(new KeyValuePair<string, object>(OrderEntity.FieldOperatorID, CurrentStaff.ID));
             kvps.Add(new KeyValuePair<string, object>(OrderEntity.FieldStatus, (int)OrderStatus.Canceled));
             kvps.Add(new KeyValuePair<string, object>(OrderEntity.FieldOperateTime, DateTime.Now));
+            EntityManager<OrderEntity> orderManager = new EntityManager<OrderEntity>();
             int rows = orderManager.Update(kvps, orderID);
             if (rows == 0)
             {
@@ -1058,9 +1082,41 @@ namespace JSNet.Service
             return orderNo;
         }
 
+        private void ValidateOrderFlows(OrderStatus source, OrderStatus target)
+        {
+            if (source == target)
+            {
+                throw new JSException(JSErrMsg.ERR_CODE_WrongFlows, string.Format(JSErrMsg.ERR_MSG_WrongFlows, source.ToDescription()));
+            }
 
-
-
+            if ((int)target > 0)
+            {
+                //正常流程
+                if ((int)source >= (int)target)
+                {
+                    throw new JSException(JSErrMsg.ERR_CODE_WrongFlows, string.Format(JSErrMsg.ERR_MSG_WrongFlows, source.ToDescription()));
+                }
+            }
+            else if ((int)target == 0)
+            {
+                //撤销
+                if ((int)source >= (int)OrderStatus.Handling)
+                {
+                    throw new JSException(JSErrMsg.ERR_CODE_NotAllowCancel, string.Format(JSErrMsg.ERR_MSG_NotAllowCancel));
+                }
+            }
+            else if ((int)target < 0)
+            {
+                if (target == OrderStatus.Rejected)
+                {
+                    //驳回
+                    if (target != OrderStatus.Handling)
+                    {
+                        throw new JSException(JSErrMsg.ERR_CODE_NotAllowReject, string.Format(JSErrMsg.ERR_MSG_NotAllowReject));
+                    }
+                }
+            }
+        }
 
     }
 }

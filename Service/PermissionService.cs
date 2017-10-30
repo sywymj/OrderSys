@@ -734,18 +734,18 @@ namespace JSNet.Service
         {
             int count = 0;
             DataTable dt = new DataTable();
+            ViewManager vmanager = new ViewManager("VP_PermissionScope");
+            WhereStatement where = new WhereStatement();
             if (role.ID == 1)
             {
                 //超级用户默认获取所有的资源对象
-                ViewManager vmanager1 = new ViewManager("VP_PermissionScope");
-                dt = vmanager1.GetDataTable(new WhereStatement(), out count);
+                dt = vmanager.GetDataTable(where, out count);
                 return dt;
             }
 
-            WhereStatement where = new WhereStatement();
-            where.Add("Role_ID", Comparison.Equals, role.ID);
+            List<string> organizeIDs = GetAuthorizeOrganizeIDByRole(role, "OrderSys_Data.PermissionScope");
+            where.Add("Organize_ID", Comparison.In, organizeIDs.ToArray());
 
-            ViewManager vmanager = new ViewManager("VP_RoleScope");
             dt = vmanager.GetDataTable(where, out count);
             return dt;
         }

@@ -89,16 +89,17 @@ namespace JSNet.Service
             KawuService kawuService = new KawuService();
             foreach(UserEntity user in users)
             {
-                if(user.AddedVXUser == (int)TrueFalse.False)
-                {
-                    //增加微信用户
-                    StaffEntity staff = GetStaffByUserID((int)user.ID);
-                    kawuService.AddWeixinUser(staff.Tel, user.UserName);
-
-                    //修改用户状态为 已增加微信用户
-                    user.AddedVXUser = (int)TrueFalse.True;
-                    EditUserVXUserStatus(user);
+                if (user.AddedVXUser == (int)TrueFalse.True) {
+                    throw new JSException(JSErrMsg.ERR_CODE_AddedVXUser, JSErrMsg.ERR_MSG_AddedVXUser);
                 }
+
+                //增加微信用户
+                StaffEntity staff = GetStaffByUserID((int)user.ID);
+                kawuService.AddWeixinUser(staff.Tel, user.UserName);
+
+                //修改用户状态为 已增加微信用户
+                user.AddedVXUser = (int)TrueFalse.True;
+                EditUserVXUserStatus(user);
             }
         }
 

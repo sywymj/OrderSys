@@ -8,7 +8,7 @@
     <div id="staff-datagrid" class="mini-datagrid" idfield="User_ID" ajaxoptions="{type : 'get'}" style="width:100%;height:100%"
          url="@Url.Action("GetListByPage", "User", new { area = "Admin" })" datafield="Data.DT.JSNet" totalfield="Data.Count" multiselect="true">
         <div property="columns">
-            <div type="checkcolumn"></div>
+            @*<div type="checkcolumn"></div>*@
             <div type="indexcolumn" headeralign="center">序号</div>
             <div field="Staff_ID" width="120" headeralign="center" allowsort="true" visible="false">Staff_ID</div>
             <div field="Organize_ID" width="120" headeralign="center" allowsort="true" visible="false">Organize_ID</div>
@@ -76,8 +76,18 @@
     }
 
     function addWeixinUser() {
-        debugger;
-        var rows = staff_grid.getSelecteds();
+        var row = staff_grid.getSelected();
+        if (row) {
+            var url = '@Url.Action("AddWeixinUser", "User", new { area = "Admin" })';
+            var urlParms = { UserIDs: row.User_ID };
+            debugger;
+            doGet(url, urlParms);
+        } else {
+            alert("请选中一条记录");
+        }
+
+
+        @*var rows = staff_grid.getSelecteds();
         if (rows.length > 0) {
             if (confirm("确定增加选中记录的微信账号？")) {
                 var ids = [];
@@ -93,12 +103,13 @@
             }
         } else {
             alert("请选中一条记录");
-        }
+        }*@
     }
     //////////////////////////////////////////////////
     function onAddedVXUserRenderer(e) {
         if (e.value == 1) return "已添加";
         else return "未添加";
-    }
+    }
+
 
 </script>

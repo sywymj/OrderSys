@@ -80,7 +80,7 @@ namespace JSNet.BaseSys
         HuanJian=2,
         [EnumDescription("外包")]
         WaiBao = 3,
-        [EnumDescription("完成")]
+        [EnumDescription("处理完成")]
         WanCheng = 99,
         [EnumDescription("其他")]
         Others = 9,

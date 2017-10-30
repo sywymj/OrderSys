@@ -26,7 +26,7 @@ namespace JSNet.Service
                 type = "login",
                 mobile = tel,
                 username = userName,
-            }, "get");
+            }, "get", false);
             return true;
         }
 

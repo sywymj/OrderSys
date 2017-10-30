@@ -19,6 +19,7 @@ Query.prototype = {
     priority: "",       //紧急程度
     content:"",         //内容
     tabId: "",
+    workingLocation:"",
 
     setNextPage: function () {
         this.pageIndex++;
@@ -355,37 +356,7 @@ formatDic = function (value, data) {
     });
 }
 
-getQueryFilters = function () {
-    var filter = new Object();
-    filter.status = $("#filterStatus").children(".now").attr("value");
-    filter.priority = $("#filterPriority").children(".now").attr("value");
-    filter.bookingTime = $("#filterBookingTime").val();
-    filter.content = $("#filterContent").val();
-    return filter;
-}
 
-setQueryFilters = function (query) {
-    debugger;
-    var article = new Article('#filter');
-    doGetPartial1(article, '/Weixin/Home/FilterIndex', { tabid: query.tabID });
-
-    $("#filterStatus").children("div").removeClass("now");
-    $.each($("#filterStatus").children("div"), function (i, n) {
-        if ($(this).attr("value") == query.status) {
-            $(this).addClass("now");
-        }
-    });
-
-    $("#filterPriority").children("div").removeClass("now");
-    $.each($("#filterPriority").children("div"), function (i, n) {
-        if ($(this).attr("value") == query.priority) {
-            $(this).addClass("now");
-        }
-    })
-
-    $("#filterBookingTime").val(query.bookingTime);
-    $("#filterContent").val(query.content);
-}
 
 $.smartScroll = function (container, selectorScrollable) {
 
