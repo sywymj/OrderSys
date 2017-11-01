@@ -53,6 +53,7 @@ namespace OrderSys.Admin.Controllers
 
             //TODO 数据验证。
             int[] roleIDs = JSValidator.ValidateStrings("角色ID", sRoleIDs, true);
+            JSValidator.ValidateTel("手机号码", viewModel.Staff.Tel);
 
             UserEntity user = new UserEntity();
             StaffEntity staff = new StaffEntity();
@@ -79,6 +80,7 @@ namespace OrderSys.Admin.Controllers
 
             //TODO 数据验证。
             int[] roleIDs = JSValidator.ValidateStrings("角色ID", sRoleIDs, true);
+            JSValidator.ValidateTel("手机号码", viewModel.Staff.Tel);
 
             UserEntity user = new UserEntity();
             StaffEntity staff = new StaffEntity();
@@ -118,20 +120,28 @@ namespace OrderSys.Admin.Controllers
         }
 
         #region VERIFY
+        [ManagerAuthorize(Roles = "public")]
         [HttpGet]
         public string VerifyUserName(string userName, string userID)
         {
-            bool re = false;
-
             if (service.ChkUserNameExist(userName, userID))
             {
-                return JSON.ToJSON(new JSResponse(re), jsonParams);
+                return JSON.ToJSON(new JSResponse(false), jsonParams);
             }
+            return JSON.ToJSON(new JSResponse(true), jsonParams);
+        }
+ 
+        [ManagerAuthorize(Roles="public")]
+        [HttpGet]
+        public string VerifyTel(string tel, string userID)
+        {
+            if (service.ValidateTel(tel, userID))
+            {
+                return JSON.ToJSON(new JSResponse(false), jsonParams);
+            }
+            return JSON.ToJSON(new JSResponse(true), jsonParams);
 
-            re = true;
-            return JSON.ToJSON(new JSResponse(re), jsonParams);
-
-        } 
+        }
         #endregion
     }
 }

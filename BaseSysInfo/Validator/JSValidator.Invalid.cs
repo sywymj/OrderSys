@@ -16,6 +16,28 @@ namespace JSNet.BaseSys
         /// <param name="value">参数值</param>
         /// <param name="require">是否必须</param>
         /// <returns></returns>
+        /// 
+        public static string ValidateTel(string name, string value, bool require = false) 
+        {
+            
+            string re = string.Empty;
+            if (!require && string.IsNullOrEmpty(value.Trim()))
+            {
+                return re;
+            }
+            if (require && string.IsNullOrEmpty(value))
+            {
+                throw new JSException(JSErrMsg.ERR_CODE_PARAM_MISSING, string.Format(JSErrMsg.ERR_MSG_PARAM_MISSING, name));
+            }
+            if (!System.Text.RegularExpressions.Regex.IsMatch(value, @"^1[3|4|5|8][0-9]\d{4,8}$")) 
+            {
+                throw new JSException(JSErrMsg.ERR_CODE_WrongFormateTel, JSErrMsg.ERR_MSG_WrongFormateTel);
+            }
+
+            re = value;
+            return re;
+        }
+
         public static string ValidateString(string name, string value, bool require = false)
         {
             //TODO 过滤危险字符

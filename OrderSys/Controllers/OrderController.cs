@@ -413,10 +413,29 @@ namespace OrderSys.Controllers
 
         #region DoAction
         [HttpPost]
-        public ActionResult DoStartOrder()
+        public ActionResult StartOrder()
+        {
+            DoStartOrder();
+
+            ContentResult res = new ContentResult();
+            res.Content = JSON.ToJSON(new JSResponse("成功发起"), jsonParams);
+            return res;
+        }
+
+        [HttpPost]
+        public ActionResult StartAndAppointOrder()
+        {
+            string orderID = DoStartOrder();
+
+            ContentResult res = new ContentResult();
+            res.Content = JSON.ToJSON(new JSResponse(ResponseType.Redict, "成功发起，现请进行委派！", data: Url.Action("AppointOrder", "Order", new { area = "Weixin", OrderID = orderID })));
+            return res;
+        }
+
+        private string DoStartOrder()
         {
             //获取参数
-            string sBookingTime = JSRequest.GetRequestFormParm(OrderEntity.FieldBookingTime,false);
+            string sBookingTime = JSRequest.GetRequestFormParm(OrderEntity.FieldBookingTime, false);
             string sAttn = JSRequest.GetRequestFormParm(OrderEntity.FieldAttn, false);
             string sAttnTel = JSRequest.GetRequestFormParm(OrderEntity.FieldAttnTel, false);
             string sPriority = JSRequest.GetRequestFormParm(OrderEntity.FieldPriority);
@@ -437,11 +456,9 @@ namespace OrderSys.Controllers
             order.WorkingLocation = JSValidator.ValidateString(OrderEntity.FieldWorkingLocation, sWorkingLocation, false);
             order.PhotoPath = JSValidator.ValidateString(OrderEntity.FieldPhotoPath, sPhotoPath, false);
             order.PhotoPath1 = JSValidator.ValidateString(OrderEntity.FieldPhotoPath1, sPhotoPath1, false);
-            orderService.StartOrder(order);
+            string orderID = orderService.StartOrder(order);
 
-            ContentResult res = new ContentResult();
-            res.Content = JSON.ToJSON(new JSResponse("成功发起！"), jsonParams);
-            return res;
+            return orderID;
         }
 
         [HttpPost]

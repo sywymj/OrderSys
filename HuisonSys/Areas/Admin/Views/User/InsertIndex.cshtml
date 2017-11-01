@@ -43,7 +43,7 @@
                     </td>
                     <td style="width: 70px; text-align: right; ">手机号码：</td>
                     <td style="width:150px;">
-                        <input name="Staff.Tel" class="mini-textbox" required="true" emptytext="请输入手机号码" />
+                        <input name="Staff.Tel" class="mini-textbox" required="true" emptytext="请输入手机号码" onvalidation="onExistTelValidation" />
                     </td>
                 </tr>
                 <tr>
@@ -140,6 +140,25 @@
         }
     }
 
+    function onExistTelValidation(e) {
+        var pass = false;
+        if (e.isValid) {
+            var userID = mini.getbyName("ID").getValue();
+            var url = '@Url.Action("VerifyTel", "User", new { area = "Admin" })';
+            var data = { tel: e.value, userID: userID };
+            doGetSync(url, data, function (jdata) {
+                if (jdata.Code == '200') {
+                    debugger;
+                    if (jdata.Data == true) {
+                    } else {
+                        e.errorText = "手机号码已存在！";
+                        e.isValid = false;
+                    }
+                }
+            });
+        }
+    }
+
     /////////////////
     ///保存数据
     function SaveData() {
@@ -163,7 +182,9 @@
         var json = mini.encode(o);
         var data = { viewModel: json, roleIDs: roleIDs };
         doPost(url, data, function (jdata) {
-            CloseWindow("save");
+            if (jdata.Code == "200") {
+                CloseWindow("save");
+            }
         })
     }
 

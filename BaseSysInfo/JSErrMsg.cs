@@ -20,6 +20,8 @@ namespace JSNet.BaseSys
         public const string ERR_MSG_NODATA_SELECT = "请选择至少一条记录。";
         public const string ERR_CODE_AddedVXUser = "4005";
         public const string ERR_MSG_AddedVXUser = "微信用户已存在，请勿重复添加。";
+        public const string ERR_CODE_WrongFormateTel = "4006";
+        public const string ERR_MSG_WrongFormateTel = "手机号码格式不正确！";
 
         //5开头的是服务端问题
         public const string ERR_CODE_SESSIONKEY_MISSING = "5001";

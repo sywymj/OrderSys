@@ -1,4 +1,6 @@
-﻿@model JSNet.Model.OrderEntity
+﻿@using JSNet.Service
+@model JSNet.Model.OrderEntity
+
 <!--引入UICSS-->
 <link rel="stylesheet" type="text/css" href="/Content/uploader/style.css">
 <!--引入CSS-->
@@ -92,10 +94,20 @@
         </div>
     </div>
 </div>
-
-<div class="weui_btn_area">
-    <a class="weui_btn weui_btn_primary" href="javascript:doStartOrder()" id="showTooltips">确定</a>
-</div>
+@{if (new PermissionService().IsButtonAuthorizedByRole("OrderSys_VX.MyStartIndex.Add"))
+{
+    <div class="weui_btn_area">
+        <a class="weui_btn weui_btn_primary" href="javascript:doStartOrder()" id="showTooltips">发起</a>
+    </div>
+}
+}
+@{if(new PermissionService().IsButtonAuthorizedByRole("OrderSys_VX.MyStartIndex.StartAndAppoint"))
+{
+    <div class="weui_btn_area">
+        <a class="weui_btn weui_btn_primary" href="javascript:doStartAndAppointOrder()">发起并委派</a>
+    </div>
+}
+}
 
 <script>
 
@@ -106,23 +118,12 @@
 
 
     doStartOrder = function () {
-        var filesName = getFilesName();
-        var data = {
-            BookingTime: $('#BookingTime').val(),
-            Attn: $('#Attn').val(),
-            AttnTel: $('#AttnTel').val(),
-            Priority: $("input[name='Priority']:checked").val(),
-            Content: $('#Content').val(),
-            Remark: $('#Remark').val(),
-            WorkingLocation: getOrderWorkingLocation(),
-            PhotoPath: filesName[0] || "",
-            PhotoPath1: filesName[1] || "",
-        };
+        var data = getFormData();
 
         var b = doValidate(data);
-        if (!b) { return false;}
+        if (!b) { return false; }
 
-        doPost('@Url.Action("DoStartOrder", "Order", new { area = "Weixin" })', data, function (jdata) {
+        doPost('@Url.Action("StartOrder", "Order", new { area = "Weixin" })', data, function (jdata) {
             if (jdata.Code == "200") {
                 startedQuery = new Query('#mystarted_list');
                 startedQuery.pageIndex = 1;
@@ -133,6 +134,15 @@
 
         });
     };
+
+    doStartAndAppointOrder = function () {
+        var data = getFormData();
+
+        var b = doValidate(data);
+        if (!b) { return false; }
+
+        doPost('@Url.Action("StartAndAppointOrder", "Order", new { area = "Weixin" })', data);
+    }
 
     doValidate = function (o) {
         if (o.Content == "") {
@@ -172,6 +182,23 @@
             getOrderWorkingLocationSecondLevel(selected);
         }
     })
+
+    getFormData = function () {
+        var filesName = getFilesName();
+        var data = {
+            BookingTime: $('#BookingTime').val(),
+            Attn: $('#Attn').val(),
+            AttnTel: $('#AttnTel').val(),
+            Priority: $("input[name='Priority']:checked").val(),
+            Content: $('#Content').val(),
+            Remark: $('#Remark').val(),
+            WorkingLocation: getOrderWorkingLocation(),
+            PhotoPath: filesName[0] || "",
+            PhotoPath1: filesName[1] || "",
+        };
+
+        return data;
+    }
 
     getOrderWorkingLocation = function () {
         var workinglocation;

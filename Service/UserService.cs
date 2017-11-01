@@ -343,5 +343,22 @@ namespace JSNet.Service
             bool b = manager.Exists(where);
             return b;
         }
+
+        public bool ValidateTel(string tel, string userID)
+        {
+            EntityManager<StaffEntity> manager = new EntityManager<StaffEntity>();
+
+            WhereStatement where = new WhereStatement();
+            where.Add(StaffEntity.FieldTel, Comparison.Equals, tel);
+            if (!string.IsNullOrEmpty(userID))
+            {
+                //编辑时
+                StaffEntity staff = GetStaffByUserID(Convert.ToInt32(userID));
+                where.Add(StaffEntity.FieldID, Comparison.NotEquals, staff.ID);
+            }
+
+            bool b = manager.Exists(where);
+            return b;
+        }
     }
 }

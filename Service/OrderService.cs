@@ -17,7 +17,7 @@ namespace JSNet.Service
     public class OrderService:BaseService
     {
         //发起报障单
-        public void StartOrder(OrderEntity order)
+        public string StartOrder(OrderEntity order)
         {
             //1.0 添加工单实体
             order.ID = Guid.NewGuid();
@@ -45,6 +45,7 @@ namespace JSNet.Service
             EntityManager<OrderFlowEntity> orderflowManager = new EntityManager<OrderFlowEntity>();
             orderflowManager.Insert(orderFlow);
 
+            return order.ID.ToString();
             //3.0 微信推送
         }
 
