@@ -5,15 +5,64 @@
     Layout = "~/Areas/Weixin/Views/Shared/_InnerLayout.cshtml";
 }
 <link href="~/Content/tinyselect/css/tinyselect.css" rel="stylesheet" />
+<!--引入UICSS-->
+<link rel="stylesheet" type="text/css" href="/Content/uploader/style.css">
+<!--引入CSS-->
+<link rel="stylesheet" type="text/css" href="/Content/uploader/webuploader.css">
+<!--引入JS-->
+<script type="text/javascript" src="/Content/uploader/webuploader.js"></script>
 <div>
     <div class="pad96">
         <div class="pad96_t">进度内容</div>
         <select id="select1" style="width: 100%;">
         </select>
+        
+        <div class="weui_cells weui_cells_form" id="orderGoods">
+            <div class="weui_cells_title">更换物品</div>
+            <div class="weui_cell weui_cell_select">
+                <div class="weui_cell_bd weui_cell_primary">
+                    <select class="weui_select" id="OrderGoodsDDL">
+                        <option value="">无</option>
+                        <option value="其它">其它</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="weui_cells weui_cells_form" id="isFee">
+            <div class="weui_cells_title">是否需要收费</div>
+            <div class="weui_cells weui_cells_checkbox">
+                <label class="weui_cell weui_check_label" for="s11">
+                    <div class="weui_cell_hd">
+                        <input type="radio" class="weui_check" name="IsFee" id="s11" checked="checked" value="0">
+                        <i class="weui_icon_checked"></i>
+                    </div>
+                    <div class="weui_cell_bd weui_cell_primary">
+                        <p>是</p>
+                    </div>
+                </label>
+                <label class="weui_cell weui_check_label" for="s12">
+                    <div class="weui_cell_hd">
+                        <input type="radio" name="IsFee" class="weui_check" id="s12" value="1">
+                        <i class="weui_icon_checked"></i>
+                    </div>
+                    <div class="weui_cell_bd weui_cell_primary">
+                        <p>否</p>
+                    </div>
+                </label>
+            </div>
+        </div>
+
+        <div id="uploader-demo" class="wu-example">
+            <!--用来存放item-->
+            <div id="fileList" class="uploader-list"></div>
+            <div id="filePicker">拍照</div>
+        </div>
+
         <textarea id="remark" rows="2" placeholder="请输入备注"></textarea>
 
         <div class="demos-content-padded" style="margin-top:20px;">
-            <a href="javascript:doAddOrderHandleDetail('@ViewBag.OrderID');" class="weui_btn weui_btn_primary" style="width:46%; height:40px; line-height:40px;  float:left; margin:0; font-size:16px;">确定</a>
+            <a href="javascript:doAddOrderHandleDetail('@ViewBag.OrderID');" class="weui_btn weui_btn_primary" style="width:46%; height:40px; line-height:40px;  float:right; margin:0; font-size:16px;">确定</a>
             @*<a href="javascript:doHandled('@ViewBag.OrderID');" class="weui_btn weui_btn_primary" style="width:46%; height:40px; line-height:40px; float:right; margin:0; font-size:16px; ">完成处理</a>*@
             <div class="clear"></div>
         </div>
@@ -39,30 +88,69 @@
         })
     }
 
+    getOrderGoodsDDL = function () {
+        var url = '@Url.Action("GetOrderGoodsDDL", "Home", new { area = "Weixin" })';
+        $.ajax({
+            type: "GET", //GET或POST,
+            async: true, //默认设置为true，所有请求均为异步请求。
+            url: url,
+            data: null,
+            dataType: "text", //xml、html、script、jsonp、text
+            beforeSend: function () { },
+            success: function (data) {
+                var jdata = ajaxTips(data);
+                if (jdata.Code == "200") {
+                    var contain = $('#OrderGoodsDDL');
+                    $.each(jdata.Data, function (i, n) {
+                        contain.append('<option value="' + n.ID + '">' + n.Title + '</option>');
+                    })
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+            },
+            complete: function () {
+            }
+        });
+    }
+
     doAddOrderHandleDetail = function (orderID) {
         var handleType = $('#select1').val();
         var remark = $('#remark').val();
         var orderID = orderID;
 
+        //完成
+        //if (handleType == 99) {
+        //    doHandled(orderID);
+        //    return true;
+        //}
+
+        //赋值
+        var orderDetail = {};
+        orderDetail.OrderID = orderID;
+        orderDetail.HandleType = handleType;
+        orderDetail.Remark = remark;
+        //如果是换件，需要上传更换的物品
+        if (handleType == 2) {
+            orderDetail.OrderGoods = getOrderGoods(orderID);
+            orderDetail.Remark = getOrderGoodsRemark(orderID) + orderDetail.Remark;
+        }
         if (handleType == 99) {
-            doHandled(orderID);
+            //完成
+            var filesName = getFilesName();
+            var photoPath = filesName[0] || "";
+            var photoPath1 = filesName[1] || "";
+            doHandled(orderDetail, photoPath, photoPath1);
             return true;
         }
 
-
+        var json = JSON.stringify(orderDetail);
         $.confirm("您确定添加这条进度?", "确认?", function () {
             var url = '@Url.Action("DoAddHandleDetail", "Order", new { area = "Weixin" })';
-            var urlParm = {
-                OrderID: orderID,
-                HandleType: handleType,
-                Remark: remark
-            };
+            var urlParm = { ViewModel: json };
             doPost(url, urlParm, function (jdata) {
                 if (jdata.Code == "200") {
                     //返回
                     history.back(-1);
-                    //委派完成，关闭本div
-                    //closePopup('#addhandledetail_popup');
                 }
             });
         }, function () {
@@ -70,11 +158,12 @@
         });
     }
 
-    doHandled = function (orderID) {
+    doHandled = function (orderDetail, handledPhotoPath, handledPhotoPath1) {
+        var json = JSON.stringify(orderDetail);
         $.confirm("您确定完成了这条工单?", "确认?", function () {
             var url = '@Url.Action("HandledOrder", "Order", new { area = "Weixin" })';
-            var urlParm = { OrderID: orderID };
-            doGet(url, urlParm, function (jdata) {
+            var urlParm = { ViewModel: json, HandledPhotoPath: handledPhotoPath, HandledPhotoPath1: handledPhotoPath1 };
+            doPost(url, urlParm, function (jdata) {
                 if (jdata.Code == "200") {
                     //刷新已完成
                     self.location = document.referrer;
@@ -85,6 +174,78 @@
         });
     }
 
+    getOrderGoods = function (orderID) {
+        var OrderGoods = [];
+        var orderGoodNames = $('#OrderGoodsDDL').val();
+        var isFee = $("input[name='IsFee']:checked").val();
+        if (orderGoodNames == '') { return []; }
+
+        var good = {};
+        good.OrderID = orderID;
+        good.Name = orderGoodNames;
+        good.IsFee = isFee;
+        OrderGoods.push(good);
+        return OrderGoods;
+    }
+
+    getOrderGoodsRemark = function (orderID) {
+        debugger;
+        var orderGoods = getOrderGoods(orderID);
+        var feeGoods = '', freeGoods = '';
+        $.each(orderGoods, function (i, n) {
+            if (n.IsFee == "0") {
+                //需要收费
+                feeGoods += n.Name + ",";
+            } else {
+                //不需要收费
+                freeGoods += n.Name + ",";
+            }
+        })
+        if (feeGoods != "") {
+            feeGoods = "收费物品：" + feeGoods;
+            feeGoods = feeGoods.substring(0, feeGoods.length - 1);
+            feeGoods += "。";
+        }
+        if (freeGoods != "") {
+            freeGoods = "不收费物品：" + freeGoods;
+            freeGoods = freeGoods.substring(0, freeGoods.length - 1);
+            freeGoods += "。";
+        }
+        return feeGoods + freeGoods;
+    }
+
+    $('#select1').on('change', function () {
+        var handleType = $('#select1').val();
+
+        if (handleType == 2) {
+            //显示换件 TODO 多选
+            $('#OrderGoodsDDL').val('');
+            $('#orderGoods').show();
+
+        } else if (handleType == 99) {
+            resetUploader();
+            $('#uploader-demo').show();
+        }
+        else {
+            $('#orderGoods').hide();
+            $('#isFee').hide();
+        }
+    })
+
+    $('#OrderGoodsDDL').on('change', function () {
+        var orderGoods = $('#OrderGoodsDDL').val();
+        debugger;
+        if (orderGoods == "") {
+            //显示换件 TODO 多选
+            $('#isFee').hide();
+        } else {
+            $('#isFee').show();
+        }
+    })
+
+
+
+    //////////////////////////////////////////////////////////////////////////////
     /* This parser won't respect "---" selection */
     function dataParserA(data, selected) {
         retval = [{ val: "-1", text: "---" }];
@@ -108,8 +269,215 @@
     $(function () {
         //debugger;
         getOrderHandleType();
-
+        getOrderGoodsDDL();
+        $('#orderGoods').hide();
+        $('#isFee').hide();
+        $('#uploader-demo').hide();
     })
+
+</script>
+
+<script>
+    // Web Uploader实例
+    var uploader;
+
+    // 图片上传demo
+    jQuery(function () {
+        var $ = jQuery,
+            $list = $('#fileList'),
+            // 优化retina, 在retina下这个值是2
+            ratio = window.devicePixelRatio || 1,
+
+            // 缩略图大小
+            thumbnailWidth = 100 * ratio,
+            thumbnailHeight = 100 * ratio,
+
+        // 初始化Web Uploader
+        uploader = WebUploader.create({
+
+            // 自动上传。
+            auto: true,
+
+            // swf文件路径
+            swf: 'Content/uploader/Uploader.swf',
+
+            // 文件接收服务端。
+            server: '@Url.Action("UploadPhoto", "Uploader", new { area = "Weixin" })',
+
+            // 是否允许裁剪。
+            crop: false,
+
+            // 选择文件的按钮。可选。
+            // 内部根据当前运行是创建，可能是input元素，也可能是flash.
+            pick: '#filePicker',
+
+            fileNumLimit: 2,
+
+            // 只允许选择文件，可选。
+            accept: {
+                title: 'Images',
+                extensions: 'gif,jpg,jpeg,bmp,png',
+                mimeTypes: 'image/*'
+            }
+        });
+
+        // 当有文件添加进来的时候
+        uploader.on('fileQueued', function (file) {
+            var $li = $(
+                    '<div id="' + file.id + '" class="file-item thumbnail">' +
+                        '<img>' +
+                        //'<div class="info">' + file.name + '</div>' +
+                    '</div>'
+                    ),
+                $img = $li.find('img'),
+                $btns = $('<div class="file-panel">' +
+                    '<span class="cancel">删除</span></div>').appendTo($li);
+
+            $list.append($li);
+
+            // 创建缩略图
+            uploader.makeThumb(file, function (error, src) {
+                if (error) {
+                    $img.replaceWith('<span>不能预览</span>');
+                    return;
+                }
+
+                $img.attr('src', src);
+            }, thumbnailWidth, thumbnailHeight);
+
+            $li.on('mouseenter', function () {
+                $btns.stop().animate({ height: 20 });
+            });
+
+            $li.on('mouseleave', function () {
+                $btns.stop().animate({ height: 20 /*0*/ });
+            });
+
+            $btns.on('click', 'span', function () {
+                $.confirm("是否确定移除这张图片？", "警告", function () {
+                    uploader.removeFile(file, true);
+                }, function () {
+                });
+            });
+        });
+
+        // 文件上传过程中创建进度条实时显示。
+        uploader.on('uploadProgress', function (file, percentage) {
+            var $li = $('#' + file.id),
+                $percent = $li.find('.progress span');
+
+            // 避免重复创建
+            if (!$percent.length) {
+                $percent = $('<p class="progress"><span></span></p>')
+                        .appendTo($li)
+                        .find('span');
+            }
+
+            $percent.css('width', percentage * 100 + '%');
+        });
+
+        // 文件上传成功，给item添加成功class, 用样式标记上传成功。
+        uploader.on('uploadSuccess', function (file, response) {
+            $('#' + file.id).addClass('upload-state-done');
+            ajaxTips(response, function (jdata) {
+                if (jdata.Code == "200") {
+                    file.name = jdata.Data;
+                } else {
+                    var $li = $('#' + file.id),
+                        $error = $li.find('div.error');
+
+                    // 避免重复创建
+                    if (!$error.length) {
+                        $error = $('<div class="error"></div>').appendTo($li);
+                    }
+
+                    $error.text(jdata.ErrMsg);
+                }
+            });
+        });
+
+        // 文件上传失败，现实上传出错。
+        uploader.on('uploadError', function (file) {
+            var $li = $('#' + file.id),
+                $error = $li.find('div.error');
+
+            // 避免重复创建
+            if (!$error.length) {
+                $error = $('<div class="error"></div>').appendTo($li);
+            }
+
+            $error.text('上传失败');
+        });
+
+        // 完成上传完了，成功或者失败，先删除进度条。
+        uploader.on('uploadComplete', function (file) {
+            $('#' + file.id).find('.progress').remove();
+        });
+
+        uploader.on('error', function (code) {
+            switch (code) {
+                case 'Q_EXCEED_NUM_LIMIT':
+                    alert("错误：上传文件数量过多！");
+                    break;
+                case 'Q_EXCEED_SIZE_LIMIT':
+                    alert("错误：文件总大小超出限制！");
+                    break;
+                case 'F_EXCEED_SIZE':
+                    alert("错误：文件大小超出限制！");
+                    break;
+                case 'Q_TYPE_DENIED':
+                    alert("错误：禁止上传该类型文件！");
+                    break;
+                case 'F_DUPLICATE':
+                    alert("错误：请勿重复上传该文件！");
+                    break;
+                default:
+                    alert("错误代码：" + typ, "");
+                    break;
+            }
+        });
+
+        //删除图片
+        uploader.on('fileDequeued', function (file) {
+            removeFile(file);
+        });
+
+        getFilesName = function () {
+            var files = uploader.getFiles();
+            var filesName = [];
+            $.each(files, function (i, n) {
+                filesName.push(n.name);
+            })
+            return filesName;
+        }
+
+        resetUploader = function () {
+            uploader.reset();
+            var $files = $('.file-item');
+            $files.remove();
+        }
+    });
+
+    // 负责view的销毁，并删除服务器端文件
+    function removeFile(file) {
+        var $li = $('#' + file.id);
+
+        $li.off().find('.file-panel').off().end().remove();
+
+        $.ajax({
+            type: "GET", //GET或POST,
+            async: true, //默认设置为true，所有请求均为异步请求。
+            url: '@Url.Action("RemovePhoto", "Uploader", new { area = "Weixin" })',
+            data: { fileName: file.name },
+            dataType: "text", //xml、html、script、jsonp、text
+            beforeSend: function () { },
+            success: function (data) {
+                //我这里跳转之后，怎么返回我想要回的页面
+                var jdata = ajaxTips(data);
+            },
+        });
+    }
+
 
 </script>
 

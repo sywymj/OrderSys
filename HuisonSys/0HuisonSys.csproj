@@ -3054,6 +3054,8 @@
     <Content Include="Areas\Admin\Views\Order\OrderWorkingLocation_Index.cshtml" />
     <Content Include="Areas\Admin\Views\Order\OrderWorkingLocation_InsertIndex.cshtml" />
     <Content Include="Areas\Admin\Views\Order\OrderWorkingLocationFirstLevel_DDL.cshtml" />
+    <Content Include="Areas\Admin\Views\Order\OrderGoods_Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Order\OrderGoods_InsertIndex.cshtml" />
     <None Include="Properties\PublishProfiles\1.pubxml" />
   </ItemGroup>
   <PropertyGroup>

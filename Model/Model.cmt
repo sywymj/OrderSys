@@ -6,8 +6,15 @@
 	string clsName = host.GetModelClass(host.TableName)+"Entity";
 	if(host.TableName.IndexOf('_') > -1)
 	{
-		clsName = host.GetModelClass(host.TableName).Split('_')[1]+"Entity";
+		if(host.TableName.Split('_').Length>2)
+		{
+			clsName = host.GetModelClass(host.TableName).Split('_')[1]+host.GetModelClass(host.TableName).Split('_')[2]+"Entity";
+		}else{
+			clsName = host.GetModelClass(host.TableName).Split('_')[1]+"Entity";
+		}
+		
 	}
+	
 #>
 using System;
 using System.Collections.Generic;

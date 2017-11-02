@@ -167,6 +167,22 @@ namespace JSNet.Service
             orderHandleDetailManager.Insert(orderHandleDetail);
         }
 
+        public void AddHandledDetail(OrderHandleDetailEntity orderHandleDetail)
+        {
+            //4.1 添加处理进度
+            orderHandleDetail.OrderID = orderHandleDetail.OrderID;
+            orderHandleDetail.HandleType = (int)OrderHandleType.WanCheng;
+            orderHandleDetail.Remark = orderHandleDetail.Remark;
+            AddHandleDetail(orderHandleDetail);
+
+            //4.2 添加处理进度
+            OrderHandleDetailEntity orderHandleDetail1 = new OrderHandleDetailEntity();
+            orderHandleDetail1.OrderID = orderHandleDetail.OrderID;
+            orderHandleDetail1.HandleType = (int)OrderHandleType.DaiYanShou;
+            orderHandleDetail1.Remark = "等待验收。";
+            AddHandleDetail(orderHandleDetail1);
+        }
+
         public void AddHandlingOrderDetail(OrderHandleDetailEntity orderHandleDetail)
         {
             //1.0 修改工单实体
@@ -199,8 +215,14 @@ namespace JSNet.Service
 
         }
 
+        public void AddOrderGoodsRel(List<OrderGoodsRelEntity> list)
+        {
+            EntityManager<OrderGoodsRelEntity> manager = new EntityManager<OrderGoodsRelEntity>();
+            manager.Insert(list);
+        }
+
         //报障处理完毕
-        public void HandledOrder(Guid orderID)
+        public void HandledOrder(Guid orderID, string handledPhotoPath, string handledPhotoPath1)
         {
             //1.1 //验证流程
             OrderEntity sourceOrder = GetOrderEntity(orderID);
@@ -212,6 +234,8 @@ namespace JSNet.Service
             kvps.Add(new KeyValuePair<string, object>(OrderEntity.FieldNextOperatorID, sourceOrder.StarterID));
             kvps.Add(new KeyValuePair<string, object>(OrderEntity.FieldStatus, (int)OrderStatus.Checking));
             kvps.Add(new KeyValuePair<string, object>(OrderEntity.FieldOperateTime, DateTime.Now));
+            kvps.Add(new KeyValuePair<string, object>(OrderEntity.FieldHandledPhotoPath, handledPhotoPath));
+            kvps.Add(new KeyValuePair<string, object>(OrderEntity.FieldHandledPhotoPath1, handledPhotoPath1));
             EntityManager<OrderEntity> orderManager = new EntityManager<OrderEntity>();
             int rows = orderManager.Update(kvps, orderID);
             if (rows == 0)
@@ -229,20 +253,6 @@ namespace JSNet.Service
             orderflow.Remark = "";
             EntityManager<OrderFlowEntity> orderflowManager = new EntityManager<OrderFlowEntity>();
             orderflowManager.Insert(orderflow);
-
-            //4.1 添加处理进度
-            OrderHandleDetailEntity orderHandleDetail = new OrderHandleDetailEntity();
-            orderHandleDetail.OrderID = orderID;
-            orderHandleDetail.HandleType = (int)OrderHandleType.WanCheng;
-            orderHandleDetail.Remark = "工单处理完毕。";
-            AddHandleDetail(orderHandleDetail);
-
-            //4.2 添加处理进度
-            OrderHandleDetailEntity orderHandleDetail1 = new OrderHandleDetailEntity();
-            orderHandleDetail1.OrderID = orderID;
-            orderHandleDetail1.HandleType = (int)OrderHandleType.DaiYanShou;
-            orderHandleDetail1.Remark = "等待验收。";
-            AddHandleDetail(orderHandleDetail1);
 
             //4.0 微信推送
             ViewManager vmanager = new ViewManager("VO_Order");
@@ -902,13 +912,6 @@ namespace JSNet.Service
             return dt;
         }
 
-        public OrderWorkingLocationEntity GetOrderWorkingLocation(int orderWorkingLocationID)
-        {
-            EntityManager<OrderWorkingLocationEntity> manager = new EntityManager<OrderWorkingLocationEntity>();
-            OrderWorkingLocationEntity model = manager.GetSingle(orderWorkingLocationID);
-            return model;
-        } 
-
         public List<OrderHandlerEntity> GetOrderHandlers(Guid orderID, bool onlyHelper = false)
         {
             WhereStatement where = new WhereStatement();
@@ -924,6 +927,14 @@ namespace JSNet.Service
 
             return handlers;
         }
+
+        #region 工作地点
+        public OrderWorkingLocationEntity GetOrderWorkingLocation(int orderWorkingLocationID)
+        {
+            EntityManager<OrderWorkingLocationEntity> manager = new EntityManager<OrderWorkingLocationEntity>();
+            OrderWorkingLocationEntity model = manager.GetSingle(orderWorkingLocationID);
+            return model;
+        } 
 
         public DataTable GetOrderWorkingLocationDTByRole(RoleEntity role, Paging paging, out int count)
         {
@@ -1025,7 +1036,114 @@ namespace JSNet.Service
             List<OrderWorkingLocationEntity> list = GetOrderWorkingLocationListByRole(role);
             var re = list.Where(x => x.FirstLevel == firstLevelList).Select(x => x.ScecondLevel).ToList();
             return re;
+        } 
+        #endregion
+
+        #region 物品选择
+        public OrderGoodsEntity GetOrderGoods(int OrderGoodsID)
+        {
+            EntityManager<OrderGoodsEntity> manager = new EntityManager<OrderGoodsEntity>();
+            OrderGoodsEntity model = manager.GetSingle(OrderGoodsID);
+            return model;
         }
+
+        public DataTable GetOrderGoodsDTByRole(RoleEntity role, Paging paging, out int count)
+        {
+            PermissionService permissionService = new PermissionService();
+            List<string> list = permissionService.GetAuthorizeOrganizeIDByRole(role, "OrderSys_Data.OrderGoods");
+
+            WhereStatement where = new WhereStatement();
+            if (list.Count > 0)
+            {
+                where.Add("Organize_ID", Comparison.In, list.ToArray());
+            }
+            else
+            {
+                if (role.ID == 1)
+                {
+                    //超级管理员，显示所有内容
+                    where.Add("1", Comparison.Equals, "1");
+                }
+                else
+                {
+                    //非超级管理员，不显示内容
+                    where.Add("1", Comparison.Equals, "0");
+                }
+            }
+
+            OrderByStatement orderby = new OrderByStatement();
+            orderby.Add(paging.SortField, ConvertToSort(paging.SortOrder));
+
+            ViewManager vmanager = new ViewManager("VO_OrderGoods");
+            DataTable dt = vmanager.GetDataTableByPage(where, out count, paging.PageIndex, paging.PageSize, orderby);
+            return dt;
+        }
+
+        public List<OrderGoodsEntity> GetOrderGoodsListByRole(RoleEntity role)
+        {
+            PermissionService permissionService = new PermissionService();
+            List<string> list = permissionService.GetAuthorizeOrganizeIDByRole(role, "OrderSys_Data.OrderGoods");
+
+            WhereStatement where = new WhereStatement();
+            if (list.Count > 0)
+            {
+                where.Add(OrderGoodsEntity.FieldOrganizeID, Comparison.In, list.ToArray());
+            }
+            else
+            {
+                if (role.ID == 1)
+                {
+                    //超级管理员，显示所有内容
+                    where.Add("1", Comparison.Equals, "1");
+                }
+                else
+                {
+                    //非超级管理员，不显示内容
+                    where.Add("1", Comparison.Equals, "0");
+                }
+            }
+
+            int count = 0;
+            EntityManager<OrderGoodsEntity> manager = new EntityManager<OrderGoodsEntity>();
+            List<OrderGoodsEntity> re = manager.GetList(where, out count);
+            return re;
+        }
+
+        public void AddOrderGoods(OrderGoodsEntity entity)
+        {
+            EntityManager<OrderGoodsEntity> manager = new EntityManager<OrderGoodsEntity>();
+            manager.Insert(entity);
+        }
+
+        public void EditOrderGoods(OrderGoodsEntity entity)
+        {
+            List<KeyValuePair<string, object>> kvps = new List<KeyValuePair<string, object>>();
+            kvps.Add(new KeyValuePair<string, object>(OrderGoodsEntity.FieldName, entity.Name));
+            kvps.Add(new KeyValuePair<string, object>(OrderGoodsEntity.FieldOrganizeID, entity.OrganizeID));
+
+            EntityManager<OrderGoodsEntity> orderManager = new EntityManager<OrderGoodsEntity>();
+            int rows = orderManager.Update(kvps, entity.ID);
+        }
+
+        public void DeleteOrderGoods(int[] OrderGoodsIDs)
+        {
+            WhereStatement where = new WhereStatement();
+            where.Add(OrderGoodsEntity.FieldID, Comparison.In, OrderGoodsIDs);
+
+            EntityManager<OrderGoodsEntity> orderManager = new EntityManager<OrderGoodsEntity>();
+            int rows = orderManager.Delete(where);
+        }
+
+        public List<string> GetOrderGoodsNameList(RoleEntity role)
+        {
+            List<OrderGoodsEntity> list = GetOrderGoodsListByRole(role);
+            var re = list.GroupBy(x => x.Name).Select(x => x.First().Name).ToList();
+            return re;
+        }
+
+        #endregion
+
+
 
         private int GetLeaderHandlerID(int[] orderHandlerIDs)
         {

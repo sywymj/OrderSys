@@ -73,6 +73,8 @@ namespace OrderSys.Admin
 
     public class ViewOrderWorkingLocation : OrderWorkingLocationEntity { }
 
+    public class ViewOrderGoods : OrderGoodsEntity { }
+
     //ListData ViewModel
     public class DataTableData
     {

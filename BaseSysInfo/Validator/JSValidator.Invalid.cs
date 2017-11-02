@@ -230,6 +230,21 @@ namespace JSNet.BaseSys
             return re;
         }
 
+        public static string[] ValidateToStrings(string name, string value, bool require = false)
+        {
+            if (!require && string.IsNullOrEmpty(value.Trim()))
+            {
+                return new string[0];
+            }
+            if (require && string.IsNullOrEmpty(value))
+            {
+                throw new JSException(JSErrMsg.ERR_CODE_PARAM_MISSING, string.Format(JSErrMsg.ERR_MSG_PARAM_MISSING, name));
+            }
+
+            string[] values = value.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+            return values;
+        }
+
 
         /// <summary>
         /// 验证参数是否为空。

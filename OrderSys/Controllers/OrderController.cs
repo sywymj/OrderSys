@@ -487,23 +487,51 @@ namespace OrderSys.Controllers
         }
 
         [HttpPost]
-        public ActionResult DoAddHandleDetail(Guid orderID, int handleType, string Remark)
+        public ActionResult DoAddHandleDetail()
         {
-            OrderHandleDetailEntity orderHandleDetail = new OrderHandleDetailEntity();
-            orderHandleDetail.OrderID = orderID;
-            orderHandleDetail.HandleType = handleType;
-            orderHandleDetail.Remark = Remark;
-            orderService.AddHandleDetail(orderHandleDetail);
+            string s = JSRequest.GetRequestFormParm("ViewModel");
+            OrderHandleDetailViewModel viewModel = FastJSON.JSON.ToObject<OrderHandleDetailViewModel>(s);
+
+            //TODO 数据验证。
+
+            OrderHandleDetailEntity handleDetail = new OrderHandleDetailEntity();
+            viewModel.CopyTo(handleDetail);
+            List<OrderGoodsRelEntity> orderGoodsRels = new List<OrderGoodsRelEntity>();
+            foreach (OrderGoodsRelEntity good in viewModel.OrderGoods)
+            {
+                OrderGoodsRelEntity rel = new OrderGoodsRelEntity();
+                good.CopyTo(rel);
+                orderGoodsRels.Add(rel);
+            }
+
+            //添加处理进度
+            orderService.AddHandleDetail(handleDetail);
+            //添加更换的物品
+            orderService.AddOrderGoodsRel(orderGoodsRels);
 
             ContentResult res = new ContentResult();
             res.Content = JSON.ToJSON(new JSResponse("操作成功！"), jsonParams);
             return res;
         }
 
-        [HttpGet]
-        public ActionResult HandledOrder(Guid orderID)
+        [HttpPost]
+        public ActionResult HandledOrder()
         {
-            orderService.HandledOrder(orderID);
+            string sHandledPhotoPath = JSRequest.GetRequestFormParm("HandledPhotoPath");
+            string handledPhotoPath = JSValidator.ValidateString("图片地址", sHandledPhotoPath, false);
+            string sHandledPhotoPath1 = JSRequest.GetRequestFormParm("HandledPhotoPath1");
+            string handledPhotoPath1 = JSValidator.ValidateString("图片地址", sHandledPhotoPath1, false);
+
+            string s = JSRequest.GetRequestFormParm("ViewModel");
+            OrderHandleDetailViewModel viewModel = FastJSON.JSON.ToObject<OrderHandleDetailViewModel>(s);
+
+            OrderHandleDetailEntity handleDetail = new OrderHandleDetailEntity();
+            viewModel.CopyTo(handleDetail);
+
+            //完成工单
+            orderService.HandledOrder((Guid)handleDetail.OrderID, handledPhotoPath, handledPhotoPath1);
+            //添加处理进度
+            orderService.AddHandledDetail(handleDetail);
 
             ContentResult res = new ContentResult();
             res.Content = JSON.ToJSON(new JSResponse("操作成功！"), jsonParams);

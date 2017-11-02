@@ -1,0 +1,70 @@
+﻿@{
+    //【GetDT】
+    ViewBag.Title = "物品管理";
+    Layout = "~/Areas/Admin/Views/Shared/_InnerLayout.cshtml";
+}
+
+@Html.Partial("~/Areas/Admin/Views/Shared/_Header.cshtml", Request.Url.AbsolutePath)
+<div class="mini-fit">
+    <div id="OrderGoods-datagrid" class="mini-datagrid" idfield="User_ID" ajaxoptions="{type : 'get'}" style="width:100%;height:100%" autoload="false"
+         url="@Url.Action("GetOrderGoodsDTByPage", "Order", new { area = "Admin" })" datafield="Data.DT.JSNet">
+        <div property="columns">
+            <div type="indexcolumn" headeralign="center">序号</div>
+            <div field="OrderGoods_Name" width="180" headeralign="center" align="left" allowsort="true">物品名称</div>
+            <div field="Organize_FullName" width="120" headeralign="center" align="center" allowsort="true">所属机构</div>
+        </div>
+    </div>
+</div>
+
+<script>
+    mini.parse()
+    var OrderGoods_grid = mini.get("OrderGoods-datagrid");
+
+    OrderGoods_grid.load({
+        pageIndex: 0,
+        pageSize: 50,
+        sortField: "OrderGoods_Name",//排序字段必需要，不然没法分页
+        sortOrder: "DESC",//排序字段必需要，不然没法分页
+    }, function (data) {
+        ajaxTips(data.text);
+    }, function (data) {
+    })
+
+    function add() {
+        mini.open({
+            url: "@Url.Action("InsertOrderGoodsIndex", "Order", new { area = "Admin" })",
+            title: "新增物品", width: 400, height: 300,
+            onload: function () {
+                debugger;
+                var iframe = this.getIFrameEl();
+                var data = { action: "new" };
+                iframe.contentWindow.SetData(data);
+            },
+            ondestroy: function (action) {
+                OrderGoods_grid.reload();
+            }
+        });
+    }
+
+    function edit() {
+        var row = OrderGoods_grid.getSelected();
+        if (row) {
+            mini.open({
+                url: "@Url.Action("EditOrderGoodsIndex", "Order", new { area = "Admin" })",
+                title: "编辑物品", width: 400, height: 300,
+                onload: function () {
+                    var iframe = this.getIFrameEl();
+                    var data = { action: "edit", ID: row.OrderGoods_ID };
+                    iframe.contentWindow.SetData(data);
+                },
+                ondestroy: function (action) {
+                    OrderGoods_grid.reload();
+                }
+            });
+
+        } else {
+            alert("请选中一条记录");
+        }
+    }
+
+</script>

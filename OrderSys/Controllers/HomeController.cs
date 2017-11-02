@@ -167,5 +167,23 @@ namespace OrderSys.Controllers
             string s = JSON.ToJSON(new JSResponse(re), jsonParams);
             return s;
         }
+
+        [AllowAnonymous]
+        [HttpGet]
+        public string GetOrderGoodsDDL()
+        {
+            OrderService orderService = new OrderService();
+
+            List<string> list = orderService.GetOrderGoodsNameList(orderService.CurrentRole);
+            var re = list.Select(l =>
+                new DDLViewModel()
+                {
+                    ID = l,
+                    Title = l
+                }).ToList();
+
+            string s = JSON.ToJSON(new JSResponse(re), jsonParams);
+            return s;
+        }
     }
 }

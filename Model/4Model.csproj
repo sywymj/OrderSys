@@ -45,6 +45,8 @@
     <Compile Include="ApiLogEntity.cs" />
     <Compile Include="OrderEntity.cs" />
     <Compile Include="OrderFlowEntity.cs" />
+    <Compile Include="OrderGoodsEntity.cs" />
+    <Compile Include="OrderGoodsRelEntity.cs" />
     <Compile Include="OrderHandleDetailEntity.cs" />
     <Compile Include="OrderHandlerEntity.cs" />
     <Compile Include="OrderWorkingLocationEntity.cs" />

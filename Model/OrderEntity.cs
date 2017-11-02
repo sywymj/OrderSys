@@ -220,6 +220,24 @@ namespace JSNet.Model
             get { return _photopath1; }
             set { _photopath1 = value; }
         }
+        /// <summary>
+        /// HandledPhotoPath
+        /// </summary>		
+        private string _handledphotopath;
+        public string HandledPhotoPath
+        {
+            get { return _handledphotopath; }
+            set { _handledphotopath = value; }
+        }
+        /// <summary>
+        /// HandledPhotoPath1
+        /// </summary>		
+        private string _handledphotopath1;
+        public string HandledPhotoPath1
+        {
+            get { return _handledphotopath1; }
+            set { _handledphotopath1 = value; }
+        }
         #endregion
 
         #region  数据库字段名称
@@ -370,6 +388,20 @@ namespace JSNet.Model
         {
             get { return "PhotoPath1"; }
         }
+        /// <summary>
+        /// FiledName:HandledPhotoPath
+        /// </summary>		
+        public static string FieldHandledPhotoPath
+        {
+            get { return "HandledPhotoPath"; }
+        }
+        /// <summary>
+        /// FiledName:HandledPhotoPath1
+        /// </summary>		
+        public static string FieldHandledPhotoPath1
+        {
+            get { return "HandledPhotoPath1"; }
+        }
         #endregion
 
         public OrderEntity GetFrom(System.Data.DataRow dataRow)
@@ -396,6 +428,8 @@ namespace JSNet.Model
             entity.WorkingLocation = CommonUtil.ConvertToString(dataRow[FieldWorkingLocation]);
             entity.PhotoPath = CommonUtil.ConvertToString(dataRow[FieldPhotoPath]);
             entity.PhotoPath1 = CommonUtil.ConvertToString(dataRow[FieldPhotoPath1]);
+            entity.HandledPhotoPath = CommonUtil.ConvertToString(dataRow[FieldHandledPhotoPath]);
+            entity.HandledPhotoPath1 = CommonUtil.ConvertToString(dataRow[FieldHandledPhotoPath1]);
             return entity;
         }
 
@@ -424,6 +458,8 @@ namespace JSNet.Model
             entity.WorkingLocation = CommonUtil.ConvertToString(dataReader[FieldWorkingLocation]);
             entity.PhotoPath = CommonUtil.ConvertToString(dataReader[FieldPhotoPath]);
             entity.PhotoPath1 = CommonUtil.ConvertToString(dataReader[FieldPhotoPath1]);
+            entity.HandledPhotoPath = CommonUtil.ConvertToString(dataReader[FieldHandledPhotoPath]);
+            entity.HandledPhotoPath1 = CommonUtil.ConvertToString(dataReader[FieldHandledPhotoPath1]);
             return entity;
         }
 
@@ -450,6 +486,8 @@ namespace JSNet.Model
             sqlBuilder.SetValue(FieldWorkingLocation, entity.WorkingLocation);
             sqlBuilder.SetValue(FieldPhotoPath, entity.PhotoPath);
             sqlBuilder.SetValue(FieldPhotoPath1, entity.PhotoPath1);
+            sqlBuilder.SetValue(FieldHandledPhotoPath, entity.HandledPhotoPath);
+            sqlBuilder.SetValue(FieldHandledPhotoPath1, entity.HandledPhotoPath1);
         }
 
         public void GetFromExpand(System.Data.DataRow dataRow)
