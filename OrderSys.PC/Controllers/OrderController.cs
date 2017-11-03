@@ -214,6 +214,8 @@ namespace OrderSys.Admin.Controllers
 
         public ActionResult OrdersIndex()
         {
+            ViewBag.StatusNames = JSON.ToJSON(EnumExtensions.ConvertToDic<OrderStatus>(), jsonParams); ;
+            ViewBag.PriorityNames = JSON.ToJSON(EnumExtensions.ConvertToDic<OrderPriority>(), jsonParams);
             return View("~/Areas/Admin/Views/Order/Orders_Index.cshtml");
         }
 
@@ -234,13 +236,13 @@ namespace OrderSys.Admin.Controllers
 
         #region 【导出】工单
         [HttpGet]
-        public string Export()
+        public string ExportOrders()
         {
             JSDictionary dic = MakeFilterOfOrders();
 
             string path = service.ExportOrders(service.CurrentRole, dic);
             string url = "http://" + HttpContext.Request.Url.Authority + path;
-            return JSON.ToJSON(new JSResponse(ResponseType.Redict, "导出成功！", url), jsonParams);
+            return JSON.ToJSON(new JSResponse(ResponseType.Redict, "导出成功！", data: url), jsonParams);
         } 
         #endregion
 
