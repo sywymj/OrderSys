@@ -132,6 +132,18 @@
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
     <Content Include="404.html" />
+    <Content Include="Areas\Admin\Script\datapicker\calendar.js" />
+    <Content Include="Areas\Admin\Script\datapicker\lang\en.js" />
+    <Content Include="Areas\Admin\Script\datapicker\lang\zh-cn.js" />
+    <Content Include="Areas\Admin\Script\datapicker\lang\zh-tw.js" />
+    <Content Include="Areas\Admin\Script\datapicker\skin\datePicker.gif" />
+    <Content Include="Areas\Admin\Script\datapicker\skin\default\datepicker.css" />
+    <Content Include="Areas\Admin\Script\datapicker\skin\default\img.gif" />
+    <Content Include="Areas\Admin\Script\datapicker\skin\WdatePicker.css" />
+    <Content Include="Areas\Admin\Script\datapicker\skin\whyGreen\bg.jpg" />
+    <Content Include="Areas\Admin\Script\datapicker\skin\whyGreen\datepicker.css" />
+    <Content Include="Areas\Admin\Script\datapicker\skin\whyGreen\img.gif" />
+    <Content Include="Areas\Admin\Script\datapicker\WdatePicker.js" />
     <Content Include="Content\images\404.jpg" />
     <Content Include="Content\images\indx_bg_b.jpg" />
     <Content Include="Content\js\zepto.min.js" />
@@ -3056,6 +3068,7 @@
     <Content Include="Areas\Admin\Views\Order\OrderWorkingLocationFirstLevel_DDL.cshtml" />
     <Content Include="Areas\Admin\Views\Order\OrderGoods_Index.cshtml" />
     <Content Include="Areas\Admin\Views\Order\OrderGoods_InsertIndex.cshtml" />
+    <Content Include="Areas\Admin\Views\Order\Orders_Index.cshtml" />
     <None Include="Properties\PublishProfiles\1.pubxml" />
   </ItemGroup>
   <PropertyGroup>

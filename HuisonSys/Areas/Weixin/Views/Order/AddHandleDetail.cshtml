@@ -34,7 +34,7 @@
             <div class="weui_cells weui_cells_checkbox">
                 <label class="weui_cell weui_check_label" for="s11">
                     <div class="weui_cell_hd">
-                        <input type="radio" class="weui_check" name="IsFee" id="s11" checked="checked" value="0">
+                        <input type="radio" class="weui_check" name="IsFee" id="s11" checked="checked" value="1">
                         <i class="weui_icon_checked"></i>
                     </div>
                     <div class="weui_cell_bd weui_cell_primary">
@@ -43,7 +43,7 @@
                 </label>
                 <label class="weui_cell weui_check_label" for="s12">
                     <div class="weui_cell_hd">
-                        <input type="radio" name="IsFee" class="weui_check" id="s12" value="1">
+                        <input type="radio" name="IsFee" class="weui_check" id="s12" value="0">
                         <i class="weui_icon_checked"></i>
                     </div>
                     <div class="weui_cell_bd weui_cell_primary">
@@ -193,7 +193,7 @@
         var orderGoods = getOrderGoods(orderID);
         var feeGoods = '', freeGoods = '';
         $.each(orderGoods, function (i, n) {
-            if (n.IsFee == "0") {
+            if (n.IsFee == "1") {
                 //需要收费
                 feeGoods += n.Name + ",";
             } else {

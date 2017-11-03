@@ -430,6 +430,57 @@ namespace JSNet.Service
             return order;
         }
 
+        public DataTable GetOrdersDTByRoles(RoleEntity role,JSDictionary dic, int pageIndex, int pageSize, out int count)
+        {
+            //1.0 构建资源对象
+            PermissionService permissionService = new PermissionService();
+            List<string> organizeIDs = permissionService.GetAuthorizeOrganizeIDByRole(role, "OrderSys_Data.Orders");
+
+            //2.0 构建where从句
+            WhereStatement where = new WhereStatement();
+            if (dic.ContainsKey(OrderEntity.FieldStartTime + "1")
+                && dic.ContainsKey(OrderEntity.FieldStartTime + "2"))
+            {
+                WhereClause clause = new WhereClause(OrderEntity.FieldStartTime, Comparison.GreaterOrEquals, dic[OrderEntity.FieldStartTime + "1"]);
+                clause.AddClause(LogicOperator.And, Comparison.LessThan, dic[OrderEntity.FieldStartTime + "2"]);
+                where.Add(clause);
+            }
+            if (dic.ContainsKey(OrderEntity.FieldFinishTime + "1")
+                && dic.ContainsKey(OrderEntity.FieldFinishTime + "2"))
+            {
+                WhereClause clause = new WhereClause(OrderEntity.FieldFinishTime, Comparison.GreaterOrEquals, dic[OrderEntity.FieldFinishTime + "1"]);
+                clause.AddClause(LogicOperator.And, Comparison.LessThan, dic[OrderEntity.FieldFinishTime + "2"]);
+                where.Add(clause);
+            }
+
+            if (organizeIDs.Count > 0)
+            {
+                //显示指定部门的工单
+                where.Add("StarterOrganizeID", Comparison.In, organizeIDs.ToArray());
+            }
+            else
+            {
+                if (CurrentRole.ID == 1)
+                {
+                    //超级管理员，显示所有内容
+                    where.Add("1", Comparison.Equals, "1");
+                }
+                else
+                {
+                    //默认显示自己的内容
+                    where.Add(OrderEntity.FieldStarterID, Comparison.Equals, CurrentStaff.ID);
+                }
+            }
+
+            OrderByStatement orderby = new OrderByStatement();
+            orderby.Add(OrderEntity.FieldStartTime, Sorting.Descending);
+
+            //3.0 获取已发起的数据
+            ViewManager manager = new ViewManager("VO_Order");
+            DataTable dt = manager.GetDataTableByPage(where, out count, pageIndex, pageSize, orderby);
+            return dt;
+        }
+
         /// <summary>
         /// 获取我的已发起工单
         /// </summary>
@@ -1141,9 +1192,77 @@ namespace JSNet.Service
             return re;
         }
 
+        public List<OrderGoodsRelEntity> GetOrderGoodsRelList(Guid orderID)
+        {
+            WhereStatement where = new WhereStatement();
+            where.Add(OrderGoodsRelEntity.FieldOrderID,Comparison.Equals,orderID);
+
+            int count = 0;
+            EntityManager<OrderGoodsRelEntity> manager = new EntityManager<OrderGoodsRelEntity>();
+            List<OrderGoodsRelEntity> list = manager.GetList(where, out count);
+
+            return list;
+        }
+
         #endregion
 
+        public string ExportOrders(RoleEntity role,JSDictionary dic)
+        {
+            Dictionary<int, string> statusDic = EnumExtensions.ConvertToDic<OrderStatus>();
+            Dictionary<int, string> priorityDic = EnumExtensions.ConvertToDic<OrderPriority>();
 
+            int count = 0;
+            DataTable dt = GetOrdersDTByRoles(role,dic, 1, 65536, out count);
+            dt.Columns.Add("StatusName");
+            dt.Columns.Add("PriorityName");
+            foreach (DataRow dr in dt.Rows)
+            {
+                if (!string.IsNullOrEmpty(dr["Status"].ToString()))
+                {
+                    dr["StatusName"] = statusDic[Convert.ToInt32(dr["Status"].ToString())];
+                }
+                if (!string.IsNullOrEmpty(dr["Priority"].ToString()))
+                {
+                    dr["PriorityName"] = priorityDic[Convert.ToInt32(dr["Priority"].ToString())];
+                }
+            }
+
+            dt.Columns["OrderNo"].ColumnName = "工单号";
+            dt.Columns["PriorityName"].ColumnName = "优先级";
+            dt.Columns["StatusName"].ColumnName = "工单状态";
+            dt.Columns["FinishTime"].ColumnName = "完成时间";
+            dt.Columns["BookingTime"].ColumnName = "截止时间";
+            dt.Columns["Content"].ColumnName = "内容";
+            dt.Columns["Remark"].ColumnName = "备注";
+            dt.Columns["Attn"].ColumnName = "联系人";
+            dt.Columns["AttnTel"].ColumnName = "联系人电话";
+            dt.Columns["StarterName"].ColumnName = "发起人";
+            dt.Columns["StarterTel"].ColumnName = "发起人电话";
+            dt.Columns["AppointerName"].ColumnName = "委派人";
+            dt.Columns["AppointerTel"].ColumnName = "委派人电话";
+            dt.Columns["HandlerName"].ColumnName = "处理人（领队）";
+            dt.Columns["HandlerTel"].ColumnName = "处理人（领队）电话";
+            dt.Columns["StartTime"].ColumnName = "发起时间";
+            dt.Columns["WorkingLocation"].ColumnName = "维修地点";
+            dt.Columns["FeeGoods"].ColumnName = "更换物品（收费）";
+            dt.Columns["FreeGoods"].ColumnName = "更换物品（不收费）";
+
+            DataTable re = dt.DefaultView.ToTable(false, 
+                new string[] { 
+                    "工单号", "优先级", "工单状态", "完成时间", "截止时间",
+                "内容", "备注", "联系人", "联系人电话", "发起人",
+                "发起人电话", "委派人", "委派人电话", "处理人（领队）", "处理人（领队）电话",
+                "发起时间", "维修地点", "更换物品（收费）", "更换物品（不收费）"
+                });
+
+            ExportService exportService = new ExportService();
+            string localpath = "";
+            string webpath = exportService.GetExportFolderWebPath("order", out localpath);
+            string fileName = exportService.GetFileName() + ".csv";
+            
+            BaseExportCSV.ExportCSV(re, localpath + fileName);
+            return webpath + fileName;
+        }
 
         private int GetLeaderHandlerID(int[] orderHandlerIDs)
         {

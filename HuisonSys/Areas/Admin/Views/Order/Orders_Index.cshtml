@@ -1,0 +1,82 @@
+﻿@{
+    //【GetDT】
+    ViewBag.Title = "物品管理";
+    Layout = "~/Areas/Admin/Views/Shared/_InnerLayout.cshtml";
+}
+<script src="~/Areas/Admin/Scripts/datapicker/WdatePicker.js"></script>
+<div style="width:100%;">
+    <div class="mini-toolbar" id="toobar" style="border-bottom:0;padding:0px;">
+        <table style="width:100%;">
+            <tr>
+                <td>
+                    发起时间:
+                    <input id="starttime1" class="Wdate" type="text" onfocus="var d2 = $dp.$('starttime2'); WdatePicker({ onpicked: function () { d2.focus(); }, maxDate: '#F{$dp.$D(\'starttime2\')}' })" />
+                    至
+                    <input id="starttime2" class="Wdate" type="text" onfocus="WdatePicker({ minDate: '#F{$dp.$D(\'starttime1\')}' })" />
+                </td>
+                <td>
+                    完成时间:
+                    <input id="finishtime1" class="Wdate" type="text" onfocus="var d2 = $dp.$('finishtime2'); WdatePicker({ onpicked: function () { d2.focus(); }, maxDate: '#F{$dp.$D(\'finishtime2\')}' })" />
+                    至
+                    <input id="finishtime2" class="Wdate" type="text" onfocus="WdatePicker({ minDate: '#F{$dp.$D(\'finishtime1\')}' })" />
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+@Html.Partial("~/Areas/Admin/Views/Shared/_Header.cshtml", Request.Url.AbsolutePath)
+<div class="mini-fit">
+    <div id="Orders-datagrid" class="mini-datagrid" idfield="User_ID" ajaxoptions="{type : 'get'}" style="width:100%;height:100%" autoload="false"
+         url="@Url.Action("GetOrdersDTByPage", "Order", new { area = "Admin" })" datafield="Data.DT.JSNet">
+        <div property="columns">
+            <div type="indexcolumn" headeralign="center">序号</div>
+            <div field="OrderNo" width="60" headeralign="center" align="center" allowsort="true">工单号</div>
+            <div field="PriorityName" width="60" headeralign="center" align="center" allowsort="true">优先级</div>
+            <div field="StatusName" width="60" headeralign="center" align="center" allowsort="true">工单状态</div>
+            <div field="FinishTime" width="60" headeralign="center" align="center" allowsort="true">完成时间</div>
+            <div field="BookingTime" width="60" headeralign="center" align="center" allowsort="true">截止时间</div>
+            <div field="Content" width="60" headeralign="center" align="center" allowsort="true">内容</div>
+            <div field="Remark" width="60" headeralign="center" align="center" allowsort="true">备注</div>
+            <div field="Attn" width="60" headeralign="center" align="center" allowsort="true">联系人</div>
+            <div field="AttnTel" width="60" headeralign="center" align="center" allowsort="true">联系人电话</div>
+            <div field="StarterName" width="60" headeralign="center" align="center" allowsort="true">发起人</div>
+            <div field="AppointerName" width="60" headeralign="center" align="center" allowsort="true">委派人</div>
+            <div field="HandlerName" width="60" headeralign="center" align="center" allowsort="true">处理人（领队）</div>
+            <div field="StartTime" width="60" headeralign="center" align="center" allowsort="true">发起时间</div>
+            <div field="WorkingLocation" width="60" headeralign="center" align="center" allowsort="true">维修地点</div>
+            <div field="FeeGoods" width="60" headeralign="center" align="center" allowsort="true">更换物品（收费）</div>
+            <div field="FreeGoods" width="60" headeralign="center" align="center" allowsort="true">更换物品（不收费）</div>
+        </div>
+    </div>
+</div>
+
+<script>
+    mini.parse()
+    var Orders_grid = mini.get("Orders-datagrid");
+
+    Orders_grid.load({
+        pageIndex: 0,
+        pageSize: 50,
+    }, function (data) {
+        ajaxTips(data.text);
+    }, function (data) {
+    })
+
+    search = function () {
+        var starttime1 = $("#starttime1").val();
+        var starttime2 = $("#starttime2").val();
+        var finishtime1 = $("#finishtime1").val();
+        var finishtime2 = $("#finishtime2").val();
+
+        var key = {
+            StartTime1: starttime1,
+            StartTime2: starttime2,
+            Finishtime1: finishtime1,
+            Finishtime2: finishtime2,
+            sortField: "",
+            sortOrder: ""
+        };
+        Orders_grid.setUrl("@Url.Action("GetOrdersDTByPage", "Order", new { area = "Admin" })")
+        Orders_grid.load(key);
+    }
+</script>

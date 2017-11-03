@@ -57,6 +57,50 @@
     </div>
 </div>
 
+<div class="weui_cells_title">完成后图片</div>
+<div class="weui_cells weui_cells_form">
+    <div class="weui_cell">
+        @{if (!string.IsNullOrEmpty(Model["HandledPhotoPath"].ToString()))
+        {
+            <div class="pic_box">
+                <a class="example-image-link" href="@UploadService.UploadPath@Model["HandledPhotoPath"]" data-lightbox="example-set" data-title=""><img src="@UploadService.UploadPath@Model["HandledPhotoPath"]" /></a>
+                <em class="verticalAlign"></em>
+            </div>
+        }}
+        @{if (!string.IsNullOrEmpty(Model["HandledPhotoPath1"].ToString()))
+        {
+            <div class="pic_box">
+                <a class="example-image-link" href="@UploadService.UploadPath@Model["HandledPhotoPath1"]" data-lightbox="example-set" data-title=""><img src="@UploadService.UploadPath@Model["HandledPhotoPath1"]" /></a>
+                <em class="verticalAlign"></em>
+            </div>
+        }}
+
+    </div>
+</div>
+
+<div class="weui_cells_title">更换的物品</div>
+<div class="weui_cells weui_cells_form">
+    @{if (!string.IsNullOrEmpty(ViewBag.FeeOrderGoods))
+    {
+        <div class="weui_cell">
+            <div class="weui_cell_hd"><label class="weui_label">收费：</label></div>
+            <div class="weui_cell_bd weui_cell_primary">
+                @ViewBag.FeeOrderGoods
+            </div>
+        </div>
+    }}
+    @{if (!string.IsNullOrEmpty(ViewBag.FreeOrderGoods))
+    {
+        <div class="weui_cell">
+            <div class="weui_cell_hd"><label class="weui_label">不收费：</label></div>
+            <div class="weui_cell_bd weui_cell_primary">
+                @ViewBag.FreeOrderGoods
+            </div>
+        </div>
+    }}
+</div>
+
+
 <div class="weui_cells weui_cells_form">
 
     <div class="weui_cell">

@@ -42,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseService.cs" />
+    <Compile Include="ExportService.cs" />
     <Compile Include="KawuService.cs" />
     <Compile Include="LoginService.cs" />
     <Compile Include="LogService.cs" />

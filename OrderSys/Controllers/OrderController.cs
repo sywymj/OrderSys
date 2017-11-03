@@ -77,6 +77,11 @@ namespace OrderSys.Controllers
             var handlers = orderService.GetOrderHandlerDT(orderID);
             ViewBag.Handlers = handlers;
 
+            List<OrderGoodsRelEntity> orderGoods = orderService.GetOrderGoodsRelList(orderID);
+            string[] feeOrderGoods = orderGoods.Where(x => x.IsFee == (int)TrueFalse.True).Select(x => x.Name).ToArray();
+            ViewBag.FeeOrderGoods = string.Join(",", feeOrderGoods);
+            string[] freeOrderGoods = orderGoods.Where(x => x.IsFee == (int)TrueFalse.False).Select(x => x.Name).ToArray();
+            ViewBag.FreeOrderGoods = string.Join(",", freeOrderGoods);
 
             var dr = orderService.GetOrderDetail(orderID);
             return View("OrderDetail", dr);
@@ -571,6 +576,5 @@ namespace OrderSys.Controllers
 
         #endregion
 
-        
     }
 }

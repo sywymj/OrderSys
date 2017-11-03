@@ -211,6 +211,40 @@ namespace OrderSys.Admin.Controllers
         } 
         #endregion
 
+
+        public ActionResult OrdersIndex()
+        {
+            return View("~/Areas/Admin/Views/Order/Orders_Index.cshtml");
+        }
+
+        #region 【查询】工单
+        [HttpGet]
+        public string GetOrdersDTByPage(int pageIndex, int pageSize)
+        {
+            JSDictionary dic = MakeFilterOfOrders();
+
+            int count = 0;
+            DataTable re = service.GetOrdersDTByRoles(service.CurrentRole, dic, pageIndex, pageSize, out count);
+
+            string s = JSON.ToJSON(new JSResponse(new DataTableData(re, count)), jsonParams);
+            return s;
+        }
+        #endregion
+
+
+        #region 【导出】工单
+        [HttpGet]
+        public string Export()
+        {
+            JSDictionary dic = MakeFilterOfOrders();
+
+            string path = service.ExportOrders(service.CurrentRole, dic);
+            string url = "http://" + HttpContext.Request.Url.Authority + path;
+            return JSON.ToJSON(new JSResponse(ResponseType.Redict, "导出成功！", url), jsonParams);
+        } 
+        #endregion
+
+
         private void ValidateWorkingLocation(ViewOrderWorkingLocation viewModel)
         {
             if (string.IsNullOrEmpty(viewModel.FirstLevel))
@@ -231,5 +265,33 @@ namespace OrderSys.Admin.Controllers
         {
 
         } 
+
+        private JSDictionary MakeFilterOfOrders()
+        {
+            #region 获取参数
+            string sStartTime1 = JSRequest.GetRequestUrlParm("StartTime1", false);
+            string sStartTime2 = JSRequest.GetRequestUrlParm("StartTime2", false);
+            string sFinishTime1 = JSRequest.GetRequestUrlParm("FinishTime1", false);
+            string sFinishTime2 = JSRequest.GetRequestUrlParm("FinishTime2", false);
+            #endregion
+
+            #region 验证参数
+            DateTime? startTime1 = JSValidator.ValidateDateTime("发起时间", sStartTime1);
+            DateTime? startTime2 = JSValidator.ValidateDateTime("发起时间", sStartTime2);
+            DateTime? finishTime1 = JSValidator.ValidateDateTime("完成时间", sFinishTime1);
+            DateTime? finishTime2 = JSValidator.ValidateDateTime("完成时间", sFinishTime2);
+            #endregion
+
+            #region 构造搜索条件
+            JSDictionary dic = new JSDictionary();
+
+            if (startTime1 != null) { dic.Add(OrderEntity.FieldStartTime + "1", startTime1); }
+            if (startTime2 != null) { dic.Add(OrderEntity.FieldStartTime + "2", startTime2); }
+            if (finishTime1 != null) { dic.Add(OrderEntity.FieldFinishTime + "1", finishTime1); }
+            if (finishTime2 != null) { dic.Add(OrderEntity.FieldFinishTime + "2", finishTime2); }
+            #endregion
+
+            return dic;
+        }
     }
 }
