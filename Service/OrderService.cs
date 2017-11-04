@@ -442,14 +442,14 @@ namespace JSNet.Service
                 && dic.ContainsKey(OrderEntity.FieldStartTime + "2"))
             {
                 WhereClause clause = new WhereClause(OrderEntity.FieldStartTime, Comparison.GreaterOrEquals, dic[OrderEntity.FieldStartTime + "1"]);
-                clause.AddClause(LogicOperator.And, Comparison.LessThan, dic[OrderEntity.FieldStartTime + "2"]);
+                clause.AddClause(LogicOperator.And, Comparison.LessOrEquals, dic[OrderEntity.FieldStartTime + "2"]);
                 where.Add(clause);
             }
             if (dic.ContainsKey(OrderEntity.FieldFinishTime + "1")
                 && dic.ContainsKey(OrderEntity.FieldFinishTime + "2"))
             {
                 WhereClause clause = new WhereClause(OrderEntity.FieldFinishTime, Comparison.GreaterOrEquals, dic[OrderEntity.FieldFinishTime + "1"]);
-                clause.AddClause(LogicOperator.And, Comparison.LessThan, dic[OrderEntity.FieldFinishTime + "2"]);
+                clause.AddClause(LogicOperator.And, Comparison.LessOrEquals, dic[OrderEntity.FieldFinishTime + "2"]);
                 where.Add(clause);
             }
 
@@ -1212,7 +1212,13 @@ namespace JSNet.Service
             Dictionary<int, string> priorityDic = EnumExtensions.ConvertToDic<OrderPriority>();
 
             int count = 0;
-            DataTable dt = GetOrdersDTByRoles(role,dic, 1, 65536, out count);
+            int exportCount = 10;
+            DataTable dt = GetOrdersDTByRoles(role,dic, 1, exportCount, out count);
+            if (count > exportCount) 
+            { 
+                throw new JSException(JSErrMsg.ERR_CODE_ExportTooMuch, string.Format(JSErrMsg.ERR_MSG_ExportTooMuch, exportCount)); 
+            }
+            
             dt.Columns.Add("StatusName");
             dt.Columns.Add("PriorityName");
             foreach (DataRow dr in dt.Rows)

@@ -84,10 +84,10 @@
         var finishtime1 = $("#finishtime1").val();
         var finishtime2 = $("#finishtime2").val();
         var key = {
-            StartTime1: starttime1,
-            StartTime2: starttime2,
-            Finishtime1: finishtime1,
-            Finishtime2: finishtime2,
+            StartTime1: starttime1 ? starttime1 + " 00:00:00" : "",
+            StartTime2: starttime2 ? starttime2 + " 23:59:59" : "",
+            Finishtime1: finishtime1 ? finishtime1 + " 00:00:00" : "",
+            Finishtime2: finishtime2 ? finishtime2 + " 23:59:59" : "",
             sortField: "",
             sortOrder: ""
         };
