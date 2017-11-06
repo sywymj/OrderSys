@@ -3002,7 +3002,7 @@
     <Content Include="Areas\Admin\Views\Permission\GrantItem_Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Areas\Admin\Views\Permission\GrantScope_Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Permission\GrantScope_Index1.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\Admin\Views\Organize\Organize_Index.cshtml" />
@@ -3069,6 +3069,7 @@
     <Content Include="Areas\Admin\Views\Order\OrderGoods_Index.cshtml" />
     <Content Include="Areas\Admin\Views\Order\OrderGoods_InsertIndex.cshtml" />
     <Content Include="Areas\Admin\Views\Order\Orders_Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Permission\GrantScope_Index.cshtml" />
     <None Include="Properties\PublishProfiles\1.pubxml" />
   </ItemGroup>
   <PropertyGroup>

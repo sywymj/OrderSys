@@ -1,21 +1,29 @@
 ﻿@{
-    ViewBag.Title = "资源对象管理";
-    Layout = "~/Areas/Admin/Views/Shared/_InnerLayout.cshtml";
+    Layout = null;
 }
 
-@Html.Partial("~/Areas/Admin/Views/Shared/_Header.cshtml", Request.Url.AbsolutePath)
-<div class="mini-fit">
-    <div id="ResourceID" class="mini-hidden"></div>
-    <div id="Organize-datagrid" class="mini-treegrid" ajaxoptions="{type : 'get'}" style="width:100%;height:100%" autoload="false"
-         url="@Url.Action("GetGrantScopeList", "Permission", new { area = "Admin" })" showtreeicon="false" resultastree="false" expandonload="1" multiselect="false" showcheckbox="true" showfoldercheckbox="true" autocheckparent="false" checkrecursive="false"
-         treecolumn="treename" idfield="Organize_ID" parentfield="Organize_ParentID" datafield="Data.DT.JSNet">
-        <div property="columns">
-            <div name="treename" field="Organize_FullName" width="180" headeralign="center" align="left" allowsort="true">标题</div>
-            <div field="Organize_Code" width="210" headeralign="center" align="left" allowsort="true">标识码</div>
-            <div field="OrganizeCategory_FullName" width="60" headeralign="center" align="center" allowsort="true">机构类别</div>
-            <div field="OrganizeCategory_Code" width="120" headeralign="center" align="center" allowsort="true">类别标识码</div>
-            <div field="Organize_SortCode" width="60" headeralign="center" align="center" allowsort="true">排序</div>
-            <div field="Organize_Description" width="120" headeralign="center" align="center" allowsort="true">机构描述</div>
+<div class="mini-splitter" style="width:100%;height:100%;">
+    <div size="240" showcollapsebutton="true">
+        <div class="mini-fit">
+            <ul id="ScopeType-datagrid" class="mini-grid" style="width: 100%; height: 100%;" ajaxoptions="{type : 'get'}" autoload="false"
+                showtreeicon="true" textfield="Title" idfield="ID"></ul>
+        </div>
+    </div>
+    <div showcollapsebutton="true">
+        <div class="mini-fit">
+            <div id="ResourceID" class="mini-hidden"></div>
+            <div id="Target" class="mini-hidden"></div>
+            <div id="Scope-datagrid" class="mini-datagrid" style="width:100%;height:100%;" borderstyle="border:0;" ajaxoptions="{type : 'get'}" autoload="false"
+                 url="@Url.Action("GetGrantScopeList", "Permission", new { area = "Admin" })" idfield="ID" datafield="Data.DT.JSNet" totalfield="Data.Count"
+                 multiselect="true">
+                <div property="columns">
+                    @*<div type="checkcolumn"></div>*@
+                    <div type="indexcolumn" headeralign="center">序号</div>
+                    <div field="Title" width="120" headeralign="center" allowsort="true" visible="false">名称</div>
+                    <div field="Organize_FullName" width="120" headeralign="center" allowsort="true" visible="false">所属机构</div>
+                    <div field="Organize_Code" width="120" headeralign="center" allowsort="true" visible="false">机构代码</div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -26,32 +34,45 @@
 </div>
 
 
-<script>
-    mini.parse()
-    var Organize_grid = mini.get("Organize-datagrid");
+<script type="text/javascript">
+    mini.parse();
+
+    var Target_grid = mini.get("Target-datagrid");
+    var Scope_grid = mini.get("Scope-datagrid");
 
     ////////////////////
     //标准方法接口定义
     function SetGridData(data) {
         //跨页面传递的数据对象，克隆后才可以安全使用
         data = mini.clone(data);
-        mini.get("ResourceID").setValue(data.ID);
+        var resourceID = data.ID;
+        var target = data.Target;
+        mini.get("ResourceID").setValue(resourceID);
+        mini.get("Target").setValue(target);
+        
+        //选中左侧栏目
+        if (target == "") {
+            return false;
+        } else {
+            LoadLeft(target);
+        }
 
-        Organize_grid.load({
-            ResourceCode: data.Code,
-            ResourceType: data.ResourceType
+        //加载grid数据
+        Scope_grid.load({
+            ResourceID: resourceID,
+            Target: target
         }, function (re) {
             var jdata = ajaxTips(re.text);
             if (jdata.Code == "200") {
-                //check已配置的资源对象
+                //选中已配置的资源对象
                 var url = '@Url.Action("GetGrantedScopeIDs", "Permission", new { area = "Admin" })';
                 var parms = {
-                    resourceID: data.ID
+                    ResourceID: resourceID
                 };
                 debugger;
                 doGetSync(url, parms, function (jdata) {
                     if (jdata.Code == "200") {
-                        Organize_grid.setValue(jdata.Data);
+                        Scope_grid.setValue(jdata.Data);
                     }
                 })
             }
@@ -59,7 +80,37 @@
         })
     }
 
+
+    Target_grid.on("select", function (e) {
+        var ResourceID = mini.get("ResourceID").getValue();
+        if (e.isLeaf) {
+            mini.get("Target").setValue(e.node.ID);
+            Scope_grid.load({
+                ResourceID: ResourceID,
+                Target: e.node.ID,
+            });
+        } else {
+            Scope_grid.setData([]);
+            Scope_grid.setTotalCount(0);
+        }
+    });
+
     //////////////////////////////////
+    function LoadLeft(target) {
+        var data = [{ ID: 'VR_RoleOrganize', Title: '角色' }, { ID: 'VOrg_Organize', Title: '组织机构' }];
+        Target_grid.data = data;
+        Target_grid.load();
+
+        var row = findRow(function (row) {
+            if (row.ID == target) return true;
+        })
+
+        if (row) {
+            Target_grid.select(row);
+        }
+    }
+
+
     function CloseWindow(action) {
         if (window.CloseOwnerWindow) return window.CloseOwnerWindow(action);
         else window.close();
@@ -67,21 +118,21 @@
 
     function onOk() {
         var ResourceID = mini.get("ResourceID").getValue();
-        var OrganizeIDs;
+        var Target = mini.get("Target").getValue();
 
-        var rows = Organize_grid.getCheckedNodes(true);
-
+        var rows = staff_grid.getSelecteds();
         var ids = [];
         for (var i = 0, l = rows.length; i < l; i++) {
             var row = rows[i];
             ids.push(row.Organize_ID);
         }
-        OrganizeIDs = ids.join(",");
+        TargetIDs = ids.join(",");
 
         var url = "@Url.Action("GrantScope", "Permission", new { area = "Admin" })";
         var data = {
             ResourceID: ResourceID,
-            OrganizeIDs: OrganizeIDs
+            Target: Target,
+            TargetIDs: TargetIDs
         };
         doGetSync(url, data, function (jdata) {
             if (jdata.Code == "200") {
@@ -92,7 +143,5 @@
     function onCancel() {
         CloseWindow("cancel");
     }
-
-
-
 </script>
+
