@@ -1,12 +1,16 @@
 ﻿@{
-    Layout = null;
+    ViewBag.Title = "数据对象管理";
+    Layout = "~/Areas/Admin/Views/Shared/_InnerLayout.cshtml";
 }
 
 <div class="mini-splitter" style="width:100%;height:100%;">
     <div size="240" showcollapsebutton="true">
         <div class="mini-fit">
-            <ul id="ScopeType-datagrid" class="mini-grid" style="width: 100%; height: 100%;" ajaxoptions="{type : 'get'}" autoload="false"
-                showtreeicon="true" textfield="Title" idfield="ID"></ul>
+            <div id="Target-datagrid" class="mini-datagrid" style="width: 100%; height: 100%;" autoload="true" idfield="ID" autoload="false" showpager="false">
+                <div property="columns">
+                    <div field="Title" width="120" headeralign="center" allowsort="true">数据表</div>
+                </div>
+            </div>
         </div>
     </div>
     <div showcollapsebutton="true">
@@ -14,14 +18,14 @@
             <div id="ResourceID" class="mini-hidden"></div>
             <div id="Target" class="mini-hidden"></div>
             <div id="Scope-datagrid" class="mini-datagrid" style="width:100%;height:100%;" borderstyle="border:0;" ajaxoptions="{type : 'get'}" autoload="false"
-                 url="@Url.Action("GetGrantScopeList", "Permission", new { area = "Admin" })" idfield="ID" datafield="Data.DT.JSNet" totalfield="Data.Count"
-                 multiselect="true">
+                 url="@Url.Action("GetGrantScopeDT", "Permission", new { area = "Admin" })" idfield="ID" datafield="Data.DT.JSNet" totalfield="Data.Count"
+                 multiselect="true" showpager="false">
                 <div property="columns">
-                    @*<div type="checkcolumn"></div>*@
+                    <div type="checkcolumn"></div>
                     <div type="indexcolumn" headeralign="center">序号</div>
-                    <div field="Title" width="120" headeralign="center" allowsort="true" visible="false">名称</div>
-                    <div field="Organize_FullName" width="120" headeralign="center" allowsort="true" visible="false">所属机构</div>
-                    <div field="Organize_Code" width="120" headeralign="center" allowsort="true" visible="false">机构代码</div>
+                    <div field="Title" width="120" headeralign="center" allowsort="true">数据对象名称</div>
+                    <div field="Organize_FullName" width="120" headeralign="center" allowsort="true">所属机构</div>
+                    <div field="Organize_Code" width="120" headeralign="center" allowsort="true">机构代码</div>
                 </div>
             </div>
         </div>
@@ -39,7 +43,7 @@
 
     var Target_grid = mini.get("Target-datagrid");
     var Scope_grid = mini.get("Scope-datagrid");
-
+    var Scopetype_data = eval('(' + "[{ ID: 'S_OrganizeForDataScope', Title: '机构数据' }, { ID: 'S_RoleForDataScope', Title: '角色数据' }, { ID: 'S_UserForDataScope', Title: '用户数据' }, { ID: 'S_StaffForDataScope', Title: '员工数据' }]" + ')');
     ////////////////////
     //标准方法接口定义
     function SetGridData(data) {
@@ -49,7 +53,7 @@
         var target = data.Target;
         mini.get("ResourceID").setValue(resourceID);
         mini.get("Target").setValue(target);
-        
+        debugger;
         //选中左侧栏目
         if (target == "") {
             return false;
@@ -69,10 +73,19 @@
                 var parms = {
                     ResourceID: resourceID
                 };
-                debugger;
                 doGetSync(url, parms, function (jdata) {
                     if (jdata.Code == "200") {
-                        Scope_grid.setValue(jdata.Data);
+                        var data = jdata.Data.split(',');
+                        debugger;
+                        var rows = Scope_grid.findRows(function (row) {
+                            $.each(data, function (i, n) {
+                                if (row.ID == n) {
+                                    //Todo
+                                }
+                            });
+                            return true;
+                        });
+                        Scope_grid.setSelected(rows);
                     }
                 })
             }
@@ -83,11 +96,11 @@
 
     Target_grid.on("select", function (e) {
         var ResourceID = mini.get("ResourceID").getValue();
-        if (e.isLeaf) {
-            mini.get("Target").setValue(e.node.ID);
+        if (e.record) {
+            mini.get("Target").setValue(e.record.ID);
             Scope_grid.load({
                 ResourceID: ResourceID,
-                Target: e.node.ID,
+                Target: e.record.ID,
             });
         } else {
             Scope_grid.setData([]);
@@ -97,17 +110,12 @@
 
     //////////////////////////////////
     function LoadLeft(target) {
-        var data = [{ ID: 'VR_RoleOrganize', Title: '角色' }, { ID: 'VOrg_Organize', Title: '组织机构' }];
-        Target_grid.data = data;
-        Target_grid.load();
-
-        var row = findRow(function (row) {
-            if (row.ID == target) return true;
+        Target_grid.setData(Scopetype_data);
+        $.each(Scopetype_data, function (i, n) {
+            if (n.ID == target) {
+                Target_grid.setSelected(n)
+            }
         })
-
-        if (row) {
-            Target_grid.select(row);
-        }
     }
 
 
@@ -135,9 +143,6 @@
             TargetIDs: TargetIDs
         };
         doGetSync(url, data, function (jdata) {
-            if (jdata.Code == "200") {
-                CloseWindow("save");
-            }
         });
     }
     function onCancel() {

@@ -254,14 +254,31 @@ namespace JSNet.Service
 
         #region GrantScope - 配置资源对象
 
-        public DataTable GetGrantScopeDT(string resourceCode, string resourceType, out int count)
+        public DataTable GetGrantScopeDT(string resourceID, string resourceTarget, out int count)
         {
-            OrganizeService organizeService = new OrganizeService();
-            DataTable dt = organizeService.GetTreeOrganizeDT(resourceCode, resourceType, out count);
+            //1.0 获取资源实体
+            EntityManager<ResourceEntity> resourceManager = new EntityManager<ResourceEntity>();
+            ResourceEntity resource = resourceManager.GetSingle(resourceID);
+
+            //1.1 获取资源实体所在的系统代号
+            if (resource.Code.Split('.').Length < 1)
+            {
+                //resouceCode正确的格式 OrderSys_Data.XXXX
+                throw new JSException(JSErrMsg.ERR_CODE_ErrorFormatCode, JSErrMsg.ERR_MSG_ErrorFormatCode);
+            }
+            string systemCode = resource.Code.Split('.')[0].Split('_')[0];
+
+            //2.0 获取资源的数据对象
+            WhereStatement where = new WhereStatement();
+            where.Add("Organize_Code", Comparison.Like, systemCode + "%");
+
+            ViewManager vmanager = new ViewManager(resourceTarget);
+            DataTable dt = vmanager.GetDataTable(where, out count);
             return dt;
+
         }
 
-        public void GrantScope(int resourceID, int[] targetIDs)
+        public void GrantScope(int resourceID,string resourceTarget, int[] targetIDs)
         {
             //判断资源类型是否为Data，只有Data才能分配资源对象
             EntityManager<ResourceEntity> resourceManager = new EntityManager<ResourceEntity>();
@@ -271,13 +288,18 @@ namespace JSNet.Service
                 throw new JSException(JSErrMsg.ERR_CODE_NotAllowGrantItem, string.Format(JSErrMsg.ERR_MSG_NotAllowGrantItem, "资源类型为" + resource.ResourceType + "，"));
             }
 
-            //获取未修改前的资源对象ID
+            //1.0 将资源的Target更新为对应的表/视图
+            List<KeyValuePair<string, object>> kvps = new List<KeyValuePair<string, object>>();
+            resourceManager.Update(new KeyValuePair<string, object>(ResourceEntity.FieldTarget, resourceTarget), resource.ID, ResourceEntity.FieldID);
+
+            //2.0 获取未修改前的资源对象ID
             int[] originalTargetIDs = GetTargetIDsByResourceID(resourceID);
 
-            //比较更新前与更新后的资源对象ID
+            //3.0 添加新增的数据对象
             int[] arrAdd= targetIDs.Except(originalTargetIDs).ToArray();
             AddPermissionScopes(resourceID, arrAdd);
 
+            //4.0 删除多余的数据对象
             int[] arrDel = originalTargetIDs.Except(targetIDs).ToArray();
             DeletePermissionScopes(resourceID, arrDel);
         }

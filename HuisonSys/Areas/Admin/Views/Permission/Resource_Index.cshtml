@@ -97,13 +97,12 @@
         if (row) {
             mini.open({
                 url: "@Url.Action("GrantScopeIndex", "Permission", new { area = "Admin" })",
-                title: "配置资源对象", width: 800, height: 600,
+                title: "配置数据对象", width: 800, height: 600,
             onload: function () {
                 var iframe = this.getIFrameEl();
                 var data = {
                     ID: row.Resource_ID,
-                    Code: row.Resource_Code,
-                    ResourceType: row.Resource_ResourceType
+                    Target: row.Resource_Target
                 };
                 iframe.contentWindow.SetGridData(data);
             },
