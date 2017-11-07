@@ -30,12 +30,13 @@ namespace JSNet.Service
         public List<RoleEntity> GetRoleListByRole(RoleEntity role)
         {
             PermissionService permissionService = new PermissionService();
-            List<string> organizeIDs = permissionService.GetAuthorizeOrganizeIDByRole(role, "OrderSys_Data.Role");
+            string scopeConstraint = "";
+            List<string> scopeIDs = permissionService.GetAuthorizeOrganizeIDByRole(role, "OrderSys_Data.Role", out scopeConstraint);
 
             WhereStatement where = new WhereStatement();
-            if (organizeIDs.Count > 0)
+            if (scopeIDs.Count > 0)
             {
-                where.Add(RoleEntity.FieldOrganizeID, Comparison.In, organizeIDs.ToArray());
+                where.Add(scopeConstraint, Comparison.In, scopeIDs.ToArray());
             }
             else
             {
@@ -129,12 +130,13 @@ namespace JSNet.Service
         public List<RoleEntity> GetRoleListByRole(RoleEntity role ,Paging paging,out int count)
         {
             PermissionService permissionService = new PermissionService();
-            List<string> organizeIDs = permissionService.GetAuthorizeOrganizeIDByRole(role, "OrderSys_Data.Role");
+            string scopeConstraint = "";
+            List<string> scopeIDs = permissionService.GetAuthorizeOrganizeIDByRole(role, "OrderSys_Data.Role", out scopeConstraint);
 
             WhereStatement where = new WhereStatement();
-            if (organizeIDs.Count > 0)
+            if (scopeIDs.Count > 0)
             {
-                where.Add(RoleEntity.FieldOrganizeID, Comparison.In, organizeIDs.ToArray());//kvp.Value.ToArray();
+                where.Add(scopeConstraint, Comparison.In, scopeIDs.ToArray());//kvp.Value.ToArray();
             }
             else
             {
@@ -159,12 +161,13 @@ namespace JSNet.Service
         public DataTable GetTreeRoleDTByRole(RoleEntity role)
         {
             PermissionService permissionService = new PermissionService();
-            List<string> organizeIDs = permissionService.GetAuthorizeOrganizeIDByRole(role, "OrderSys_Data.Role");
+            string scopeConstraint = "";
+            List<string> scopeIDs = permissionService.GetAuthorizeOrganizeIDByRole(role, "OrderSys_Data.Role", out scopeConstraint);
 
             WhereStatement where = new WhereStatement();
-            if (organizeIDs.Count > 0)
+            if (scopeIDs.Count > 0)
             {
-                where.Add("Organize_ID", Comparison.In, organizeIDs.ToArray());
+                where.Add(scopeConstraint, Comparison.In, scopeIDs.ToArray());
             }
             else
             {

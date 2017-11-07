@@ -434,7 +434,8 @@ namespace JSNet.Service
         {
             //1.0 构建资源对象
             PermissionService permissionService = new PermissionService();
-            List<string> organizeIDs = permissionService.GetAuthorizeOrganizeIDByRole(role, "OrderSys_Data.Orders");
+            string scopeConstraint = "";
+            List<string> scopeIDs = permissionService.GetAuthorizeOrganizeIDByRole(role, "OrderSys_Data.Orders", out scopeConstraint);
 
             //2.0 构建where从句
             WhereStatement where = new WhereStatement();
@@ -453,10 +454,10 @@ namespace JSNet.Service
                 where.Add(clause);
             }
 
-            if (organizeIDs.Count > 0)
+            if (scopeIDs.Count > 0)
             {
                 //显示指定部门的工单
-                where.Add("StarterOrganizeID", Comparison.In, organizeIDs.ToArray());
+                where.Add(scopeConstraint, Comparison.In, scopeIDs.ToArray());
             }
             else
             {
@@ -489,7 +490,8 @@ namespace JSNet.Service
         {
             //1.0 构建资源对象
             PermissionService permissionService = new PermissionService();
-            List<string> organizeIDs = permissionService.GetAuthorizeOrganizeIDByRole(CurrentRole, "OrderSys_Data.StartedOrders");
+            string scopeConstraint = "";
+            List<string> scopeIDs = permissionService.GetAuthorizeOrganizeIDByRole(CurrentRole, "OrderSys_Data.StartedOrders",out scopeConstraint);
 
             //2.0 构建where从句
             WhereStatement where = new WhereStatement();
@@ -519,10 +521,10 @@ namespace JSNet.Service
             }
 
 
-            if (organizeIDs.Count > 0)
+            if (scopeIDs.Count > 0)
             {
                 //显示指定部门的工单
-                where.Add("StarterOrganizeID", Comparison.In, organizeIDs.ToArray());
+                where.Add(scopeConstraint, Comparison.In, scopeIDs.ToArray());
             }
             else
             {
@@ -556,7 +558,8 @@ namespace JSNet.Service
         {
             //1.0 构建资源对象
             PermissionService permissionService = new PermissionService();
-            List<string> organizeIDs = permissionService.GetAuthorizeOrganizeIDByRole(CurrentRole, "OrderSys_Data.AppointingOrders");
+            string scopeConstraint = "";
+            List<string> scopeIDs = permissionService.GetAuthorizeOrganizeIDByRole(CurrentRole, "OrderSys_Data.AppointingOrders", out scopeConstraint);
 
             //2.0 构建where从句
             WhereStatement where = new WhereStatement();
@@ -579,9 +582,9 @@ namespace JSNet.Service
             }
 
             //显示指定部门的工单
-            if (organizeIDs.Count > 0)
+            if (scopeIDs.Count > 0)
             {
-                where.Add("StarterOrganizeID", Comparison.In, organizeIDs.ToArray());
+                where.Add(scopeConstraint, Comparison.In, scopeIDs.ToArray());
             }
             else
             {
@@ -615,7 +618,8 @@ namespace JSNet.Service
         {
             //1.0 构建资源对象
             PermissionService permissionService = new PermissionService();
-            List<string> organizeIDs = permissionService.GetAuthorizeOrganizeIDByRole(CurrentRole, "OrderSys_Data.AppointedOrders");
+            string scopeConstraint = "";
+            List<string> scopeIDs = permissionService.GetAuthorizeOrganizeIDByRole(CurrentRole, "OrderSys_Data.AppointedOrders", out scopeConstraint);
 
             //2.0 构建where从句
             WhereStatement where = new WhereStatement();
@@ -652,10 +656,10 @@ namespace JSNet.Service
                 where.Add(OrderEntity.FieldWorkingLocation, Comparison.Like, "%" + dic[OrderEntity.FieldWorkingLocation] + "%");
             }
 
-            if (organizeIDs.Count > 0)
+            if (scopeIDs.Count > 0)
             {
                 //显示指定部门的工单
-                where.Add("AppointerOrganizeID", Comparison.In, organizeIDs.ToArray());
+                where.Add(scopeConstraint, Comparison.In, scopeIDs.ToArray());
             }
             else
             {
@@ -689,7 +693,8 @@ namespace JSNet.Service
         {
             //1.0 构建资源对象
             PermissionService permissionService = new PermissionService();
-            List<string> organizeIDs = permissionService.GetAuthorizeOrganizeIDByRole(CurrentRole, "OrderSys_Data.ReceivingOrders");
+            string scopeConstraint = "";
+            List<string> scopeIDs = permissionService.GetAuthorizeOrganizeIDByRole(CurrentRole, "OrderSys_Data.ReceivingOrders", out scopeConstraint);
             
             //2.0 构建where从句
             WhereStatement where = new WhereStatement();
@@ -711,10 +716,10 @@ namespace JSNet.Service
                 where.Add(OrderEntity.FieldWorkingLocation, Comparison.Like, "%" + dic[OrderEntity.FieldWorkingLocation] + "%");
             }
 
-            if (organizeIDs.Count > 0)
+            if (scopeIDs.Count > 0)
             {
                 //显示指定部门的工单
-                where.Add("NextOperaterOrganizeID", Comparison.In, organizeIDs.ToArray());
+                where.Add(scopeConstraint, Comparison.In, scopeIDs.ToArray());
             }
             else
             {
@@ -748,7 +753,8 @@ namespace JSNet.Service
         {
             //1.0 构建资源对象
             PermissionService permissionService = new PermissionService();
-            List<string> organizeIDs = permissionService.GetAuthorizeOrganizeIDByRole(CurrentRole, "OrderSys_Data.HandlingOrders");
+            string scopeConstraint = "";
+            List<string> scopeIDs = permissionService.GetAuthorizeOrganizeIDByRole(CurrentRole, "OrderSys_Data.HandlingOrders", out scopeConstraint);
 
             //2.0 构建where从句
             WhereStatement where = new WhereStatement();
@@ -789,10 +795,10 @@ namespace JSNet.Service
             }
 
 
-            if (organizeIDs.Count > 0)
+            if (scopeIDs.Count > 0)
             {
                 //显示指定部门的工单
-                where.Add("HandlerOrganizeID", Comparison.In, organizeIDs.ToArray());
+                where.Add(scopeConstraint, Comparison.In, scopeIDs.ToArray());
                 //只显示领队的，避免工单重复
                 where.Add("IsLeader", Comparison.Equals,(int)TrueFalse.True);
             }
@@ -830,7 +836,8 @@ namespace JSNet.Service
         {
             //1.0 构建资源对象
             PermissionService permissionService = new PermissionService();
-            List<string> organizeIDs = permissionService.GetAuthorizeOrganizeIDByRole(CurrentRole, "OrderSys_Data.HandledOrders");
+            string scopeConstraint = "";
+            List<string> scopeIDs = permissionService.GetAuthorizeOrganizeIDByRole(CurrentRole, "OrderSys_Data.HandledOrders", out scopeConstraint);
 
             //2.0 构建where从句
             WhereStatement where = new WhereStatement();
@@ -867,10 +874,10 @@ namespace JSNet.Service
                 where.Add(OrderEntity.FieldWorkingLocation, Comparison.Like, "%" + dic[OrderEntity.FieldWorkingLocation] + "%");
             }
 
-            if (organizeIDs.Count > 0)
+            if (scopeIDs.Count > 0)
             {
                 //显示指定部门的工单
-                where.Add("HandlerOrganizeID", Comparison.In, organizeIDs.ToArray());
+                where.Add(scopeConstraint, Comparison.In, scopeIDs.ToArray());
             }
             else
             {
@@ -990,12 +997,13 @@ namespace JSNet.Service
         public DataTable GetOrderWorkingLocationDTByRole(RoleEntity role, Paging paging, out int count)
         {
             PermissionService permissionService = new PermissionService();
-            List<string> list = permissionService.GetAuthorizeOrganizeIDByRole(role, "OrderSys_Data.OrderWorkingLocation");
+            string scopeConstraint = "";
+            List<string> scopeIDs = permissionService.GetAuthorizeOrganizeIDByRole(role, "OrderSys_Data.OrderWorkingLocation", out scopeConstraint);
 
             WhereStatement where = new WhereStatement();
-            if (list.Count > 0)
+            if (scopeIDs.Count > 0)
             {
-                where.Add("Organize_ID", Comparison.In, list.ToArray());
+                where.Add(scopeConstraint, Comparison.In, scopeIDs.ToArray());
             }
             else
             {
@@ -1022,12 +1030,13 @@ namespace JSNet.Service
         public List<OrderWorkingLocationEntity> GetOrderWorkingLocationListByRole(RoleEntity role)
         {
             PermissionService permissionService = new PermissionService();
-            List<string> list = permissionService.GetAuthorizeOrganizeIDByRole(role, "OrderSys_Data.OrderWorkingLocation");
+            string scopeConstraint = "";
+            List<string> scopeIDs = permissionService.GetAuthorizeOrganizeIDByRole(role, "OrderSys_Data.OrderWorkingLocation", out scopeConstraint);
 
             WhereStatement where = new WhereStatement();
-            if (list.Count > 0)
+            if (scopeIDs.Count > 0)
             {
-                where.Add(OrderWorkingLocationEntity.FieldOrganizeID, Comparison.In, list.ToArray());
+                where.Add(scopeConstraint, Comparison.In, scopeIDs.ToArray());
             }
             else
             {
@@ -1101,12 +1110,13 @@ namespace JSNet.Service
         public DataTable GetOrderGoodsDTByRole(RoleEntity role, Paging paging, out int count)
         {
             PermissionService permissionService = new PermissionService();
-            List<string> list = permissionService.GetAuthorizeOrganizeIDByRole(role, "OrderSys_Data.OrderGoods");
+            string scopeConstraint = "";
+            List<string> scopeIDs = permissionService.GetAuthorizeOrganizeIDByRole(role, "OrderSys_Data.OrderGoods", out scopeConstraint);
 
             WhereStatement where = new WhereStatement();
-            if (list.Count > 0)
+            if (scopeIDs.Count > 0)
             {
-                where.Add("Organize_ID", Comparison.In, list.ToArray());
+                where.Add(scopeConstraint, Comparison.In, scopeIDs.ToArray());
             }
             else
             {
@@ -1133,12 +1143,13 @@ namespace JSNet.Service
         public List<OrderGoodsEntity> GetOrderGoodsListByRole(RoleEntity role)
         {
             PermissionService permissionService = new PermissionService();
-            List<string> list = permissionService.GetAuthorizeOrganizeIDByRole(role, "OrderSys_Data.OrderGoods");
+            string scopeConstraint = "";
+            List<string> scopeIDs = permissionService.GetAuthorizeOrganizeIDByRole(role, "OrderSys_Data.OrderGoods", out scopeConstraint);
 
             WhereStatement where = new WhereStatement();
-            if (list.Count > 0)
+            if (scopeIDs.Count > 0)
             {
-                where.Add(OrderGoodsEntity.FieldOrganizeID, Comparison.In, list.ToArray());
+                where.Add(OrderGoodsEntity.FieldOrganizeID, Comparison.In, scopeIDs.ToArray());
             }
             else
             {

@@ -234,14 +234,15 @@ namespace JSNet.Service
         public DataTable GetUserDTByRole(RoleEntity role, Paging paging, out int count)
         {
             PermissionService permissionService = new PermissionService();
-            List<string> list = permissionService.GetAuthorizeOrganizeIDByRole(role, "OrderSys_Data.User");
+            string scopeConstraint = "";
+            List<string> scopeIDs = permissionService.GetAuthorizeOrganizeIDByRole(role, "OrderSys_Data.User", out scopeConstraint);
 
             WhereStatement where = new WhereStatement();
             where.Add("Staff_IsEnable", Comparison.Equals, (int)TrueFalse.True);
             where.Add("Staff_IsOnJob", Comparison.Equals, (int)TrueFalse.True);
-            if (list.Count > 0)
+            if (scopeIDs.Count > 0)
             {
-                where.Add("Organize_ID", Comparison.In, list.ToArray());
+                where.Add(scopeConstraint, Comparison.In, scopeIDs.ToArray());
             }
             else
             {
@@ -298,14 +299,15 @@ namespace JSNet.Service
         public List<StaffEntity> GetWorkingStaffsByRole(RoleEntity role)
         {
             PermissionService permissionService = new PermissionService();
-            List<string> organizeIDs = permissionService.GetAuthorizeOrganizeIDByRole(role, "OrderSys_Data.WorkingStaff");
+            string scopeConstraint = "";
+            List<string> scopeIDs = permissionService.GetAuthorizeOrganizeIDByRole(role, "OrderSys_Data.WorkingStaff", out scopeConstraint);
 
             WhereStatement where = new WhereStatement();
             where.Add(StaffEntity.FieldIsEnable, Comparison.Equals, (int)TrueFalse.True);
             where.Add(StaffEntity.FieldIsOnJob, Comparison.Equals, (int)TrueFalse.True);
-            if (organizeIDs.Count > 0)
+            if (scopeIDs.Count > 0)
             {
-                where.Add(StaffEntity.FieldOrganizeID, Comparison.In, organizeIDs.ToArray());
+                where.Add(scopeConstraint, Comparison.In, scopeIDs.ToArray());
             }
             else
             {

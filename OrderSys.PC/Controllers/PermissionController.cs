@@ -214,7 +214,7 @@ namespace OrderSys.Admin.Controllers
         [HttpGet]
         public string GetGrantedItemIDs()
         {
-            string sReourceID = JSRequest.GetRequestUrlParm("resourceID");
+            string sReourceID = JSRequest.GetRequestUrlParm("资源ID");
             int resourceID = (int)JSValidator.ValidateInt("资源ID", sReourceID, true);
 
             int[] itemIDs = service.GetGrantedItemIDs(resourceID);
@@ -249,14 +249,18 @@ namespace OrderSys.Admin.Controllers
         public string GrantScope()
         {
             string sResourceID = JSRequest.GetRequestUrlParm("ResourceID");
-            string sTarget = JSRequest.GetRequestUrlParm("Target");
-            string sTargetIDs = JSRequest.GetRequestUrlParm("TargetIDs", false);
-
             int resourceID = (int)JSValidator.ValidateInt("ResourceID", sResourceID, true);
+
+            string sTarget = JSRequest.GetRequestUrlParm("Target");
             string target = JSValidator.ValidateString("Target", sTarget, true);
+
+            string sTargetIDs = JSRequest.GetRequestUrlParm("TargetIDs", false);
             int[] targetIDs = JSValidator.ValidateStrings("TargetIDs", sTargetIDs);
 
-            service.GrantScope(resourceID, target, targetIDs);
+            string sConstraint = JSRequest.GetRequestUrlParm("Constraint");
+            string constraint = JSValidator.ValidateString("Constraint", sConstraint, true);
+
+            service.GrantScope(resourceID, target, targetIDs, constraint);
 
             string s = JSON.ToJSON(new JSResponse(ResponseType.Remind, "配置成功！"), jsonParams);
             return s;
@@ -269,8 +273,10 @@ namespace OrderSys.Admin.Controllers
         {
             string sReourceID = JSRequest.GetRequestUrlParm("ResourceID");
             int resourceID = (int)JSValidator.ValidateInt("ResourceID", sReourceID, true);
+            string sTarget = JSRequest.GetRequestUrlParm("Target");
+            string target = JSValidator.ValidateString("Target", sTarget, true);
 
-            int[] scopeIDs = service.GetGrantedScopeIDs(resourceID);
+            int[] scopeIDs = service.GetGrantedScopeIDs(resourceID, target);
             string re = string.Join(",", scopeIDs);
             string s = JSON.ToJSON(new JSResponse(data: re), jsonParams);
             return s;

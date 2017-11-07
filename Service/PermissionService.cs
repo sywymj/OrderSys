@@ -238,10 +238,10 @@ namespace JSNet.Service
             manager.Insert(entitys);
         }
 
-        public int[] GetGrantedItemIDs(int reourceID)
+        public int[] GetGrantedItemIDs(int resourceID)
         {
             WhereStatement where = new WhereStatement();
-            where.Add(PermissionEntity.FieldResourceID, Comparison.Equals, reourceID);
+            where.Add(PermissionEntity.FieldResourceID, Comparison.Equals, resourceID);
 
             EntityManager<PermissionEntity> manager = new EntityManager<PermissionEntity>();
             string[] sScopeIDs = manager.GetProperties(PermissionEntity.FieldPermissionItemID, where);
@@ -272,13 +272,15 @@ namespace JSNet.Service
             WhereStatement where = new WhereStatement();
             where.Add("Organize_Code", Comparison.Like, systemCode + "%");
 
+            OrderByStatement order = new OrderByStatement("Organize_Code", Sorting.Ascending);
+
             ViewManager vmanager = new ViewManager(resourceTarget);
-            DataTable dt = vmanager.GetDataTable(where, out count);
+            DataTable dt = vmanager.GetDataTable(where, out count, order);
             return dt;
 
         }
 
-        public void GrantScope(int resourceID,string resourceTarget, int[] targetIDs)
+        public void GrantScope(int resourceID, string resourceTarget, int[] targetIDs, string constraint)
         {
             //判断资源类型是否为Data，只有Data才能分配资源对象
             EntityManager<ResourceEntity> resourceManager = new EntityManager<ResourceEntity>();
@@ -297,17 +299,20 @@ namespace JSNet.Service
 
             //3.0 添加新增的数据对象
             int[] arrAdd= targetIDs.Except(originalTargetIDs).ToArray();
-            AddPermissionScopes(resourceID, arrAdd);
+            AddPermissionScopes(resourceID, arrAdd, constraint);
 
             //4.0 删除多余的数据对象
             int[] arrDel = originalTargetIDs.Except(targetIDs).ToArray();
             DeletePermissionScopes(resourceID, arrDel);
         }
 
-        public int[] GetGrantedScopeIDs(int reourceID)
+        public int[] GetGrantedScopeIDs(int resourceID, string resourceTarget)
         {
+            ResourceEntity resource = GetResource(resourceID);
+            if (resource.Target != resourceTarget) { return new int[] { }; }
+
             WhereStatement where = new WhereStatement();
-            where.Add(PermissionScopeEntity.FieldResourceID, Comparison.Equals, reourceID);
+            where.Add(PermissionScopeEntity.FieldResourceID, Comparison.Equals, resourceID);
 
             EntityManager<PermissionScopeEntity> manager = new EntityManager<PermissionScopeEntity>();
             string[] sItems = manager.GetProperties(PermissionScopeEntity.FieldTargetID, where);
@@ -325,7 +330,7 @@ namespace JSNet.Service
             return targetIDs;
         }
 
-        private void AddPermissionScopes(int resourceID,int[] targetIDs)
+        private void AddPermissionScopes(int resourceID, int[] targetIDs, string constraint)
         {
             EntityManager<PermissionScopeEntity> manager = new EntityManager<PermissionScopeEntity>();
             List<PermissionScopeEntity> entitys = new List<PermissionScopeEntity>();
@@ -335,6 +340,7 @@ namespace JSNet.Service
                 entity.ResourceID = resourceID;
                 entity.TargetID = targetID;
                 entity.PermissionItemID = 2;
+                entity.PermissionConstraint = constraint;
                 entity.CreateUserId = CurrentUser.ID.ToString();
                 entity.CreateBy = CurrentUser.UserName;
                 entity.CreateOn = DateTime.Now;
@@ -470,7 +476,7 @@ namespace JSNet.Service
 
         #endregion
 
-        #region PermissionScope - 资源权限相关
+        #region PermissionScope - 数据权限相关
 
         public Dictionary<string, List<string>> GetAuthorizedScopeByRole(RoleEntity role, string scopeCode)
         {
@@ -516,22 +522,29 @@ namespace JSNet.Service
         /// <param name="role"></param>
         /// <param name="scopeCode"></param>
         /// <returns></returns>
-        public List<string> GetAuthorizeOrganizeIDByRole(RoleEntity role, string scopeCode)
+        public List<string> GetAuthorizeOrganizeIDByRole(RoleEntity role, string scopeCode, out string scopeConstraint)
         {
             // TODO 增加是否显示所有子元素参数，默认显示所有子元素
             int count = 0;
-            ViewManager vmanager = new ViewManager("VP_RoleScope");
+            scopeConstraint = ""; 
             WhereStatement where = new WhereStatement();
             where.Add("Resource_Code", Comparison.Equals, scopeCode);
             where.Add("Role_ID", Comparison.Equals, role.ID);
+
+            ViewManager vmanager = new ViewManager("VP_RoleScope");
             DataTable dt = vmanager.GetDataTable(where, out count);
 
             //填入list
             List<string> list = new List<string>();
             foreach (DataRow dr in dt.Rows)
             {
-                OrganizeService organizeService = new OrganizeService();
-                list.AddRange(organizeService.GetTreeOrganizeIDs(dr["Organize_Code"].ToString()).ToList());
+                scopeConstraint = dr["PermissionScope_PermissionConstraint"].ToString();
+                string[] s = GetTreeIDs(
+                    dr["Resource_Target"].ToString(),
+                    "Organize_Code", dr["Organize_Code"].ToString(),
+                    "Organize_ID", "Organize_ParentID");
+
+                list.AddRange(s.ToList());
             }
 
             if (list.Count == 0)
@@ -539,8 +552,10 @@ namespace JSNet.Service
                 return new List<string>();
             }
 
+
             return list.Distinct<string>().ToList(); ;
         }
+
 
         #endregion
 
@@ -675,7 +690,7 @@ namespace JSNet.Service
 
         #endregion
 
-        #region GrantrRolePermissionScope - 配置资源权限
+        #region GrantrRolePermissionScope - 配置数据权限
 
         public DataTable GetTreePermissionScopeDTByRole(RoleEntity role)
         {
@@ -686,22 +701,14 @@ namespace JSNet.Service
             {
                 return vmanager.GetDataTable(where, out count);
             }
-
-            List<string> organizeIDs = GetAuthorizeOrganizeIDByRole(role, "OrderSys_Data.PermissionScope");
-            if (organizeIDs.Count == 0)
+            string scopeConstraint = "";
+            List<string> scopeIDs = GetAuthorizeOrganizeIDByRole(role, "OrderSys_Data.PermissionScope", out scopeConstraint);
+            if (scopeIDs.Count == 0)
             {
                 return new DataTable("JSNet");
             }
 
-            //OrganizeService organizeService = new OrganizeService();
-            //string[] ids = organizeService.GetTreeOrganizeIDs(organizeIDs[0]);
-            //string[] ids = GetTreePermissionScopeIDs(parentCode);
-            //if (ids.Length == 0)
-            //{
-            //    return new DataTable("JSNet");
-            //}
-
-            where.Add("Organize_ID", Comparison.In, organizeIDs.ToArray());
+            where.Add(scopeConstraint, Comparison.In, scopeIDs.ToArray());
             DataTable dt = vmanager.GetDataTable(where, out count);
             return dt;
         }
@@ -765,8 +772,9 @@ namespace JSNet.Service
                 return dt;
             }
 
-            List<string> organizeIDs = GetAuthorizeOrganizeIDByRole(role, "OrderSys_Data.PermissionScope");
-            where.Add("Organize_ID", Comparison.In, organizeIDs.ToArray());
+            string scopeConstraint = "";
+            List<string> scopeIDs = GetAuthorizeOrganizeIDByRole(role, "OrderSys_Data.PermissionScope", out scopeConstraint);
+            where.Add("Organize_ID", Comparison.In, scopeIDs.ToArray());
 
             dt = vmanager.GetDataTable(where, out count);
             return dt;

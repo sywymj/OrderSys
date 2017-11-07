@@ -246,6 +246,15 @@ namespace JSNet.Service
             return s;
         }
 
+        public string[] GetTreeDataScopeIDs(string tableName,string parentOrganizeCode)
+        {
+            string[] s = GetTreeIDs(
+                tableName,
+                "Organize_Code", parentOrganizeCode,
+                "Organize_ID", "Organize_ParentID");
+            return s;
+        }
+
         public bool ChkOrganizeCodeExist(string organizeCode, string organizeID)
         {
             EntityManager<OrganizeEntity> manager = new EntityManager<OrganizeEntity>();
