@@ -435,7 +435,7 @@ namespace JSNet.Service
             //1.0 构建资源对象
             PermissionService permissionService = new PermissionService();
             string scopeConstraint = "";
-            List<string> scopeIDs = permissionService.GetAuthorizeOrganizeIDByRole(role, "OrderSys_Data.Orders", out scopeConstraint);
+            List<string> scopeIDs = permissionService.GetAuthorizedScopeIDByRole(role, "OrderSys_Data.Orders", out scopeConstraint);
 
             //2.0 构建where从句
             WhereStatement where = new WhereStatement();
@@ -491,7 +491,7 @@ namespace JSNet.Service
             //1.0 构建资源对象
             PermissionService permissionService = new PermissionService();
             string scopeConstraint = "";
-            List<string> scopeIDs = permissionService.GetAuthorizeOrganizeIDByRole(CurrentRole, "OrderSys_Data.StartedOrders",out scopeConstraint);
+            List<string> scopeIDs = permissionService.GetAuthorizedScopeIDByRole(CurrentRole, "OrderSys_Data.StartedOrders",out scopeConstraint);
 
             //2.0 构建where从句
             WhereStatement where = new WhereStatement();
@@ -559,7 +559,7 @@ namespace JSNet.Service
             //1.0 构建资源对象
             PermissionService permissionService = new PermissionService();
             string scopeConstraint = "";
-            List<string> scopeIDs = permissionService.GetAuthorizeOrganizeIDByRole(CurrentRole, "OrderSys_Data.AppointingOrders", out scopeConstraint);
+            List<string> scopeIDs = permissionService.GetAuthorizedScopeIDByRole(CurrentRole, "OrderSys_Data.AppointingOrders", out scopeConstraint);
 
             //2.0 构建where从句
             WhereStatement where = new WhereStatement();
@@ -619,7 +619,7 @@ namespace JSNet.Service
             //1.0 构建资源对象
             PermissionService permissionService = new PermissionService();
             string scopeConstraint = "";
-            List<string> scopeIDs = permissionService.GetAuthorizeOrganizeIDByRole(CurrentRole, "OrderSys_Data.AppointedOrders", out scopeConstraint);
+            List<string> scopeIDs = permissionService.GetAuthorizedScopeIDByRole(CurrentRole, "OrderSys_Data.AppointedOrders", out scopeConstraint);
 
             //2.0 构建where从句
             WhereStatement where = new WhereStatement();
@@ -694,7 +694,7 @@ namespace JSNet.Service
             //1.0 构建资源对象
             PermissionService permissionService = new PermissionService();
             string scopeConstraint = "";
-            List<string> scopeIDs = permissionService.GetAuthorizeOrganizeIDByRole(CurrentRole, "OrderSys_Data.ReceivingOrders", out scopeConstraint);
+            List<string> scopeIDs = permissionService.GetAuthorizedScopeIDByRole(CurrentRole, "OrderSys_Data.ReceivingOrders", out scopeConstraint);
             
             //2.0 构建where从句
             WhereStatement where = new WhereStatement();
@@ -754,7 +754,7 @@ namespace JSNet.Service
             //1.0 构建资源对象
             PermissionService permissionService = new PermissionService();
             string scopeConstraint = "";
-            List<string> scopeIDs = permissionService.GetAuthorizeOrganizeIDByRole(CurrentRole, "OrderSys_Data.HandlingOrders", out scopeConstraint);
+            List<string> scopeIDs = permissionService.GetAuthorizedScopeIDByRole(CurrentRole, "OrderSys_Data.HandlingOrders", out scopeConstraint);
 
             //2.0 构建where从句
             WhereStatement where = new WhereStatement();
@@ -837,7 +837,7 @@ namespace JSNet.Service
             //1.0 构建资源对象
             PermissionService permissionService = new PermissionService();
             string scopeConstraint = "";
-            List<string> scopeIDs = permissionService.GetAuthorizeOrganizeIDByRole(CurrentRole, "OrderSys_Data.HandledOrders", out scopeConstraint);
+            List<string> scopeIDs = permissionService.GetAuthorizedScopeIDByRole(CurrentRole, "OrderSys_Data.HandledOrders", out scopeConstraint);
 
             //2.0 构建where从句
             WhereStatement where = new WhereStatement();
@@ -998,7 +998,7 @@ namespace JSNet.Service
         {
             PermissionService permissionService = new PermissionService();
             string scopeConstraint = "";
-            List<string> scopeIDs = permissionService.GetAuthorizeOrganizeIDByRole(role, "OrderSys_Data.OrderWorkingLocation", out scopeConstraint);
+            List<string> scopeIDs = permissionService.GetAuthorizedScopeIDByRole(role, "OrderSys_Data.OrderWorkingLocation", out scopeConstraint);
 
             WhereStatement where = new WhereStatement();
             if (scopeIDs.Count > 0)
@@ -1031,7 +1031,7 @@ namespace JSNet.Service
         {
             PermissionService permissionService = new PermissionService();
             string scopeConstraint = "";
-            List<string> scopeIDs = permissionService.GetAuthorizeOrganizeIDByRole(role, "OrderSys_Data.OrderWorkingLocation", out scopeConstraint);
+            List<string> scopeIDs = permissionService.GetAuthorizedScopeIDByRole(role, "OrderSys_Data.OrderWorkingLocation", out scopeConstraint);
 
             WhereStatement where = new WhereStatement();
             if (scopeIDs.Count > 0)
@@ -1111,7 +1111,7 @@ namespace JSNet.Service
         {
             PermissionService permissionService = new PermissionService();
             string scopeConstraint = "";
-            List<string> scopeIDs = permissionService.GetAuthorizeOrganizeIDByRole(role, "OrderSys_Data.OrderGoods", out scopeConstraint);
+            List<string> scopeIDs = permissionService.GetAuthorizedScopeIDByRole(role, "OrderSys_Data.OrderGoods", out scopeConstraint);
 
             WhereStatement where = new WhereStatement();
             if (scopeIDs.Count > 0)
@@ -1144,7 +1144,7 @@ namespace JSNet.Service
         {
             PermissionService permissionService = new PermissionService();
             string scopeConstraint = "";
-            List<string> scopeIDs = permissionService.GetAuthorizeOrganizeIDByRole(role, "OrderSys_Data.OrderGoods", out scopeConstraint);
+            List<string> scopeIDs = permissionService.GetAuthorizedScopeIDByRole(role, "OrderSys_Data.OrderGoods", out scopeConstraint);
 
             WhereStatement where = new WhereStatement();
             if (scopeIDs.Count > 0)

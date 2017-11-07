@@ -235,7 +235,7 @@ namespace JSNet.Service
         {
             PermissionService permissionService = new PermissionService();
             string scopeConstraint = "";
-            List<string> scopeIDs = permissionService.GetAuthorizeOrganizeIDByRole(role, "OrderSys_Data.User", out scopeConstraint);
+            List<string> scopeIDs = permissionService.GetAuthorizedScopeIDByRole(role, "OrderSys_Data.User", out scopeConstraint);
 
             WhereStatement where = new WhereStatement();
             where.Add("Staff_IsEnable", Comparison.Equals, (int)TrueFalse.True);
@@ -300,7 +300,7 @@ namespace JSNet.Service
         {
             PermissionService permissionService = new PermissionService();
             string scopeConstraint = "";
-            List<string> scopeIDs = permissionService.GetAuthorizeOrganizeIDByRole(role, "OrderSys_Data.WorkingStaff", out scopeConstraint);
+            List<string> scopeIDs = permissionService.GetAuthorizedScopeIDByRole(role, "OrderSys_Data.WorkingStaff", out scopeConstraint);
 
             WhereStatement where = new WhereStatement();
             where.Add(StaffEntity.FieldIsEnable, Comparison.Equals, (int)TrueFalse.True);

@@ -522,7 +522,7 @@ namespace JSNet.Service
         /// <param name="role"></param>
         /// <param name="scopeCode"></param>
         /// <returns></returns>
-        public List<string> GetAuthorizeOrganizeIDByRole(RoleEntity role, string scopeCode, out string scopeConstraint)
+        public List<string> GetAuthorizedScopeIDByRole(RoleEntity role, string scopeCode, out string scopeConstraint,bool onlyParent)
         {
             // TODO 增加是否显示所有子元素参数，默认显示所有子元素
             int count = 0;
@@ -536,16 +536,25 @@ namespace JSNet.Service
 
             //填入list
             List<string> list = new List<string>();
+
             foreach (DataRow dr in dt.Rows)
             {
-                scopeConstraint = dr["PermissionScope_PermissionConstraint"].ToString();
-                string[] s = GetTreeIDs(
-                    dr["Resource_Target"].ToString(),
-                    "Organize_Code", dr["Organize_Code"].ToString(),
-                    "Organize_ID", "Organize_ParentID");
-
-                list.AddRange(s.ToList());
+                if (onlyParent)
+                {
+                    //dr TODO
+                }
+                else
+                {
+                    scopeConstraint = dr["PermissionScope_PermissionConstraint"].ToString();
+                    string[] s = GetTreeIDs(
+                        dr["Resource_Target"].ToString(),
+                        "Organize_Code", dr["Organize_Code"].ToString(),
+                        "ID",
+                        "Organize_ID", "Organize_ParentID");//这里不正确
+                    list.AddRange(s.ToList());
+                }
             }
+
 
             if (list.Count == 0)
             {
@@ -694,6 +703,7 @@ namespace JSNet.Service
 
         public DataTable GetTreePermissionScopeDTByRole(RoleEntity role)
         {
+             //如果是超级管理员，返回所有数据对象，其他则返回已分配了给该角色的数据对象（不遍历子元素）
             int count = 0;
             WhereStatement where = new WhereStatement();
             ViewManager vmanager = new ViewManager("VP_PermissionScope");
@@ -702,7 +712,7 @@ namespace JSNet.Service
                 return vmanager.GetDataTable(where, out count);
             }
             string scopeConstraint = "";
-            List<string> scopeIDs = GetAuthorizeOrganizeIDByRole(role, "OrderSys_Data.PermissionScope", out scopeConstraint);
+            List<string> scopeIDs = GetAuthorizedScopeIDByRole(role, "OrderSys_Data.PermissionScope", out scopeConstraint);
             if (scopeIDs.Count == 0)
             {
                 return new DataTable("JSNet");
@@ -773,7 +783,7 @@ namespace JSNet.Service
             }
 
             string scopeConstraint = "";
-            List<string> scopeIDs = GetAuthorizeOrganizeIDByRole(role, "OrderSys_Data.PermissionScope", out scopeConstraint);
+            List<string> scopeIDs = GetAuthorizedScopeIDByRole(role, "OrderSys_Data.PermissionScope", out scopeConstraint);
             where.Add("Organize_ID", Comparison.In, scopeIDs.ToArray());
 
             dt = vmanager.GetDataTable(where, out count);

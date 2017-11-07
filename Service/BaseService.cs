@@ -156,5 +156,25 @@ namespace JSNet.Service
             return DataTableUtil.FieldToArray(dt, "ID");
 
         }
+
+        public string[] GetTreeIDs(string tableName, string filterField, string filterValue, string idField,string treeIDField, string treeParentIDField)
+        {
+            IDbHelper dbHelper = DbHelperFactory.GetHelper(BaseSystemInfo.CenterDbConnectionString);
+            IDbDataParameter[] dbParameters = new IDbDataParameter[] { dbHelper.MakeParameter(filterField, filterValue) };
+
+            string sqlQuery = @" WITH Tree1 AS (
+                                    SELECT " + idField + @" AS ID," + treeIDField + @" AS TreeID
+                                        FROM " + tableName + @" 
+                                        WHERE " + filterField + @"  = " + dbHelper.GetParameter(filterField) + @"
+                                    UNION ALL
+                                    SELECT Tree." + idField + @",Tree." + treeIDField + @"
+                                        FROM " + tableName + @" AS Tree INNER JOIN
+                                        Tree1 AS A ON A.TreeID = Tree." + treeParentIDField + @")
+                                SELECT ID
+                                    FROM Tree1 ";
+            DataTable dt = dbHelper.Fill(sqlQuery, dbParameters);
+            return DataTableUtil.FieldToArray(dt, "ID");
+
+        }
     }
 }

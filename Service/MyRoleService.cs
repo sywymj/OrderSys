@@ -31,7 +31,7 @@ namespace JSNet.Service
         {
             PermissionService permissionService = new PermissionService();
             string scopeConstraint = "";
-            List<string> scopeIDs = permissionService.GetAuthorizeOrganizeIDByRole(role, "OrderSys_Data.Role", out scopeConstraint);
+            List<string> scopeIDs = permissionService.GetAuthorizedScopeIDByRole(role, "OrderSys_Data.Role", out scopeConstraint);
 
             WhereStatement where = new WhereStatement();
             if (scopeIDs.Count > 0)
@@ -131,7 +131,7 @@ namespace JSNet.Service
         {
             PermissionService permissionService = new PermissionService();
             string scopeConstraint = "";
-            List<string> scopeIDs = permissionService.GetAuthorizeOrganizeIDByRole(role, "OrderSys_Data.Role", out scopeConstraint);
+            List<string> scopeIDs = permissionService.GetAuthorizedScopeIDByRole(role, "OrderSys_Data.Role", out scopeConstraint);
 
             WhereStatement where = new WhereStatement();
             if (scopeIDs.Count > 0)
@@ -162,7 +162,7 @@ namespace JSNet.Service
         {
             PermissionService permissionService = new PermissionService();
             string scopeConstraint = "";
-            List<string> scopeIDs = permissionService.GetAuthorizeOrganizeIDByRole(role, "OrderSys_Data.Role", out scopeConstraint);
+            List<string> scopeIDs = permissionService.GetAuthorizedScopeIDByRole(role, "OrderSys_Data.Role", out scopeConstraint);
 
             WhereStatement where = new WhereStatement();
             if (scopeIDs.Count > 0)
