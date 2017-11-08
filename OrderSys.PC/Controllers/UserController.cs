@@ -29,7 +29,7 @@ namespace OrderSys.Admin.Controllers
         {
             int count = 0;
             Paging paging = new Paging(pageIndex, pageSize, sortField, sortOrder);
-            DataTable re = service.GetUserDTByRole(service.CurrentRole, paging, out count);
+            DataTable re = service.GetUserDTForShow(service.CurrentRole, paging, out count);
 
             string s = JSON.ToJSON(new JSResponse(new DataTableData(re, count)), jsonParams);
             return s;

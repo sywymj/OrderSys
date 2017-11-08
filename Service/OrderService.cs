@@ -45,8 +45,19 @@ namespace JSNet.Service
             EntityManager<OrderFlowEntity> orderflowManager = new EntityManager<OrderFlowEntity>();
             orderflowManager.Insert(orderFlow);
 
-            return order.ID.ToString();
             //3.0 微信推送
+            ViewManager vmanager = new ViewManager("VO_Order");
+            DataRow dr = vmanager.GetSingle(order.ID, "ID");
+
+            //推送给委派人
+            KawuService kawuService = new KawuService();
+            List<int> staffIDs = GetAppointersStaffIDs();
+            foreach (int staffid in staffIDs)
+            {
+                kawuService.CommonOrder_VXPushMsg(staffid, "您有新的工单，请及时委派！", dr);
+            }
+
+            return order.ID.ToString();
         }
 
         //委派工作
@@ -1279,6 +1290,19 @@ namespace JSNet.Service
             
             BaseExportCSV.ExportCSV(re, localpath + fileName);
             return webpath + fileName;
+        }
+
+        private List<int> GetAppointersStaffIDs()
+        {
+            PermissionService permissionService = new PermissionService();
+            string scopeConstraint = "";
+            List<int> scopeIDs = permissionService.GetAuthorizedScopeIDByRole(CurrentRole, "OrderSys_Data.AppointingStaff", out scopeConstraint).ConvertAll(r => Convert.ToInt32(r));
+
+            UserService userService = new UserService();
+            DataTable dt = userService.GetUserDT(scopeIDs.ToArray());
+
+            List<int> re = DataTableUtil.FieldToArray(dt, "Staff_ID").ToList().ConvertAll(r => Convert.ToInt32(r));
+            return re;
         }
 
         private int GetLeaderHandlerID(int[] orderHandlerIDs)

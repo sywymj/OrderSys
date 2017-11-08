@@ -231,7 +231,7 @@ namespace JSNet.Service
             return list;
         }
 
-        public DataTable GetUserDTByRole(RoleEntity role, Paging paging, out int count)
+        public DataTable GetUserDTForShow(RoleEntity role, Paging paging, out int count)
         {
             PermissionService permissionService = new PermissionService();
             string scopeConstraint = "";
@@ -263,6 +263,24 @@ namespace JSNet.Service
 
             ViewManager vmanager = new ViewManager("VS_User_Show");
             DataTable dt = vmanager.GetDataTableByPage(where, out count, paging.PageIndex, paging.PageSize, orderby);
+            return dt;
+        }
+
+        /// <summary>
+        /// 获取该角色下的用户
+        /// </summary>
+        /// <param name="role"></param>
+        /// <returns></returns>
+        public DataTable GetUserDT(int[] roleIDs)
+        {
+            int count = 0;
+            WhereStatement where = new WhereStatement();
+            where.Add("Staff_IsEnable", Comparison.Equals, (int)TrueFalse.True);
+            where.Add("Staff_IsOnJob", Comparison.Equals, (int)TrueFalse.True);
+            where.Add("Role_ID", Comparison.In, roleIDs);
+
+            ViewManager vmanager = new ViewManager("VP_UserRoleStaff");
+            DataTable dt = vmanager.GetDataTable(where, out count);
             return dt;
         }
 
