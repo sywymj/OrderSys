@@ -358,13 +358,14 @@ namespace JSNet.Service
             WhereStatement where = new WhereStatement();
             where.Add(PermissionScopeEntity.FieldResourceID, Comparison.Equals, resourceID);
             where.Add(PermissionScopeEntity.FieldTargetID, Comparison.In, targetIDs);
-
             int[] permissionScopeIDs = manager.GetIds(where).ConvertToIntArry();
 
             //先删除RolePermissionScope的记录
             DeleteRolePermissionScopeByPermissionScopeIDs(permissionScopeIDs);
 
-            manager.Delete(permissionScopeIDs);
+            WhereStatement where1 = new WhereStatement();
+            where1.Add(PermissionScopeEntity.FieldID, Comparison.In, permissionScopeIDs);
+            manager.Delete(where1);
         }
 
         #endregion
@@ -478,51 +479,13 @@ namespace JSNet.Service
 
         #region PermissionScope - 数据权限相关
 
-        public Dictionary<string, List<string>> GetAuthorizedScopeByRole(RoleEntity role, string scopeCode)
-        {
-            if (role.ID == 1)
-            {
-                return new Dictionary<string, List<string>>();
-            }
-
-            int count = 0;
-            ViewManager vmanager = new ViewManager("VP_RoleScope");
-            WhereStatement where = new WhereStatement();
-            where.Add("Resource_Code", Comparison.Equals, scopeCode);
-            where.Add("Role_ID", Comparison.Equals, role.ID);
-            DataTable dt = vmanager.GetDataTable(where, out count);
-
-            //填入dic
-            Dictionary<string, List<string>> dic = new Dictionary<string, List<string>>();
-            foreach (DataRow dr in dt.Rows)
-            {
-                string organizeCategory = dr["OrganizeCategory_Code"].ToString();//字段名
-                //数据值，split('.')的code最后一个 OrderSys.FSWGY.TeacherDEPT，最后一个就是列值
-                string organize = dr["Organize_Code"].ToString().Split('.')[dr["Organize_Code"].ToString().Split('.').Length - 1];
-                if (!dic.ContainsKey(organizeCategory))
-                {
-                    dic.Add(organizeCategory, new List<string>());
-                }
-                dic[organizeCategory].Add(organize);
-            }
-
-            if (dic.Count == 0)
-            {
-                List<string> list = new List<string>();
-                list.Add("1");
-                dic.Add("0", list);//没有配置资源时，where 从句 => 0 in (1)
-            }
-            return dic;
-
-        }
-
         /// <summary>
         /// 根据角色获取机构ID（默认递归返回获取子元素）
         /// </summary>
         /// <param name="role"></param>
         /// <param name="scopeCode"></param>
         /// <returns></returns>
-        public List<string> GetAuthorizedScopeIDByRole(RoleEntity role, string scopeCode, out string scopeConstraint,bool onlyParent)
+        public List<string> GetAuthorizedScopeIDByRole(RoleEntity role, string scopeCode, out string scopeConstraint,bool onlyParent=false)
         {
             // TODO 增加是否显示所有子元素参数，默认显示所有子元素
             int count = 0;
@@ -532,6 +495,7 @@ namespace JSNet.Service
             where.Add("Role_ID", Comparison.Equals, role.ID);
 
             ViewManager vmanager = new ViewManager("VP_RoleScope");
+            //获取已分配的数据对象
             DataTable dt = vmanager.GetDataTable(where, out count);
 
             //填入list
@@ -539,18 +503,18 @@ namespace JSNet.Service
 
             foreach (DataRow dr in dt.Rows)
             {
+                scopeConstraint = dr["PermissionScope_PermissionConstraint"].ToString();
                 if (onlyParent)
                 {
-                    //dr TODO
+                    list.Add(dr["PermissionScope_TargetID"].ToString());
                 }
                 else
                 {
-                    scopeConstraint = dr["PermissionScope_PermissionConstraint"].ToString();
                     string[] s = GetTreeIDs(
-                        dr["Resource_Target"].ToString(),
-                        "Organize_Code", dr["Organize_Code"].ToString(),
+                        dr["Resource_Target"].ToString(),//数据对象表
+                        "ID", dr["PermissionScope_TargetID"].ToString(),//筛选父元素
                         "ID",
-                        "Organize_ID", "Organize_ParentID");//这里不正确
+                        "Organize_ID", "Organize_ParentID");
                     list.AddRange(s.ToList());
                 }
             }
@@ -701,28 +665,6 @@ namespace JSNet.Service
 
         #region GrantrRolePermissionScope - 配置数据权限
 
-        public DataTable GetTreePermissionScopeDTByRole(RoleEntity role)
-        {
-             //如果是超级管理员，返回所有数据对象，其他则返回已分配了给该角色的数据对象（不遍历子元素）
-            int count = 0;
-            WhereStatement where = new WhereStatement();
-            ViewManager vmanager = new ViewManager("VP_PermissionScope");
-            if (role.ID == 1)
-            {
-                return vmanager.GetDataTable(where, out count);
-            }
-            string scopeConstraint = "";
-            List<string> scopeIDs = GetAuthorizedScopeIDByRole(role, "OrderSys_Data.PermissionScope", out scopeConstraint);
-            if (scopeIDs.Count == 0)
-            {
-                return new DataTable("JSNet");
-            }
-
-            where.Add(scopeConstraint, Comparison.In, scopeIDs.ToArray());
-            DataTable dt = vmanager.GetDataTable(where, out count);
-            return dt;
-        }
-
         public void GrantPermissionScope(int roleID, int[] scopeIDs)
         {
             EntityManager<RolePermissionScopeEntity> manager = new EntityManager<RolePermissionScopeEntity>();
@@ -754,57 +696,106 @@ namespace JSNet.Service
             return ids;
         } 
 
-        private string[] GetTreePermissionScopeIDs(string parentCode)
-        {
-            string[] s = GetTreeIDs(
-                "[VP_PermissionScope]",
-                "Resource_Code", parentCode,
-                "Resource_ID", "Resource_ParentID");
-            return s;
-        } 
-
         //171017 new 
         /// <summary>
-        /// 根据角色，获取已分配给该角色的数据资源
+        /// 根据角色，获取已分配给该角色的数据资源（重要）
         /// </summary>
         /// <param name="role"></param>
         /// <returns></returns>
         public DataTable GetGrantedDataResourceByRole(RoleEntity role)
         {
             int count = 0;
-            DataTable dt = new DataTable();
-            ViewManager vmanager = new ViewManager("VP_PermissionScope");
+
+            //获取所有的数据权限对象
+            WhereStatement w = new WhereStatement();
+            ViewManager v = new ViewManager("VP_PermissionScope");
+            DataTable dt = v.GetDataTable(w, out count);
+            dt.Columns.Add("DataScopeTitle");
+
+            //获取已经分配给该角色的数据权限对象ID
             WhereStatement where = new WhereStatement();
-            if (role.ID == 1)
+            where.Add("Role_ID", Comparison.Equals, role.ID);
+            ViewManager vmanager = new ViewManager("VP_RoleScope");
+            string[] myPermissionScopeIDs = DataTableUtil.FieldToArray(vmanager.GetDataTable(where, out count), "PermissionScope_ID");
+
+            //获取所有的数据对象
+            DataTable allScopeDT = GetAllScope(dt);
+
+            //删除没分配的数据权限对象，并添加数据权限对象的TITLE
+            foreach (DataRow dr in dt.Rows)
             {
-                //超级用户默认获取所有的资源对象
-                dt = vmanager.GetDataTable(where, out count);
-                return dt;
+                if (string.IsNullOrEmpty(dr["Resource_Target"].ToString()) 
+                    || string.IsNullOrEmpty(dr["PermissionScope_TargetID"].ToString()))
+                {
+                    continue;
+                }
+                dr["DataScopeTitle"] = GetDataScopeTtile(allScopeDT, dr["Resource_Target"].ToString(), dr["PermissionScope_TargetID"].ToString());
+                if (role.ID != 1 && !myPermissionScopeIDs.Contains(dr["PermissionScope_ID"].ToString()))
+                {
+                    //删除不属于自己的
+                    dr.Delete();
+                };
             }
-
-            string scopeConstraint = "";
-            List<string> scopeIDs = GetAuthorizedScopeIDByRole(role, "OrderSys_Data.PermissionScope", out scopeConstraint);
-            where.Add("Organize_ID", Comparison.In, scopeIDs.ToArray());
-
-            dt = vmanager.GetDataTable(where, out count);
+            dt.AcceptChanges();
             return dt;
         }
 
         /// <summary>
-        /// 根据角色，获取已分配给该角色的数据资源ID
+        /// 获取所有是数据对象
         /// </summary>
-        /// <param name="role"></param>
+        /// <param name="dt"></param>
         /// <returns></returns>
-        private string[] GetGrantedDataResourceIDsByRole(RoleEntity role)
+        private DataTable GetAllScope(DataTable dt)
         {
-            IDbHelper dbHelper = DbHelperFactory.GetHelper(BaseSystemInfo.CenterDbConnectionString);
-            IDbDataParameter[] dbParameters = new IDbDataParameter[] { dbHelper.MakeParameter("Role_ID", role.ID) };
+            //将Resource_Target groupby 出来 
+            DataTable permissionScopeDT = dt.AsEnumerable()
+               .GroupBy(r => new { Col1 = r["Resource_Target"] })
+               .Select(g => g.OrderBy(r => r["Resource_Target"]).First())
+               .CopyToDataTable().DefaultView.ToTable(false, new string[] { "Resource_Target", "PermissionScope_TargetID" });
 
-            string sqlQuery = @"select Resource_ID from [DB_OrderSys].[dbo].[VP_RoleScope]
-                    where Role_ID = " + dbHelper.GetParameter("Role_ID") + @"
-                    group by Resource_ID";
-            DataTable dt = dbHelper.Fill(sqlQuery, dbParameters);
-            return DataTableUtil.FieldToArray(dt, "ID");
+            List<string> unionSQLs = new List<string>();
+            string sql = "select ID,Title,'{0}' AS TargetTable from {0}";
+            foreach (DataRow dr in permissionScopeDT.Rows)
+            {
+                if (string.IsNullOrEmpty(dr["Resource_Target"].ToString())) { continue; }
+                unionSQLs.Add(string.Format(sql, dr["Resource_Target"]));
+            }
+            if (unionSQLs.Count == 0) { return new DataTable(); }
+            sql = string.Join(" union all ", unionSQLs.ToArray());
+
+            IDbHelper dbHelper = DbHelperFactory.GetHelper(BaseSystemInfo.CenterDbConnectionString);
+            DataTable alltargetDT = dbHelper.Fill(sql);
+            return alltargetDT;
+        }
+
+        private string GetDataScopeTtile(DataTable allScopeDT,string table,string targetID)
+        {
+            foreach(DataRow dr in allScopeDT.Rows)
+            {
+                if (string.IsNullOrEmpty(dr["ID"].ToString())
+                        || string.IsNullOrEmpty(dr["TargetTable"].ToString())
+                        || string.IsNullOrEmpty(dr["Title"].ToString()))
+                {
+                    continue;
+                }
+                if (dr["ID"].ToString() == targetID && dr["TargetTable"].ToString() == table)
+                {
+                    return dr["Title"].ToString();
+                }
+            }
+            return "";
+
+            ////存入内存
+            //WhereStatement where = new WhereStatement();
+            //where.Add("ID",Comparison.Equals,targetID);
+
+            //int count = 0;
+            //ViewManager vmanager = new ViewManager(table);
+            //DataTable dt = vmanager.GetDataTable(where, out count);
+            //if (dt.Rows.Count == 0) {
+            //    return "";
+            //}
+            //return dt.Rows[0]["Title"].ToString();
         }
 
         private void DeleteRolePermissionScopeByPermissionScopeIDs(int[] permissionScopeIDs)

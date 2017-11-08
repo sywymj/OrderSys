@@ -338,18 +338,6 @@ namespace OrderSys.Admin.Controllers
             return View("~/Areas/Admin/Views/Permission/GrantPermissionScope_Index.cshtml");
         }
 
-        [HttpGet]
-        public string GetGrantPermissionScopeDT_out()
-        {
-            int count = 0;
-            //获取当前登陆的角色所属的系统类型，从而获取属性列表
-
-            DataTable dt = service.GetTreePermissionScopeDTByRole(service.CurrentRole);
-
-            string s = JSON.ToJSON(new JSResponse(new DataTableData(dt, count)), jsonParams);
-            return s;
-        }
-
         #region 【查询】数据权限
         [HttpGet]
         public string GetGrantDataResourceList()
@@ -389,7 +377,7 @@ namespace OrderSys.Admin.Controllers
                     permissionScope = new ViewPermissionScopeEntity()
                     {
                         ID = dr["PermissionScope_ID"].ToString(),
-                        Title = dr["Organize_FullName"].ToString(),
+                        Title = dr["DataScopeTitle"].ToString(),
                     };
 
                     if (permissionScopeIDs.Contains(Convert.ToInt32(dr["PermissionScope_ID"].ToString())))
