@@ -84,7 +84,7 @@
 
         var url = "@Url.Action("GrantItem", "Permission", new { area = "Admin" })";
         var data = {
-            reourceID: resourceID,
+            resourceID: resourceID,
             permissionItemIDs: permissionItemIDs
         };
         doGetSync(url, data, function (jdata) {

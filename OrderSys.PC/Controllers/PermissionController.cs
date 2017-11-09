@@ -197,10 +197,10 @@ namespace OrderSys.Admin.Controllers
         [HttpGet]
         public string GrantItem()
         {
-            string sReourceID = JSRequest.GetRequestUrlParm("reourceID", true);
+            string sResourceID = JSRequest.GetRequestUrlParm("resourceID", true);
             string sPermissionItemIDs = JSRequest.GetRequestUrlParm("permissionItemIDs", false);
 
-            int resourceID = (int)JSValidator.ValidateInt("资源ID", sReourceID, true);
+            int resourceID = (int)JSValidator.ValidateInt("资源ID", sResourceID, true);
             int[] permissionItemIDs = JSValidator.ValidateStrings("资源明细ID", sPermissionItemIDs, false);
 
             service.GrantItem(resourceID, permissionItemIDs);
@@ -214,7 +214,7 @@ namespace OrderSys.Admin.Controllers
         [HttpGet]
         public string GetGrantedItemIDs()
         {
-            string sReourceID = JSRequest.GetRequestUrlParm("资源ID");
+            string sReourceID = JSRequest.GetRequestUrlParm("resourceID");
             int resourceID = (int)JSValidator.ValidateInt("资源ID", sReourceID, true);
 
             int[] itemIDs = service.GetGrantedItemIDs(resourceID);
@@ -257,10 +257,10 @@ namespace OrderSys.Admin.Controllers
             string sTargetIDs = JSRequest.GetRequestUrlParm("TargetIDs", false);
             int[] targetIDs = JSValidator.ValidateStrings("TargetIDs", sTargetIDs);
 
-            string sConstraint = JSRequest.GetRequestUrlParm("Constraint");
-            string constraint = JSValidator.ValidateString("Constraint", sConstraint, true);
+            string sTargetConstraint = JSRequest.GetRequestUrlParm("TargetConstraint");
+            string targetConstraint = JSValidator.ValidateString("TargetConstraint", sTargetConstraint, true);
 
-            service.GrantScope(resourceID, target, targetIDs, constraint);
+            service.GrantScope(resourceID, target, targetIDs,targetConstraint);
 
             string s = JSON.ToJSON(new JSResponse(ResponseType.Remind, "配置成功！"), jsonParams);
             return s;
@@ -292,11 +292,11 @@ namespace OrderSys.Admin.Controllers
 
         #region 【查询】模块权限
         [HttpGet]
-        public string GetGrantPermissionModuleList()
+        public string GetGrantPermissionModuleDT()
         {
-            List<ResourceEntity> modules = service.GetModuleList("OrderSys");
+            DataTable dt = service.GetGrantedPermissionModuleByRole(service.CurrentRole);
 
-            string s = JSON.ToJSON(new JSResponse(new ListData<ResourceEntity>(modules)), jsonParams);
+            string s = JSON.ToJSON(new JSResponse(new DataTableData(dt)), jsonParams);
             return s;
         } 
         #endregion
@@ -345,7 +345,7 @@ namespace OrderSys.Admin.Controllers
             string sRoleID = JSRequest.GetRequestUrlParm("RoleID", true);
             int roleID = (int)JSValidator.ValidateInt("角色ID", sRoleID, true);
 
-            DataTable dt = service.GetGrantedDataResourceByRole(service.CurrentRole);
+            DataTable dt = service.GetGrantedPermissionScopeByRole(service.CurrentRole);
             int[] permissionScopeIDs = service.GetGrantedPermissionScopeIDs(roleID);//获取该角色已分配的资源对象
 
             List<ViewDataResource> dataResources = new List<ViewDataResource>();

@@ -37,11 +37,13 @@ namespace JSNet.Service
             kvps.Add(new KeyValuePair<string, object>(ResourceEntity.FieldResourceType, entity.ResourceType));
             kvps.Add(new KeyValuePair<string, object>(ResourceEntity.FieldGroups, entity.Groups));
             kvps.Add(new KeyValuePair<string, object>(ResourceEntity.FieldTarget, entity.Target));
+            kvps.Add(new KeyValuePair<string, object>(ResourceEntity.FieldTargetConstraint, entity.TargetConstraint));
             kvps.Add(new KeyValuePair<string, object>(ResourceEntity.FieldNavigateUrl, entity.NavigateUrl));
             kvps.Add(new KeyValuePair<string, object>(ResourceEntity.FieldSortCode, entity.SortCode));
             kvps.Add(new KeyValuePair<string, object>(ResourceEntity.FieldIsVisible, entity.IsVisible));
             kvps.Add(new KeyValuePair<string, object>(ResourceEntity.FieldIsEnable, entity.IsEnable));
             kvps.Add(new KeyValuePair<string, object>(ResourceEntity.FieldIsPublic, entity.IsPublic));
+            kvps.Add(new KeyValuePair<string, object>(ResourceEntity.FieldDescription, entity.Description));
             kvps.Add(new KeyValuePair<string, object>(ResourceEntity.FieldModifiedUserId, CurrentUser.ID.ToString()));
             kvps.Add(new KeyValuePair<string, object>(ResourceEntity.FieldModifiedBy, CurrentUser.UserName));
             kvps.Add(new KeyValuePair<string, object>(ResourceEntity.FieldModifiedOn, DateTime.Now));
@@ -252,7 +254,7 @@ namespace JSNet.Service
 
         #endregion
 
-        #region GrantScope - 配置资源对象
+        #region GrantScope - 配置数据对象
 
         public DataTable GetGrantScopeDT(string resourceID, string resourceTarget, out int count)
         {
@@ -280,26 +282,28 @@ namespace JSNet.Service
 
         }
 
-        public void GrantScope(int resourceID, string resourceTarget, int[] targetIDs, string constraint)
+        public void GrantScope(int resourceID, string resourceTarget, int[] targetIDs, string targetConstraint)
         {
             //判断资源类型是否为Data，只有Data才能分配资源对象
             EntityManager<ResourceEntity> resourceManager = new EntityManager<ResourceEntity>();
             ResourceEntity resource = resourceManager.GetSingle(resourceID);
             if (!(resource.ResourceType == ResourceType.Data.ToString()))
             {
-                throw new JSException(JSErrMsg.ERR_CODE_NotAllowGrantItem, string.Format(JSErrMsg.ERR_MSG_NotAllowGrantItem, "资源类型为" + resource.ResourceType + "，"));
+                throw new JSException(JSErrMsg.ERR_CODE_NotAllowGrantScope, string.Format(JSErrMsg.ERR_MSG_NotAllowGrantScope, "资源类型为" + resource.ResourceType + "，"));
             }
 
             //1.0 将资源的Target更新为对应的表/视图
             List<KeyValuePair<string, object>> kvps = new List<KeyValuePair<string, object>>();
-            resourceManager.Update(new KeyValuePair<string, object>(ResourceEntity.FieldTarget, resourceTarget), resource.ID, ResourceEntity.FieldID);
+            kvps.Add(new KeyValuePair<string, object>(ResourceEntity.FieldTarget, resourceTarget));
+            kvps.Add(new KeyValuePair<string, object>(ResourceEntity.FieldTargetConstraint, targetConstraint));
+            resourceManager.Update(kvps, resource.ID, ResourceEntity.FieldID);
 
-            //2.0 获取未修改前的资源对象ID
+            //2.0 获取未修改前的数据对象ID
             int[] originalTargetIDs = GetTargetIDsByResourceID(resourceID);
 
             //3.0 添加新增的数据对象
             int[] arrAdd= targetIDs.Except(originalTargetIDs).ToArray();
-            AddPermissionScopes(resourceID, arrAdd, constraint);
+            AddPermissionScopes(resourceID, arrAdd);
 
             //4.0 删除多余的数据对象
             int[] arrDel = originalTargetIDs.Except(targetIDs).ToArray();
@@ -330,7 +334,7 @@ namespace JSNet.Service
             return targetIDs;
         }
 
-        private void AddPermissionScopes(int resourceID, int[] targetIDs, string constraint)
+        private void AddPermissionScopes(int resourceID, int[] targetIDs)
         {
             EntityManager<PermissionScopeEntity> manager = new EntityManager<PermissionScopeEntity>();
             List<PermissionScopeEntity> entitys = new List<PermissionScopeEntity>();
@@ -340,7 +344,7 @@ namespace JSNet.Service
                 entity.ResourceID = resourceID;
                 entity.TargetID = targetID;
                 entity.PermissionItemID = 2;
-                entity.PermissionConstraint = constraint;
+                entity.PermissionConstraint = "";
                 entity.CreateUserId = CurrentUser.ID.ToString();
                 entity.CreateBy = CurrentUser.UserName;
                 entity.CreateOn = DateTime.Now;
@@ -480,16 +484,16 @@ namespace JSNet.Service
         #region PermissionScope - 数据权限相关
 
         /// <summary>
-        /// 根据角色获取机构ID（默认递归返回获取子元素）
+        /// 根据角色获取机构ID（默认递归返回获取子元素）（重要）
         /// </summary>
         /// <param name="role"></param>
         /// <param name="scopeCode"></param>
         /// <returns></returns>
-        public List<string> GetAuthorizedScopeIDByRole(RoleEntity role, string scopeCode, out string scopeConstraint,bool onlyParent=false)
+        public List<string> GetAuthorizedScopeIDByRole(RoleEntity role, string scopeCode, out string targetConstraint,bool onlyParent=false)
         {
             // TODO 增加是否显示所有子元素参数，默认显示所有子元素
             int count = 0;
-            scopeConstraint = ""; 
+            targetConstraint = ""; 
             WhereStatement where = new WhereStatement();
             where.Add("Resource_Code", Comparison.Equals, scopeCode);
             where.Add("Role_ID", Comparison.Equals, role.ID);
@@ -503,7 +507,7 @@ namespace JSNet.Service
 
             foreach (DataRow dr in dt.Rows)
             {
-                scopeConstraint = dr["PermissionScope_PermissionConstraint"].ToString();
+                targetConstraint = dr["Resource_TargetConstraint"].ToString();
                 if (onlyParent)
                 {
                     list.Add(dr["PermissionScope_TargetID"].ToString());
@@ -624,10 +628,33 @@ namespace JSNet.Service
         #endregion
 
         #region GrantRoleModule - 配置模块权限
-        public List<ResourceEntity> GetModuleList(string parentResouceCode, bool onlyChild = true)
+        public DataTable GetGrantedPermissionModuleByRole(RoleEntity role)
         {
-            List<ResourceEntity> list = GetResourceList(parentResouceCode, onlyChild);
-            return list.Where(l => l.ResourceType != ResourceType.Data.ToString()).ToList();
+            int count = 0;
+            //获取所有的模块
+            WhereStatement w = new WhereStatement();
+            w.Add("Resource_ResourceType", Comparison.NotEquals, ResourceType.Data.ToString());
+            ViewManager v = new ViewManager("VP_Resource");
+            DataTable dt = v.GetDataTable(w, out count);
+            dt.Columns.Add("DataScopeTitle");
+
+            //获取已经分配给该角色的模块ID
+            WhereStatement where = new WhereStatement();
+            where.Add("Role_ID", Comparison.Equals, role.ID);
+            ViewManager vmanager = new ViewManager("VP_RoleResource");
+            string[] myResourceIDs = DataTableUtil.FieldToArray(vmanager.GetDataTable(where, out count), "Resource_ID");
+
+            //删除没分配的模块ID
+            foreach (DataRow dr in dt.Rows)
+            {
+                if (role.ID != 1 && !myResourceIDs.Contains(dr["Resource_ID"].ToString()))
+                {
+                    //删除不属于自己的
+                    dr.Delete();
+                };
+            }
+            dt.AcceptChanges();
+            return dt;
         }
 
         public void GrantModule(int roleID, int[] moduleIDs)
@@ -702,10 +729,9 @@ namespace JSNet.Service
         /// </summary>
         /// <param name="role"></param>
         /// <returns></returns>
-        public DataTable GetGrantedDataResourceByRole(RoleEntity role)
+        public DataTable GetGrantedPermissionScopeByRole(RoleEntity role)
         {
             int count = 0;
-
             //获取所有的数据权限对象
             WhereStatement w = new WhereStatement();
             ViewManager v = new ViewManager("VP_PermissionScope");
@@ -719,7 +745,7 @@ namespace JSNet.Service
             string[] myPermissionScopeIDs = DataTableUtil.FieldToArray(vmanager.GetDataTable(where, out count), "PermissionScope_ID");
 
             //获取所有的数据对象
-            DataTable allScopeDT = GetAllScope(dt);
+            DataTable allScopeTarget = GetAllScopeTarget(dt);
 
             //删除没分配的数据权限对象，并添加数据权限对象的TITLE
             foreach (DataRow dr in dt.Rows)
@@ -729,7 +755,7 @@ namespace JSNet.Service
                 {
                     continue;
                 }
-                dr["DataScopeTitle"] = GetDataScopeTtile(allScopeDT, dr["Resource_Target"].ToString(), dr["PermissionScope_TargetID"].ToString());
+                dr["DataScopeTitle"] = GetScopeTargetTtile(allScopeTarget, dr["Resource_Target"].ToString(), dr["PermissionScope_TargetID"].ToString());
                 if (role.ID != 1 && !myPermissionScopeIDs.Contains(dr["PermissionScope_ID"].ToString()))
                 {
                     //删除不属于自己的
@@ -745,7 +771,7 @@ namespace JSNet.Service
         /// </summary>
         /// <param name="dt"></param>
         /// <returns></returns>
-        private DataTable GetAllScope(DataTable dt)
+        private DataTable GetAllScopeTarget(DataTable dt)
         {
             //将Resource_Target groupby 出来 
             DataTable permissionScopeDT = dt.AsEnumerable()
@@ -768,7 +794,7 @@ namespace JSNet.Service
             return alltargetDT;
         }
 
-        private string GetDataScopeTtile(DataTable allScopeDT,string table,string targetID)
+        private string GetScopeTargetTtile(DataTable allScopeDT, string table, string targetID)
         {
             foreach(DataRow dr in allScopeDT.Rows)
             {
@@ -784,18 +810,6 @@ namespace JSNet.Service
                 }
             }
             return "";
-
-            ////存入内存
-            //WhereStatement where = new WhereStatement();
-            //where.Add("ID",Comparison.Equals,targetID);
-
-            //int count = 0;
-            //ViewManager vmanager = new ViewManager(table);
-            //DataTable dt = vmanager.GetDataTable(where, out count);
-            //if (dt.Rows.Count == 0) {
-            //    return "";
-            //}
-            //return dt.Rows[0]["Title"].ToString();
         }
 
         private void DeleteRolePermissionScopeByPermissionScopeIDs(int[] permissionScopeIDs)

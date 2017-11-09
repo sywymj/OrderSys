@@ -56,6 +56,8 @@ namespace JSNet.BaseSys
         public const string ERR_MSG_ErrorFormatCode = "标识码格式有误，标识码格式为：{System}.{Data}";
         public const string ERR_CODE_NotAllowGrantItem = "7006";
         public const string ERR_MSG_NotAllowGrantItem = "{0}不允许分配资源明细。";
+        public const string ERR_CODE_NotAllowGrantScope = "7007";
+        public const string ERR_MSG_NotAllowGrantScope = "{0}不允许分配数据对象。";
 
 
         //8开头的是登陆、用户问题

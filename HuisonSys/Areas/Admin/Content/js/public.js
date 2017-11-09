@@ -79,7 +79,8 @@ ajaxTips = function (json, container, callback) {
         });
         return jdata;
     } else if (jdata.RspTypeCode == 1) {//提示信息提示
-        mini.showTips({
+        debugger;
+        top.mini.showTips({
             content: jdata.Msg,
             state: 'success',
             x: 'center',
@@ -87,7 +88,7 @@ ajaxTips = function (json, container, callback) {
             timeout: 3000
         });
     } else if (jdata.RspTypeCode == 2) {//提示信息提示
-        mini.showTips({
+        top.mini.showTips({
             content: jdata.Msg,
             state: 'success',
             x: 'center',

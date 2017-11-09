@@ -8,16 +8,17 @@
 <div class="mini-fit">
     <div id="RoleID" class="mini-hidden"></div>
     <div id="Module-datagrid" class="mini-treegrid" ajaxoptions="{type : 'get'}" style="width:100%;height:100%" autoload="false"
-         url="@Url.Action("GetGrantPermissionModuleList", "Permission", new { area = "Admin" })" showtreeicon="false" resultastree="false" expandonload="1" multiselect="false" showcheckbox="true" showfoldercheckbox="true" autocheckparent="false" checkrecursive="true"
-         treecolumn="treename" idfield="ID" parentfield="ParentID" datafield="Data.List">
+         url="@Url.Action("GetGrantPermissionModuleDT", "Permission", new { area = "Admin" })" s showtreeicon="false" resultastree="false" expandonload="1" multiselect="false" showcheckbox="true" showfoldercheckbox="true" autocheckparent="false" checkrecursive="true"
+         treecolumn="resourcename" idfield="Resource_ID" parentfield="Resource_ParentID" datafield="Data.DT.JSNet">
         <div property="columns">
-            <div name="treename" field="FullName" width="180" headeralign="center" align="left" allowsort="true">标题</div>
-            <div field="Code" width="210" headeralign="center" align="left" allowsort="true">标识码</div>
-            <div field="ResourceType" width="60" headeralign="center" align="center" allowsort="true">资源类型</div>
-            <div field="Target" width="60" headeralign="center" align="center" allowsort="true">资源</div>
-            <div field="NavigateUrl" width="180" headeralign="center" align="left" allowsort="true">Url地址</div>
-            <div field="SortCode" width="60" headeralign="center" align="center" allowsort="true">排序</div>
-            <div field="Description" width="120" headeralign="center" align="left" allowsort="true">资源描述</div>
+            <div name="resourcename" field="Resource_FullName" width="210" headeralign="center" align="left" allowsort="true">标题</div>
+            <div field="Resource_Code" width="210" headeralign="center" align="left" allowsort="true">标识码</div>
+            <div field="Resource_ResourceType" width="60" headeralign="center" align="center" allowsort="true">资源类型</div>
+            <div field="Resource_Target" width="120" headeralign="center" align="center" allowsort="true">资源</div>
+            <div field="Resource_TargetConstraint" width="120" headeralign="center" align="left" allowsort="true">资源字段</div>
+            <div field="Resource_NavigateUrl" width="150" headeralign="center" align="left" allowsort="true">Url地址</div>
+            <div field="Resource_SortCode" width="60" headeralign="center" align="center" allowsort="true">排序</div>
+            <div field="Resource_Description" width="120" headeralign="center" align="left" allowsort="true">资源描述</div>
         </div>
     </div>
 </div>
@@ -74,7 +75,7 @@
         var ids = [];
         for (var i = 0, l = rows.length; i < l; i++) {
             var row = rows[i];
-            ids.push(row.ID);
+            ids.push(row.Resource_ID);
         }
         ModuleIDs = ids.join(",");
 

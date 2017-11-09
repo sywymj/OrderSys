@@ -115,18 +115,6 @@ namespace JSNet.Service
             return entity;
         }
 
-        //public RoleEntity GetRole(string openID)
-        //{
-        //    ViewManager vmanager = new ViewManager("VP_UserRole");
-        //    DataRow dr = vmanager.GetSingle(openID, "User_OpenID");
-        //    if (dr == null)
-        //    {
-        //        return null;
-        //    }
-
-        //    return GetRole(Convert.ToInt32(dr["Role_ID"]));
-        //}
-
         public List<RoleEntity> GetRoleListByRole(RoleEntity role ,Paging paging,out int count)
         {
             PermissionService permissionService = new PermissionService();

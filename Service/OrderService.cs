@@ -1160,7 +1160,7 @@ namespace JSNet.Service
             WhereStatement where = new WhereStatement();
             if (scopeIDs.Count > 0)
             {
-                where.Add(OrderGoodsEntity.FieldOrganizeID, Comparison.In, scopeIDs.ToArray());
+                where.Add(scopeConstraint, Comparison.In, scopeIDs.ToArray());
             }
             else
             {

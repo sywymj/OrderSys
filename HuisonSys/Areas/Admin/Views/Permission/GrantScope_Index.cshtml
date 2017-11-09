@@ -5,6 +5,7 @@
 <div class="mini-fit">
     <div id="ResourceID" class="mini-hidden"></div>
     <div id="Target" class="mini-hidden"></div>
+    <div id="TargetConstraint" class="mini-hidden"></div>
     <div class="mini-splitter" style="width:100%;height:90%">
         <div size="120" showcollapsebutton="true">
             <div class="mini-fit">
@@ -40,132 +41,168 @@
 
 
     <script type="text/javascript">
-        mini.parse();
+    mini.parse();
 
-        var Target_grid = mini.get("Target-datagrid");
-        var Scope_grid = mini.get("Scope-datagrid");
-        var Scopetype_data = eval('(' + "[{ ID: 'S_OrganizeForDataScope', Title: '机构数据' }, { ID: 'S_RoleForDataScope', Title: '角色数据' }, { ID: 'S_UserForDataScope', Title: '用户数据' }, { ID: 'S_StaffForDataScope', Title: '员工数据' }]" + ')');
-        ////////////////////
-        //标准方法接口定义
-        function SetGridData(data) {
-            //跨页面传递的数据对象，克隆后才可以安全使用
-            data = mini.clone(data);
-            var resourceID = data.ID;
-            var target = data.Target;
-            mini.get("ResourceID").setValue(resourceID);
-            mini.get("Target").setValue(target);
-            debugger;
-            //选中左侧栏目
-            if (target == "") {
-                LoadLeft();
-                return false;
-            } else {
-                LoadLeft(target);
+    var Target_grid = mini.get("Target-datagrid");
+    var Scope_grid = mini.get("Scope-datagrid");
+    var Scopetype_data = eval('(' + "[{ ID: 'S_OrganizeForDataScope', Title: '机构数据' }, { ID: 'S_RoleForDataScope', Title: '角色数据' }, { ID: 'S_UserForDataScope', Title: '用户数据' }, { ID: 'S_StaffForDataScope', Title: '员工数据' }]" + ')');
+    ////////////////////
+    //标准方法接口定义
+    function SetGridData(data) {
+        //跨页面传递的数据对象，克隆后才可以安全使用
+        data = mini.clone(data);
+        var resourceID = data.ID;
+        var target = data.Target;
+        var targetConstraint = data.TargetConstraint;
+        mini.get("ResourceID").setValue(resourceID);
+        mini.get("Target").setValue(target);
+        mini.get("TargetConstraint").setValue(targetConstraint);
+        debugger;
+        //选中左侧栏目
+        if (target == "") {
+            LoadLeft();
+            return false;
+        } else {
+            LoadLeft(target);
+        }
+
+        //加载grid数据
+        Scope_grid.load({
+            ResourceID: resourceID,
+            Target: target
+        }, function (re) {
+            var jdata = ajaxTips(re.text);
+            if (jdata.Code == "200") {
+                //选中已配置的资源对象
+                checkGranted(resourceID, target);
             }
+        }, function (re) {
+        })
+    }
 
-            //加载grid数据
+
+    Target_grid.on("select", function (e) {
+        var resourceID = mini.get("ResourceID").getValue();
+        Scope_grid.deselectAll();
+        if (e.record) {
+            mini.get("Target").setValue(e.record.ID);
             Scope_grid.load({
                 ResourceID: resourceID,
-                Target: target
+                Target: e.record.ID,
             }, function (re) {
-                var jdata = ajaxTips(re.text);
-                if (jdata.Code == "200") {
-                    //选中已配置的资源对象
-                    checkGranted(resourceID, target);
+                //选中已配置的资源对象
+                checkGranted(resourceID, e.record.ID);
+            });
+        } else {
+            Scope_grid.setData([]);
+            Scope_grid.setTotalCount(0);
+        }
+    });
+
+    function ondrawcell(e) {
+        debugger;
+        var record = e.record,
+            field = e.field,
+            OrganizeCode = record.Organize_Code;
+
+        function createDeep(deep, value) {
+            if (!deep) return "";
+            var html = value;
+            for (var i = 0, l = deep - 1; i < l; i++) {
+                if (i < l - 1) {
+                    html = " ━ " + html;
+                } else {
+                    html = "┗" + html;
                 }
-            }, function (re) {
-            })
+            }
+            return html;
         }
 
+        var deep = OrganizeCode.split('.').length;
+        if (field == 'Organize_FullName') {
+            e.cellHtml = createDeep(deep, e.value);
+        }
+    }
 
-        Target_grid.on("select", function (e) {
-            var resourceID = mini.get("ResourceID").getValue();
-            Scope_grid.deselectAll();
-            if (e.record) {
-                mini.get("Target").setValue(e.record.ID);
-                Scope_grid.load({
-                    ResourceID: resourceID,
-                    Target: e.record.ID,
-                }, function (re) {
-                    //选中已配置的资源对象
-                    checkGranted(resourceID, e.record.ID);
+    //////////////////////////////////
+    function LoadLeft(target) {
+        Target_grid.setData(Scopetype_data);
+        if (!target) {
+            return;
+        }
+        $.each(Scopetype_data, function (i, n) {
+            if (n.ID == target) {
+                Target_grid.setSelected(n)
+            }
+        })
+    }
+
+    function checkGranted(resourceID, target) {
+        var url = '@Url.Action("GetGrantedScopeIDs", "Permission", new { area = "Admin" })';
+        var parms = {
+            ResourceID: resourceID,
+            Target: target,
+        };
+        doGetSync(url, parms, function (jdata) {
+            if (jdata.Code == "200") {
+                var arr = jdata.Data.split(',');
+                var rows = Scope_grid.findRows(function (row) {
+                    var checked = false;
+                    $.each(arr, function (i, n) {
+                        if (row.ID == n) {
+                            checked = true;
+                            return true;//退出foreach
+                        }
+                    });
+                    if (checked) { return true; }
                 });
-            } else {
-                Scope_grid.setData([]);
-                Scope_grid.setTotalCount(0);
+                Scope_grid.selects(rows);
+            }
+        })
+    }
+
+    function CloseWindow(action) {
+        if (window.CloseOwnerWindow) return window.CloseOwnerWindow(action);
+        else window.close();
+    }
+
+    function onOk() {
+        mini.showMessageBox({
+            title: "请输入字段名：",
+            buttons: ["ok"],
+            width:180, height:100,
+            html: '<input id="__TargetConstraint" class="mini-textbox" value="' + mini.get("TargetConstraint").getValue() + '" /> ',
+            callback: function (action) {
+                if (action == "ok") {
+                    var ResourceID = mini.get("ResourceID").getValue();
+                    var Target = mini.get("Target").getValue();
+                    var TargetConstraint = mini.get("__TargetConstraint").getValue();
+
+                    var rows = Scope_grid.getSelecteds();
+                    var ids = [];
+                    for (var i = 0, l = rows.length; i < l; i++) {
+                        var row = rows[i];
+                        ids.push(row.ID);
+                    }
+                    TargetIDs = ids.join(",");
+                    debugger;
+                    var url = "@Url.Action("GrantScope", "Permission", new { area = "Admin" })";
+                    var data = {
+                        ResourceID: ResourceID,
+                        Target: Target,
+                        TargetIDs: TargetIDs,
+                        TargetConstraint: TargetConstraint,
+                    };
+                    doGetSync(url, data, function (jdata) {
+                    });
+                } else {
+                }
             }
         });
+        mini.parse();
+        return;
 
-        function ondrawcell(e) {
-            debugger;
-            var record = e.record,
-                field = e.field,
-                OrganizeCode = record.Organize_Code;
-
-            function createDeep(deep, value) {
-                if (!deep) return "";
-                var html = value;
-                for (var i = 0, l = deep - 1; i < l; i++) {
-                    if (i < l - 1) {
-                        html = " ━ " + html;
-                    } else {
-                        html = "┗" + html;
-                    }
-                }
-                return html;
-            }
-
-            var deep = OrganizeCode.split('.').length;
-            if (field == 'Organize_FullName') {
-                e.cellHtml = createDeep(deep, e.value);
-            }
-        }
-
-        //////////////////////////////////
-        function LoadLeft(target) {
-            Target_grid.setData(Scopetype_data);
-            if (!target) {
-                return;
-            }
-            $.each(Scopetype_data, function (i, n) {
-                if (n.ID == target) {
-                    Target_grid.setSelected(n)
-                }
-            })
-        }
-
-        function checkGranted(resourceID, target) {
-            var url = '@Url.Action("GetGrantedScopeIDs", "Permission", new { area = "Admin" })';
-            var parms = {
-                ResourceID: resourceID,
-                Target: target,
-            };
-            doGetSync(url, parms, function (jdata) {
-                if (jdata.Code == "200") {
-                    var arr = jdata.Data.split(',');
-                    var rows = Scope_grid.findRows(function (row) {
-                        var checked = false;
-                        $.each(arr, function (i, n) {
-                            if (row.ID == n) {
-                                checked = true;
-                                return true;//退出foreach
-                            }
-                        });
-                        if (checked) { return true; }
-                    });
-                    Scope_grid.selects(rows);
-                }
-            })
-        }
-
-
-        function CloseWindow(action) {
-            if (window.CloseOwnerWindow) return window.CloseOwnerWindow(action);
-            else window.close();
-        }
-
-        function onOk() {
-            mini.prompt("请输入字段名：", "请输入",
+        @*mini.prompt("请输入字段名：", "请输入",
             function (action, value) {
                 if (action == "ok") {
                     var ResourceID = mini.get("ResourceID").getValue();
@@ -192,10 +229,10 @@
                 } else {
                 }
             }
-        );
-        }
-        function onCancel() {
-            CloseWindow("cancel");
-        }
+        );*@
+    }
+    function onCancel() {
+        CloseWindow("cancel");
+    }
     </script>
 

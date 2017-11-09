@@ -118,12 +118,6 @@
         var remark = $('#remark').val();
         var orderID = orderID;
 
-        //完成
-        //if (handleType == 99) {
-        //    doHandled(orderID);
-        //    return true;
-        //}
-
         //赋值
         var orderDetail = {};
         orderDetail.OrderID = orderID;
@@ -215,8 +209,11 @@
     }
 
     $('#select1').on('change', function () {
-        var handleType = $('#select1').val();
+        $('#uploader-demo').hide();
+        $('#orderGoods').hide();
+        $('#isFee').hide();
 
+        var handleType = $('#select1').val();
         if (handleType == 2) {
             //显示换件 TODO 多选
             $('#OrderGoodsDDL').val('');
@@ -227,8 +224,6 @@
             $('#uploader-demo').show();
         }
         else {
-            $('#orderGoods').hide();
-            $('#isFee').hide();
         }
     })
 

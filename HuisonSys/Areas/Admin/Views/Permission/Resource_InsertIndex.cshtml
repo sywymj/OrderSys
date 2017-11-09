@@ -24,9 +24,19 @@
                 <td style="width:150px;">
                     @Html.Partial("~/Areas/Admin/Views/Permission/ResourceType_DDL.cshtml")
                 </td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
                 <td style="width: 70px; text-align: right;">资源表：</td>
-                <td style="width:150px;">
-                    <input name="Target" class="mini-textbox" required="false" emptytext="请输入资源表（可选）" />
+                <td style="width:150px;" colspan="3">
+                    <input style="width:100%" name="Target" class="mini-textbox" required="false" emptytext="请输入资源表（可选）" />
+                </td>
+            </tr>
+            <tr>
+                <td style="width: 70px; text-align: right;">资源字段：</td>
+                <td style="width:150px;" colspan="3">
+                    <input style="width:100%" name="TargetConstraint" class="mini-textbox" required="false" emptytext="请输入资源表字段（可选）" />
                 </td>
             </tr>
             @*<tr>

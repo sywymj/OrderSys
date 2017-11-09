@@ -12,10 +12,11 @@
             <div name="resourcename" field="Resource_FullName" width="210" headeralign="center" align="left" allowsort="true">标题</div>
             <div field="Resource_Code" width="210" headeralign="center" align="left" allowsort="true">标识码</div>
             <div field="Resource_ResourceType" width="60" headeralign="center" align="center" allowsort="true">资源类型</div>
-            <div field="Resource_Target" width="60" headeralign="center" align="center" allowsort="true">资源</div>
+            <div field="Resource_Target" width="120" headeralign="center" align="center" allowsort="true">数据对象</div>
+            <div field="Resource_TargetConstraint" width="120" headeralign="center" align="left" allowsort="true">数据对象字段</div>
             <div field="Resource_NavigateUrl" width="150" headeralign="center" align="left" allowsort="true">Url地址</div>
             <div field="Resource_SortCode" width="60" headeralign="center" align="center" allowsort="true">排序</div>
-            <div field="Resource_Description" width="120" headeralign="center" align="center" allowsort="true">资源描述</div>
+            <div field="Resource_Description" width="120" headeralign="center" align="left" allowsort="true">资源描述</div>
         </div>
     </div>
 </div>
@@ -34,7 +35,7 @@
     function add() {
         mini.open({
             url: "@Url.Action("InsertResourceIndex", "Permission", new { area = "Admin" })",
-            title: "新增资源", width: 500, height: 350,
+            title: "新增资源", width: 500, height: 400,
             onload: function () {
                 debugger;
                 var iframe = this.getIFrameEl();
@@ -52,7 +53,7 @@
         if (row) {
             mini.open({
                 url: "@Url.Action("EditResourceIndex", "Permission", new { area = "Admin" })",
-                title: "编辑资源", width: 500, height: 350,
+                title: "编辑资源", width: 500, height: 400,
                 onload: function () {
                     var iframe = this.getIFrameEl();
                     var data = { action: "edit", ID: row.Resource_ID };
@@ -70,6 +71,10 @@
 
     function grantItem() {
         var row = resource_grid.getSelected();
+        if (row.Resource_ResourceType == 'Data') {
+            mini.alert("数据资源类型不允许分配资源明细。");
+            return false;
+        }
         if (row) {
             mini.open({
                 url: "@Url.Action("GrantItemIndex", "Permission", new { area = "Admin" })",
@@ -94,6 +99,11 @@
 
     function grantScope() {
         var row = resource_grid.getSelected();
+        if (row.Resource_ResourceType != 'Data') {
+            mini.alert("非数据资源类型不允许分配数据对象。");
+            return false;
+        }
+        debugger;
         if (row) {
             mini.open({
                 url: "@Url.Action("GrantScopeIndex", "Permission", new { area = "Admin" })",
@@ -102,7 +112,8 @@
                 var iframe = this.getIFrameEl();
                 var data = {
                     ID: row.Resource_ID,
-                    Target: row.Resource_Target
+                    Target: row.Resource_Target,
+                    TargetConstraint: row.Resource_TargetConstraint,
                 };
                 iframe.contentWindow.SetGridData(data);
             },
