@@ -48,7 +48,7 @@ namespace JSNet.Service
         {
             get
             {
-                if (_currentUser == null)
+                if (_currentRole == null)
                 {
                     MyRoleService roleService = new MyRoleService();
                     RoleEntity role = roleService.GetCurrentRole();

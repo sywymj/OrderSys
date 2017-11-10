@@ -156,6 +156,7 @@
     <Compile Include="Authorize\ManagerAuthorize.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\OrderAPIController.cs" />
+    <Compile Include="Controllers\RoleController.cs" />
     <Compile Include="Controllers\UploaderController.cs" />
     <Compile Include="Controllers\WeixinBaseController.cs" />
     <Compile Include="Controllers\OrderController.cs" />

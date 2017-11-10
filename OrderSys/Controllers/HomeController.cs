@@ -24,6 +24,7 @@ namespace OrderSys.Controllers
             LoginService loginService = new LoginService();
             loginService.VXLogin(openID);
             return View();
+            
         }
 
         [ManagerAuthorize(Roles="public")]
@@ -40,6 +41,7 @@ namespace OrderSys.Controllers
 
             DataTable re = dt.DefaultView.ToTable(false, new string[] { "ID", "ParentID", "Title", "Url", "ImagUrl" });
             ViewBag.StaffName = permissionService.CurrentStaff.Name;
+            ViewBag.RoleName = permissionService.CurrentRole.FullName;
             return PartialView("_Header", re);
         }
 

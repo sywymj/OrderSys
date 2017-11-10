@@ -393,19 +393,6 @@ namespace JSNet.Service
         //撤销报障单
         public void CancelOrder(Guid orderID)
         {
-            //0.1只能取消受理前的工单
-            //EntityManager<OrderEntity> orderManager = new EntityManager<OrderEntity>();
-            //WhereStatement where  = new WhereStatement();
-            //where.Add(OrderEntity.FieldID,Comparison.Equals,orderID);
-            //List<string> status = orderManager.GetProperties(OrderEntity.FieldStatus, where).ToList();
-            //if (status.Count == 0)
-            //{
-            //    throw new Exception(string.Format(JSErrMsg.ERR_MSG_DATA_MISSING, "工单ID为" + orderID));
-            //}
-            //if (Convert.ToInt32(status[0]) >= (int)OrderStatus.Handling)
-            //{
-            //    throw new JSException(JSErrMsg.ERR_CODE_NotAllowCancel, string.Format(JSErrMsg.ERR_MSG_NotAllowCancel));
-            //}
             //验证流程
             OrderEntity sourceOrder = GetOrderEntity(orderID);
             ValidateOrderFlows((OrderStatus)sourceOrder.Status, OrderStatus.Canceled);
@@ -1301,7 +1288,7 @@ namespace JSNet.Service
             UserService userService = new UserService();
             DataTable dt = userService.GetUserDT(scopeIDs.ToArray());
 
-            List<int> re = DataTableUtil.FieldToArray(dt, "Staff_ID").ToList().ConvertAll(r => Convert.ToInt32(r));
+            List<int> re = DataTableUtil.FieldToArray(dt, "Staff_ID").Distinct<string>().ToList().ConvertAll(r => Convert.ToInt32(r));
             return re;
         }
 

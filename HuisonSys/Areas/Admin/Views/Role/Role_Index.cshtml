@@ -33,7 +33,7 @@
     function add() {
         mini.open({
             url: "@Url.Action("InsertRoleIndex", "Role", new { area = "Admin" })",
-            title: "新增角色", width: 250, height: 200,
+            title: "新增角色", width: 300, height: 450,
             onload: function () {
                 debugger;
                 var iframe = this.getIFrameEl();
@@ -51,7 +51,7 @@
         if (row) {
             mini.open({
                 url: "@Url.Action("EditRoleIndex", "Role", new { area = "Admin" })",
-                title: "编辑角色", width: 250, height: 200,
+                title: "编辑角色", width: 300, height: 450,
                 onload: function () {
                     var iframe = this.getIFrameEl();
                     debugger;

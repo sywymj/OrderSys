@@ -14,11 +14,6 @@ namespace HuisonSys.Controllers
         //
         // GET: /Error/
 
-        public ActionResult Index(string errMsg)
-        {
-            return View("/Views/Shared/Error.cshtml", errMsg);
-        }
-
         public string ShowErrorTips()
         {
             
@@ -140,7 +135,7 @@ namespace HuisonSys.Controllers
 
             string message = RouteData.Values["Tips"].ToString();
 
-            string url = Url.Action("Index", "Error");
+            string url = "/500.html?Code=" + message;
             switch (area)
             {
                 case "weixin":

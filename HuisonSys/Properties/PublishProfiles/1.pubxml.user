@@ -15,6 +15,9 @@
     <File Include="404.html">
       <publishTime>10/26/2017 14:59:56</publishTime>
     </File>
+    <File Include="500.html">
+      <publishTime>11/10/2017 12:19:43</publishTime>
+    </File>
     <File Include="Areas/Admin/Content/css/demo.css">
       <publishTime>09/07/2017 10:05:43</publishTime>
     </File>
@@ -37,7 +40,43 @@
       <publishTime>11/20/2009 22:20:02</publishTime>
     </File>
     <File Include="Areas/Admin/Content/js/public.js">
-      <publishTime>10/26/2017 08:22:25</publishTime>
+      <publishTime>11/09/2017 16:03:26</publishTime>
+    </File>
+    <File Include="Areas/Admin/Script/datapicker/calendar.js">
+      <publishTime>11/03/2017 17:38:34</publishTime>
+    </File>
+    <File Include="Areas/Admin/Script/datapicker/lang/en.js">
+      <publishTime>11/03/2017 17:38:34</publishTime>
+    </File>
+    <File Include="Areas/Admin/Script/datapicker/lang/zh-cn.js">
+      <publishTime>11/03/2017 17:38:34</publishTime>
+    </File>
+    <File Include="Areas/Admin/Script/datapicker/lang/zh-tw.js">
+      <publishTime>11/03/2017 17:38:34</publishTime>
+    </File>
+    <File Include="Areas/Admin/Script/datapicker/skin/datePicker.gif">
+      <publishTime>11/03/2017 17:38:34</publishTime>
+    </File>
+    <File Include="Areas/Admin/Script/datapicker/skin/default/datepicker.css">
+      <publishTime>11/03/2017 17:38:34</publishTime>
+    </File>
+    <File Include="Areas/Admin/Script/datapicker/skin/default/img.gif">
+      <publishTime>11/03/2017 17:38:34</publishTime>
+    </File>
+    <File Include="Areas/Admin/Script/datapicker/skin/WdatePicker.css">
+      <publishTime>11/03/2017 17:38:34</publishTime>
+    </File>
+    <File Include="Areas/Admin/Script/datapicker/skin/whyGreen/bg.jpg">
+      <publishTime>11/03/2017 17:38:34</publishTime>
+    </File>
+    <File Include="Areas/Admin/Script/datapicker/skin/whyGreen/datepicker.css">
+      <publishTime>11/03/2017 17:38:34</publishTime>
+    </File>
+    <File Include="Areas/Admin/Script/datapicker/skin/whyGreen/img.gif">
+      <publishTime>11/03/2017 17:38:34</publishTime>
+    </File>
+    <File Include="Areas/Admin/Script/datapicker/WdatePicker.js">
+      <publishTime>11/03/2017 17:38:34</publishTime>
     </File>
     <File Include="Areas/Admin/Script/miniui/boot.js">
       <publishTime>10/25/2017 15:53:54</publishTime>
@@ -7869,6 +7908,15 @@
     <File Include="Areas/Admin/Views/Home/NoRight_Index.cshtml">
       <publishTime>09/27/2017 08:13:22</publishTime>
     </File>
+    <File Include="Areas/Admin/Views/Order/OrderGoods_Index.cshtml">
+      <publishTime>11/02/2017 10:40:06</publishTime>
+    </File>
+    <File Include="Areas/Admin/Views/Order/OrderGoods_InsertIndex.cshtml">
+      <publishTime>11/02/2017 14:43:51</publishTime>
+    </File>
+    <File Include="Areas/Admin/Views/Order/Orders_Index.cshtml">
+      <publishTime>11/04/2017 09:27:51</publishTime>
+    </File>
     <File Include="Areas/Admin/Views/Order/OrderWorkingLocationFirstLevel_DDL.cshtml">
       <publishTime>10/27/2017 09:35:29</publishTime>
     </File>
@@ -7903,15 +7951,18 @@
       <publishTime>10/25/2017 15:02:08</publishTime>
     </File>
     <File Include="Areas/Admin/Views/Permission/GrantItem_Index.cshtml">
-      <publishTime>10/25/2017 15:13:40</publishTime>
+      <publishTime>11/09/2017 09:29:51</publishTime>
     </File>
     <File Include="Areas/Admin/Views/Permission/GrantPermissionModule_Index.cshtml">
-      <publishTime>10/25/2017 15:34:18</publishTime>
+      <publishTime>11/09/2017 15:00:40</publishTime>
     </File>
     <File Include="Areas/Admin/Views/Permission/GrantPermissionScope_Index.cshtml">
       <publishTime>10/25/2017 15:35:04</publishTime>
     </File>
     <File Include="Areas/Admin/Views/Permission/GrantScope_Index.cshtml">
+      <publishTime>11/09/2017 11:28:47</publishTime>
+    </File>
+    <File Include="Areas/Admin/Views/Permission/GrantScope_Index1.cshtml">
       <publishTime>10/25/2017 15:17:54</publishTime>
     </File>
     <File Include="Areas/Admin/Views/Permission/PermissionItemCode_DDL.cshtml">
@@ -7936,10 +7987,10 @@
       <publishTime>10/25/2017 15:31:22</publishTime>
     </File>
     <File Include="Areas/Admin/Views/Permission/Resource_Index.cshtml">
-      <publishTime>10/25/2017 15:18:56</publishTime>
+      <publishTime>11/09/2017 17:30:24</publishTime>
     </File>
     <File Include="Areas/Admin/Views/Permission/Resource_InsertIndex.cshtml">
-      <publishTime>10/25/2017 15:07:32</publishTime>
+      <publishTime>11/09/2017 17:13:47</publishTime>
     </File>
     <File Include="Areas/Admin/Views/Permission/Resource_TreeDDL.cshtml">
       <publishTime>10/25/2017 15:31:29</publishTime>
@@ -7954,7 +8005,7 @@
       <publishTime>10/25/2017 11:51:29</publishTime>
     </File>
     <File Include="Areas/Admin/Views/Role/Role_Index.cshtml">
-      <publishTime>10/25/2017 15:47:33</publishTime>
+      <publishTime>11/10/2017 15:39:52</publishTime>
     </File>
     <File Include="Areas/Admin/Views/Role/Role_InsertIndex.cshtml">
       <publishTime>10/25/2017 14:57:33</publishTime>
@@ -7969,7 +8020,7 @@
       <publishTime>10/30/2017 11:05:05</publishTime>
     </File>
     <File Include="Areas/Admin/Views/User/InsertIndex.cshtml">
-      <publishTime>10/25/2017 14:42:09</publishTime>
+      <publishTime>11/01/2017 15:42:49</publishTime>
     </File>
     <File Include="Areas/Admin/Views/Web.config">
       <publishTime>09/07/2017 08:16:20</publishTime>
@@ -7984,10 +8035,10 @@
       <publishTime>10/26/2017 08:22:25</publishTime>
     </File>
     <File Include="Areas/Weixin/Views/Order/AddHandleDetail.cshtml">
-      <publishTime>10/11/2017 16:36:55</publishTime>
+      <publishTime>11/09/2017 17:44:59</publishTime>
     </File>
     <File Include="Areas/Weixin/Views/Order/AppointOrder.cshtml">
-      <publishTime>09/07/2017 08:16:20</publishTime>
+      <publishTime>11/01/2017 10:47:20</publishTime>
     </File>
     <File Include="Areas/Weixin/Views/Order/FilterIndex.cshtml">
       <publishTime>10/11/2017 11:40:35</publishTime>
@@ -8023,16 +8074,19 @@
       <publishTime>10/16/2017 11:50:58</publishTime>
     </File>
     <File Include="Areas/Weixin/Views/Order/OrderDetail.cshtml">
-      <publishTime>10/27/2017 11:49:37</publishTime>
+      <publishTime>11/03/2017 09:11:05</publishTime>
     </File>
     <File Include="Areas/Weixin/Views/Order/OrderFlows.cshtml">
-      <publishTime>10/13/2017 15:36:37</publishTime>
+      <publishTime>11/10/2017 16:42:26</publishTime>
     </File>
     <File Include="Areas/Weixin/Views/Order/StartOrder.cshtml">
-      <publishTime>10/30/2017 08:17:39</publishTime>
+      <publishTime>11/01/2017 14:16:36</publishTime>
     </File>
     <File Include="Areas/Weixin/Views/Popup/StaffsPopup.cshtml">
       <publishTime>09/30/2017 16:12:28</publishTime>
+    </File>
+    <File Include="Areas/Weixin/Views/Role/ChangeRoleIndex.cshtml">
+      <publishTime>11/10/2017 14:48:12</publishTime>
     </File>
     <File Include="Areas/Weixin/Views/Shared/_Back.cshtml">
       <publishTime>10/27/2017 11:51:25</publishTime>
@@ -8041,13 +8095,13 @@
       <publishTime>09/07/2017 08:16:20</publishTime>
     </File>
     <File Include="Areas/Weixin/Views/Shared/_Filter.cshtml">
-      <publishTime>10/27/2017 11:40:46</publishTime>
+      <publishTime>10/31/2017 13:16:59</publishTime>
     </File>
     <File Include="Areas/Weixin/Views/Shared/_Fresh.cshtml">
       <publishTime>09/07/2017 08:16:20</publishTime>
     </File>
     <File Include="Areas/Weixin/Views/Shared/_Header.cshtml">
-      <publishTime>10/13/2017 17:52:58</publishTime>
+      <publishTime>11/10/2017 14:30:49</publishTime>
     </File>
     <File Include="Areas/Weixin/Views/Shared/_InnerLayout.cshtml">
       <publishTime>10/12/2017 10:11:31</publishTime>
@@ -8074,7 +8128,7 @@
       <publishTime>09/07/2017 08:16:21</publishTime>
     </File>
     <File Include="bin/BaseSys.dll">
-      <publishTime>10/30/2017 11:15:08</publishTime>
+      <publishTime>11/10/2017 15:47:52</publishTime>
     </File>
     <File Include="bin/ChnCharInfo.dll">
       <publishTime>09/07/2017 08:13:07</publishTime>
@@ -8083,7 +8137,7 @@
       <publishTime>09/07/2017 08:16:20</publishTime>
     </File>
     <File Include="bin/HuisonSys.dll">
-      <publishTime>10/30/2017 11:15:11</publishTime>
+      <publishTime>11/10/2017 15:47:58</publishTime>
     </File>
     <File Include="bin/JSNet.DbUtilities.dll">
       <publishTime>10/11/2017 11:55:43</publishTime>
@@ -8092,7 +8146,7 @@
       <publishTime>09/07/2017 08:13:07</publishTime>
     </File>
     <File Include="bin/Manager.dll">
-      <publishTime>10/30/2017 11:15:09</publishTime>
+      <publishTime>11/10/2017 15:47:54</publishTime>
     </File>
     <File Include="bin/Microsoft.Web.Infrastructure.dll">
       <publishTime>09/07/2017 08:13:08</publishTime>
@@ -8101,7 +8155,7 @@
       <publishTime>09/07/2017 08:13:07</publishTime>
     </File>
     <File Include="bin/Model.dll">
-      <publishTime>10/28/2017 10:23:46</publishTime>
+      <publishTime>11/10/2017 15:47:54</publishTime>
     </File>
     <File Include="bin/Newtonsoft.Json.dll">
       <publishTime>09/07/2017 08:13:08</publishTime>
@@ -8110,13 +8164,13 @@
       <publishTime>09/07/2017 08:13:07</publishTime>
     </File>
     <File Include="bin/OrderSys.Admin.dll">
-      <publishTime>10/30/2017 11:15:09</publishTime>
+      <publishTime>11/10/2017 15:47:56</publishTime>
     </File>
     <File Include="bin/OrderSys.dll">
-      <publishTime>10/30/2017 11:15:10</publishTime>
+      <publishTime>11/10/2017 15:47:56</publishTime>
     </File>
     <File Include="bin/Service.dll">
-      <publishTime>10/30/2017 11:15:09</publishTime>
+      <publishTime>11/10/2017 15:47:55</publishTime>
     </File>
     <File Include="bin/System.Net.Http.dll">
       <publishTime>07/10/2012 12:07:38</publishTime>
@@ -8155,7 +8209,7 @@
       <publishTime>09/07/2017 08:13:08</publishTime>
     </File>
     <File Include="bin/Utilities.dll">
-      <publishTime>10/28/2017 10:23:44</publishTime>
+      <publishTime>11/10/2017 15:47:51</publishTime>
     </File>
     <File Include="bin/WebGrease.dll">
       <publishTime>09/07/2017 08:16:21</publishTime>
@@ -8281,7 +8335,7 @@
       <publishTime>09/07/2017 08:16:20</publishTime>
     </File>
     <File Include="Content/js/public.js">
-      <publishTime>10/26/2017 08:22:25</publishTime>
+      <publishTime>11/10/2017 14:47:20</publishTime>
     </File>
     <File Include="Content/js/sort.js">
       <publishTime>09/07/2017 08:16:20</publishTime>
@@ -8488,7 +8542,7 @@
       <publishTime>09/13/2017 16:46:36</publishTime>
     </File>
     <File Include="Views/Shared/Error.cshtml">
-      <publishTime>10/30/2017 08:17:39</publishTime>
+      <publishTime>11/10/2017 11:26:41</publishTime>
     </File>
     <File Include="Views/Shared/_Layout.cshtml">
       <publishTime>09/07/2017 11:03:48</publishTime>
@@ -8506,7 +8560,7 @@
       <publishTime>09/08/2017 08:36:13</publishTime>
     </File>
     <File Include="Xml/Log4Net.xml">
-      <publishTime>10/14/2017 10:02:15</publishTime>
+      <publishTime>11/09/2017 15:29:54</publishTime>
     </File>
   </ItemGroup>
 </Project>

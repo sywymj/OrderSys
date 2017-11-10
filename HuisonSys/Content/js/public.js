@@ -196,6 +196,7 @@ ajaxTips = function (json, container, callback) {
         return jdata;
     } else if (jdata.RspTypeCode == 4) {//跳转页面
         $.alert(jdata.Msg, "提示", function () {
+            debugger;
             top.location.href = jdata.Data;//"/Login.html";
         });
     } else if (jdata.RspTypeCode == 5) {//没数据

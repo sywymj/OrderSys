@@ -1,0 +1,51 @@
+﻿@model List<OrderSys.Models.DDLViewModel>
+@{
+    Layout = "~/Areas/Weixin/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .tips {
+        width: 90%;
+        margin: 10px auto;
+        font-size: 14px;
+        color: #999999;
+        margin-top: 1.17647059em;
+        position: relative;
+    }
+</style>
+<form id="form1">
+    <div style="margin-top:51px">
+    </div>
+
+    <div class="tips" style="font-size: 16px;">
+        您当前的身份是：@ViewBag.CurrentRoleName
+    </div>
+    <div class="weui_cells weui_cells_checkbox" id="RoleList">
+        @{foreach (OrderSys.Models.DDLViewModel m in Model)
+          {
+            <label class='weui_cell weui_check_label' for='s_@m.ID'>
+                <div class='weui_cell_hd'>
+                    <input type='radio' class='weui_check' name='RoleList' id='s_@m.ID' value='@m.ID' @(ViewBag.CurrentRoleID == m.ID ? "checked='checked'" : "")>
+                    <i class='weui_icon_checked'></i>
+                </div>
+                <div class='weui_cell_bd weui_cell_primary'>
+                    <p>@m.Title</p>
+                </div>
+            </label>
+          }
+        }
+    </div>
+
+    <div class="weui_cells weui_cells_form" style="border: none;">
+        <a href="javascript:ChangeRole();" class="weui_btn weui_btn_primary">立即切换</a>
+    </div>
+    <div style="height: 50px;"></div>
+</form>
+
+<script>
+    function ChangeRole() {
+        var role = $(":input[name=RoleList]:checked").val();
+
+        doGet('@Url.Action("DoChangeRole", "Role", new { area = "Weixin" })', { RoleID: role }, function () {
+        });
+    }
+</script>
