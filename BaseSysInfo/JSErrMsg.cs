@@ -43,7 +43,9 @@ namespace JSNet.BaseSys
         public const string ERR_CODE_WrongFlows = "6005";
         public const string ERR_MSG_WrongFlows = "操作失败，工单状态为{0}。";
         public const string ERR_CODE_NotAllowReject = "6006";
-        public const string ERR_MSG_NotAllowReject = "只能驳回处理中的工单。";
+        public const string ERR_MSG_NotAllowReject = "只能驳回验收中的工单。";
+        public const string ERR_CODE_NotAllowOperate = "6007";
+        public const string ERR_MSG_NotAllowOperate = "只能操作自己的工单。";
 
         //7开头的是权限业务问题
         public const string ERR_CODE_NotGrantRole = "7001";

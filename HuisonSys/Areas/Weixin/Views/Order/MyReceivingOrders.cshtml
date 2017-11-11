@@ -30,7 +30,8 @@
             </div>
         </div>
         <div class="list_sym_r">
-            @{if (new PermissionService().IsButtonAuthorizedByRole("OrderSys_VX.MyHandleIndex.Receive"))
+            @{if (new PermissionService().IsButtonAuthorizedByRole("OrderSys_VX.MyHandleIndex.Receive")
+                  && dr["NextOperatorID"].ToString() == new OrderService().CurrentStaff.ID.ToString())
               {
                   <a class="orders" onclick="doReceiveOrder('@dr["ID"]')">接单</a>
               }

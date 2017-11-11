@@ -83,7 +83,8 @@
             }
             @{if ((OrderStatus)dr["Status"] == OrderStatus.Checking)
             {
-                if (new PermissionService().IsButtonAuthorizedByRole("OrderSys_VX.MyStartIndex.Check"))
+                if (new PermissionService().IsButtonAuthorizedByRole("OrderSys_VX.MyStartIndex.Check")
+                    && dr["NextOperatorID"].ToString() == new OrderService().CurrentStaff.ID.ToString())
                 {
                     <a href="javascript:checkOrder('@dr["ID"]');" class="orders">验收</a>
                 }

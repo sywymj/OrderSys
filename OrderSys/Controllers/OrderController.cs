@@ -64,7 +64,7 @@ namespace OrderSys.Controllers
 
             ViewBag.OrderStatus = (OrderStatus)order.Status;
             ViewBag.OrderStatus1 = (OrderStatus)Math.Abs((int)order.Status);//处理过的状态，只保留主流程
-            ViewBag.OrderID = order.ID;
+            ViewBag.Order = order;
 
             var list = orderService.GetOrderFlows(orderID);
 
@@ -496,11 +496,15 @@ namespace OrderSys.Controllers
         {
             string s = JSRequest.GetRequestFormParm("ViewModel");
             OrderHandleDetailViewModel viewModel = FastJSON.JSON.ToObject<OrderHandleDetailViewModel>(s);
-
+            viewModel.OrderGoods = viewModel.OrderGoods == null ? new List<OrderGoodsRelEntity>() : viewModel.OrderGoods;
             //TODO 数据验证。
 
+            //添加处理进度
             OrderHandleDetailEntity handleDetail = new OrderHandleDetailEntity();
             viewModel.CopyTo(handleDetail);
+            orderService.AddHandleDetail(handleDetail);
+
+            //添加更换的物品
             List<OrderGoodsRelEntity> orderGoodsRels = new List<OrderGoodsRelEntity>();
             foreach (OrderGoodsRelEntity good in viewModel.OrderGoods)
             {
@@ -508,10 +512,6 @@ namespace OrderSys.Controllers
                 good.CopyTo(rel);
                 orderGoodsRels.Add(rel);
             }
-
-            //添加处理进度
-            orderService.AddHandleDetail(handleDetail);
-            //添加更换的物品
             orderService.AddOrderGoodsRel(orderGoodsRels);
 
             ContentResult res = new ContentResult();

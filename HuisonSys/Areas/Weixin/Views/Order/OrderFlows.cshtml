@@ -49,8 +49,8 @@
 	
 	<!--按钮-->
 	<div class="demos-content-padded bottom_btn">
-        <a href="@Url.Action("OrderDetail", "Order", new { area = "Weixin",OrderID = ViewBag.OrderID})" class="weui_btn weui_btn_plain_default" style="width:46%; height:30px; line-height:30px;  float:left; margin:0; font-size:14px;  border-radius:60px; ">查看工单详情</a>
-        <a href="@Url.Action("HandleDetail", "Order", new {area = "Weixin", OrderID = ViewBag.OrderID })" class="weui_btn weui_btn_plain_default" style="width:46%; height:30px; line-height:30px; float:right; margin:0; font-size:14px;  border-radius:60px; ">查看处理进度</a>
+        <a href="@Url.Action("OrderDetail", "Order", new { area = "Weixin",OrderID = ViewBag.Order.ID})" class="weui_btn weui_btn_plain_default" style="width:46%; height:30px; line-height:30px;  float:left; margin:0; font-size:14px;  border-radius:60px; ">查看工单详情</a>
+        <a href="@Url.Action("HandleDetail", "Order", new {area = "Weixin", OrderID = ViewBag.Order.ID })" class="weui_btn weui_btn_plain_default" style="width:46%; height:30px; line-height:30px; float:right; margin:0; font-size:14px;  border-radius:60px; ">查看处理进度</a>
 		<div class="clear"></div>
 	</div>
 
@@ -90,24 +90,26 @@
 @{if (ViewBag.OrderStatus == OrderStatus.Appointing
       && new PermissionService().IsButtonAuthorizedByRole("OrderSys_VX.MyAppointIndex.Appoint"))
 {
-    <a class="weui_btn weui_btn_primary bottom_btn1" href="@Url.Action("AppointOrder", "Order", new { area = "Weixin", OrderID = ViewBag.OrderID })">委派</a>
+    <a class="weui_btn weui_btn_primary bottom_btn1" href="@Url.Action("AppointOrder", "Order", new { area = "Weixin", OrderID = ViewBag.Order.ID })">委派</a>
 }
 }
 @{if (ViewBag.OrderStatus == OrderStatus.Checking
-    && new PermissionService().IsButtonAuthorizedByRole("OrderSys_VX.MyStartIndex.Check"))
+    && new PermissionService().IsButtonAuthorizedByRole("OrderSys_VX.MyStartIndex.Check")
+      && ViewBag.Order.NextOperatorID == new OrderService().CurrentStaff.ID)
 {
     <a id="check_btn" class="weui_btn weui_btn_primary bottom_btn1">验收</a>
 }
 }
 @{if (ViewBag.OrderStatus == OrderStatus.Receving
-      && new PermissionService().IsButtonAuthorizedByRole("OrderSys_VX.MyHandleIndex.Receive"))
+      && new PermissionService().IsButtonAuthorizedByRole("OrderSys_VX.MyHandleIndex.Receive")
+      && ViewBag.Order.NextOperatorID == new OrderService().CurrentStaff.ID)
 {
     <a id="receive_btn" class="weui_btn weui_btn_primary bottom_btn1" onclick="doReceiveOrder('')">接单</a>
 }
 }
 
 <script>
-    var _orderID = '@ViewBag.OrderID';
+    var _orderID = '@ViewBag.Order.ID';
     setOrderStatus = function () {
         var status = '@ViewBag.OrderStatus1';
         $("#" + status).find('span').text('@EnumExtensions.ToDescription(ViewBag.OrderStatus)');//给自己添加样式

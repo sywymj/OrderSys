@@ -33,7 +33,8 @@
             </div>
         </div>
         <div class="list_sym_r">
-            @{if (new PermissionService().IsButtonAuthorizedByRole("OrderSys_VX.MyHandleIndex.AddHandleDetail"))
+            @{if (new PermissionService().IsButtonAuthorizedByRole("OrderSys_VX.MyHandleIndex.AddHandleDetail")
+                   && dr["NextOperatorID"].ToString() == new OrderService().CurrentStaff.ID.ToString())
               {
                   if (Convert.ToInt32(dr["IsLeader"]) == (int)TrueFalse.True)
                   {

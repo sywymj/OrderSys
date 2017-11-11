@@ -112,6 +112,9 @@ namespace JSNet.Service
             OrderEntity sourceOrder = GetOrderEntity(orderID);
             ValidateOrderFlows((OrderStatus)sourceOrder.Status, OrderStatus.Handling);
 
+            //验证只能操作自己的工单
+            if (sourceOrder.NextOperatorID != CurrentStaff.ID) { throw new JSException(JSErrMsg.ERR_CODE_NotAllowOperate,JSErrMsg.ERR_MSG_NotAllowOperate); }
+
             //1.0 修改工单实体
             List<KeyValuePair<string, object>> kvps = new List<KeyValuePair<string, object>>();
             kvps.Add(new KeyValuePair<string, object>(OrderEntity.FieldStatus, (int)OrderStatus.Handling));
@@ -166,6 +169,10 @@ namespace JSNet.Service
         //增加处理明细
         public void AddHandleDetail(OrderHandleDetailEntity orderHandleDetail)
         {
+            //验证只能操作自己的工单
+            OrderEntity sourceOrder = GetOrderEntity((Guid)orderHandleDetail.OrderID);
+            if (sourceOrder.NextOperatorID != CurrentStaff.ID) { throw new JSException(JSErrMsg.ERR_CODE_NotAllowOperate, JSErrMsg.ERR_MSG_NotAllowOperate); }
+
             //2.0 添加工作处理明细实体
             orderHandleDetail.HandlerID = CurrentStaff.ID;
             orderHandleDetail.HandleTime = DateTime.Now;
@@ -178,8 +185,13 @@ namespace JSNet.Service
             orderHandleDetailManager.Insert(orderHandleDetail);
         }
 
+        //增加完成的明细
         public void AddHandledDetail(OrderHandleDetailEntity orderHandleDetail)
         {
+            //验证只能操作自己的工单
+            OrderEntity sourceOrder = GetOrderEntity((Guid)orderHandleDetail.OrderID);
+            if (sourceOrder.NextOperatorID != CurrentStaff.ID) { throw new JSException(JSErrMsg.ERR_CODE_NotAllowOperate, JSErrMsg.ERR_MSG_NotAllowOperate); }
+
             //4.1 添加处理进度
             orderHandleDetail.OrderID = orderHandleDetail.OrderID;
             orderHandleDetail.HandleType = (int)OrderHandleType.WanCheng;
@@ -194,38 +206,6 @@ namespace JSNet.Service
             AddHandleDetail(orderHandleDetail1);
         }
 
-        public void AddHandlingOrderDetail(OrderHandleDetailEntity orderHandleDetail)
-        {
-            //1.0 修改工单实体
-            List<KeyValuePair<string, object>> kvps = new List<KeyValuePair<string, object>>();
-            kvps.Add(new KeyValuePair<string, object>(OrderEntity.FieldStatus, (int)OrderStatus.Handling));
-            kvps.Add(new KeyValuePair<string, object>(OrderEntity.FieldOperatorID, CurrentStaff.ID));
-            kvps.Add(new KeyValuePair<string, object>(OrderEntity.FieldNextOperatorID, CurrentStaff.ID));
-            kvps.Add(new KeyValuePair<string, object>(OrderEntity.FieldHandlerID, CurrentStaff.ID));
-            kvps.Add(new KeyValuePair<string, object>(OrderEntity.FieldOperateTime, DateTime.Now));
-            EntityManager<OrderEntity> orderManager = new EntityManager<OrderEntity>();
-            int rows = orderManager.Update(kvps, orderHandleDetail.OrderID);
-            if (rows == 0)
-            {
-                throw new Exception(string.Format(JSErrMsg.ERR_MSG_DATA_MISSING, "工单ID为" + orderHandleDetail.OrderID));
-            }
-
-            //2.0 添加工作流实体
-            OrderFlowEntity orderflow = new OrderFlowEntity();
-            orderflow.OrderID = orderHandleDetail.OrderID;
-            orderflow.OperatorID = CurrentStaff.ID;
-            orderflow.NextOperatorID = CurrentStaff.ID;
-            orderflow.Operation = (int)OperationEnum.Receive;
-            orderflow.OperateTime = DateTime.Now;
-            orderflow.Remark = "";
-            EntityManager<OrderFlowEntity> orderflowManager = new EntityManager<OrderFlowEntity>();
-            orderflowManager.Insert(orderflow);
-
-            //3.0 添加处理进度
-            AddHandleDetail(orderHandleDetail);
-
-        }
-
         public void AddOrderGoodsRel(List<OrderGoodsRelEntity> list)
         {
             EntityManager<OrderGoodsRelEntity> manager = new EntityManager<OrderGoodsRelEntity>();
@@ -238,6 +218,9 @@ namespace JSNet.Service
             //1.1 //验证流程
             OrderEntity sourceOrder = GetOrderEntity(orderID);
             ValidateOrderFlows((OrderStatus)sourceOrder.Status, OrderStatus.Checking);
+
+            //验证只能操作自己的工单
+            if (sourceOrder.NextOperatorID != CurrentStaff.ID) { throw new JSException(JSErrMsg.ERR_CODE_NotAllowOperate, JSErrMsg.ERR_MSG_NotAllowOperate); }
 
             //2.0 修改工单实体
             List<KeyValuePair<string, object>> kvps = new List<KeyValuePair<string, object>>();
@@ -271,7 +254,7 @@ namespace JSNet.Service
 
             //推送给发起人
             KawuService kawuService = new KawuService();
-            kawuService.CheckOrder_VXPushMsg(Convert.ToInt32(dr["StarterID"].ToString()), "您发起的工单已处理完成，请及时验收！", dr);
+            kawuService.CheckOrder_VXPushMsg((int)sourceOrder.StarterID, "您发起的工单已处理完成，请及时验收！", dr);
         }
 
         //驳回报障，需继续处理
@@ -280,6 +263,9 @@ namespace JSNet.Service
             //验证流程
             OrderEntity sourceOrder = GetOrderEntity(orderID);
             ValidateOrderFlows((OrderStatus)sourceOrder.Status, OrderStatus.Rejected);
+
+            //验证只能操作自己的工单
+            if (sourceOrder.NextOperatorID != CurrentStaff.ID) { throw new JSException(JSErrMsg.ERR_CODE_NotAllowOperate, JSErrMsg.ERR_MSG_NotAllowOperate); }
 
             //1.1 获取工单处理者列表，必备获取领队人的信息
             int count = 0;
@@ -340,6 +326,9 @@ namespace JSNet.Service
             //验证流程
             OrderEntity sourceOrder = GetOrderEntity(orderID);
             ValidateOrderFlows((OrderStatus)sourceOrder.Status, OrderStatus.Finish);
+
+            //验证只能操作自己的工单
+            if (sourceOrder.NextOperatorID != CurrentStaff.ID) { throw new JSException(JSErrMsg.ERR_CODE_NotAllowOperate, JSErrMsg.ERR_MSG_NotAllowOperate); }
 
             //1.0 修改工单实体
             List<KeyValuePair<string, object>> kvps = new List<KeyValuePair<string, object>>();
@@ -1376,7 +1365,7 @@ namespace JSNet.Service
                 if (target == OrderStatus.Rejected)
                 {
                     //驳回
-                    if (target != OrderStatus.Handling)
+                    if (source != OrderStatus.Checking)
                     {
                         throw new JSException(JSErrMsg.ERR_CODE_NotAllowReject, string.Format(JSErrMsg.ERR_MSG_NotAllowReject));
                     }
