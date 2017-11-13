@@ -121,6 +121,7 @@ namespace JSNet.Service
             kvps.Add(new KeyValuePair<string, object>(OrderEntity.FieldOperatorID, CurrentStaff.ID));
             kvps.Add(new KeyValuePair<string, object>(OrderEntity.FieldNextOperatorID, CurrentStaff.ID));
             kvps.Add(new KeyValuePair<string, object>(OrderEntity.FieldHandlerID, CurrentStaff.ID));
+            kvps.Add(new KeyValuePair<string, object>(OrderEntity.FieldHandleTime, DateTime.Now));
             kvps.Add(new KeyValuePair<string, object>(OrderEntity.FieldOperateTime, DateTime.Now));
             EntityManager<OrderEntity> orderManager = new EntityManager<OrderEntity>();
             int rows = orderManager.Update(kvps, orderID);
@@ -971,6 +972,64 @@ namespace JSNet.Service
             List<OrderHandlerEntity> handlers = manager.GetList(where,out count);
 
             return handlers;
+        }
+
+
+        //工单统计
+        public DataTable StatisticsForHandle(int organizeID,DateTime startHandleTime,DateTime endHandleTime)
+        {
+            OrganizeService organizeService = new OrganizeService();
+            int[] organizeIDs = organizeService.GetTreeOrganizeIDs(organizeID).ConvertToIntArry();
+            if(organizeIDs.Length==0){ throw new JSException(JSErrMsg.ERR_CODE_NoOrgData,JSErrMsg.ERR_MSG_NoOrgData);}
+
+            IDbHelper dbHelper = DbHelperFactory.GetHelper(BaseSystemInfo.CenterDbConnectionString);
+            IDbDataParameter[] dbParameters = new IDbDataParameter[] { 
+                dbHelper.MakeParameter("HandleTime1", startHandleTime),
+                dbHelper.MakeParameter("HandleTime2", endHandleTime)};
+
+            string sql = @"with myOrders AS(
+	                        select * from [DB_OrderSys].[dbo].[VO_Order]
+	                        where HandlerOrganizeID  in ( " + string.Join(",", organizeIDs) + " ) and  HandleTime > " + dbHelper.GetParameter("HandleTime1") + " and HandleTime <= " + dbHelper.GetParameter("HandleTime2") + @" and Status > 0 
+                          )
+                          select HandlerID,
+                                 MIN(HandlerName) AS 'HandlerName',
+	                             isnull((select COUNT(*) from myOrders where HandlerID = o.HandlerID group by HandlerID),0) as 'Total',
+	                             isnull((select COUNT(*) from myOrders where HandlerID = o.HandlerID and Status = "+(int)OrderStatus.Handling+@" group by HandlerID),0) as 'HandlingCount',
+	                             isnull((select COUNT(*) from myOrders where HandlerID = o.HandlerID and Status = " + (int)OrderStatus.Checking + @" group by HandlerID),0) as 'CheckingCount',
+	                             isnull((select COUNT(*) from myOrders where HandlerID = o.HandlerID and Status = " + (int)OrderStatus.Finish + @" group by HandlerID),0) as 'FinishCount'
+                          from myOrders as o group by o.HandlerID";
+
+            DataTable dt = dbHelper.Fill(sql, dbParameters);
+            return dt;
+        }
+
+        public DataTable StatisticsFroStart(int organizeID,DateTime startStartTime,DateTime startEndTime)
+        {
+            OrganizeService organizeService = new OrganizeService();
+            int[] organizeIDs = organizeService.GetTreeOrganizeIDs(organizeID).ConvertToIntArry();
+            if (organizeIDs.Length == 0) { throw new JSException(JSErrMsg.ERR_CODE_NoOrgData, JSErrMsg.ERR_MSG_NoOrgData); }
+
+            IDbHelper dbHelper = DbHelperFactory.GetHelper(BaseSystemInfo.CenterDbConnectionString);
+            IDbDataParameter[] dbParameters = new IDbDataParameter[] { 
+                dbHelper.MakeParameter("StartTime1", startStartTime),
+                dbHelper.MakeParameter("StartTime2", startEndTime)};
+
+            string sql = @"with myOrders AS(
+	                        select * from [DB_OrderSys].[dbo].[VO_Order]
+	                        where StarterOrganizeID  in ( " + string.Join(",", organizeIDs) + " ) and  StartTime > " + dbHelper.GetParameter("StartTime1") + " and StartTime <= " + dbHelper.GetParameter("StartTime2") + @" and Status > 0 
+                          )
+                          select StarterID,
+                                 MIN(StarterName) AS 'StarterName',
+	                             isnull((select COUNT(*) from myOrders where StarterID = o.StarterID group by StarterID),0) as 'Total',
+                                 isnull((select COUNT(*) from myOrders where StarterID = o.StarterID and Status = " + (int)OrderStatus.Receving + @" group by StarterID),0) as 'RecevingCount',
+                                 isnull((select COUNT(*) from myOrders where StarterID = o.StarterID and Status = " + (int)OrderStatus.Appointing + @" group by StarterID),0) as 'AppointingCount',
+	                             isnull((select COUNT(*) from myOrders where StarterID = o.StarterID and Status = " + (int)OrderStatus.Handling + @" group by StarterID),0) as 'HandlingCount',
+	                             isnull((select COUNT(*) from myOrders where StarterID = o.StarterID and Status = " + (int)OrderStatus.Checking + @" group by StarterID),0) as 'CheckingCount',
+	                             isnull((select COUNT(*) from myOrders where StarterID = o.StarterID and Status = " + (int)OrderStatus.Finish + @" group by StarterID),0) as 'FinishCount'
+                          from myOrders as o group by o.StarterID";
+
+            DataTable dt = dbHelper.Fill(sql, dbParameters);
+            return dt;
         }
 
         #region 工作地点

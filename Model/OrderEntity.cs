@@ -238,6 +238,15 @@ namespace JSNet.Model
             get { return _handledphotopath1; }
             set { _handledphotopath1 = value; }
         }
+        /// <summary>
+        /// HandleTime
+        /// </summary>		
+        private DateTime? _handletime;
+        public DateTime? HandleTime
+        {
+            get { return _handletime; }
+            set { _handletime = value; }
+        }
         #endregion
 
         #region  数据库字段名称
@@ -402,6 +411,13 @@ namespace JSNet.Model
         {
             get { return "HandledPhotoPath1"; }
         }
+        /// <summary>
+        /// FiledName:HandleTime
+        /// </summary>		
+        public static string FieldHandleTime
+        {
+            get { return "HandleTime"; }
+        }
         #endregion
 
         public OrderEntity GetFrom(System.Data.DataRow dataRow)
@@ -430,6 +446,7 @@ namespace JSNet.Model
             entity.PhotoPath1 = CommonUtil.ConvertToString(dataRow[FieldPhotoPath1]);
             entity.HandledPhotoPath = CommonUtil.ConvertToString(dataRow[FieldHandledPhotoPath]);
             entity.HandledPhotoPath1 = CommonUtil.ConvertToString(dataRow[FieldHandledPhotoPath1]);
+            entity.HandleTime = CommonUtil.ConvertToDateTime(dataRow[FieldHandleTime]);
             return entity;
         }
 
@@ -460,6 +477,7 @@ namespace JSNet.Model
             entity.PhotoPath1 = CommonUtil.ConvertToString(dataReader[FieldPhotoPath1]);
             entity.HandledPhotoPath = CommonUtil.ConvertToString(dataReader[FieldHandledPhotoPath]);
             entity.HandledPhotoPath1 = CommonUtil.ConvertToString(dataReader[FieldHandledPhotoPath1]);
+            entity.HandleTime = CommonUtil.ConvertToDateTime(dataReader[FieldHandleTime]);
             return entity;
         }
 
@@ -488,6 +506,7 @@ namespace JSNet.Model
             sqlBuilder.SetValue(FieldPhotoPath1, entity.PhotoPath1);
             sqlBuilder.SetValue(FieldHandledPhotoPath, entity.HandledPhotoPath);
             sqlBuilder.SetValue(FieldHandledPhotoPath1, entity.HandledPhotoPath1);
+            sqlBuilder.SetValue(FieldHandleTime, entity.HandleTime);
         }
 
         public void GetFromExpand(System.Data.DataRow dataRow)

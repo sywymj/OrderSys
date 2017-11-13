@@ -246,6 +246,18 @@ namespace OrderSys.Admin.Controllers
         } 
         #endregion
 
+        #region 【统计】工单
+        [AllowAnonymous]
+        public string sss()
+        {
+            DateTime dt1 = Convert.ToDateTime("2017-01-20 00:00:00.000");
+            DateTime dt2 = Convert.ToDateTime("2017-12-20 23:59:59.999");
+
+            DataTable dt = service.StatisticsFroStart(3, dt1, dt2);
+            return "";
+        }
+        #endregion
+
 
         private void ValidateWorkingLocation(ViewOrderWorkingLocation viewModel)
         {

@@ -60,6 +60,8 @@ namespace JSNet.BaseSys
         public const string ERR_MSG_NotAllowGrantItem = "{0}不允许分配资源明细。";
         public const string ERR_CODE_NotAllowGrantScope = "7007";
         public const string ERR_MSG_NotAllowGrantScope = "{0}不允许分配数据对象。";
+        public const string ERR_CODE_NoOrgData = "7008";
+        public const string ERR_MSG_NoOrgData = "该部门下没有数据。";
 
 
         //8开头的是登陆、用户问题
