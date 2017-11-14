@@ -65,7 +65,11 @@ namespace JSNet.Service
 
             EntityManager<UserRoleEntity> manager = new EntityManager<UserRoleEntity>();
             int[] roleIDs = manager.GetProperties(UserRoleEntity.FieldRoleID, where).ConvertToIntArry();
-
+            if (roleIDs.Length == 0)
+            {
+                return new List<RoleEntity>();
+            }
+            
             WhereStatement where1 = new WhereStatement();
             where1.Add(RoleEntity.FieldID, Comparison.In, roleIDs);
 

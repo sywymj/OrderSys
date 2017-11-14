@@ -1,0 +1,86 @@
+﻿@{
+    //【GetDT】
+    ViewBag.Title = "工单处理统计";
+    Layout = "~/Areas/Admin/Views/Shared/_InnerLayout.cshtml";
+}
+<script src="~/Areas/Admin/Script/datapicker/WdatePicker.js"></script>
+<form id="filter-form">
+    <div style="width:100%;">
+        <div class="mini-toolbar" id="toobar" style="border-bottom:0;padding:0px;">
+            <table style="width:100%;">
+                <tr>
+                    <td width="400px">
+                        受理时间:
+                        <input id="handletime1" class="Wdate" type="text" onfocus="var d2 = $dp.$('handletime2'); WdatePicker({ onpicked: function () { d2.focus(); }, maxDate: '#F{$dp.$D(\'handletime2\')}' })" />
+                        至
+                        <input id="handletime2" class="Wdate" type="text" onfocus="WdatePicker({ minDate: '#F{$dp.$D(\'handletime1\')}' })" />
+                    </td>
+                    <td width="90px" align="right">所属机构：</td>
+                    <td width="240px">
+                        @Html.Partial("~/Areas/Admin/Views/Organize/OrganizeDDL.cshtml")
+                    </td>
+                    <td></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</form>
+
+@Html.Partial("~/Areas/Admin/Views/Shared/_Header.cshtml", Request.Url.AbsolutePath)
+<div class="mini-fit">
+    <div id="Orders-datagrid" class="mini-datagrid" idfield="User_ID" ajaxoptions="{type : 'get'}" style="width:100%;height:100%" autoload="false"
+         url="@Url.Action("HandleStatistics", "Order", new { area = "Admin" })" datafield="Data.DT.JSNet">
+        <div property="columns">
+            <div type="indexcolumn" headeralign="center">序号</div>
+            <div field="HandlerID" width="60" headeralign="center" align="center" allowsort="true" visible="false">员工ID</div>
+            <div field="HandlerName" width="60" headeralign="center" align="center" allowsort="true">姓名</div>
+            <div field="Total" width="60" headeralign="center" align="center" allowsort="true">合计</div>
+            <div field="HandlingCount" width="60" headeralign="center" align="center" allowsort="true">处理中</div>
+            <div field="CheckingCount" width="60" headeralign="center" align="center" allowsort="true">待验收</div>
+            <div field="FinishCount" width="60" headeralign="center" align="center" allowsort="true">已完成</div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    mini.parse();
+    var Orders_grid = mini.get("Orders-datagrid");
+
+    count = function () {
+        var form = new mini.Form("filter-form");
+        form.validate();
+        if (form.isValid() == false) {
+            var errorTexts = form.getErrorTexts();
+            mini.alert(errorTexts);
+            return false
+        }
+
+        var key = getFilter();
+
+        Orders_grid.setUrl("@Url.Action("HandleStatistics", "Order", new { area = "Admin" })")
+        Orders_grid.load(key, function (data) {
+            ajaxTips(data.text);
+        }, function (data) {
+        })
+    }
+
+    exportOrders = function () {
+        var url = '@Url.Action("ExportHandleStatistics", "Order", new { area = "Admin" })';
+        var key = getFilter();
+        doGet(url, key, function (jdata) {
+        })
+    }
+
+    getFilter = function () {
+        var handletime1 = $("#handletime1").val();
+        var handletime2 = $("#handletime2").val();
+        var handlerOrganizeID = mini.get("OrganizeDDL").getValue();
+        var key = {
+            HandleTime1: handletime1 ? handletime1 + " 00:00:00" : "",
+            HandleTime2: handletime2 ? handletime2 + " 23:59:59" : "",
+            HandlerOrganizeID: handlerOrganizeID,
+        };
+        return key;
+    }
+</script>

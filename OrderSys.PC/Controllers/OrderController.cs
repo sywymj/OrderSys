@@ -247,14 +247,38 @@ namespace OrderSys.Admin.Controllers
         #endregion
 
         #region 【统计】工单
-        [AllowAnonymous]
-        public string sss()
-        {
-            DateTime dt1 = Convert.ToDateTime("2017-01-20 00:00:00.000");
-            DateTime dt2 = Convert.ToDateTime("2017-12-20 23:59:59.999");
 
-            DataTable dt = service.StatisticsFroStart(3, dt1, dt2);
-            return "";
+        [HttpGet]
+        public ActionResult StartStatisticsIndex()
+        {
+            return View("~/Areas/Admin/Views/Order/OrderStartStatistics_Index.cshtml");
+        }
+
+        [HttpGet]
+        public string StartStatistics()
+        {
+            JSDictionary dic = MakeFilterOfStartStatistics();
+            DataTable dt = service.StartStatistics(dic);
+
+            string s = JSON.ToJSON(new JSResponse(new DataTableData(dt, 0)), jsonParams);
+            return s;
+        }
+
+
+        [HttpGet]
+        public ActionResult HandleStatisticsIndex()
+        {
+            return View("~/Areas/Admin/Views/Order/OrderHandleStatistics_Index.cshtml");
+        }
+
+        [HttpGet]
+        public string HandleStatistics()
+        {
+            JSDictionary dic = MakeFilterOfHandleStatistics();
+            DataTable dt = service.HandleStatistics(dic);
+
+            string s = JSON.ToJSON(new JSResponse(new DataTableData(dt, 0)), jsonParams);
+            return s;
         }
         #endregion
 
@@ -303,6 +327,56 @@ namespace OrderSys.Admin.Controllers
             if (startTime2 != null) { dic.Add(OrderEntity.FieldStartTime + "2", startTime2); }
             if (finishTime1 != null) { dic.Add(OrderEntity.FieldFinishTime + "1", finishTime1); }
             if (finishTime2 != null) { dic.Add(OrderEntity.FieldFinishTime + "2", finishTime2); }
+            #endregion
+
+            return dic;
+        }
+
+        private JSDictionary MakeFilterOfStartStatistics() 
+        {
+            #region 获取参数
+            string sStartTime1 = JSRequest.GetRequestUrlParm("StartTime1", false);
+            string sStartTime2 = JSRequest.GetRequestUrlParm("StartTime2", false);
+            string sStarterOrganizeID = JSRequest.GetRequestUrlParm("StarterOrganizeID", true);
+            #endregion
+
+            #region 验证参数
+            DateTime? startTime1 = JSValidator.ValidateDateTime("发起时间", sStartTime1,false);
+            DateTime? startTime2 = JSValidator.ValidateDateTime("发起时间", sStartTime2,false);
+            int? starterOrganizeID = JSValidator.ValidateInt("部门", sStarterOrganizeID, true);
+            #endregion
+
+            #region 构造搜索条件
+            JSDictionary dic = new JSDictionary();
+
+            if (startTime1 != null) { dic.Add("StartTime1", startTime1); }
+            if (startTime2 != null) { dic.Add("StartTime2", startTime2); }
+            if (starterOrganizeID != null) { dic.Add("StarterOrganizeID", starterOrganizeID); }
+            #endregion
+
+            return dic;
+        }
+
+        private JSDictionary MakeFilterOfHandleStatistics()
+        {
+            #region 获取参数
+            string sHandleTime1 = JSRequest.GetRequestUrlParm("HandleTime1", false);
+            string sHandleTime2 = JSRequest.GetRequestUrlParm("HandleTime2", false);
+            string sHandlerOrganizeID = JSRequest.GetRequestUrlParm("HandlerOrganizeID", true);
+            #endregion
+
+            #region 验证参数
+            DateTime? handleTime1 = JSValidator.ValidateDateTime("处理时间", sHandleTime1, false);
+            DateTime? handleTime2 = JSValidator.ValidateDateTime("处理时间", sHandleTime2, false);
+            int? handlerOrganizeID = JSValidator.ValidateInt("部门", sHandlerOrganizeID, true);
+            #endregion
+
+            #region 构造搜索条件
+            JSDictionary dic = new JSDictionary();
+
+            if (handleTime1 != null) { dic.Add("HandleTime1", handleTime1); }
+            if (handleTime2 != null) { dic.Add("HandleTime2", handleTime2); }
+            if (handlerOrganizeID != null) { dic.Add("HandlerOrganizeID", handlerOrganizeID); }
             #endregion
 
             return dic;

@@ -23,6 +23,33 @@
     </div>
 </div>
 
+
+<div id="import-window" class="mini-window" title="批量导入" style="width: 410px; height: 250px;display:none;"
+     showmodal="true" allowresize="true" allowdrag="true" showclosebutton="true">
+    <table style="width: 100%" border="0" cellspacing="0" cellpadding="0">
+        <tr>
+            <td style="padding-bottom: 5px;width:250px;">
+                <input class="mini-htmlfile" name="Fdata" id="file1" style="width:250px;" />
+            </td>
+            <td style="width:60px;">
+                <input type="button" value="上传" onclick="ajaxFileUpload()" />
+            </td>
+            <td style="width:90px;">
+                <a id="resultdownload" class="mini-button" enabled="false">结果下载</a>
+            </td>
+            <td></td>
+        </tr>
+        <tr><td>&nbsp;</td></tr>
+        <tr><th style="padding-bottom: 5px; text-align: left;">模板下载</th></tr>
+        <tr>
+            <td>
+                <a class="mini-button" onclick="window.location.href = '/Templet/导入用户模板.xls';">导入用户模板</a>
+            </td>
+            <td></td>
+        </tr>
+    </table>
+</div>
+
 <script>
     mini.parse()
     var staff_grid = mini.get("staff-datagrid");
@@ -105,6 +132,49 @@
             alert("请选中一条记录");
         }*@
     }
+
+    //////////////////////////////////////////////
+    //导入
+    function importUsers() {
+        $('#resultdownload').removeAttr('onclick');
+        mini.get("resultdownload").setEnabled(false);
+        uploadWindow.show();
+    }
+
+    function ajaxFileImport() {
+
+        staff_grid.loading("导入中，请稍后......");
+        var inputFile = $("#file1 > input:file")[0];
+
+        $.ajaxFileUpload({
+            url: '/School/Ajax/Fee_AjaxHandler.ashx?type=UploadFee',                 //用于文件上传的服务器端请求地址
+            fileElementId: inputFile,               //文件上传域的ID
+            data: null,          //附加的额外参数
+            dataType: 'text',                   //返回值类型 一般设置为json
+            success: function (data, status)    //服务器成功响应处理函数
+            {
+                ajaxTips(data, function (jdata) {
+                    if (jdata.Code == "200") {
+                        $('#resultdownload').attr('onclick', jdata.Data);
+                    }
+                });
+            },
+            error: function (data, status, e)   //服务器响应失败处理函数
+            {
+                alert(e);
+            },
+            complete: function () {
+                var jq = $("#file1 > input:file");
+                jq.before(inputFile);
+                jq.remove();
+                staff_grid.reload();
+                staff_grid.unmask();
+            }
+        });
+    }
+
+
+
     //////////////////////////////////////////////////
     function onAddedVXUserRenderer(e) {
         if (e.value == 1) return "已添加";

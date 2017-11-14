@@ -975,48 +975,71 @@ namespace JSNet.Service
         }
 
 
-        //工单统计
-        public DataTable StatisticsForHandle(int organizeID,DateTime startHandleTime,DateTime endHandleTime)
+        #region 工单统计
+        public DataTable HandleStatistics(JSDictionary dic)
         {
-            OrganizeService organizeService = new OrganizeService();
-            int[] organizeIDs = organizeService.GetTreeOrganizeIDs(organizeID).ConvertToIntArry();
-            if(organizeIDs.Length==0){ throw new JSException(JSErrMsg.ERR_CODE_NoOrgData,JSErrMsg.ERR_MSG_NoOrgData);}
-
+            List<IDbDataParameter> dbParameters = new List<IDbDataParameter>();
             IDbHelper dbHelper = DbHelperFactory.GetHelper(BaseSystemInfo.CenterDbConnectionString);
-            IDbDataParameter[] dbParameters = new IDbDataParameter[] { 
-                dbHelper.MakeParameter("HandleTime1", startHandleTime),
-                dbHelper.MakeParameter("HandleTime2", endHandleTime)};
+
+            OrganizeService organizeService = new OrganizeService();
+            StringBuilder whereBuilder = new StringBuilder();
+
+            if (dic.ContainsKey("HandlerOrganizeID"))
+            {
+                int[] organizeIDs = organizeService.GetTreeOrganizeIDs(Convert.ToInt32(dic["HandlerOrganizeID"])).ConvertToIntArry();
+                if (organizeIDs.Length == 0) { throw new JSException(JSErrMsg.ERR_CODE_NoOrgData, JSErrMsg.ERR_MSG_NoOrgData); }
+                whereBuilder.Append("and HandlerOrganizeID  in ( " + string.Join(",", organizeIDs) + " )");
+            }
+            if (dic.ContainsKey("HandleTime1")
+                && dic.ContainsKey("HandleTime2"))
+            {
+                dbParameters.Add(dbHelper.MakeParameter("HandleTime1", dic["HandleTime1"]));
+                dbParameters.Add(dbHelper.MakeParameter("HandleTime2", dic["HandleTime2"]));
+                whereBuilder.Append("and  HandleTime > " + dbHelper.GetParameter("HandleTime1") + " and HandleTime <= " + dbHelper.GetParameter("HandleTime2"));
+            }
+
 
             string sql = @"with myOrders AS(
 	                        select * from [DB_OrderSys].[dbo].[VO_Order]
-	                        where HandlerOrganizeID  in ( " + string.Join(",", organizeIDs) + " ) and  HandleTime > " + dbHelper.GetParameter("HandleTime1") + " and HandleTime <= " + dbHelper.GetParameter("HandleTime2") + @" and Status > 0 
+	                        where Status > 0 " + whereBuilder.ToString() + @"
                           )
                           select HandlerID,
                                  MIN(HandlerName) AS 'HandlerName',
 	                             isnull((select COUNT(*) from myOrders where HandlerID = o.HandlerID group by HandlerID),0) as 'Total',
-	                             isnull((select COUNT(*) from myOrders where HandlerID = o.HandlerID and Status = "+(int)OrderStatus.Handling+@" group by HandlerID),0) as 'HandlingCount',
+	                             isnull((select COUNT(*) from myOrders where HandlerID = o.HandlerID and Status = " + (int)OrderStatus.Handling + @" group by HandlerID),0) as 'HandlingCount',
 	                             isnull((select COUNT(*) from myOrders where HandlerID = o.HandlerID and Status = " + (int)OrderStatus.Checking + @" group by HandlerID),0) as 'CheckingCount',
 	                             isnull((select COUNT(*) from myOrders where HandlerID = o.HandlerID and Status = " + (int)OrderStatus.Finish + @" group by HandlerID),0) as 'FinishCount'
                           from myOrders as o group by o.HandlerID";
 
-            DataTable dt = dbHelper.Fill(sql, dbParameters);
+            DataTable dt = dbHelper.Fill(sql, dbParameters.ToArray());
             return dt;
         }
 
-        public DataTable StatisticsFroStart(int organizeID,DateTime startStartTime,DateTime startEndTime)
+        public DataTable StartStatistics(JSDictionary dic)
         {
-            OrganizeService organizeService = new OrganizeService();
-            int[] organizeIDs = organizeService.GetTreeOrganizeIDs(organizeID).ConvertToIntArry();
-            if (organizeIDs.Length == 0) { throw new JSException(JSErrMsg.ERR_CODE_NoOrgData, JSErrMsg.ERR_MSG_NoOrgData); }
-
+            List<IDbDataParameter> dbParameters = new List<IDbDataParameter>();
             IDbHelper dbHelper = DbHelperFactory.GetHelper(BaseSystemInfo.CenterDbConnectionString);
-            IDbDataParameter[] dbParameters = new IDbDataParameter[] { 
-                dbHelper.MakeParameter("StartTime1", startStartTime),
-                dbHelper.MakeParameter("StartTime2", startEndTime)};
+
+            OrganizeService organizeService = new OrganizeService();
+            StringBuilder whereBuilder = new StringBuilder();
+
+            if (dic.ContainsKey("StarterOrganizeID"))
+            {
+                int[] organizeIDs = organizeService.GetTreeOrganizeIDs(Convert.ToInt32(dic["StarterOrganizeID"])).ConvertToIntArry();
+                if (organizeIDs.Length == 0) { throw new JSException(JSErrMsg.ERR_CODE_NoOrgData, JSErrMsg.ERR_MSG_NoOrgData); }
+                whereBuilder.Append(" and StarterOrganizeID  in ( " + string.Join(",", organizeIDs) + " )");
+            }
+            if (dic.ContainsKey("StartTime1")
+                && dic.ContainsKey("StartTime2"))
+            {
+                dbParameters.Add(dbHelper.MakeParameter("StartTime1", dic["StartTime1"]));
+                dbParameters.Add(dbHelper.MakeParameter("StartTime2", dic["StartTime2"]));
+                whereBuilder.Append(" and StartTime > " + dbHelper.GetParameter("StartTime1") + " and StartTime <= " + dbHelper.GetParameter("StartTime2"));
+            }
 
             string sql = @"with myOrders AS(
 	                        select * from [DB_OrderSys].[dbo].[VO_Order]
-	                        where StarterOrganizeID  in ( " + string.Join(",", organizeIDs) + " ) and  StartTime > " + dbHelper.GetParameter("StartTime1") + " and StartTime <= " + dbHelper.GetParameter("StartTime2") + @" and Status > 0 
+	                        where Status > 0" + whereBuilder.ToString() + @"
                           )
                           select StarterID,
                                  MIN(StarterName) AS 'StarterName',
@@ -1028,9 +1051,10 @@ namespace JSNet.Service
 	                             isnull((select COUNT(*) from myOrders where StarterID = o.StarterID and Status = " + (int)OrderStatus.Finish + @" group by StarterID),0) as 'FinishCount'
                           from myOrders as o group by o.StarterID";
 
-            DataTable dt = dbHelper.Fill(sql, dbParameters);
+            DataTable dt = dbHelper.Fill(sql, dbParameters.ToArray());
             return dt;
-        }
+        } 
+        #endregion
 
         #region 工作地点
         public OrderWorkingLocationEntity GetOrderWorkingLocation(int orderWorkingLocationID)

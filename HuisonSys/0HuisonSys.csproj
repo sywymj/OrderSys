@@ -3114,6 +3114,8 @@
     <Content Include="Areas\Admin\Views\Order\Orders_Index.cshtml" />
     <Content Include="Areas\Admin\Views\Permission\GrantScope_Index.cshtml" />
     <Content Include="Areas\Weixin\Views\Role\ChangeRoleIndex.cshtml" />
+    <Content Include="Areas\Admin\Views\Order\OrderStartStatistics_Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Order\OrderHandleStatistics_Index.cshtml" />
     <None Include="Properties\PublishProfiles\1.pubxml" />
   </ItemGroup>
   <PropertyGroup>

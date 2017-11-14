@@ -43,6 +43,15 @@
     <Reference Include="NPOI">
       <HintPath>packages\NPOI.dll</HintPath>
     </Reference>
+    <Reference Include="NPOI.OOXML">
+      <HintPath>..\..\..\..\工单系统\OrderSys\TicketSystem\Common\obj\NPOI.OOXML.dll</HintPath>
+    </Reference>
+    <Reference Include="NPOI.OpenXml4Net">
+      <HintPath>..\..\..\..\工单系统\OrderSys\TicketSystem\Common\obj\NPOI.OpenXml4Net.dll</HintPath>
+    </Reference>
+    <Reference Include="NPOI.OpenXmlFormats">
+      <HintPath>..\..\..\..\工单系统\OrderSys\TicketSystem\Common\obj\NPOI.OpenXmlFormats.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
@@ -67,6 +76,7 @@
     <Compile Include="FastJson\JsonSerializer.cs" />
     <Compile Include="FastJson\Reflection.cs" />
     <Compile Include="FastJson\SafeDictionary.cs" />
+    <Compile Include="NPOIHelper.cs" />
     <Compile Include="WebUtilDemo.cs" />
     <Compile Include="JsonUtil.cs" />
     <Compile Include="SortUtil.cs" />
