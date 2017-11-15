@@ -53,7 +53,7 @@ namespace OrderSys.Admin.Controllers
 
             //TODO 数据验证。
             int[] roleIDs = JSValidator.ValidateStrings("角色ID", sRoleIDs, true);
-            JSValidator.ValidateTel("手机号码", viewModel.Staff.Tel);
+            //JSValidator.ValidateTel("手机号码", viewModel.Staff.Tel);
 
             UserEntity user = new UserEntity();
             StaffEntity staff = new StaffEntity();
@@ -118,6 +118,30 @@ namespace OrderSys.Admin.Controllers
             service.AddWeiXinUser(userIDs);
             return JSON.ToJSON(new JSResponse(ResponseType.Remind, "操作成功！"), jsonParams);
         }
+
+
+        #region
+        [HttpPost]
+        public string Import()
+        {
+            HttpFileCollectionBase files = Request.Files;
+            if (files.Count == 0)
+            {
+                return JSON.ToJSON(new JSResponse(ResponseType.Error, "请先选择文件！"), jsonParams);
+            }
+
+            string localFullName = string.Empty;
+            UploadService uploadService = new UploadService();
+            uploadService.FileSaveAsExcel(files[0], out localFullName);
+
+            string result = string.Empty;
+            DataTable dt = NPOIHelper.ImportExcel(localFullName, 0);
+            service.Import(dt,out result);
+
+            string url = "http://" + HttpContext.Request.Url.Authority + result;
+            return JSON.ToJSON(new JSResponse(ResponseType.Message, "导入成功！", data: url), jsonParams);
+        }
+        #endregion
 
         #region VERIFY
         [ManagerAuthorize(Roles = "public")]

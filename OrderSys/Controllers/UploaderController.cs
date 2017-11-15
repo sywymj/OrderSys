@@ -31,7 +31,7 @@ namespace OrderSys.Controllers
 
             string fileName = string.Empty;
             UploadService service = new UploadService();
-            service.FileSaveAs(files[0], out fileName);
+            service.FileSaveAsImage(files[0], out fileName);
 
             res.Content = JSON.ToJSON(new JSResponse(data: fileName), jsonParams);
             return res;

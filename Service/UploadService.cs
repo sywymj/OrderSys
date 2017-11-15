@@ -14,9 +14,7 @@ namespace JSNet.Service
     {
 
         private static string _UploadPath = "/Upload/";
-        private static string _AllowExt = "jpg,bmp,jpeg,gif,png,ico";
-        private static int _LimitSize = 2 * 1024 * 1024;//2M
-        private delegate void ValidateDelegate(HttpPostedFileBase httpPostedFile);  
+        public delegate void ValidateDelegate(HttpPostedFileBase httpPostedFile);  
         public static string UploadPath
         {
             get { return _UploadPath; }
@@ -25,15 +23,17 @@ namespace JSNet.Service
 
         public void FileSaveAsImage(HttpPostedFileBase httpPostedFile,out string newFileName )
         {
-            FileSaveAs1(httpPostedFile, _UploadPath + "OrderImg/", ValitateImage, out newFileName);
+            FileSaveAs(httpPostedFile, _UploadPath + "OrderImg/", ValidateImage, out newFileName);
         }
 
-        public void FileSaveAsExcel(HttpPostedFileBase httpPostedFile, out string newFileName)
+        public void FileSaveAsExcel(HttpPostedFileBase httpPostedFile, out string localFullName)
         {
-            FileSaveAs1(httpPostedFile, _UploadPath + "UserImport/", ValitateExcel, out newFileName);
+            string fileName = "";
+            FileSaveAs(httpPostedFile, _UploadPath + "UserImport/", ValidateExcel, out fileName);
+            localFullName = CommonUtil.GetMapPath(_UploadPath + "UserImport/" + fileName);
         }
 
-        public void FileSaveAs1(HttpPostedFileBase httpPostedFile,string uploadPath,ValidateDelegate validate, out string newFileName)
+        public void FileSaveAs(HttpPostedFileBase httpPostedFile,string uploadPath,ValidateDelegate validate, out string newFileName)
         {
             newFileName = CommonUtil.NewGuid() + "." + CommonUtil.GetFileExt(httpPostedFile.FileName);
             string localUploadPath = CommonUtil.GetMapPath(uploadPath);
@@ -41,36 +41,11 @@ namespace JSNet.Service
 
             validate(httpPostedFile);
 
-            //保存文件
-            httpPostedFile.SaveAs(newFileFullName);
-        }
-
-        public void FileSaveAs(HttpPostedFileBase httpPostedFile, out string newFileName)
-        {
-            newFileName = CommonUtil.NewGuid() + "." + CommonUtil.GetFileExt(httpPostedFile.FileName);
-            string localUploadPath = CommonUtil.GetMapPath(_UploadPath);
-            string newFileFullName = localUploadPath + newFileName;
-
-            //检查扩展名是否合法
-            if (!CheckExt(CommonUtil.GetFileExt(newFileFullName)))
-            {
-                throw new JSException("扩展名不合法！");
-            }
-            if (!IsImage(CommonUtil.GetFileExt(newFileFullName)))
-            {
-                throw new JSException("扩展名不合法！");
-            }
-            //检查文件大小是否合法
-            if (httpPostedFile.ContentLength > _LimitSize)
-            {
-                throw new JSException(string.Format("文件不能大于{0}M！", _LimitSize / 1024));
-            }
             //检查上传的临时文件目录物理路径是否存在，不存在则创建
             if (!Directory.Exists(localUploadPath))
             {
                 Directory.CreateDirectory(localUploadPath);
             }
-
             //保存文件
             httpPostedFile.SaveAs(newFileFullName);
         }
@@ -86,7 +61,7 @@ namespace JSNet.Service
             }
         }
 
-        private bool CheckExt(string strFileExt)
+        private bool CheckDangerExt(string strFileExt)
         {
             //检查危险文件
             string[] excExt = { "asp", "aspx", "ashx", "asa", "asmx", "asax", "php", "jsp", "htm", "html" };
@@ -97,16 +72,6 @@ namespace JSNet.Service
                     return false;
                 }
             }
-            //检查合法文件（程序允许的文件后缀）
-            //string[] allowExt = _AllowExt.Split(',');
-            //for (int i = 0; i < allowExt.Length; i++)
-            //{
-            //    if (allowExt[i].ToLower() == strFileExt.ToLower())
-            //    {
-            //        return true;
-            //    }
-            //}
-            //return false;
             return true;
         }
 
@@ -130,11 +95,12 @@ namespace JSNet.Service
             return false;
         }
 
-
-        private void ValitateImage(HttpPostedFileBase httpPostedFile)
+        private void ValidateImage(HttpPostedFileBase httpPostedFile)
         {
-            //检查扩展名是否合法
-            if (!CheckExt(CommonUtil.GetFileExt(httpPostedFile.FileName)))
+            int filesize = 2 * 1024 * 1024;
+
+
+            if (!CheckDangerExt(CommonUtil.GetFileExt(httpPostedFile.FileName)))
             {
                 throw new JSException("扩展名不合法！");
             }
@@ -142,22 +108,25 @@ namespace JSNet.Service
             {
                 throw new JSException("只允许上传图片！");
             }
-            //检查文件大小是否合法
-            if (httpPostedFile.ContentLength > _LimitSize)
+            if (httpPostedFile.ContentLength > filesize)
             {
-                throw new JSException(string.Format("文件不能大于{0}M！", _LimitSize / 1024));
+                throw new JSException(string.Format("文件不能大于{0}M！", filesize / 1024));
             }
         }
 
-        private void ValitateExcel(HttpPostedFileBase httpPostedFile)
+        private void ValidateExcel(HttpPostedFileBase httpPostedFile)
         {
-            int filesize = 10 * 1024 * 1024; 
-            //检查扩展名是否合法
-            if (!CheckExt(CommonUtil.GetFileExt(httpPostedFile.FileName)))
+            int filesize = 10 * 1024 * 1024;
+            string[] allowExt = { "xls", "xlsx" };
+
+            if (!CheckDangerExt(CommonUtil.GetFileExt(httpPostedFile.FileName)))
             {
                 throw new JSException("扩展名不合法！");
             }
-            //检查文件大小是否合法
+            if (!allowExt.Contains(CommonUtil.GetFileExt(httpPostedFile.FileName)))
+            {
+                throw new JSException("只允许上传Excel文件！");
+            }
             if (httpPostedFile.ContentLength > filesize)
             {
                 throw new JSException(string.Format("文件不能大于{0}M！", filesize / 1024));

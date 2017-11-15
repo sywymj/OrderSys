@@ -2,6 +2,7 @@
     ViewBag.Title = "员工管理";
     Layout = "~/Areas/Admin/Views/Shared/_InnerLayout.cshtml";
 }
+<script src="~/Areas/Admin/Script/ajaxfileupload.js"></script>
 
 @Html.Partial("~/Areas/Admin/Views/Shared/_Header.cshtml", Request.Url.AbsolutePath)
 <div class="mini-fit">
@@ -24,15 +25,15 @@
 </div>
 
 
-<div id="import-window" class="mini-window" title="批量导入" style="width: 410px; height: 250px;display:none;"
+<div id="import-window" class="mini-window" title="批量导入" style="width: 410px; height: 150px;display:none;"
      showmodal="true" allowresize="true" allowdrag="true" showclosebutton="true">
     <table style="width: 100%" border="0" cellspacing="0" cellpadding="0">
         <tr>
-            <td style="padding-bottom: 5px;width:250px;">
+            <td style="width:250px;">
                 <input class="mini-htmlfile" name="Fdata" id="file1" style="width:250px;" />
             </td>
             <td style="width:60px;">
-                <input type="button" value="上传" onclick="ajaxFileUpload()" />
+                <input type="button" value="上传" onclick="ajaxFileImport()" />
             </td>
             <td style="width:90px;">
                 <a id="resultdownload" class="mini-button" enabled="false">结果下载</a>
@@ -53,6 +54,7 @@
 <script>
     mini.parse()
     var staff_grid = mini.get("staff-datagrid");
+    var importWindow = mini.get("import-window");
 
     staff_grid.load({
         pageIndex: 0,
@@ -135,10 +137,10 @@
 
     //////////////////////////////////////////////
     //导入
-    function importUsers() {
+    function importUser() {
         $('#resultdownload').removeAttr('onclick');
         mini.get("resultdownload").setEnabled(false);
-        uploadWindow.show();
+        importWindow.show();
     }
 
     function ajaxFileImport() {
@@ -147,15 +149,18 @@
         var inputFile = $("#file1 > input:file")[0];
 
         $.ajaxFileUpload({
-            url: '/School/Ajax/Fee_AjaxHandler.ashx?type=UploadFee',                 //用于文件上传的服务器端请求地址
+            url: '@Url.Action("Import", "User", new { area = "Admin" })',                 //用于文件上传的服务器端请求地址
             fileElementId: inputFile,               //文件上传域的ID
             data: null,          //附加的额外参数
             dataType: 'text',                   //返回值类型 一般设置为json
             success: function (data, status)    //服务器成功响应处理函数
             {
+                debugger;
                 ajaxTips(data, function (jdata) {
                     if (jdata.Code == "200") {
-                        $('#resultdownload').attr('onclick', jdata.Data);
+                        debugger;
+                        $('#resultdownload').attr('href', jdata.Data);
+                        mini.get("resultdownload").setEnabled(true);
                     }
                 });
             },

@@ -24,6 +24,10 @@ namespace JSNet.BaseSys
         public const string ERR_MSG_WrongFormateTel = "手机号码格式不正确！";
         public const string ERR_CODE_ExportTooMuch = "4007";
         public const string ERR_MSG_ExportTooMuch = "单次导出不能超过{0}条记录，请筛选后重试。";
+        public const string ERR_CODE_ImportColError = "4008";
+        public const string ERR_MSG_ImportColError = "文件缺少必要的列：{0}";
+        public const string ERR_CODE_ImportNoContent = "4009";
+        public const string ERR_MSG_ImportNoContent = "文件内容为空！";
 
         //5开头的是服务端问题
         public const string ERR_CODE_SESSIONKEY_MISSING = "5001";

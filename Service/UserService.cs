@@ -1,6 +1,7 @@
 ﻿using CodeEngine.Framework.QueryBuilder;
 using CodeEngine.Framework.QueryBuilder.Enums;
 using JSNet.BaseSys;
+using JSNet.DbUtilities;
 using JSNet.Manager;
 using JSNet.Model;
 using JSNet.Utilities;
@@ -54,32 +55,50 @@ namespace JSNet.Service
         #region User
         public void AddUser(UserEntity entity, StaffEntity staff, int[] roleIDs)
         {
-            KawuService kawuService = new KawuService();
-            kawuService.AddWeixinUser(staff.Tel, entity.UserName);
-
-            //添加user
-            if (string.IsNullOrEmpty(entity.Password))
+            IDbHelper dbHelper = DbHelperFactory.GetHelper(BaseSystemInfo.CenterDbConnectionString, BaseSystemInfo.CenterDbType);
+            dbHelper.Open();
+            try
             {
-                entity.Password = "123456";// TODO 加盐转MD5加密保存
-            }
-            entity.OpenID = null;
-            entity.AddedVXUser = (int)TrueFalse.True;
-            entity.IsEnable = (int)TrueFalse.True;
-            entity.OrganizeID = staff.OrganizeID;
-            entity.DeletionStateCode = (int)TrueFalse.False;
-            entity.CreateUserId = CurrentUser.ID.ToString();
-            entity.CreateBy = CurrentUser.UserName;
-            entity.CreateOn = DateTime.Now;
-            EntityManager<UserEntity> userManager = new EntityManager<UserEntity>();
-            string userID = userManager.Insert(entity);
+                dbHelper.BeginTransaction();
 
-            //添加staff
-            staff.UserID = Convert.ToInt32(userID);
-            string staffID = AddStaff(staff);
-            
-            //添加role-user-rel
-            MyRoleService roleService = new MyRoleService();
-            roleService.GrantRole(Convert.ToInt32(userID), roleIDs);
+                //添加user
+                if (string.IsNullOrEmpty(entity.Password))
+                {
+                    entity.Password = "123456";// TODO 加盐转MD5加密保存
+                }
+                entity.OpenID = null;
+                entity.AddedVXUser = (int)TrueFalse.True;
+                entity.IsEnable = (int)TrueFalse.True;
+                entity.OrganizeID = staff.OrganizeID;
+                entity.DeletionStateCode = (int)TrueFalse.False;
+                entity.CreateUserId = CurrentUser.ID.ToString();
+                entity.CreateBy = CurrentUser.UserName;
+                entity.CreateOn = DateTime.Now;
+                EntityManager<UserEntity> userManager = new EntityManager<UserEntity>(dbHelper);
+                string userID = userManager.Insert(entity);//事务时出错
+
+                //添加staff
+                staff.UserID = Convert.ToInt32(userID);
+                string staffID = AddStaff(staff, dbHelper);
+
+                //添加role-user-rel
+                MyRoleService roleService = new MyRoleService();
+                roleService.GrantRole(Convert.ToInt32(userID), roleIDs, dbHelper);
+
+                KawuService kawuService = new KawuService();
+                kawuService.AddWeixinUser(staff.Tel, entity.UserName);
+
+                dbHelper.CommitTransaction();
+            }
+            catch(Exception e)
+            {
+                dbHelper.RollbackTransaction();
+                throw e;
+            }
+            finally
+            {
+                dbHelper.Close();
+            }
         }
 
         public void AddWeiXinUser(int[] userIDs)
@@ -231,6 +250,16 @@ namespace JSNet.Service
             return list;
         }
 
+        public List<UserEntity> GetUserList()
+        {
+            int count = 0;
+            WhereStatement where = new WhereStatement();
+
+            EntityManager<UserEntity> manager = new EntityManager<UserEntity>();
+            List<UserEntity> list = manager.GetList(where, out count);
+            return list;
+        }
+
         public DataTable GetUserDTForShow(RoleEntity role, Paging paging, out int count)
         {
             PermissionService permissionService = new PermissionService();
@@ -284,11 +313,123 @@ namespace JSNet.Service
             return dt;
         }
 
+        public void Import(DataTable dt,out string result)
+        {
+            if (dt == null || dt.Rows.Count == 0)
+            {
+                throw new JSException(JSErrMsg.ERR_CODE_ImportNoContent, JSErrMsg.ERR_MSG_ImportNoContent);
+            }
+
+            string[] columns = new string[] { "账号", "密码", "姓名", "手机号码", "地址", "性别", "部门编码" };
+            foreach (string col in columns)
+            {
+                if (!dt.Columns.Contains(col)) throw new JSException(JSErrMsg.ERR_CODE_ImportColError, string.Format(JSErrMsg.ERR_MSG_ImportColError, col));
+            }
+            dt.Columns.Add("处理结果", typeof(string));
+
+            List<UserEntity> users = GetUserList();
+            List<StaffEntity> staffs = GetStaffs();
+            List<OrganizeEntity> organizes = new OrganizeService().GetTreeOrganizeListByUser(CurrentUser);
+            Dictionary<SexType,string> sexType = EnumExtensions.ConvertToEnumDic<SexType>();
+
+            Dictionary<UserEntity, StaffEntity> importDic = new Dictionary<UserEntity, StaffEntity>();
+            foreach (DataRow dr in dt.Rows)
+            {
+                #region 赋值
+                string userName = dr["账号"].ToString().Trim();
+                string password = dr["密码"].ToString().Trim();
+                string name = dr["姓名"].ToString().Trim();
+                string tel = dr["手机号码"].ToString().Trim();
+                string addr = dr["地址"].ToString().Trim();
+                string sex = dr["性别"].ToString().Trim();
+                string orgCode = dr["部门编码"].ToString().Trim();
+                #endregion
+
+                #region 验证
+
+                if (string.IsNullOrEmpty(userName))
+                {
+                    dr["处理结果"] = "账号不能为空！"; continue;
+                }
+                if (string.IsNullOrEmpty(tel))
+                {
+                    dr["处理结果"] = "手机号码不能为空！"; continue;
+                }
+                if (string.IsNullOrEmpty(name))
+                {
+                    dr["处理结果"] = "姓名不能为空！"; continue;
+                }
+                if (string.IsNullOrEmpty(sex))
+                {
+                    dr["处理结果"] = "性别不能为空！"; continue;
+                }
+                if (string.IsNullOrEmpty(orgCode))
+                {
+                    dr["处理结果"] = "部门编码不能为空！"; continue;
+                }
+
+                if (!System.Text.RegularExpressions.Regex.IsMatch(tel, @"^1[3,4,5,7,8]\d{9}$"))
+                {
+                    dr["处理结果"] = "手机号码格式有误！"; continue;
+                }
+                if (!sexType.ContainsValue(sex))
+                {
+                    dr["处理结果"] = "性别格式有误！"; continue;
+                }
+                if (users.Count(x => x.UserName == userName) > 0)
+                {
+                    dr["处理结果"] = "账号已存在！"; continue;
+                }
+                if (staffs.Count(x => x.Tel == tel) > 0)
+                {
+                    dr["处理结果"] = "手机号码已存在！"; continue;
+                }
+                if (organizes.Count(x => x.Code == orgCode) == 0)
+                {
+                    dr["处理结果"] = "部门编号不正确！"; continue;
+                }
+                #endregion
+
+                UserEntity user = new UserEntity();
+                user.UserName = userName;
+                user.Password = password;
+                user.IsLogin = (int)TrueFalse.True;
+
+                StaffEntity staff = new StaffEntity();
+                staff.Name = name;
+                staff.Tel = tel;
+                staff.Addr = addr;
+                staff.Sex = (int)sexType.Where(d => d.Value == sex).FirstOrDefault().Key;
+                staff.OrganizeID = organizes.Where(x => x.Code == orgCode).FirstOrDefault().ID;
+                //staff.IsOnJob = (int)TrueFalse.True;
+
+                try
+                {
+                    AddUser(user, staff, new int[0]);
+                }
+                catch(Exception e)
+                {
+                    dr["处理结果"] = "处理失败！" + e.Message.Replace("\r\n",""); continue;
+                }
+                dr["处理结果"] = "处理成功！";
+                users.Add(user);
+                staffs.Add(staff);
+            }
+
+            ExportService exportService = new ExportService();
+            string localpath = "";
+            string webpath = exportService.GetExportFolderWebPath("user", out localpath);
+            string fileName = exportService.GetFileName() + ".csv";
+
+            BaseExportCSV.ExportCSV(dt, localpath + fileName);
+            result = webpath + fileName;
+        }
+
         #endregion
 
         #region Staff
 
-        public string AddStaff(StaffEntity entity)
+        public string AddStaff(StaffEntity entity,IDbHelper dbHelper = null)
         {
             entity.IsEnable = (int)TrueFalse.True;
             entity.DeletionStateCode = (int)TrueFalse.False;
@@ -296,7 +437,7 @@ namespace JSNet.Service
             entity.CreateBy = CurrentUser.UserName;
             entity.CreateOn = DateTime.Now;
 
-            EntityManager<StaffEntity> manager = new EntityManager<StaffEntity>();
+            EntityManager<StaffEntity> manager = dbHelper == null ? new EntityManager<StaffEntity>() : new EntityManager<StaffEntity>(dbHelper);
             return manager.Insert(entity);
         }
 
@@ -312,6 +453,16 @@ namespace JSNet.Service
             EntityManager<StaffEntity> manager = new EntityManager<StaffEntity>();
             StaffEntity entity = manager.GetSingle(staffID, StaffEntity.FieldID);
             return entity;
+        }
+
+        public List<StaffEntity> GetStaffs()
+        {
+            int count = 0;
+            WhereStatement where = new WhereStatement();
+
+            EntityManager<StaffEntity> manager = new EntityManager<StaffEntity>();
+            List<StaffEntity> list = manager.GetList(where, out count);
+            return list;
         }
 
         public List<StaffEntity> GetWorkingStaffsByRole(RoleEntity role)

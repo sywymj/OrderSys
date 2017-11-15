@@ -13,12 +13,7 @@ namespace JSNet.Service
         public string GetExportFolderWebPath(string type,out string localpath)
         {
             string path = _exportBasePath;
-            switch (type.ToLower())
-            {
-                case "order":
-                    path += type.ToUpper();
-                    break;
-            }
+            path += type.ToUpper();
             path += "/";
             //文件目录物理路径是否存在，不存在则创建
             localpath = HttpContext.Current.Server.MapPath(path);

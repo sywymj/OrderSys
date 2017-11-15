@@ -63,7 +63,9 @@ namespace JSNet.BaseSys
 
     public enum SexType
     {
+        [EnumDescription("男")]
         Male = 1,
+        [EnumDescription("女")]
         Female = 2,
     }
 

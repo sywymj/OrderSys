@@ -208,6 +208,7 @@ namespace JSNet.Service
             DataTable dt = GetTreeOrganizeDT((int)staff.OrganizeID, deep, out count);
             return dt;
         }
+
         private DataTable GetTreeOrganizeDT(int organizeID, int deep,out int count)
         {
             EntityManager<OrganizeEntity> manager = new EntityManager<OrganizeEntity>();

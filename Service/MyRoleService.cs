@@ -1,6 +1,7 @@
 ﻿using CodeEngine.Framework.QueryBuilder;
 using CodeEngine.Framework.QueryBuilder.Enums;
 using JSNet.BaseSys;
+using JSNet.DbUtilities;
 using JSNet.Manager;
 using JSNet.Model;
 using JSNet.Utilities;
@@ -182,10 +183,10 @@ namespace JSNet.Service
         }
 
         #region Grant_Role
-        public void GrantRole(int userID, int[] roleIDs)
+        public void GrantRole(int userID, int[] roleIDs,IDbHelper dbHelper = null)
         {
             //1.0 清空该用户原有的角色权限
-            EntityManager<UserRoleEntity> manager = new EntityManager<UserRoleEntity>();
+            EntityManager<UserRoleEntity> manager = dbHelper == null ? new EntityManager<UserRoleEntity>() : new EntityManager<UserRoleEntity>(dbHelper);
             WhereStatement where = new WhereStatement();
             where.Add(UserRoleEntity.FieldUserID, Comparison.Equals, userID);
             manager.Delete(where);

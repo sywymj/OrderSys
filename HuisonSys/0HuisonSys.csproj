@@ -176,6 +176,7 @@
     <Compile Include="Controllers\ErrorController.cs" />
     <Content Include="500.html" />
     <Content Include="404.html" />
+    <Content Include="Areas\Admin\Script\ajaxfileupload.js" />
     <Content Include="Areas\Admin\Script\datapicker\calendar.js" />
     <Content Include="Areas\Admin\Script\datapicker\lang\en.js" />
     <Content Include="Areas\Admin\Script\datapicker\lang\zh-cn.js" />

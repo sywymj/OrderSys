@@ -367,6 +367,7 @@
         uploader.on('uploadSuccess', function (file, response) {
             $('#' + file.id).addClass('upload-state-done');
             ajaxTips(response, function (jdata) {
+                debugger;
                 if (jdata.Code == "200") {
                     file.name = jdata.Data;
                 } else {
@@ -378,7 +379,7 @@
                         $error = $('<div class="error"></div>').appendTo($li);
                     }
 
-                    $error.text(jdata.ErrMsg);
+                    $error.text(jdata.ErrMsg||"上传失败！");
                 }
             });
         });
