@@ -53,7 +53,7 @@ namespace OrderSys.Admin.Controllers
 
             //TODO 数据验证。
             int[] roleIDs = JSValidator.ValidateStrings("角色ID", sRoleIDs, true);
-            //JSValidator.ValidateTel("手机号码", viewModel.Staff.Tel);
+            JSValidator.ValidateTel("手机号码", viewModel.Staff.Tel);
 
             UserEntity user = new UserEntity();
             StaffEntity staff = new StaffEntity();
@@ -122,7 +122,7 @@ namespace OrderSys.Admin.Controllers
 
         #region
         [HttpPost]
-        public string Import()
+        public string ImportUser()
         {
             HttpFileCollectionBase files = Request.Files;
             if (files.Count == 0)
@@ -144,7 +144,7 @@ namespace OrderSys.Admin.Controllers
         #endregion
 
         #region VERIFY
-        [ManagerAuthorize(Roles = "public")]
+        [AllowAnonymous]
         [HttpGet]
         public string VerifyUserName(string userName, string userID)
         {
@@ -154,8 +154,8 @@ namespace OrderSys.Admin.Controllers
             }
             return JSON.ToJSON(new JSResponse(true), jsonParams);
         }
- 
-        [ManagerAuthorize(Roles="public")]
+
+        [AllowAnonymous]
         [HttpGet]
         public string VerifyTel(string tel, string userID)
         {

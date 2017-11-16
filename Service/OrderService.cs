@@ -1128,6 +1128,15 @@ namespace JSNet.Service
             return re;
         }
 
+        public List<OrderWorkingLocationEntity> GetOrderWorkingLocationList()
+        {
+            int count = 0;
+            WhereStatement where = new WhereStatement();
+            EntityManager<OrderWorkingLocationEntity> manager = new EntityManager<OrderWorkingLocationEntity>();
+            List<OrderWorkingLocationEntity> list = manager.GetList(where, out count);
+            return list;
+        }
+
         public void AddOrderWorkingLocation(OrderWorkingLocationEntity entity)
         {
             EntityManager<OrderWorkingLocationEntity> manager = new EntityManager<OrderWorkingLocationEntity>();
@@ -1167,6 +1176,85 @@ namespace JSNet.Service
             var re = list.Where(x => x.FirstLevel == firstLevelList).Select(x => x.ScecondLevel).ToList();
             return re;
         } 
+
+        public void ImportOrderWorkingLocation(DataTable dt,out string result)
+        {
+            if (dt == null || dt.Rows.Count == 0)
+            {
+                throw new JSException(JSErrMsg.ERR_CODE_ImportNoContent, JSErrMsg.ERR_MSG_ImportNoContent);
+            }
+
+            string[] columns = new string[] { "一级分类", "二级分类", "部门编码" };
+            foreach (string col in columns)
+            {
+                if (!dt.Columns.Contains(col)) throw new JSException(JSErrMsg.ERR_CODE_ImportColError, string.Format(JSErrMsg.ERR_MSG_ImportColError, col));
+            }
+            dt.Columns.Add("处理结果", typeof(string));
+
+            List<OrganizeEntity> organizes = new OrganizeService().GetTreeOrganizeListByUser(CurrentUser);
+            List<OrderWorkingLocationEntity> list= GetOrderWorkingLocationList();
+
+            foreach (DataRow dr in dt.Rows)
+            {
+                #region 赋值
+                string firstLevel = dr["一级分类"].ToString().Trim();
+                string secondLevel = dr["二级分类"].ToString().Trim();
+                string orgCode = dr["部门编码"].ToString().Trim();
+                #endregion
+
+                #region 验证
+
+                if (string.IsNullOrEmpty(firstLevel))
+                {
+                    dr["处理结果"] = "一级分类不能为空！"; continue;
+                }
+                if (string.IsNullOrEmpty(secondLevel))
+                {
+                    dr["处理结果"] = "二级分类不能为空！"; continue;
+                }
+                if (string.IsNullOrEmpty(orgCode))
+                {
+                    dr["处理结果"] = "部门编码不能为空！"; continue;
+                }
+                if (organizes.Count(x => x.Code == orgCode) == 0)
+                {
+                    dr["处理结果"] = "部门编码不正确！"; continue;
+                }
+                if (list.Count(x => 
+                    x.FirstLevel == firstLevel 
+                    && x.ScecondLevel == secondLevel 
+                    && x.OrganizeID == organizes.Where(o => o.Code == orgCode).FirstOrDefault().ID) > 0)
+                {
+                    dr["处理结果"] = "记录已存在！"; continue;
+                }
+                #endregion
+
+                OrderWorkingLocationEntity entity = new OrderWorkingLocationEntity();
+                entity.FirstLevel = firstLevel;
+                entity.ScecondLevel = secondLevel;
+                entity.OrganizeID = organizes.Where(o => o.Code == orgCode).FirstOrDefault().ID;
+
+                try
+                {
+                    AddOrderWorkingLocation(entity);
+                    
+                }
+                catch (Exception e)
+                {
+                    dr["处理结果"] = "处理失败！" + e.Message.Replace("\r\n", ""); continue;
+                }
+                dr["处理结果"] = "处理成功！";
+                list.Add(entity);//以便进入下一次循环。
+            }
+
+            ExportService exportService = new ExportService();
+            string localpath = "";
+            string webpath = exportService.GetExportFolderWebPath("orderworkinglocation", out localpath);
+            string fileName = exportService.GetFileName() + ".csv";
+
+            BaseExportCSV.ExportCSV(dt, localpath + fileName);
+            result = webpath + fileName;
+        }
         #endregion
 
         #region 物品选择
@@ -1241,6 +1329,16 @@ namespace JSNet.Service
             return re;
         }
 
+        public List<OrderGoodsEntity> GetOrderGoodsList()
+        {
+            int count = 0;
+            WhereStatement where = new WhereStatement();
+            EntityManager<OrderGoodsEntity> manager = new EntityManager<OrderGoodsEntity>();
+            List<OrderGoodsEntity> list = manager.GetList(where, out count);
+            return list;
+        }
+
+
         public void AddOrderGoods(OrderGoodsEntity entity)
         {
             EntityManager<OrderGoodsEntity> manager = new EntityManager<OrderGoodsEntity>();
@@ -1283,6 +1381,78 @@ namespace JSNet.Service
             List<OrderGoodsRelEntity> list = manager.GetList(where, out count);
 
             return list;
+        }
+
+        public void ImportOrderGoods(DataTable dt, out string result)
+        {
+            if (dt == null || dt.Rows.Count == 0)
+            {
+                throw new JSException(JSErrMsg.ERR_CODE_ImportNoContent, JSErrMsg.ERR_MSG_ImportNoContent);
+            }
+
+            string[] columns = new string[] { "物品名称", "部门编码" };
+            foreach (string col in columns)
+            {
+                if (!dt.Columns.Contains(col)) throw new JSException(JSErrMsg.ERR_CODE_ImportColError, string.Format(JSErrMsg.ERR_MSG_ImportColError, col));
+            }
+            dt.Columns.Add("处理结果", typeof(string));
+
+            List<OrganizeEntity> organizes = new OrganizeService().GetTreeOrganizeListByUser(CurrentUser);
+            List<OrderGoodsEntity> list = GetOrderGoodsList();
+
+            foreach (DataRow dr in dt.Rows)
+            {
+                #region 赋值
+                string name = dr["物品名称"].ToString().Trim();
+                string orgCode = dr["部门编码"].ToString().Trim();
+                #endregion
+
+                #region 验证
+
+                if (string.IsNullOrEmpty(name))
+                {
+                    dr["处理结果"] = "物品名称不能为空！"; continue;
+                }
+                if (string.IsNullOrEmpty(orgCode))
+                {
+                    dr["处理结果"] = "部门编码不能为空！"; continue;
+                }
+                if (organizes.Count(x => x.Code == orgCode) == 0)
+                {
+                    dr["处理结果"] = "部门编码不正确！"; continue;
+                }
+                if (list.Count(x =>
+                    x.Name == name
+                    && x.OrganizeID == organizes.Where(o => o.Code == orgCode).FirstOrDefault().ID) > 0)
+                {
+                    dr["处理结果"] = "记录已存在！"; continue;
+                }
+                #endregion
+
+                OrderGoodsEntity entity = new OrderGoodsEntity();
+                entity.Name = name;
+                entity.OrganizeID = organizes.Where(o => o.Code == orgCode).FirstOrDefault().ID;
+
+                try
+                {
+                    AddOrderGoods(entity);
+
+                }
+                catch (Exception e)
+                {
+                    dr["处理结果"] = "处理失败！" + e.Message.Replace("\r\n", ""); continue;
+                }
+                dr["处理结果"] = "处理成功！";
+                list.Add(entity);//以便进入下一次循环。
+            }
+
+            ExportService exportService = new ExportService();
+            string localpath = "";
+            string webpath = exportService.GetExportFolderWebPath("ordergoods", out localpath);
+            string fileName = exportService.GetFileName() + ".csv";
+
+            BaseExportCSV.ExportCSV(dt, localpath + fileName);
+            result = webpath + fileName;
         }
 
         #endregion

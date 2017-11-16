@@ -12,6 +12,7 @@ using System.Web.Mvc;
 
 namespace OrderSys.Admin.Controllers
 {
+    [ManagerAuthorize]
     public class OrderController :AdminBaseController
     {
         //
@@ -114,11 +115,34 @@ namespace OrderSys.Admin.Controllers
         #region 【删除】工作地点
         public string DeleteOrderWorkingLocation()
         {
-            string sOrderWorkingLocation = JSRequest.GetRequestUrlParm("orderWorkingLocationIDs", true);
+            string sOrderWorkingLocation = JSRequest.GetRequestUrlParm("OrderWorkingLocationIDs", true);
             int[] orderWorkingLocationIDs = JSValidator.ValidateStrings("ID格式有误！", sOrderWorkingLocation, false);
 
             service.DeleteOrderWorkingLocation(orderWorkingLocationIDs);
             return JSON.ToJSON(new JSResponse(ResponseType.Remind, "删除成功！"), jsonParams);
+        } 
+        #endregion
+
+        #region 【导入】工作地点
+        [HttpPost]
+        public string ImportOrderWorkingLocation()
+        {
+            HttpFileCollectionBase files = Request.Files;
+            if (files.Count == 0)
+            {
+                return JSON.ToJSON(new JSResponse(ResponseType.Error, "请先选择文件！"), jsonParams);
+            }
+
+            string localFullName = string.Empty;
+            UploadService uploadService = new UploadService();
+            uploadService.FileSaveAsExcel(files[0], out localFullName);
+
+            string result = string.Empty;
+            DataTable dt = NPOIHelper.ImportExcel(localFullName, 0);
+            service.ImportOrderWorkingLocation(dt, out result);
+
+            string url = "http://" + HttpContext.Request.Url.Authority + result;
+            return JSON.ToJSON(new JSResponse(ResponseType.Message, "导入成功！", data: url), jsonParams);
         } 
         #endregion
 
@@ -211,6 +235,28 @@ namespace OrderSys.Admin.Controllers
         } 
         #endregion
 
+        #region 【导入】物品
+        [HttpPost]
+        public string ImportOrderGoods()
+        {
+            HttpFileCollectionBase files = Request.Files;
+            if (files.Count == 0)
+            {
+                return JSON.ToJSON(new JSResponse(ResponseType.Error, "请先选择文件！"), jsonParams);
+            }
+
+            string localFullName = string.Empty;
+            UploadService uploadService = new UploadService();
+            uploadService.FileSaveAsExcel(files[0], out localFullName);
+
+            string result = string.Empty;
+            DataTable dt = NPOIHelper.ImportExcel(localFullName, 0);
+            service.ImportOrderGoods(dt, out result);
+
+            string url = "http://" + HttpContext.Request.Url.Authority + result;
+            return JSON.ToJSON(new JSResponse(ResponseType.Message, "导入成功！", data: url), jsonParams);
+        }
+        #endregion
 
         public ActionResult OrdersIndex()
         {
@@ -290,7 +336,7 @@ namespace OrderSys.Admin.Controllers
             }
             if (string.IsNullOrEmpty(viewModel.ScecondLevel))
             {
-                viewModel.ScecondLevel = string.Empty;
+                throw new JSException("二级分类不能为空！");
             }
             if (viewModel.OrganizeID == 0)
             {
@@ -300,7 +346,14 @@ namespace OrderSys.Admin.Controllers
 
         private void ValidateGoods(ViewOrderGoods viewModel)
         {
-
+            if (string.IsNullOrEmpty(viewModel.Name))
+            {
+                throw new JSException("一级分类不能为空！");
+            }
+            if (viewModel.OrganizeID == 0)
+            {
+                throw new JSException("请选择所属机构！");
+            }
         } 
 
         private JSDictionary MakeFilterOfOrders()

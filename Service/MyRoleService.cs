@@ -183,14 +183,15 @@ namespace JSNet.Service
         }
 
         #region Grant_Role
-        public void GrantRole(int userID, int[] roleIDs,IDbHelper dbHelper = null)
+        public void GrantRole(int userID, int[] roleIDs)
         {
             //1.0 清空该用户原有的角色权限
-            EntityManager<UserRoleEntity> manager = dbHelper == null ? new EntityManager<UserRoleEntity>() : new EntityManager<UserRoleEntity>(dbHelper);
+            EntityManager<UserRoleEntity> manager = new EntityManager<UserRoleEntity>();
             WhereStatement where = new WhereStatement();
             where.Add(UserRoleEntity.FieldUserID, Comparison.Equals, userID);
             manager.Delete(where);
 
+            List<UserRoleEntity> ur = new List<UserRoleEntity>();
             //2.0 添加当前选中的角色
             foreach (int roleID in roleIDs)
             {
@@ -200,8 +201,9 @@ namespace JSNet.Service
                 entity.CreateUserId = CurrentUser.ID.ToString();
                 entity.CreateBy = CurrentUser.UserName;
                 entity.CreateOn = DateTime.Now;
-                manager.Insert(entity);
+                ur.Add(entity);
             }
+            manager.Insert(ur);
         }
 
         public RoleEntity GetGrantedRole(UserEntity user)

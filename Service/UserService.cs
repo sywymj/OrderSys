@@ -55,50 +55,35 @@ namespace JSNet.Service
         #region User
         public void AddUser(UserEntity entity, StaffEntity staff, int[] roleIDs)
         {
-            IDbHelper dbHelper = DbHelperFactory.GetHelper(BaseSystemInfo.CenterDbConnectionString, BaseSystemInfo.CenterDbType);
-            dbHelper.Open();
-            try
+            //添加user
+            if (string.IsNullOrEmpty(entity.Password))
             {
-                dbHelper.BeginTransaction();
-
-                //添加user
-                if (string.IsNullOrEmpty(entity.Password))
-                {
-                    entity.Password = "123456";// TODO 加盐转MD5加密保存
-                }
-                entity.OpenID = null;
-                entity.AddedVXUser = (int)TrueFalse.True;
-                entity.IsEnable = (int)TrueFalse.True;
-                entity.OrganizeID = staff.OrganizeID;
-                entity.DeletionStateCode = (int)TrueFalse.False;
-                entity.CreateUserId = CurrentUser.ID.ToString();
-                entity.CreateBy = CurrentUser.UserName;
-                entity.CreateOn = DateTime.Now;
-                EntityManager<UserEntity> userManager = new EntityManager<UserEntity>(dbHelper);
-                string userID = userManager.Insert(entity);//事务时出错
-
-                //添加staff
-                staff.UserID = Convert.ToInt32(userID);
-                string staffID = AddStaff(staff, dbHelper);
-
-                //添加role-user-rel
-                MyRoleService roleService = new MyRoleService();
-                roleService.GrantRole(Convert.ToInt32(userID), roleIDs, dbHelper);
-
-                KawuService kawuService = new KawuService();
-                kawuService.AddWeixinUser(staff.Tel, entity.UserName);
-
-                dbHelper.CommitTransaction();
+                entity.Password = "123456";// TODO 加盐转MD5加密保存
             }
-            catch(Exception e)
-            {
-                dbHelper.RollbackTransaction();
-                throw e;
-            }
-            finally
-            {
-                dbHelper.Close();
-            }
+            entity.OpenID = null;
+            entity.AddedVXUser = (int)TrueFalse.False;
+            entity.IsEnable = (int)TrueFalse.True;
+            entity.OrganizeID = staff.OrganizeID;
+            entity.DeletionStateCode = (int)TrueFalse.False;
+            entity.CreateUserId = CurrentUser.ID.ToString();
+            entity.CreateBy = CurrentUser.UserName;
+            entity.CreateOn = DateTime.Now;
+            EntityManager<UserEntity> userManager = new EntityManager<UserEntity>();
+            string userID = userManager.Insert(entity);
+
+            //添加staff
+            staff.UserID = Convert.ToInt32(userID);
+            string staffID = AddStaff(staff);
+
+            //添加role-user-rel
+            MyRoleService roleService = new MyRoleService();
+            roleService.GrantRole(Convert.ToInt32(userID), roleIDs);
+
+            //添加微信账户
+            KawuService kawuService = new KawuService();
+            kawuService.AddWeixinUser(staff.Tel, entity.UserName);
+            userManager.Update(new KeyValuePair<string, object>(UserEntity.FieldAddedVXUser, (int)TrueFalse.True), Convert.ToInt32(userID));
+
         }
 
         public void AddWeiXinUser(int[] userIDs)
@@ -401,7 +386,7 @@ namespace JSNet.Service
                 staff.Addr = addr;
                 staff.Sex = (int)sexType.Where(d => d.Value == sex).FirstOrDefault().Key;
                 staff.OrganizeID = organizes.Where(x => x.Code == orgCode).FirstOrDefault().ID;
-                //staff.IsOnJob = (int)TrueFalse.True;
+                staff.IsOnJob = (int)TrueFalse.True;
 
                 try
                 {
@@ -429,7 +414,7 @@ namespace JSNet.Service
 
         #region Staff
 
-        public string AddStaff(StaffEntity entity,IDbHelper dbHelper = null)
+        public string AddStaff(StaffEntity entity)
         {
             entity.IsEnable = (int)TrueFalse.True;
             entity.DeletionStateCode = (int)TrueFalse.False;
@@ -437,7 +422,7 @@ namespace JSNet.Service
             entity.CreateBy = CurrentUser.UserName;
             entity.CreateOn = DateTime.Now;
 
-            EntityManager<StaffEntity> manager = dbHelper == null ? new EntityManager<StaffEntity>() : new EntityManager<StaffEntity>(dbHelper);
+            EntityManager<StaffEntity> manager =  new EntityManager<StaffEntity>();
             return manager.Insert(entity);
         }
 

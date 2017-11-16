@@ -20,30 +20,30 @@ namespace JSNet.Manager
         /// <summary>
         /// 默认使用 CenterDbType 数据库类型，CenterDbConnection 链接字符串
         /// </summary>
+        public EntityManager(string tableName)
+            :this()
+        {
+            base.CurrentTableName = this._iEntity.TableName;
+        }
+
+        public EntityManager(IDbHelper dbHelper, string tableName)
+            : this(dbHelper)
+        {
+            base.CurrentTableName = tableName;
+        }
+
         public EntityManager()
             :base()
         {
             this._iEntity = (IEntity<T>)new T();
-            this.CurrentTableName = this._iEntity.TableName;
-            
+            base.CurrentTableName = this._iEntity.TableName;
         }
 
         public EntityManager(IDbHelper dbHelper)
             : base(dbHelper)
         {
-
-        }
-
-        public EntityManager(string tableName)
-            : base(tableName)
-        {
-
-        }
-
-        public EntityManager(IDbHelper dbHelper, string tableName)
-            : base(dbHelper,tableName)
-        {
-
+            this._iEntity = (IEntity<T>)new T();
+            base.CurrentTableName = this._iEntity.TableName;
         }
 
         public IDbDataParameter MakeInParam(string paramName, string dbType, int size, object value)

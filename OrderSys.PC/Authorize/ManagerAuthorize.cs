@@ -22,6 +22,12 @@ namespace OrderSys.Admin
             RoleEntity role = new RoleEntity();
 
             loginService.ChkLogin(out user, out role);
+
+            if (Roles.ToLower() == "public")
+            {
+                return true;
+            }
+
             PermissionService permissionService = new PermissionService();
             bool b = permissionService.IsPermissionAuthorizedByRole(role, controllername, actionname);
             if (!b)
