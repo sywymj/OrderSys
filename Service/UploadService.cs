@@ -21,9 +21,11 @@ namespace JSNet.Service
         }
 
 
-        public void FileSaveAsImage(HttpPostedFileBase httpPostedFile,out string newFileName )
+        public void FileSaveAsImage(HttpPostedFileBase httpPostedFile, out string fileFullName)
         {
-            FileSaveAs(httpPostedFile, _UploadPath + "OrderImg/", ValidateImage, out newFileName);
+            string fileName = "";
+            FileSaveAs(httpPostedFile, _UploadPath + "OrderImg/", ValidateImage, out fileName);
+            fileFullName = _UploadPath + "OrderImg/" + fileName;
         }
 
         public void FileSaveAsExcel(HttpPostedFileBase httpPostedFile, out string localFullName)
@@ -50,10 +52,8 @@ namespace JSNet.Service
             httpPostedFile.SaveAs(newFileFullName);
         }
 
-        public void RemoveFile(string fileName)
+        public void RemoveFile(string fileFullName)
         {
-            string fileFullName = _UploadPath + fileName;
-
             bool deleteFileSuccessed = CommonUtil.DeleteFile(fileFullName);
             if (!deleteFileSuccessed)
             {

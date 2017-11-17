@@ -169,7 +169,7 @@ namespace JSNet.Service
             }
             catch(Exception e)
             {
-                throw new JSException(JSErrMsg.ERR_CODE_APIDecryptFailed, e.Message);
+                throw new JSException(JSErrMsg.ERR_MSG_APIDecryptFailed,JSErrMsg.ERR_CODE_APIDecryptFailed, e.Message);
             }
         }
 

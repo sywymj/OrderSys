@@ -24,53 +24,68 @@ namespace OrderSys.Controllers
         [HttpGet]
         public string UpdateOrderSysOpenID()
         {
+            //{\"tel\": \"13800138000\",\"openid\": \"123123\"}
+            string re = string.Empty;
+            string json = string.Empty;
             try
             {
-                string json = service.DecryptData(JSRequest.GetRequestUrlParm("submitdata").Replace(' ', '+'));
+                json = service.DecryptData(JSRequest.GetRequestUrlParm("submitdata").Replace(' ', '+'));
                 UpdateOrderSysOpenID_APIViewModel vmodel = FastJSON.JSON.ToObject<UpdateOrderSysOpenID_APIViewModel>(json);
 
-                string tel = JSValidator.ValidateString("参数Tel", vmodel.Tel, true);
+                string tel = JSValidator.ValidateTel("参数Tel", vmodel.Tel, true);
                 string openID = JSValidator.ValidateString("参数OPENID", vmodel.OpenID, true);
 
                 UserService usrService = new UserService();
                 usrService.EditUserOpenID(tel, openID);
 
-                string re = JSON.ToJSON(new JSResponse(ResponseType.None, "更新成功！"), jsonParams);
-                return re;
+                re = JSON.ToJSON(new JSResponse(ResponseType.None, "更新成功！"), jsonParams);
             }
-            catch(Exception e)
+            catch (JSException jse)
             {
-                throw new JSException(JSErrMsg.ERR_MSG_APIFailed, e.ToString());
+                re = JSON.ToJSON(new JSResponse(jse.ErrorCode, jse.ErrorMsg, data: json), jsonParams);
             }
+            catch (Exception e)
+            {
+                re = JSON.ToJSON(new JSResponse("500", e.Message, data: json), jsonParams);
+            }
+            return re;
         }
 
         [HttpGet]
         public string LogoutOrderSys()
         {
+            //{\"tel\": \"13800138000\",\"openid\": \"123123\"}
+            string re = "";
+            string json = "";
             try
             {
-                string json = service.DecryptData(JSRequest.GetRequestUrlParm("submitdata").Replace(' ', '+'));
+                json = service.DecryptData(JSRequest.GetRequestUrlParm("submitdata").Replace(' ', '+'));
                 UpdateOrderSysOpenID_APIViewModel vmodel = FastJSON.JSON.ToObject<UpdateOrderSysOpenID_APIViewModel>(json);
 
-                string tel = JSValidator.ValidateString("参数Tel", vmodel.Tel, true);
+                string tel = JSValidator.ValidateTel("参数Tel", vmodel.Tel, true);
                 string openID = JSValidator.ValidateString("参数OPENID", vmodel.OpenID, true);
 
                 LoginService loginService = new LoginService();
                 loginService.VXLogout(openID);
 
-                string re = JSON.ToJSON(new JSResponse(ResponseType.None, "注销成功！"), jsonParams);
-                return re;
+                re = JSON.ToJSON(new JSResponse(ResponseType.None, "注销成功！"), jsonParams);
+            }
+            catch (JSException jse)
+            {
+                re = JSON.ToJSON(new JSResponse(jse.ErrorCode, jse.ErrorMsg, data: json), jsonParams);
             }
             catch (Exception e)
             {
-                throw new JSException(JSErrMsg.ERR_MSG_APIFailed, e.ToString());
+                re = JSON.ToJSON(new JSResponse("500", e.Message, data: json), jsonParams);
             }
+            return re;
         }
 
         [HttpGet]
         public string TestEncryptData()
         {
-            string s = service.EncryptData("{\"type\": \"orderaccepted\",\"openid\": \"1234567890\",\"first\": \"您好，你的维修单已处理完成，请您对本次服务进行评价\",\"remark\": \"点击评价，非常感谢\",\"orderno\": \"工单号\",\"treatment\": \"处理方案\"}");
+            //string s = service.EncryptData("{\"type\": \"orderaccepted\",\"openid\": \"1234567890\",\"first\": \"您好，你的维修单已处理完成，请您对本次服务进行评价\",\"remark\": \"点击评价，非常感谢\",\"orderno\": \"工单号\",\"treatment\": \"处理方案\"}");
+            string s = service.EncryptData("{\"tel\": \"13620831234\"}");
             string re = JSON.ToJSON(new JSResponse(data: s), jsonParams);
             return re;
         }

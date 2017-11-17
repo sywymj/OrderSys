@@ -42,6 +42,9 @@
     <File Include="Areas/Admin/Content/js/public.js">
       <publishTime>11/09/2017 16:03:26</publishTime>
     </File>
+    <File Include="Areas/Admin/Script/ajaxfileupload.js">
+      <publishTime>08/26/2017 09:16:10</publishTime>
+    </File>
     <File Include="Areas/Admin/Script/datapicker/calendar.js">
       <publishTime>11/03/2017 17:38:34</publishTime>
     </File>
@@ -7909,22 +7912,28 @@
       <publishTime>09/27/2017 08:13:22</publishTime>
     </File>
     <File Include="Areas/Admin/Views/Order/OrderGoods_Index.cshtml">
-      <publishTime>11/02/2017 10:40:06</publishTime>
+      <publishTime>11/16/2017 17:42:14</publishTime>
     </File>
     <File Include="Areas/Admin/Views/Order/OrderGoods_InsertIndex.cshtml">
       <publishTime>11/02/2017 14:43:51</publishTime>
     </File>
+    <File Include="Areas/Admin/Views/Order/OrderHandleStatistics_Index.cshtml">
+      <publishTime>11/14/2017 11:55:31</publishTime>
+    </File>
+    <File Include="Areas/Admin/Views/Order/OrderStartStatistics_Index.cshtml">
+      <publishTime>11/14/2017 11:49:19</publishTime>
+    </File>
     <File Include="Areas/Admin/Views/Order/Orders_Index.cshtml">
-      <publishTime>11/04/2017 09:27:51</publishTime>
+      <publishTime>11/14/2017 09:59:12</publishTime>
     </File>
     <File Include="Areas/Admin/Views/Order/OrderWorkingLocationFirstLevel_DDL.cshtml">
       <publishTime>10/27/2017 09:35:29</publishTime>
     </File>
     <File Include="Areas/Admin/Views/Order/OrderWorkingLocation_Index.cshtml">
-      <publishTime>10/27/2017 09:35:29</publishTime>
+      <publishTime>11/16/2017 17:40:22</publishTime>
     </File>
     <File Include="Areas/Admin/Views/Order/OrderWorkingLocation_InsertIndex.cshtml">
-      <publishTime>10/27/2017 09:35:29</publishTime>
+      <publishTime>11/16/2017 16:12:18</publishTime>
     </File>
     <File Include="Areas/Admin/Views/Organize/OrganizeCategory_DDL.cshtml">
       <publishTime>10/25/2017 15:02:11</publishTime>
@@ -7939,7 +7948,7 @@
       <publishTime>10/25/2017 15:02:14</publishTime>
     </File>
     <File Include="Areas/Admin/Views/Organize/OrganizeDDL.cshtml">
-      <publishTime>10/25/2017 15:02:18</publishTime>
+      <publishTime>11/14/2017 11:45:14</publishTime>
     </File>
     <File Include="Areas/Admin/Views/Organize/Organize_Index.cshtml">
       <publishTime>10/25/2017 15:42:04</publishTime>
@@ -7954,7 +7963,7 @@
       <publishTime>11/09/2017 09:29:51</publishTime>
     </File>
     <File Include="Areas/Admin/Views/Permission/GrantPermissionModule_Index.cshtml">
-      <publishTime>11/09/2017 15:00:40</publishTime>
+      <publishTime>11/14/2017 15:26:07</publishTime>
     </File>
     <File Include="Areas/Admin/Views/Permission/GrantPermissionScope_Index.cshtml">
       <publishTime>10/25/2017 15:35:04</publishTime>
@@ -8017,7 +8026,7 @@
       <publishTime>09/08/2017 16:41:43</publishTime>
     </File>
     <File Include="Areas/Admin/Views/User/Index.cshtml">
-      <publishTime>10/30/2017 11:05:05</publishTime>
+      <publishTime>11/16/2017 17:43:42</publishTime>
     </File>
     <File Include="Areas/Admin/Views/User/InsertIndex.cshtml">
       <publishTime>11/01/2017 15:42:49</publishTime>
@@ -8035,7 +8044,7 @@
       <publishTime>10/26/2017 08:22:25</publishTime>
     </File>
     <File Include="Areas/Weixin/Views/Order/AddHandleDetail.cshtml">
-      <publishTime>11/09/2017 17:44:59</publishTime>
+      <publishTime>11/11/2017 11:59:29</publishTime>
     </File>
     <File Include="Areas/Weixin/Views/Order/AppointOrder.cshtml">
       <publishTime>11/01/2017 10:47:20</publishTime>
@@ -8053,7 +8062,7 @@
       <publishTime>10/13/2017 17:48:52</publishTime>
     </File>
     <File Include="Areas/Weixin/Views/Order/MyAppointingOrders.cshtml">
-      <publishTime>10/27/2017 11:20:05</publishTime>
+      <publishTime>11/11/2017 10:53:53</publishTime>
     </File>
     <File Include="Areas/Weixin/Views/Order/MyHandledOrders.cshtml">
       <publishTime>10/27/2017 11:34:49</publishTime>
@@ -8062,13 +8071,13 @@
       <publishTime>10/13/2017 17:49:12</publishTime>
     </File>
     <File Include="Areas/Weixin/Views/Order/MyHandlingOrders.cshtml">
-      <publishTime>10/27/2017 11:34:56</publishTime>
+      <publishTime>11/11/2017 11:16:22</publishTime>
     </File>
     <File Include="Areas/Weixin/Views/Order/MyReceivingOrders.cshtml">
-      <publishTime>10/27/2017 11:35:02</publishTime>
+      <publishTime>11/11/2017 10:54:22</publishTime>
     </File>
     <File Include="Areas/Weixin/Views/Order/MyStartedOrders.cshtml">
-      <publishTime>10/11/2017 08:34:10</publishTime>
+      <publishTime>11/11/2017 10:54:32</publishTime>
     </File>
     <File Include="Areas/Weixin/Views/Order/MyStartIndex.cshtml">
       <publishTime>10/16/2017 11:50:58</publishTime>
@@ -8077,10 +8086,10 @@
       <publishTime>11/03/2017 09:11:05</publishTime>
     </File>
     <File Include="Areas/Weixin/Views/Order/OrderFlows.cshtml">
-      <publishTime>11/10/2017 16:42:26</publishTime>
+      <publishTime>11/11/2017 11:43:19</publishTime>
     </File>
     <File Include="Areas/Weixin/Views/Order/StartOrder.cshtml">
-      <publishTime>11/01/2017 14:16:36</publishTime>
+      <publishTime>11/17/2017 09:08:17</publishTime>
     </File>
     <File Include="Areas/Weixin/Views/Popup/StaffsPopup.cshtml">
       <publishTime>09/30/2017 16:12:28</publishTime>
@@ -8128,7 +8137,7 @@
       <publishTime>09/07/2017 08:16:21</publishTime>
     </File>
     <File Include="bin/BaseSys.dll">
-      <publishTime>11/10/2017 15:47:52</publishTime>
+      <publishTime>11/17/2017 08:56:36</publishTime>
     </File>
     <File Include="bin/ChnCharInfo.dll">
       <publishTime>09/07/2017 08:13:07</publishTime>
@@ -8137,7 +8146,7 @@
       <publishTime>09/07/2017 08:16:20</publishTime>
     </File>
     <File Include="bin/HuisonSys.dll">
-      <publishTime>11/11/2017 08:51:11</publishTime>
+      <publishTime>11/17/2017 09:18:00</publishTime>
     </File>
     <File Include="bin/JSNet.DbUtilities.dll">
       <publishTime>10/11/2017 11:55:43</publishTime>
@@ -8146,7 +8155,7 @@
       <publishTime>09/07/2017 08:13:07</publishTime>
     </File>
     <File Include="bin/Manager.dll">
-      <publishTime>11/10/2017 15:47:54</publishTime>
+      <publishTime>11/17/2017 08:56:37</publishTime>
     </File>
     <File Include="bin/Microsoft.CSharp.dll">
       <publishTime>03/18/2010 19:31:26</publishTime>
@@ -8158,22 +8167,31 @@
       <publishTime>09/07/2017 08:13:07</publishTime>
     </File>
     <File Include="bin/Model.dll">
-      <publishTime>11/10/2017 15:47:54</publishTime>
+      <publishTime>11/17/2017 08:56:36</publishTime>
     </File>
     <File Include="bin/Newtonsoft.Json.dll">
       <publishTime>09/07/2017 08:13:08</publishTime>
     </File>
     <File Include="bin/NPOI.dll">
-      <publishTime>09/07/2017 08:13:07</publishTime>
+      <publishTime>03/07/2017 15:22:33</publishTime>
+    </File>
+    <File Include="bin/NPOI.OOXML.dll">
+      <publishTime>03/07/2017 15:22:34</publishTime>
+    </File>
+    <File Include="bin/NPOI.OpenXml4Net.dll">
+      <publishTime>03/07/2017 15:22:34</publishTime>
+    </File>
+    <File Include="bin/NPOI.OpenXmlFormats.dll">
+      <publishTime>03/07/2017 15:22:34</publishTime>
     </File>
     <File Include="bin/OrderSys.Admin.dll">
-      <publishTime>11/10/2017 15:47:56</publishTime>
+      <publishTime>11/17/2017 09:17:59</publishTime>
     </File>
     <File Include="bin/OrderSys.dll">
-      <publishTime>11/10/2017 15:47:56</publishTime>
+      <publishTime>11/17/2017 09:17:59</publishTime>
     </File>
     <File Include="bin/Service.dll">
-      <publishTime>11/10/2017 15:47:55</publishTime>
+      <publishTime>11/17/2017 09:17:58</publishTime>
     </File>
     <File Include="bin/System.ComponentModel.DataAnnotations.dll">
       <publishTime>03/18/2010 19:31:26</publishTime>
@@ -8266,7 +8284,7 @@
       <publishTime>03/18/2010 19:31:26</publishTime>
     </File>
     <File Include="bin/Utilities.dll">
-      <publishTime>11/10/2017 15:47:51</publishTime>
+      <publishTime>11/17/2017 08:56:35</publishTime>
     </File>
     <File Include="bin/WebGrease.dll">
       <publishTime>09/07/2017 08:16:21</publishTime>
@@ -8617,7 +8635,7 @@
       <publishTime>09/08/2017 08:36:13</publishTime>
     </File>
     <File Include="Xml/Log4Net.xml">
-      <publishTime>11/09/2017 15:29:54</publishTime>
+      <publishTime>11/15/2017 09:29:25</publishTime>
     </File>
   </ItemGroup>
 </Project>
