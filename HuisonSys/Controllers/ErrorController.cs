@@ -114,6 +114,7 @@ namespace HuisonSys.Controllers
                     middleurl = Url.Action("LoginIndex", "Home", new { area = "Admin", msg = message, url = loginurl });
                     break;
                 default:
+                    middleurl = Url.Action("LoginIndex", "Home", new { area = "Admin" });
                     break;
             }
 

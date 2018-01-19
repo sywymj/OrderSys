@@ -116,8 +116,8 @@
         }*@
 
 
-        var rows = staff_grid.getSelected();
-        if (rows.length == 0) {
+        var rows = staff_grid.getSelecteds();
+        if (rows.length > 0) {
             if (confirm("确定增加选中记录的微信账号？")) {
                 var ids = [];
                 for (var i = 0, l = rows.length; i < l; i++) {

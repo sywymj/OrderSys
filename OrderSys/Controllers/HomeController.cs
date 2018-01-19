@@ -22,7 +22,20 @@ namespace OrderSys.Controllers
         public ActionResult Index(string openID)
         {
             LoginService loginService = new LoginService();
+            //loginService.VXLogin("o4xxqwOiP_DDyRBHcC68NZdcgV4I");
             loginService.VXLogin(openID);
+
+            PermissionService permissionService = new PermissionService();
+
+            ViewBag.StaffName = permissionService.CurrentStaff.Name;
+            ViewBag.RoleName = permissionService.CurrentRole.FullName;
+            
+            //默认打开拥有的第一个权限页面
+            DataTable dt = permissionService.GetLeftMenu(permissionService.CurrentRole, "OrderSys_VX", false);
+            if (dt.Rows.Count > 0)
+            {
+                return Redirect(dt.Rows[0]["Resource_NavigateUrl"].ToString());
+            }
             return View();
             
         }

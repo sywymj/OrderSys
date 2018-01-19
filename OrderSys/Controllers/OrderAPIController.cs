@@ -85,7 +85,7 @@ namespace OrderSys.Controllers
         public string TestEncryptData()
         {
             //string s = service.EncryptData("{\"type\": \"orderaccepted\",\"openid\": \"1234567890\",\"first\": \"您好，你的维修单已处理完成，请您对本次服务进行评价\",\"remark\": \"点击评价，非常感谢\",\"orderno\": \"工单号\",\"treatment\": \"处理方案\"}");
-            string s = service.EncryptData("{\"tel\": \"13620831234\"}");
+            string s = service.EncryptData("{\"tel\": \"13620834810\",\"openid\": \"123123\"}");
             string re = JSON.ToJSON(new JSResponse(data: s), jsonParams);
             return re;
         }

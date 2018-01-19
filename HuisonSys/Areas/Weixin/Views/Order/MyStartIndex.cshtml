@@ -5,18 +5,18 @@
 }
 <div class="weui_tab">
     <div class="weui_navbar" id="tab1">
-        <li class="weui_navbar_item" id="startmyorder_btn" onclick="setTab(1,0)">
+        <li class="weui_navbar_item weui_bar_item_on" id="startmyorder_btn" onclick="setTab(1,0)">
             新发起
         </li>
-        <li class="weui_navbar_item weui_bar_item_on" id="query_mystarted_btn" onclick="setTab(1, 1)">
+        <li class="weui_navbar_item" id="query_mystarted_btn" onclick="setTab(1, 1)">
             已发起
         </li>
     </div>
     <div class="weui_tab_bd nr1" id="tablist1">
-        <div class="tablist">
+        <div class="tablist block">
             <div id="startorder">@Html.Partial("~/Areas/Weixin/Views/Order/StartOrder.cshtml") </div>
         </div>
-        <div class="tablist block">
+        <div class="tablist">
             <div id="mystarted_list"></div>
             @Html.Partial("~/Areas/Weixin/Views/Shared/_Fresh.cshtml", "querymystarted()")
         </div>
